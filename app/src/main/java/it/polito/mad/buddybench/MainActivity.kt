@@ -10,6 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import it.polito.mad.buddybench.ui.screens.Onboarding
 import it.polito.mad.buddybench.ui.theme.BuddyBenchTheme
+import it.polito.mad.buddybench.ui.theme.DarkBlue
 import it.polito.mad.buddybench.ui.theme.PADDING_LG
 
 class MainActivity : ComponentActivity() {
@@ -19,13 +20,11 @@ class MainActivity : ComponentActivity() {
             BuddyBenchTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize().padding(PADDING_LG),
-                    color = MaterialTheme.colorScheme.background
+                    color = DarkBlue
                 ) {
                     Onboarding()
                 }
             }
         }
-        println("Hello")
     }
 }
