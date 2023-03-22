@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">BuddyBench</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="avatar_content_description">avatar</string>
+    <string name="title">Title</string>
+    <string name="subtitle">Subtitle</string>
+    <string name="caption">Caption</string>
 </resources>
