@@ -1,17 +1,24 @@
 package it.polito.mad.buddybench.ui.screens
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import android.widget.ImageButton
+import android.widget.ScrollView
+import androidx.compose.animation.*
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,21 +31,38 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import it.polito.mad.buddybench.ui.theme.DarkBlue
 import it.polito.mad.buddybench.ui.theme.LightBlue
+import it.polito.mad.buddybench.ui.theme.*
 import it.polito.mad.buddybench.ui.theme.White
+
+class EditState() {
+    var state by mutableStateOf(false)
+        private set
+
+    fun setEditMode(edit: Boolean) {
+        this.state = edit
+    }
+
+}
+
 
 @Preview
 @Composable
 fun Onboarding() {
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(DarkBlue)
+    val editMode = EditState()
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(DarkBlue)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxHeight()
+                .verticalScroll(rememberScrollState())
         ) {
             Row(
                 modifier = Modifier
@@ -47,19 +71,31 @@ fun Onboarding() {
                     .padding(top = 40.dp, start = 50.dp, end = 50.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Icon(
-                    Icons.Filled.ArrowBack,
-                    "Edit Pencil",
-                    modifier = Modifier.size(40.dp, 40.dp),
-                    tint = Color.White
-                )
-                Icon(
-                    Icons.Filled.Edit,
-                    "Edit Pencil",
-                    modifier = Modifier.size(40.dp, 40.dp),
-                    tint = Color.White
-                )
+                IconButton(onClick = {
+                    editMode.setEditMode(false)
+                    println("Returned To Edit Mode")
+                }) {
+                    Icon(
+                        Icons.Filled.ArrowBack,
+                        "Edit Pencil",
+                        modifier = Modifier.size(40.dp, 40.dp),
+                        tint = Color.White,
+                    )
+                }
+                IconButton(onClick = {
+                    editMode.setEditMode(true)
+                    println("Passed To Edit Mode")
+                }) {
+                    AnimatedVisibility(visible = !editMode.state) {
+                        Icon(
+                            Icons.Filled.Edit,
+                            "Edit Pencil",
+                            modifier = Modifier.size(40.dp, 40.dp),
+                            tint = Color.White
+                        )
+                    }
 
+                }
             }
             Row(
                 modifier = Modifier
@@ -69,15 +105,30 @@ fun Onboarding() {
                     .padding(5.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Image(
-                    painter = painterResource(it.polito.mad.buddybench.R.drawable.ic_launcher_background),
-                    contentDescription = "avatar",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(200.dp)
-                        .clip(CircleShape)
-                        .border(2.dp, Color.Gray, CircleShape)
-                )
+                Box {
+                        Badge(
+                            modifier = Modifier
+                                .size(50.dp)
+                                .zIndex(1f)
+                        ) {
+                            Icon(
+                                Icons.Default.Phone,
+                                "Edit Pencil",
+                                modifier = Modifier.size(40.dp, 40.dp),
+                                tint = Color.White
+                            )
+                        }
+                    Image(
+                        painter = painterResource(it.polito.mad.buddybench.R.drawable.ic_launcher_background),
+                        contentDescription = "avatar",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(200.dp)
+                            .clip(CircleShape)
+                            .border(2.dp, Color.Gray, CircleShape)
+                    )
+
+                }
             }
             Row(
                 modifier = Modifier
@@ -87,7 +138,8 @@ fun Onboarding() {
                     .padding(10.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text(text = "Full Name",
+                Text(
+                    text = "Full Name",
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
                     color = White
@@ -100,7 +152,8 @@ fun Onboarding() {
                     .height(60.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text(text = "NickName",
+                Text(
+                    text = "NickName",
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Light,
                     color = White
@@ -118,8 +171,7 @@ fun Onboarding() {
                         Icons.Outlined.LocationOn,
                         "Pointer Location",
                         modifier = Modifier
-                            .size(40.dp, 40.dp)
-                        ,
+                            .size(40.dp, 40.dp),
                         tint = Color.White,
                     )
                     Text(
@@ -140,8 +192,6 @@ fun Onboarding() {
                     )
                 }
             }
-
-
             Row(
                 modifier = Modifier
                     .background(DarkBlue)
@@ -225,26 +275,48 @@ fun Onboarding() {
             Row(
                 modifier = Modifier.fillMaxHeight()
             ) {
-                GameCard("Volleyball",
-                    Icons.Outlined.Person,
-                    10,
-                    "Newbie"
-                )
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(start = 20.dp, bottom = 30.dp, end = 20.dp, top = 20.dp)
+                ) {
+                    items(simpleList, itemContent = {
+                        GameCard(
+                            "Volleyball",
+                            Icons.Outlined.Person,
+                            10,
+                            level = it
+                        )
+                    })
+                }
             }
-
         }
+
     }
 }
+
+val map = mapOf(
+    "Newbie" to NewbieGreen,
+    "Amateur" to AmateurGreen,
+    "Skilled" to SkilledOrange,
+    "Professional" to ProfessionalRed,
+    "World Class" to WorldClassBlack
+
+)
+
+val simpleList =
+    listOf("Professional", "Newbie", "Amateur", "Skilled", "Professional", "World Class")
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameCard(name: String, sport: ImageVector, games: Int, level: String) {
 
-    return Card (
+    return Card(
         modifier = Modifier
             .size(200.dp, 180.dp)
-            .padding(top = 30.dp, start = 20.dp)
+            .padding(top = 10.dp, start = 20.dp)
 
     ) {
         Row(
@@ -252,7 +324,7 @@ fun GameCard(name: String, sport: ImageVector, games: Int, level: String) {
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top =  10.dp)
+                .padding(top = 10.dp)
         ) {
             Text(
                 text = name,
@@ -278,22 +350,20 @@ fun GameCard(name: String, sport: ImageVector, games: Int, level: String) {
                 fontWeight = FontWeight.SemiBold
             )
         }
-        Row() {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
             MyBadge(level)
         }
 
     }
 }
 
-
-val map = mapOf(
-    "Newbie" to LightBlue
-)
-
 @Composable
 fun MyBadge(level: String) {
 
-    val color : Color = map.get(level)!!
+    val color: Color = map.get(level)!!
     Badge(
         modifier = Modifier
             .height(50.dp)
