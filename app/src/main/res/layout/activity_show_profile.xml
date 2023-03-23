@@ -2,13 +2,25 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/seed"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <LinearLayout
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:background="@color/seed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <!--<LinearLayout
         android:id="@+id/view2"
         android:layout_width="394dp"
         android:layout_height="42dp"
@@ -23,15 +35,15 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="start"
             android:layout_marginStart="0dp"
             android:layout_weight="1"
-            android:layout_gravity="start"
-            android:src="@drawable/ic_action_name"/>
+            android:src="@drawable/ic_action_name" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"/>
+            android:layout_weight="0.5" />
 
         <ImageView
             android:layout_width="match_parent"
@@ -41,14 +53,13 @@
             android:layout_weight="1"
             android:src="@drawable/baseline_mode_edit_24" />
 
-
-    </LinearLayout>
+    </LinearLayout>-->
 
     <LinearLayout
-        android:layout_margin="30dp"
         android:id="@+id/linearLayout"
         android:layout_width="339dp"
         android:layout_height="183dp"
+        android:layout_margin="30dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -94,9 +105,9 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
                     android:layout_margin="10dp"
                     android:layout_weight="2"
-                    android:layout_gravity="center_vertical"
                     android:src="@drawable/round_location_on_24" />
 
                 <TextView
@@ -106,8 +117,8 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/gotham_bold"
                     android:gravity="center"
-                    android:textAlignment="textStart"
                     android:text="Turin"
+                    android:textAlignment="textStart"
                     android:textColor="@color/md_theme_light_onPrimary"
                     android:textSize="20dp" />
 
@@ -139,81 +150,89 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
 
-                    android:textSize="30dp"
-                    android:text="80"
-                    android:gravity="center"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
+
+                    android:layout_weight="1"
                     android:fontFamily="@font/gotham_bold"
-                    android:textColor="@color/md_theme_light_onPrimary"/>
+                    android:gravity="center"
+                    android:text="80"
+                    android:textColor="@color/md_theme_light_onPrimary"
+                    android:textSize="30dp" />
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:fontFamily="@font/gotham_bold"
                     android:gravity="center"
                     android:text="Organized"
-                    android:textSize="20dp"
-                    android:fontFamily="@font/gotham_bold"
-                    android:textColor="@color/md_theme_light_onPrimary"/>
+                    android:textColor="@color/md_theme_light_onPrimary"
+                    android:textSize="20dp" />
 
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical">
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:textSize="30dp"
+                    android:fontFamily="@font/gotham_bold"
+
+                    android:gravity="center"
                     android:text="80"
+                    android:textColor="@color/md_theme_light_onPrimary"
+                    android:textSize="30dp" />
 
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:fontFamily="@font/gotham_bold"
-                    android:textColor="@color/md_theme_light_onPrimary"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="Played"
-                    android:gravity="center"
-                    android:textSize="20dp"
                     android:fontFamily="@font/gotham_bold"
-                    android:textColor="@color/md_theme_light_onPrimary"/>
+                    android:gravity="center"
+                    android:text="Played"
+                    android:textColor="@color/md_theme_light_onPrimary"
+                    android:textSize="20dp" />
 
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical">
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:textSize="30dp"
-                    android:text="80%"
                     android:layout_gravity="center"
-                    android:gravity="center"
+                    android:layout_weight="1"
                     android:fontFamily="@font/gotham_bold"
-                    android:textColor="@color/md_theme_light_onPrimary"/>
+                    android:gravity="center"
+                    android:text="80%"
+                    android:textColor="@color/md_theme_light_onPrimary"
+                    android:textSize="30dp" />
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="Reliability"
-                    android:textSize="20dp"
-                    android:gravity="center"
                     android:fontFamily="@font/gotham_bold"
-                    android:textColor="@color/md_theme_light_onPrimary"/>
+                    android:gravity="center"
+                    android:text="Reliability"
+                    android:textColor="@color/md_theme_light_onPrimary"
+                    android:textSize="20dp" />
 
 
             </LinearLayout>
@@ -231,7 +250,7 @@
         app:cardCornerRadius="250dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view2">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <ImageView
             android:layout_width="match_parent"
@@ -245,10 +264,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/gotham_bold"
+        android:paddingBottom="20dp"
         android:text="Sports"
         android:textColor="@color/cardview_light_background"
         android:textSize="30dp"
-        android:paddingBottom="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -267,26 +286,26 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <include
-            android:layout_height="match_parent"
-            android:layout_width="wrap_content"
-            layout="@layout/card_sport"
-            android:layout_weight="1"
-            android:id="@+id/id" />
-
-        <include
-            android:layout_height="match_parent"
-            android:layout_width="wrap_content"
-            layout="@layout/card_sport"
-            android:id="@+id/id"
-            android:layout_weight="1"/>
+            <include
+                android:id="@+id/id"
+                layout="@layout/card_sport"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
 
             <include
-                android:layout_height="match_parent"
-                android:layout_width="wrap_content"
+                android:id="@+id/id"
                 layout="@layout/card_sport"
-                android:layout_weight="1"
-                android:id="@+id/id" />
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <include
+                android:id="@+id/id"
+                layout="@layout/card_sport"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
 
         </LinearLayout>
 
