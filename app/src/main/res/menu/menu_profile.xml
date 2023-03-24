@@ -4,6 +4,5 @@
     <item android:id="@+id/edit"
         android:icon="@drawable/baseline_mode_edit_24"
         android:title="Edit"
-        android:actionLayout="@layout"
         app:showAsAction="always" />
 </menu>
