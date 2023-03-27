@@ -20,8 +20,8 @@
             android:layout_height="100dp"
             android:background="@drawable/rounded_shape"
             android:backgroundTint="@color/md_theme_light_error"
-
-            tools:ignore="MissingConstraints" />
+            tools:ignore="MissingConstraints"
+            android:contentDescription="close" />
 
         <ImageView
             android:layout_width="150dp"
@@ -29,6 +29,7 @@
             android:layout_margin="13dp"
 
             android:src="@drawable/close"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="MissingConstraints"
+            android:contentDescription="close" />
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
