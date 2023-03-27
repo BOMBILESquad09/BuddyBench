@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/seed"
+    android:background="@color/md_theme_dark_surfaceTint"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -14,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:background="@color/seed"
+        android:background="@color/md_theme_dark_inverseSurface"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -111,6 +110,7 @@
                     android:src="@drawable/round_location_on_24" />
 
                 <TextView
+                    android:id="@+id/locationView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
@@ -127,6 +127,7 @@
 
 
             <TextView
+                android:id="@+id/ageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -152,10 +153,11 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/matchesOrganizedView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center"
 
+                    android:layout_gravity="center"
                     android:layout_weight="1"
                     android:fontFamily="@font/montserrat_bold_700"
                     android:gravity="center"
@@ -183,12 +185,13 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/matchesPlayedView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_bold_700"
 
+                    android:fontFamily="@font/montserrat_bold_700"
                     android:gravity="center"
                     android:text="80"
                     android:textColor="@color/md_theme_light_onPrimary"
@@ -214,6 +217,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/reliabilityView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
@@ -256,7 +260,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_launcher_background" />
+            android:src="@drawable/person" />
     </androidx.cardview.widget.CardView>
 
     <TextView
@@ -283,6 +287,7 @@
         app:layout_constraintVertical_bias="0.302">
 
         <LinearLayout
+            android:id="@+id/sportsContainerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 

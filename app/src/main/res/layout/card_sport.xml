@@ -28,6 +28,7 @@
                 android:padding="10dp">
 
                 <TextView
+                    android:id="@+id/sportCardName"
                     android:layout_width="80dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0"
@@ -47,23 +48,23 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/matchesPlayedView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
                 android:fontFamily="@font/montserrat_semibold_600"
                 android:gravity="left"
-                android:layout_marginTop="15dp"
                 android:paddingStart="22dp"
                 android:paddingEnd="10dp"
                 android:text="20 games played"
-                android:textSize="12dp"
 
-                />
+                android:textSize="12dp" />
 
 
             <include
-                layout="@layout/badge"
+                android:id="@+id/ratingView"
 
-                />
+                layout="@layout/badge" />
 
 
         </LinearLayout>
