@@ -6,5 +6,6 @@
     <string name="subtitle">Subtitle</string>
     <string name="caption">Caption</string>
     <string name="preference_file_key">buddyBenchPreferencesFile</string>
+    <string name="age">%1$d years old</string>
 
 </resources>

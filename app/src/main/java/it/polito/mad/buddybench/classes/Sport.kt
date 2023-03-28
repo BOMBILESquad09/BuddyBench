@@ -2,7 +2,7 @@ package it.polito.mad.buddybench.classes
 
 import org.json.JSONObject
 
-class Sport(val name: String, var skill: Int, val matchesPlayed: Int) {
+class Sport(val name: String, var skill: Int, val matchesPlayed: Int): java.io.Serializable {
     companion object{
         fun fromJSON(jsonSport: JSONObject): Sport{
             val name = jsonSport.getString("name")
