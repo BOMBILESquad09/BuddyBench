@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/camera_button"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:background="@drawable/rounded_shape"
@@ -22,8 +22,8 @@
         android:layout_gravity="center"
         android:contentDescription="camera"
         android:src="@drawable/camera"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-        app:layout_constraintEnd_toEndOf="@+id/imageView2"
-        app:layout_constraintStart_toStartOf="@+id/imageView2"
-        app:layout_constraintTop_toTopOf="@+id/imageView2" />
+        app:layout_constraintBottom_toBottomOf="@+id/camera_button"
+        app:layout_constraintEnd_toEndOf="@+id/camera_button"
+        app:layout_constraintStart_toStartOf="@+id/camera_button"
+        app:layout_constraintTop_toTopOf="@+id/camera_button" />
     </androidx.constraintlayout.widget.ConstraintLayout>
