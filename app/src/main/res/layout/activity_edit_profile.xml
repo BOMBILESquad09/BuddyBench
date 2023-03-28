@@ -34,7 +34,7 @@
         app:layout_constraintVertical_bias="0.054">
 
         <EditText
-            android:id="@+id/full_name_textbox"
+            android:id="@+id/fullNameEdit"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -47,7 +47,7 @@
             android:layout_marginBottom="5dp"/>
 
         <EditText
-            android:id="@+id/nickname_textbox"
+            android:id="@+id/nicknameEdit"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="5dp"
@@ -67,7 +67,7 @@
             >
 
         <EditText
-            android:id="@+id/locality_textbox"
+            android:id="@+id/localityEdit"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="Locality"

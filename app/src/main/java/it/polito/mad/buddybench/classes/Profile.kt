@@ -6,7 +6,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 
-class Profile(var fullName: String?, var nickname: String?, var location: String?, var age: Int?, var matchesOrganized: Int?, var matchesPlayed: Int?, var reliability: Int, var sports: List<Sport> ) {
+class Profile(var fullName: String?, var nickname: String?, var location: String?, var age: Int?, var matchesOrganized: Int?, var matchesPlayed: Int?, var reliability: Int, var sports: List<Sport> ): java.io.Serializable {
 
     companion object {
         fun fromJSON(jsonProfile: JSONObject): Profile{

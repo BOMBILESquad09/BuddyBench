@@ -1,6 +1,7 @@
 package it.polito.mad.buddybench.activities
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Resources
 import androidx.appcompat.app.AppCompatActivity
@@ -28,13 +29,14 @@ import org.w3c.dom.Text
 import java.util.*
 
 class ShowProfileActivity : AppCompatActivity() {
+    lateinit var profile:Profile
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         val sharedPref: SharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        val profile: Profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
+        profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
 
         val fullNameTv = findViewById<TextView>(R.id.fullNameView)
         fullNameTv.text = profile.fullName
@@ -43,7 +45,7 @@ class ShowProfileActivity : AppCompatActivity() {
         nicknameTv.text = profile.nickname
 
         val ageTv = findViewById<TextView>(R.id.ageView)
-        ageTv.text = "${profile.age} years old"
+        ageTv.text = getString(R.string.age).format(profile.age)
 
         val locationTv = findViewById<TextView>(R.id.locationView)
         locationTv.text = profile.location
@@ -92,8 +94,10 @@ class ShowProfileActivity : AppCompatActivity() {
         // Handle item selection
         return when (item.itemId) {
             R.id.edit -> {
-                println("Hello")
-                true
+                val intent = Intent(this, EditProfileActivity::class.java)
+                intent.putExtra("profile", profile.toJSON().toString())
+                startActivity(intent)
+                return true
             }
             else -> super.onOptionsItemSelected(item)
         }

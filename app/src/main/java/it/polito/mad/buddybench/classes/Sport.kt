@@ -4,7 +4,7 @@ import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
 import org.json.JSONObject
 
-class Sport(val name: Sports, var skill: Skills, val matchesPlayed: Int) {
+class Sport(val name: Sports, var skill: Skills, val matchesPlayed: Int): java.io.Serializable {
     companion object{
         fun fromJSON(jsonSport: JSONObject): Sport {
             val name = jsonSport.get("name").toString()

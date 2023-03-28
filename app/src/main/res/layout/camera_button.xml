@@ -10,7 +10,6 @@
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:background="@drawable/rounded_shape"
-        android:backgroundTint="@color/material_dynamic_primary0"
         android:contentDescription="camera"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
