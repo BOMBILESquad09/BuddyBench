@@ -1,5 +1,7 @@
 package it.polito.mad.buddybench.classes
 
+import it.polito.mad.buddybench.enums.Skills
+import it.polito.mad.buddybench.enums.Sports
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -20,7 +22,6 @@ class Profile(var fullName: String?, var nickname: String?, var location: String
             val sports = mutableListOf<Sport>()
             for(i in 0 until sportsList.length()) {
                 val jsonSport = sportsList.getJSONObject(i)
-
                 sports.add(Sport.fromJSON(jsonSport))
             }
             return Profile(fullName, nickname, location, age, matchesOrganized, matchesPlayed, reliability, sports)
@@ -28,12 +29,16 @@ class Profile(var fullName: String?, var nickname: String?, var location: String
 
 
 
-        fun mockJSON(): String{
-            return Profile("Vittorio", "Arpino", "Scafati", 23, 10, 10, 70, listOf(Sport("Tennis", 5, 3))).toJSON().toString()
+        fun mockJSON(): String {
+            return Profile("Vittorio", "Arpino", "Scafati", 23, 10, 10, 70,
+                listOf(
+                    Sport(Sports.TENNIS, Skills.SKILLED, 3),
+                    Sport(Sports.FOOTBALL, Skills.NEWBIE, 17)
+                )).toJSON().toString()
         }
     }
 
-    fun toJSON(): JSONObject{
+    fun toJSON(): JSONObject {
         val json = JSONObject()
         json.put("fullName", fullName)
         json.put("nickname", nickname)
