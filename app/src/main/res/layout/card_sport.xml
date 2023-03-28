@@ -61,13 +61,9 @@
 
 
             <include
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="18dp"
-                android:layout_marginStart="21dp"
-                layout="@layout/badge"
+                android:id="@+id/ratingView"
 
-                />
+                layout="@layout/badge" />
 
 
         </LinearLayout>
