@@ -3,6 +3,7 @@ package it.polito.mad.buddybench.activities
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Resources
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,10 +16,17 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import androidx.cardview.widget.CardView
+import androidx.compose.ui.text.capitalize
+import androidx.core.content.ContextCompat
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Profile
+import it.polito.mad.buddybench.enums.Skills
+import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.utils.Utils
 import org.json.JSONObject
 import org.w3c.dom.Text
+import java.util.*
 
 class ShowProfileActivity : AppCompatActivity() {
     lateinit var profile:Profile
@@ -27,19 +35,9 @@ class ShowProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_show_profile)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        setGUI()
-
-
-
-    }
-
-    private fun setGUI(){
         val sharedPref: SharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
 
-
-        profile = Profile.fromJSON(JSONObject(sharedPref.getString("profile",Profile.mockJSON())!!))
-        println("diocane")
-        println(profile.toJSON().toString())
         val fullNameTv = findViewById<TextView>(R.id.fullNameView)
         fullNameTv.text = profile.fullName
 
@@ -63,16 +61,27 @@ class ShowProfileActivity : AppCompatActivity() {
 
         val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerView)
 
-        val iv = findViewById<ImageView>(R.id.imageView)
-        if(profile.imageUri != null){
-            iv.setImageURI(profile.imageUri)
-        }
         for(sport in profile.sports){
             val sportCard = LayoutInflater.from(this).inflate(R.layout.card_sport, null, false);
+
+            // ** Sport card dynamic values
+            val sportName = sportCard.findViewById<TextView>(R.id.sport_card_name);
+            val sportIcon = sportCard.findViewById<ImageView>(R.id.sport_card_icon);
+            val sportSkillLevel = sportCard.findViewById<CardView>(R.id.skill_level_card)
+            val sportSkillLevelText = sportCard.findViewById<TextView>(R.id.skill_level_card_text)
+            val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
+
+            sportName.text = Utils.capitalize(sport.name.toString())
+            sportIcon.setImageResource(Sports.sportToIconDrawable(sport.name))
+            // TODO: Non funziona
+            // sportSkillLevel.setBackgroundColor(Skills.skillToColor(sport.skill))
+            sportSkillLevelText.text = Utils.capitalize(sport.skill.toString())
+            sportGamesPlayed.text = String.format(resources.getString(R.string.games_played), sport.matchesPlayed)
+
+            // ** Add card to container
             sportContainer.addView(sportCard)
         }
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
