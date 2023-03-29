@@ -38,7 +38,7 @@ enum class Skills {
         }
 
         fun fromJSON(skill: String): Skills? {
-            return when (skill) {
+            return when (skill.uppercase()) {
                 "NEWBIE" -> NEWBIE
                 "AMATEUR" -> AMATEUR
                 "SKILLED" -> SKILLED

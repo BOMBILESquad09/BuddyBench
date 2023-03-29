@@ -1,9 +1,12 @@
 package it.polito.mad.buddybench.activities
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Resources
+import android.graphics.Color
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,6 +18,7 @@ import android.view.Window
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.compose.ui.text.capitalize
@@ -30,14 +34,21 @@ import java.util.*
 
 class ShowProfileActivity : AppCompatActivity() {
     lateinit var profile:Profile
+    private val launcherEdit = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onEditReturn(it)}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.setBackgroundColor(Color.parseColor("#80000000"));
         setSupportActionBar(toolbar)
         val sharedPref: SharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
+        setGUI()
 
+    }
+
+    private fun setGUI(){
         val fullNameTv = findViewById<TextView>(R.id.fullNameView)
         fullNameTv.text = profile.fullName
 
@@ -63,6 +74,7 @@ class ShowProfileActivity : AppCompatActivity() {
 
         val iv = findViewById<ImageView>(R.id.imageView)
         if (profile.imageUri != null){
+            println(profile.imageUri)
             iv.setImageURI(profile.imageUri)
         }
         for(sport in profile.sports){
@@ -86,9 +98,9 @@ class ShowProfileActivity : AppCompatActivity() {
             sportContainer.addView(sportCard)
         }
     }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
+
         inflater.inflate(R.menu.menu_profile, menu)
         println("Menu created")
         return true
@@ -100,10 +112,20 @@ class ShowProfileActivity : AppCompatActivity() {
             R.id.edit -> {
                 val intent = Intent(this, EditProfileActivity::class.java)
                 intent.putExtra("profile", profile.toJSON().toString())
-                startActivity(intent)
+                launcherEdit.launch(intent)
                 return true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun onEditReturn(response: androidx.activity.result.ActivityResult){
+        if(response.resultCode == Activity.RESULT_OK){
+            profile = Profile.fromJSON(JSONObject(response.data?.getStringExtra("newProfile").toString()))
+            println("profile passed")
+            println(profile.toJSON().toString())
+            setGUI()
+        }
+
     }
 }

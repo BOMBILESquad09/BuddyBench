@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.classes
 
+
 import android.net.Uri
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
@@ -20,11 +21,8 @@ class Profile(var fullName: String?, var nickname: String?, var location: String
             val matchesOrganized = jsonProfile.getInt("matchesOrganized")
             val matchesPlayed = jsonProfile.getInt("matchesPlayed")
             val reliability = jsonProfile.getInt("reliability")
-            val imageFile = File(jsonProfile.getString("imageUri"))
-            var imageUri: Uri? = null
-            if (imageFile.exists()){
-                imageUri = Uri.fromFile(imageFile)
-            }
+            var imageUri: Uri? = Uri.parse(jsonProfile.getString("imageUri"))
+            imageUri = null
             val sportsList = jsonProfile.getJSONArray("sports")
 
             val sports = mutableListOf<Sport>()
