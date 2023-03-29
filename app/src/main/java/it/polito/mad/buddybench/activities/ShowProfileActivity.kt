@@ -39,7 +39,8 @@ class ShowProfileActivity : AppCompatActivity() {
         val sharedPref: SharedPreferences =
             getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
-        profile = Profile.fromJSON(JSONObject(sharedPref.getString("profile", Profile.mockJSON())!!))
+        profile =
+            Profile.fromJSON(JSONObject(sharedPref.getString("profile", Profile.mockJSON())!!))
 
         val fullNameTv = findViewById<TextView>(R.id.fullNameView)
         fullNameTv.text = profile.fullName
@@ -68,13 +69,19 @@ class ShowProfileActivity : AppCompatActivity() {
         val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerView)
 
         for (sport in profile.sports) {
+            val iv = findViewById<ImageView>(R.id.imageView)
+            if (profile.imageUri != null) {
+                iv.setImageURI(profile.imageUri)
+            }
+
             val sportCard = LayoutInflater.from(this).inflate(R.layout.card_sport, null, false);
 
             // ** Sport card dynamic values
             val sportName = sportCard.findViewById<TextView>(R.id.sport_card_name);
             val sportIcon = sportCard.findViewById<ImageView>(R.id.sport_card_icon);
             val sportSkillLevel = sportCard.findViewById<CardView>(R.id.skill_level_card)
-            val sportSkillLevelText = sportCard.findViewById<TextView>(R.id.skill_level_card_text)
+            val sportSkillLevelText =
+                sportCard.findViewById<TextView>(R.id.skill_level_card_text)
             val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
 
             sportName.text = Utils.capitalize(sport.name.toString())
