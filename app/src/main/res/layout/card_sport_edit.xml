@@ -42,9 +42,9 @@
                         android:layout_height="match_parent"
                         android:layout_weight="0"
                         android:fontFamily="@font/montserrat_bold_700"
-                        android:gravity="left|center"
-                        android:text="Tennis"
-                        android:textSize="20dp" />
+                        android:gravity="start|center"
+                        android:text="@string/sport_tennis"
+                        android:textSize="20sp" />
 
                     <ImageView
                         android:layout_width="23dp"
@@ -52,7 +52,7 @@
                         android:layout_gravity="start"
                         android:layout_marginStart="0dp"
                         android:layout_weight="0"
-                        android:src="@drawable/gg_tennis" />
+                        android:src="@drawable/tennis" />
 
                 </LinearLayout>
 

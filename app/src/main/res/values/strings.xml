@@ -5,4 +5,17 @@
     <string name="title">Title</string>
     <string name="subtitle">Subtitle</string>
     <string name="caption">Caption</string>
+    <string name="preference_file_key">buddyBenchPreferencesFile</string>
+    <string name="newbie">Newbie</string>
+    <string name="sports_section">Sports</string>
+    <string name="reliability">Reliability</string>
+    <string name="played">Played</string>
+    <string name="organized">Organized</string>
+    <string name="sport_tennis">Tennis</string>
+    <string name="games_played_default">20 games played</string>
+    <string name="profile_photo_cd">profile_photo_cd</string>
+    <string name="games_played">%1$s games played</string>
+    <string name="turin">Turin</string>
+    <string name="age">%1$d years old</string>
+
 </resources>
