@@ -30,11 +30,11 @@ class Profile(var fullName: String?, var nickname: String?, var location: String
 
 
         fun mockJSON(): String {
-            return Profile("Vittorio", "Arpino", "Scafati", 23, 10, 10, 70,
-                listOf(
-                    Sport(Sports.TENNIS, Skills.SKILLED, 3),
-                    Sport(Sports.FOOTBALL, Skills.NEWBIE, 17)
-                )).toJSON().toString()
+            return Profile("Full Name", "Nickname", "Turin"
+                , 0, 0, 0, 0, listOf(
+                    Sport(Sports.TENNIS, Skills.NEWBIE, 20)
+                ))
+                .toJSON().toString()
         }
     }
 

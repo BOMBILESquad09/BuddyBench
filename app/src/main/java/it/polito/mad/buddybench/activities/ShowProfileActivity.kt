@@ -29,23 +29,29 @@ import org.w3c.dom.Text
 import java.util.*
 
 class ShowProfileActivity : AppCompatActivity() {
-    lateinit var profile:Profile
+
+    private lateinit var profile: Profile
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        val sharedPref: SharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
+        val sharedPref: SharedPreferences =
+            getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+
+        profile = Profile.fromJSON(JSONObject(sharedPref.getString("profile", Profile.mockJSON())!!))
 
         val fullNameTv = findViewById<TextView>(R.id.fullNameView)
         fullNameTv.text = profile.fullName
 
+
         val nicknameTv = findViewById<TextView>(R.id.nickNameView)
         nicknameTv.text = profile.nickname
 
+
         val ageTv = findViewById<TextView>(R.id.ageView)
         ageTv.text = getString(R.string.age).format(profile.age)
+
 
         val locationTv = findViewById<TextView>(R.id.locationView)
         locationTv.text = profile.location
@@ -61,7 +67,7 @@ class ShowProfileActivity : AppCompatActivity() {
 
         val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerView)
 
-        for(sport in profile.sports){
+        for (sport in profile.sports) {
             val sportCard = LayoutInflater.from(this).inflate(R.layout.card_sport, null, false);
 
             // ** Sport card dynamic values
@@ -76,17 +82,18 @@ class ShowProfileActivity : AppCompatActivity() {
             // TODO: Non funziona
             // sportSkillLevel.setBackgroundColor(Skills.skillToColor(sport.skill))
             sportSkillLevelText.text = Utils.capitalize(sport.skill.toString())
-            sportGamesPlayed.text = String.format(resources.getString(R.string.games_played), sport.matchesPlayed)
+            sportGamesPlayed.text =
+                String.format(resources.getString(R.string.games_played), sport.matchesPlayed)
 
             // ** Add card to container
             sportContainer.addView(sportCard)
+            println("Addded")
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_profile, menu)
-        println("Menu created")
         return true
     }
 
