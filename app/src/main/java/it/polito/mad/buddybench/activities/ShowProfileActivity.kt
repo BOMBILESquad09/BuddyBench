@@ -61,6 +61,10 @@ class ShowProfileActivity : AppCompatActivity() {
 
         val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerView)
 
+        val iv = findViewById<ImageView>(R.id.imageView)
+        if (profile.imageUri != null){
+            iv.setImageURI(profile.imageUri)
+        }
         for(sport in profile.sports){
             val sportCard = LayoutInflater.from(this).inflate(R.layout.card_sport, null, false);
 
