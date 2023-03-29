@@ -11,6 +11,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.Window
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
@@ -26,9 +27,19 @@ class ShowProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_show_profile)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        val sharedPref: SharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
+        setGUI()
 
+
+
+    }
+
+    private fun setGUI(){
+        val sharedPref: SharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+
+
+        profile = Profile.fromJSON(JSONObject(sharedPref.getString("profile",Profile.mockJSON())!!))
+        println("diocane")
+        println(profile.toJSON().toString())
         val fullNameTv = findViewById<TextView>(R.id.fullNameView)
         fullNameTv.text = profile.fullName
 
@@ -52,13 +63,16 @@ class ShowProfileActivity : AppCompatActivity() {
 
         val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerView)
 
+        val iv = findViewById<ImageView>(R.id.imageView)
+        if(profile.imageUri != null){
+            iv.setImageURI(profile.imageUri)
+        }
         for(sport in profile.sports){
             val sportCard = LayoutInflater.from(this).inflate(R.layout.card_sport, null, false);
             sportContainer.addView(sportCard)
-
         }
-
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
