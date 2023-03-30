@@ -36,6 +36,7 @@ class Profile(var fullName: String?, var nickname: String?, var location: String
 
 
         fun mockJSON(): String {
+
             return Profile("Vittorio", "Arpino", "Scafati", 23, 10, 10, 70,
                 Uri.fromFile(File("")),
                 listOf(
