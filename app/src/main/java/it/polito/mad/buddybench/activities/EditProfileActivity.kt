@@ -61,7 +61,6 @@ class EditProfileActivity : AppCompatActivity() {
 
         imageEdit = findViewById(R.id.imageEdit)
 
-        imageEdit.setImageURI(Uri.parse("content://media/external/images/media/47"))
 
         imageEdit.setOnLongClickListener{
             openCamera()
