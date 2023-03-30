@@ -1,36 +1,38 @@
 package it.polito.mad.buddybench.activities
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.res.Resources
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
+import android.os.Build
 import android.os.Bundle
+import android.os.ParcelFileDescriptor
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
-import android.view.Window
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
-import androidx.compose.ui.text.capitalize
-import androidx.core.content.ContextCompat
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Profile
-import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.Utils
 import org.json.JSONObject
-import org.w3c.dom.Text
-import java.util.*
+import java.io.File
+import java.io.FileDescriptor
+import java.io.IOException
 
 class ShowProfileActivity : AppCompatActivity() {
     lateinit var profile:Profile
@@ -45,6 +47,7 @@ class ShowProfileActivity : AppCompatActivity() {
         val sharedPref: SharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
         setGUI()
+        checkCameraPermission()
 
     }
 
@@ -70,13 +73,22 @@ class ShowProfileActivity : AppCompatActivity() {
         val reliabilityTv = findViewById<TextView>(R.id.reliabilityView)
         reliabilityTv.text = profile.reliability.toString()
 
-        val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerView)
-
         val iv = findViewById<ImageView>(R.id.imageView)
-        if (profile.imageUri != null){
-            println(profile.imageUri)
-            iv.setImageURI(profile.imageUri)
+        if (profile.imageUri != null ){
+            try{
+                iv.setImageURI(profile.imageUri)
+            } catch (_: java.lang.Exception){
+                /*maybe the image has been deleted*/
+            }
         }
+
+
+        /*if (profile.imageUri.toString() != null){
+            getBitmapFromUri(profile.imageUri!!)
+
+        }*/
+        val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
+        sportContainer.removeAllViews()
         for(sport in profile.sports){
             val sportCard = LayoutInflater.from(this).inflate(R.layout.card_sport, null, false);
 
@@ -126,6 +138,27 @@ class ShowProfileActivity : AppCompatActivity() {
             println(profile.toJSON().toString())
             setGUI()
         }
-
     }
+
+    fun checkCameraPermission(): Boolean{
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED || checkSelfPermission(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_DENIED
+            ) {
+                val permission = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                requestPermissions(permission, 121)
+                return false
+
+            }
+            return true
+        }
+        return false
+    }
+
+
+
+
+
 }

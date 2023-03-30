@@ -15,18 +15,20 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.view.View.OnLongClickListener
 import android.widget.EditText
+import android.widget.HorizontalScrollView
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
+import androidx.cardview.widget.CardView
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Profile
+import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.utils.Utils
 import org.json.JSONObject
 import org.w3c.dom.Text
 import java.io.FileDescriptor
@@ -57,13 +59,38 @@ class EditProfileActivity : AppCompatActivity() {
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
         localityEdit.setText(profile.location)
 
-        imageEdit = findViewById<ImageView>(R.id.imageEdit)
+        imageEdit = findViewById(R.id.imageEdit)
+
+        imageEdit.setImageURI(Uri.parse("content://media/external/images/media/47"))
+
         imageEdit.setOnLongClickListener{
             openCamera()
             true
         }
         imageEdit.setOnClickListener{
             openGallery()
+        }
+        val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
+        sportContainer.removeAllViews()
+        for(sport in profile.sports){
+            val sportCard = LayoutInflater.from(this).inflate(R.layout.card_sport, null, false);
+
+            // ** Sport card dynamic values
+            val sportName = sportCard.findViewById<TextView>(R.id.sport_card_name);
+            val sportIcon = sportCard.findViewById<ImageView>(R.id.sport_card_icon);
+            val sportSkillLevel = sportCard.findViewById<CardView>(R.id.skill_level_card)
+            val sportSkillLevelText = sportCard.findViewById<TextView>(R.id.skill_level_card_text)
+            val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
+
+            sportName.text = Utils.capitalize(sport.name.toString())
+            sportIcon.setImageResource(Sports.sportToIconDrawable(sport.name))
+            // TODO: Non funziona
+            // sportSkillLevel.setBackgroundColor(Skills.skillToColor(sport.skill))
+            sportSkillLevelText.text = Utils.capitalize(sport.skill.toString())
+            sportGamesPlayed.text = String.format(resources.getString(R.string.games_played), sport.matchesPlayed)
+
+            // ** Add card to container
+            sportContainer.addView(sportCard)
         }
 
         /*
@@ -110,8 +137,7 @@ class EditProfileActivity : AppCompatActivity() {
 
         if (response.resultCode != Activity.RESULT_OK) return
         image_uri = response.data?.data
-        image_uri = Uri.parse("content://media/external/images/media/47")
-        println(image_uri)
+
         val bitmap = uriToBitmap(image_uri!!)
         imageEdit.setImageBitmap(bitmap)
 
@@ -132,6 +158,7 @@ class EditProfileActivity : AppCompatActivity() {
         return null
     }
     fun checkCameraPermission(): Boolean{
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED || checkSelfPermission(
                     Manifest.permission.WRITE_EXTERNAL_STORAGE

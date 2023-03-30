@@ -5,6 +5,7 @@ import android.net.Uri
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 
@@ -21,8 +22,13 @@ class Profile(var fullName: String?, var nickname: String?, var location: String
             val matchesOrganized = jsonProfile.getInt("matchesOrganized")
             val matchesPlayed = jsonProfile.getInt("matchesPlayed")
             val reliability = jsonProfile.getInt("reliability")
-            var imageUri: Uri? = Uri.parse(jsonProfile.getString("imageUri"))
-            imageUri = null
+            var imageUri:Uri? = null
+            try {
+                imageUri = Uri.parse(jsonProfile.getString("imageUri"))
+            } catch (_: JSONException){
+            }
+
+
             val sportsList = jsonProfile.getJSONArray("sports")
 
             val sports = mutableListOf<Sport>()
@@ -38,7 +44,7 @@ class Profile(var fullName: String?, var nickname: String?, var location: String
         fun mockJSON(): String {
 
             return Profile("Vittorio", "Arpino", "Scafati", 23, 10, 10, 70,
-                Uri.fromFile(File("")),
+                null,
                 listOf(
                     Sport(Sports.TENNIS, Skills.SKILLED, 3),
                     Sport(Sports.FOOTBALL, Skills.NEWBIE, 17)
