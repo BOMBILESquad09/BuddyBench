@@ -17,5 +17,7 @@
     <string name="games_played">%1$s games played</string>
     <string name="turin">Turin</string>
     <string name="age">%1$d years old</string>
+    <string name="save">SAVE</string>
+    <string name="add">ADD</string>
 
 </resources>
