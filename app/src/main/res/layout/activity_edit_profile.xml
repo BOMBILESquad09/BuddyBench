@@ -15,7 +15,7 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            app:navigationIcon="@drawable/round_add_24"
+            app:navigationIcon="@drawable/round_arrow_back_24"
             android:layout_height="?attr/actionBarSize"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -183,7 +183,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:gravity="center"
-                        android:drawableEnd="@drawable/round_add_24"
                         android:text="@string/add" />
 
                 </LinearLayout>

@@ -20,6 +20,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.View.OnLongClickListener
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -33,20 +34,28 @@ import java.io.FileDescriptor
 import java.io.IOException
 
 class EditProfileActivity : AppCompatActivity() {
-    lateinit var profile: Profile
+    private lateinit var profile: Profile
     private val launcherCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onCameraImageReturned(it)}
     private val launcherGallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onGalleryImageReturned(it)}
 
     private var image_uri: Uri? = null
     private val RESULT_LOAD_IMAGE = 123
     private val IMAGE_CAPTURE_CODE: Int = 654
-    lateinit var imageEdit: ImageView
+    private lateinit var imageEdit: ImageView
+
+
+    // ** Save Button
+    private lateinit var saveButton: Button
+
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
 
+        // ** Toolbar
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+        toolbar.setNavigationOnClickListener { finish() }
+
         profile = Profile.fromJSON(JSONObject(intent.getStringExtra("profile")!!))
         val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
         fullNameEdit.setText(profile.fullName)
@@ -57,6 +66,7 @@ class EditProfileActivity : AppCompatActivity() {
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
         localityEdit.setText(profile.location)
 
+        // ** Image
         imageEdit = findViewById<ImageView>(R.id.imageEdit)
         imageEdit.setOnLongClickListener{
             openCamera()
@@ -66,14 +76,9 @@ class EditProfileActivity : AppCompatActivity() {
             openGallery()
         }
 
-        /*
-        imageEdit.setOnClickListener{
-            OnLongClickListener{
-                openGallery()
-                true
-            }
-        }*/
-
+        // ** Save Button
+        saveButton = findViewById(R.id.edit_save_button)
+        saveButton.setOnClickListener() { saveEdit();  }
     }
 
     private fun openGallery(){
@@ -96,27 +101,19 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun onCameraImageReturned(response: androidx.activity.result.ActivityResult) {
-
         if (response.resultCode != Activity.RESULT_OK) return
 
         val bitmap = uriToBitmap(image_uri!!)
         imageEdit.setImageBitmap(bitmap)
-
-
-
     }
 
     private fun onGalleryImageReturned(response: androidx.activity.result.ActivityResult) {
-
         if (response.resultCode != Activity.RESULT_OK) return
         image_uri = response.data?.data
         image_uri = Uri.parse("content://media/external/images/media/47")
         println(image_uri)
         val bitmap = uriToBitmap(image_uri!!)
         imageEdit.setImageBitmap(bitmap)
-
-
-
     }
 
     private fun uriToBitmap(selectedFileUri: Uri): Bitmap? {
