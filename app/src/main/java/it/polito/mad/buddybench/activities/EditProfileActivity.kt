@@ -35,14 +35,15 @@ import java.io.FileDescriptor
 import java.io.IOException
 
 class EditProfileActivity : AppCompatActivity() {
-    lateinit var profile: Profile
+    private lateinit var profile: Profile
     private val launcherCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onCameraImageReturned(it)}
     private val launcherGallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onGalleryImageReturned(it)}
 
     private var image_uri: Uri? = null
     private val RESULT_LOAD_IMAGE = 123
     private val IMAGE_CAPTURE_CODE: Int = 654
-    lateinit var imageEdit: ImageView
+    private lateinit var imageEdit: ImageView
+
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
@@ -59,9 +60,8 @@ class EditProfileActivity : AppCompatActivity() {
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
         localityEdit.setText(profile.location)
 
+        // ** Profile Image
         imageEdit = findViewById(R.id.imageEdit)
-
-
         imageEdit.setOnLongClickListener{
             openCamera()
             true
@@ -71,35 +71,9 @@ class EditProfileActivity : AppCompatActivity() {
         }
         val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
         sportContainer.removeAllViews()
-        for(sport in profile.sports){
-            val sportCard = LayoutInflater.from(this).inflate(R.layout.card_sport, null, false);
 
-            // ** Sport card dynamic values
-            val sportName = sportCard.findViewById<TextView>(R.id.sport_card_name);
-            val sportIcon = sportCard.findViewById<ImageView>(R.id.sport_card_icon);
-            val sportSkillLevel = sportCard.findViewById<CardView>(R.id.skill_level_card)
-            val sportSkillLevelText = sportCard.findViewById<TextView>(R.id.skill_level_card_text)
-            val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
-
-            sportName.text = Utils.capitalize(sport.name.toString())
-            sportIcon.setImageResource(Sports.sportToIconDrawable(sport.name))
-            // TODO: Non funziona
-            // sportSkillLevel.setBackgroundColor(Skills.skillToColor(sport.skill))
-            sportSkillLevelText.text = Utils.capitalize(sport.skill.toString())
-            sportGamesPlayed.text = String.format(resources.getString(R.string.games_played), sport.matchesPlayed)
-
-            // ** Add card to container
-            sportContainer.addView(sportCard)
-        }
-
-        /*
-        imageEdit.setOnClickListener{
-            OnLongClickListener{
-                openGallery()
-                true
-            }
-        }*/
-
+        // ** Populate sport cards
+        profile.populateSportCards(this, sportContainer)
     }
 
     private fun openGallery(){
@@ -122,26 +96,18 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun onCameraImageReturned(response: androidx.activity.result.ActivityResult) {
-
         if (response.resultCode != Activity.RESULT_OK) return
 
         val bitmap = uriToBitmap(image_uri!!)
         imageEdit.setImageBitmap(bitmap)
-
-
-
     }
 
     private fun onGalleryImageReturned(response: androidx.activity.result.ActivityResult) {
-
         if (response.resultCode != Activity.RESULT_OK) return
         image_uri = response.data?.data
 
         val bitmap = uriToBitmap(image_uri!!)
         imageEdit.setImageBitmap(bitmap)
-
-
-
     }
 
     private fun uriToBitmap(selectedFileUri: Uri): Bitmap? {
@@ -156,21 +122,17 @@ class EditProfileActivity : AppCompatActivity() {
         }
         return null
     }
-    fun checkCameraPermission(): Boolean{
+    private fun checkCameraPermission(): Boolean{
+        if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED || checkSelfPermission(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_DENIED
+        ) {
+            val permission = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            requestPermissions(permission, 121)
+            return false
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED || checkSelfPermission(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ) == PackageManager.PERMISSION_DENIED
-            ) {
-                val permission = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                requestPermissions(permission, 121)
-                return false
-
-            }
-            return true
         }
-        return false
+        return true
     }
 
     private fun saveEdit(){

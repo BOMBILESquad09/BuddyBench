@@ -19,5 +19,6 @@
     <string name="age">%1$d years old</string>
     <string name="save">SAVE</string>
     <string name="add">ADD</string>
+    <string name="no_sports">No sports</string>
 
 </resources>

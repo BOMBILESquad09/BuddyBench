@@ -35,20 +35,17 @@ import java.io.FileDescriptor
 import java.io.IOException
 
 class ShowProfileActivity : AppCompatActivity() {
-    lateinit var profile:Profile
+    private lateinit var profile: Profile
     private val launcherEdit = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onEditReturn(it)}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        toolbar.setBackgroundColor(Color.parseColor("#80000000"));
         setSupportActionBar(toolbar)
         val sharedPref: SharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
         setGUI()
-
-
     }
 
     private fun setGUI(){
@@ -87,30 +84,11 @@ class ShowProfileActivity : AppCompatActivity() {
             }
         }
 
-
-
         val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
         sportContainer.removeAllViews()
-        for(sport in profile.sports){
-            val sportCard = LayoutInflater.from(this).inflate(R.layout.card_sport, null, false);
 
-            // ** Sport card dynamic values
-            val sportName = sportCard.findViewById<TextView>(R.id.sport_card_name);
-            val sportIcon = sportCard.findViewById<ImageView>(R.id.sport_card_icon);
-            val sportSkillLevel = sportCard.findViewById<CardView>(R.id.skill_level_card)
-            val sportSkillLevelText = sportCard.findViewById<TextView>(R.id.skill_level_card_text)
-            val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
-
-            sportName.text = Utils.capitalize(sport.name.toString())
-            sportIcon.setImageResource(Sports.sportToIconDrawable(sport.name))
-            // TODO: Non funziona
-            // sportSkillLevel.setBackgroundColor(Skills.skillToColor(sport.skill))
-            sportSkillLevelText.text = Utils.capitalize(sport.skill.toString())
-            sportGamesPlayed.text = String.format(resources.getString(R.string.games_played), sport.matchesPlayed)
-
-            // ** Add card to container
-            sportContainer.addView(sportCard)
-        }
+        // ** Populate sport cards
+        profile.populateSportCards(this, sportContainer)
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
