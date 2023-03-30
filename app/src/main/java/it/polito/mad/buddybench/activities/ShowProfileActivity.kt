@@ -47,7 +47,7 @@ class ShowProfileActivity : AppCompatActivity() {
         val sharedPref: SharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
         setGUI()
-        checkCameraPermission()
+
 
     }
 
@@ -73,20 +73,22 @@ class ShowProfileActivity : AppCompatActivity() {
         val reliabilityTv = findViewById<TextView>(R.id.reliabilityView)
         reliabilityTv.text = profile.reliability.toString()
 
-        val iv = findViewById<ImageView>(R.id.imageView)
+        var iv = findViewById<ImageView>(R.id.imageView)
         if (profile.imageUri != null ){
             try{
                 iv.setImageURI(profile.imageUri)
+
             } catch (_: java.lang.Exception){
-                /*maybe the image has been deleted*/
+                /*maybe the image has been deleted
+                * retrieving the view we restore the default image
+                * otherwise blank one will appear*/
+                iv = findViewById(R.id.imageView)
+
             }
         }
 
 
-        /*if (profile.imageUri.toString() != null){
-            getBitmapFromUri(profile.imageUri!!)
 
-        }*/
         val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
         sportContainer.removeAllViews()
         for(sport in profile.sports){
@@ -140,22 +142,6 @@ class ShowProfileActivity : AppCompatActivity() {
         }
     }
 
-    fun checkCameraPermission(): Boolean{
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED || checkSelfPermission(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ) == PackageManager.PERMISSION_DENIED
-            ) {
-                val permission = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                requestPermissions(permission, 121)
-                return false
-
-            }
-            return true
-        }
-        return false
-    }
 
 
 
