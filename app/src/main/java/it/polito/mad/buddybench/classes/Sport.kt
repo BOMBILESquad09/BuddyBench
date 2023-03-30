@@ -7,14 +7,15 @@ import org.json.JSONObject
 class Sport(val name: Sports, var skill: Skills, val matchesPlayed: Int): java.io.Serializable {
     companion object{
         fun fromJSON(jsonSport: JSONObject): Sport {
-            val name = jsonSport.get("name").toString()
+            println(jsonSport)
+            val name = jsonSport.getString("name")
             val sportName = Sports.fromJSON(name)
 
             checkNotNull(sportName) {
                 throw Error("Error parsing JSON sports name")
             }
 
-            val skill = jsonSport.get("skill").toString()
+            val skill = jsonSport.getString("skill")
             val skillName = Skills.fromJSON(skill)
 
             checkNotNull(skillName) {

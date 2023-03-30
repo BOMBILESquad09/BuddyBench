@@ -19,6 +19,7 @@ enum class Sports {
         }
 
         fun toJSON(sport: Sports): String {
+
             return when (sport) {
                 FOOTBALL -> "FOOTBALL"
                 TENNIS -> "TENNIS"
@@ -28,7 +29,7 @@ enum class Sports {
         }
 
         fun fromJSON(sport: String): Sports? {
-            return when (sport) {
+            return when (sport.uppercase()) {
                 "FOOTBALL" -> FOOTBALL
                 "TENNIS" -> TENNIS
                 "BASKETBALL" -> BASKETBALL

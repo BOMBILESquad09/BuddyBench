@@ -9,17 +9,22 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.Toolbar
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Profile
 import org.json.JSONObject
@@ -39,6 +44,9 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+
+        setSupportActionBar(toolbar)
         profile = Profile.fromJSON(JSONObject(intent.getStringExtra("profile")!!))
         val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
         fullNameEdit.setText(profile.fullName)
@@ -71,7 +79,7 @@ class EditProfileActivity : AppCompatActivity() {
     private fun openGallery(){
         if (checkCameraPermission()){
             val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            galleryIntent.putExtra("requestCode", RESULT_LOAD_IMAGE)
+
             launcherGallery.launch(galleryIntent)
         }
     }
@@ -83,9 +91,6 @@ class EditProfileActivity : AppCompatActivity() {
             image_uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri)
-            val bundle = Bundle()
-            bundle.putInt("requestCode", IMAGE_CAPTURE_CODE)
-            cameraIntent.putExtras(bundle)
             launcherCamera.launch(cameraIntent)
         }
     }
@@ -104,7 +109,9 @@ class EditProfileActivity : AppCompatActivity() {
     private fun onGalleryImageReturned(response: androidx.activity.result.ActivityResult) {
 
         if (response.resultCode != Activity.RESULT_OK) return
-
+        image_uri = response.data?.data
+        image_uri = Uri.parse("content://media/external/images/media/47")
+        println(image_uri)
         val bitmap = uriToBitmap(image_uri!!)
         imageEdit.setImageBitmap(bitmap)
 
@@ -128,11 +135,9 @@ class EditProfileActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED || checkSelfPermission(
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-                == PackageManager.PERMISSION_DENIED
+                ) == PackageManager.PERMISSION_DENIED
             ) {
-                val permission =
-                    arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                val permission = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 requestPermissions(permission, 121)
                 return false
 
@@ -153,17 +158,34 @@ class EditProfileActivity : AppCompatActivity() {
             profile.nickname = nicknameEdit.text.toString()
             profile.location = localityEdit.text.toString()
             profile.imageUri = image_uri
-            println(image_uri)
             putString("profile", profile.toJSON().toString())
-
+            intent.putExtra("newProfile", profile.toJSON().toString())
+            println("new profile is")
+            println(profile.toJSON().toString())
             apply()
+            setResult(Activity.RESULT_OK, intent)
+            finish()
         }
 
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        saveEdit()
+
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu_profile, menu)
+        println("Menu created")
+        return true
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle item selection
+        return when (item.itemId) {
+            R.id.edit -> {
+                saveEdit()
+                return true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 }
