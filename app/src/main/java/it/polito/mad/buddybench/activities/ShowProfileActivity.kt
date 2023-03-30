@@ -37,7 +37,18 @@ class ShowProfileActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         val sharedPref: SharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
+        setGUI()
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu_profile, menu)
+        println("Menu created")
+        return true
+    }
+
+    private fun setGUI(){
         val fullNameTv = findViewById<TextView>(R.id.fullNameView)
         fullNameTv.text = profile.fullName
 
@@ -86,14 +97,6 @@ class ShowProfileActivity : AppCompatActivity() {
             sportContainer.addView(sportCard)
         }
     }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.menu_profile, menu)
-        println("Menu created")
-        return true
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle item selection
         return when (item.itemId) {
