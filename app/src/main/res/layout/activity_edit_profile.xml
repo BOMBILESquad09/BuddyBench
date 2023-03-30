@@ -54,6 +54,7 @@
 
 
                         <ImageView
+                            android:id="@+id/imageEdit"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
                             android:contentDescription="@string/profile_photo_cd"
@@ -98,7 +99,9 @@
                         android:fontFamily="@font/montserrat_bold_700"
                         android:gravity="center"
                         android:hint="Full Name"
-                        android:textSize="25sp" />
+                        android:textSize="16sp"
+                        android:autofillHints="name"
+                        android:inputType="text" />
 
                     <EditText
                         android:id="@+id/nicknameEdit"
@@ -108,7 +111,8 @@
                         android:fontFamily="@font/montserrat_medium_500"
                         android:gravity="center"
                         android:hint="Nickname"
-                        android:textSize="25sp" />
+                        android:textSize="16sp"
+                        android:autofillHints="username" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -123,11 +127,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:drawableRight="@drawable/location"
+                            app:drawableRightCompat="@drawable/location"
                             android:fontFamily="@font/montserrat_semibold_600"
                             android:hint="Locality"
                             android:textAlignment="textStart"
-                            android:textSize="25sp" />
+                            android:textSize="16sp"
+                            android:autofillHints="name" />
 
                         <View
                             android:layout_width="0dp"
@@ -144,32 +149,51 @@
                             android:fontFamily="@font/montserrat_semibold_600"
                             android:hint="Birthday"
                             android:textAlignment="textStart"
-                            android:textSize="25sp" />
+                            android:textSize="16sp"
+                            android:inputType="date"
+                            android:autofillHints="" />
 
                     </LinearLayout>
 
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/textView"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:fontFamily="@font/montserrat_bold_700"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="24dp"
 
-                    android:text="@string/sports_section"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toTopOf="@+id/sports_horizontal_scroll"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="start"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/montserrat_bold_700"
+                        android:text="@string/sports_section"
+                        android:textSize="20sp" />
+
+                    <Button
+                        android:id="@+id/add_sport_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:gravity="center"
+                        android:drawableEnd="@drawable/round_add_24"
+                        android:text="@string/add" />
+
+                </LinearLayout>
+
+
 
                 <HorizontalScrollView
                     android:id="@+id/sports_horizontal_scroll"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView">
@@ -186,6 +210,13 @@
 
 
                 </HorizontalScrollView>
+
+                <Button
+                    android:id="@+id/edit_save_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/save" />
+
 
             </LinearLayout>
         </LinearLayout>
