@@ -156,7 +156,15 @@ class EditProfileActivity : AppCompatActivity() {
             profile.fullName = fullNameEdit.text.toString()
             profile.nickname = nicknameEdit.text.toString()
             profile.location = localityEdit.text.toString()
-            profile.imageUri =  BitmapUtils.saveToInternalStorage(applicationContext, BitmapUtils.uriToBitmap(contentResolver, image_uri!!)!!)!!
+            if (image_uri != null){
+                try{
+                profile.imageUri = BitmapUtils.saveToInternalStorage(
+                    applicationContext,
+                    BitmapUtils.uriToBitmap(contentResolver, image_uri!!)!!
+                )!!} catch (_: IOException){
+
+                }
+            }
             val newProfileJSON = profile.toJSON().toString()
             putString("profile", newProfileJSON)
             intent.putExtra("newProfile", newProfileJSON)
