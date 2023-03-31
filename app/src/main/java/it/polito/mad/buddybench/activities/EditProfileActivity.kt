@@ -15,39 +15,56 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.view.View.OnLongClickListener
+import android.widget.Button
 import android.widget.EditText
+import android.widget.HorizontalScrollView
+import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
+import androidx.cardview.widget.CardView
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Profile
+import it.polito.mad.buddybench.dialogs.EditSportsDialog
+import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.utils.Utils
 import org.json.JSONObject
 import org.w3c.dom.Text
 import java.io.FileDescriptor
 import java.io.IOException
 
 class EditProfileActivity : AppCompatActivity() {
-    lateinit var profile: Profile
+    // ** Data
+    private lateinit var profile: Profile
+
+    // ** Profile Image
     private val launcherCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onCameraImageReturned(it)}
     private val launcherGallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onGalleryImageReturned(it)}
-
     private var image_uri: Uri? = null
     private val RESULT_LOAD_IMAGE = 123
     private val IMAGE_CAPTURE_CODE: Int = 654
-    lateinit var imageEdit: ImageView
+    private lateinit var imageEdit: ImageView
+
+    // ** Sports
+    private lateinit var addSportButton: ImageButton
+
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
 
+        // ** Toolbar
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+        toolbar.setNavigationOnClickListener { finish() }
+
+        // ** Profile Data
         profile = Profile.fromJSON(JSONObject(intent.getStringExtra("profile")!!))
+
+        // ** Profile TextFields Edit
         val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
         fullNameEdit.setText(profile.fullName)
 
@@ -57,7 +74,10 @@ class EditProfileActivity : AppCompatActivity() {
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
         localityEdit.setText(profile.location)
 
-        imageEdit = findViewById<ImageView>(R.id.imageEdit)
+        // TODO: Add birthday DatePicker
+
+        // ** Profile Image
+        imageEdit = findViewById(R.id.imageEdit)
         imageEdit.setOnLongClickListener{
             openCamera()
             true
@@ -65,15 +85,15 @@ class EditProfileActivity : AppCompatActivity() {
         imageEdit.setOnClickListener{
             openGallery()
         }
+        val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
+        sportContainer.removeAllViews()
 
-        /*
-        imageEdit.setOnClickListener{
-            OnLongClickListener{
-                openGallery()
-                true
-            }
-        }*/
+        // ** Populate sport cards
+        profile.populateSportCards(this, sportContainer)
 
+        // ** Add Sports Button
+        addSportButton = findViewById(R.id.add_sport_button)
+        addSportButton.setOnClickListener() { openSportSelectionDialog() }
     }
 
     private fun openGallery(){
@@ -96,27 +116,18 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun onCameraImageReturned(response: androidx.activity.result.ActivityResult) {
-
         if (response.resultCode != Activity.RESULT_OK) return
 
         val bitmap = uriToBitmap(image_uri!!)
         imageEdit.setImageBitmap(bitmap)
-
-
-
     }
 
     private fun onGalleryImageReturned(response: androidx.activity.result.ActivityResult) {
-
         if (response.resultCode != Activity.RESULT_OK) return
         image_uri = response.data?.data
-        image_uri = Uri.parse("content://media/external/images/media/47")
-        println(image_uri)
+
         val bitmap = uriToBitmap(image_uri!!)
         imageEdit.setImageBitmap(bitmap)
-
-
-
     }
 
     private fun uriToBitmap(selectedFileUri: Uri): Bitmap? {
@@ -131,20 +142,17 @@ class EditProfileActivity : AppCompatActivity() {
         }
         return null
     }
-    fun checkCameraPermission(): Boolean{
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED || checkSelfPermission(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ) == PackageManager.PERMISSION_DENIED
-            ) {
-                val permission = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                requestPermissions(permission, 121)
-                return false
+    private fun checkCameraPermission(): Boolean{
+        if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED || checkSelfPermission(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_DENIED
+        ) {
+            val permission = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            requestPermissions(permission, 121)
+            return false
 
-            }
-            return true
         }
-        return false
+        return true
     }
 
     private fun saveEdit(){
@@ -169,11 +177,18 @@ class EditProfileActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Open sport selection dialog
+     */
+    private fun openSportSelectionDialog() {
+        val dialog = EditSportsDialog()
+        dialog.show(supportFragmentManager, "edit_sports")
+    }
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.menu_profile, menu)
+        inflater.inflate(R.menu.menu_profile_edit, menu)
         println("Menu created")
         return true
     }

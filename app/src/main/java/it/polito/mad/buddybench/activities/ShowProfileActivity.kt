@@ -1,51 +1,51 @@
 package it.polito.mad.buddybench.activities
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.res.Resources
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
+import android.os.Build
 import android.os.Bundle
+import android.os.ParcelFileDescriptor
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
-import android.view.Window
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
-import androidx.compose.ui.text.capitalize
-import androidx.core.content.ContextCompat
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Profile
-import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.Utils
 import org.json.JSONObject
-import org.w3c.dom.Text
-import java.util.*
+import java.io.File
+import java.io.FileDescriptor
+import java.io.IOException
 
 class ShowProfileActivity : AppCompatActivity() {
-    lateinit var profile:Profile
+    private lateinit var profile: Profile
     private val launcherEdit = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onEditReturn(it)}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        toolbar.setBackgroundColor(Color.parseColor("#80000000"));
         setSupportActionBar(toolbar)
         val sharedPref: SharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
         setGUI()
-
     }
 
     private fun setGUI(){
@@ -70,33 +70,25 @@ class ShowProfileActivity : AppCompatActivity() {
         val reliabilityTv = findViewById<TextView>(R.id.reliabilityView)
         reliabilityTv.text = profile.reliability.toString()
 
-        val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerView)
+        var iv = findViewById<ImageView>(R.id.imageView)
+        if (profile.imageUri != null ){
+            try{
+                iv.setImageURI(profile.imageUri)
 
-        val iv = findViewById<ImageView>(R.id.imageView)
-        if (profile.imageUri != null){
-            println(profile.imageUri)
-            iv.setImageURI(profile.imageUri)
+            } catch (_: java.lang.Exception){
+                /*maybe the image has been deleted
+                * retrieving the view we restore the default image
+                * otherwise blank one will appear*/
+                iv = findViewById(R.id.imageView)
+
+            }
         }
-        for(sport in profile.sports){
-            val sportCard = LayoutInflater.from(this).inflate(R.layout.card_sport, null, false);
 
-            // ** Sport card dynamic values
-            val sportName = sportCard.findViewById<TextView>(R.id.sport_card_name);
-            val sportIcon = sportCard.findViewById<ImageView>(R.id.sport_card_icon);
-            val sportSkillLevel = sportCard.findViewById<CardView>(R.id.skill_level_card)
-            val sportSkillLevelText = sportCard.findViewById<TextView>(R.id.skill_level_card_text)
-            val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
+        val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
+        sportContainer.removeAllViews()
 
-            sportName.text = Utils.capitalize(sport.name.toString())
-            sportIcon.setImageResource(Sports.sportToIconDrawable(sport.name))
-            // TODO: Non funziona
-            // sportSkillLevel.setBackgroundColor(Skills.skillToColor(sport.skill))
-            sportSkillLevelText.text = Utils.capitalize(sport.skill.toString())
-            sportGamesPlayed.text = String.format(resources.getString(R.string.games_played), sport.matchesPlayed)
-
-            // ** Add card to container
-            sportContainer.addView(sportCard)
-        }
+        // ** Populate sport cards
+        profile.populateSportCards(this, sportContainer)
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
@@ -126,6 +118,11 @@ class ShowProfileActivity : AppCompatActivity() {
             println(profile.toJSON().toString())
             setGUI()
         }
-
     }
+
+
+
+
+
+
 }

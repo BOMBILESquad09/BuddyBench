@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:padding="16dp"
+        app:cardCornerRadius="10dp"
+        android:backgroundTint="@color/md_theme_light_primary"
+        >
+
+        <TextView
+            android:text="@string/sport_tennis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawablePadding="8dp"
+            android:textColor="@color/md_theme_light_onPrimary"
+            android:fontFamily="@font/montserrat_semibold_600"
+            app:drawableTopCompat="@drawable/tennis_white"
+            app:drawableBottomCompat="@drawable/round_check_circle_24" />
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
