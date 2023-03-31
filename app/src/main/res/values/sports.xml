@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="sports">
+        <item name="Football">Football</item>
+        <item name="Basketball">Basketball</item>
+        <item name="Tennis">Tennis</item>
+        <item name="Volleyball">Volleyball</item>
+    </array>
+</resources>

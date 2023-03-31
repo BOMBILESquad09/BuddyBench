@@ -37,6 +37,26 @@ enum class Sports {
                 else -> null
             }
         }
+
+        fun getStringValues(): MutableList<CharSequence> {
+            val valuesArray = mutableListOf<CharSequence>()
+            for ((sport, index) in Sports.values().withIndex()) {
+                valuesArray.add(sport.toString())
+            }
+
+            return valuesArray
+        }
+
+
+        fun fromIntToEnum(value: Int): Sports? {
+            return when(value) {
+                0 -> FOOTBALL
+                1 -> BASKETBALL
+                2 -> TENNIS
+                3 -> VOLLEYBALL
+                else -> null
+            }
+        }
     }
 
 
