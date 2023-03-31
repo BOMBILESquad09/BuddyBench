@@ -20,5 +20,8 @@
     <string name="save">SAVE</string>
     <string name="add">ADD</string>
     <string name="no_sports">No sports</string>
+    <string name="edit_your_sports">Edit your sports</string>
+    <string name="close">close</string>
+    <string name="edit">Edit</string>
 
 </resources>

@@ -177,13 +177,17 @@
                             android:text="@string/sports_section"
                             android:textSize="20sp" />
 
-                        <Button
+                        <ImageButton
                             android:id="@+id/add_sport_button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
                             android:gravity="center"
-                            android:text="@string/add" />
+                            android:padding="8dp"
+                            android:src="@drawable/round_add_24_white"
+                            android:background="@drawable/rounded_shape"
+                            android:backgroundTint="@color/md_theme_light_primary"
+                            android:contentDescription="@string/add" />
 
                     </LinearLayout>
 
@@ -213,14 +217,6 @@
 
 
                     </HorizontalScrollView>
-
-                    <Button
-                        android:layout_marginVertical="16dp"
-                        android:id="@+id/edit_save_button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/save" />
-
 
                 </LinearLayout>
             </LinearLayout>
