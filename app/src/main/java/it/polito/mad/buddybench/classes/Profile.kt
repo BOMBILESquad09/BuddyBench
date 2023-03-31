@@ -39,8 +39,6 @@ class Profile(var fullName: String?, var nickname: String?, var location: String
                 imageUri = Uri.parse(jsonProfile.getString("imageUri"))
             } catch (_: JSONException){
             }
-
-
             val sportsList = jsonProfile.getJSONArray("sports")
 
             val sports = mutableListOf<Sport>()
@@ -72,7 +70,11 @@ class Profile(var fullName: String?, var nickname: String?, var location: String
         json.put("matchesOrganized", matchesOrganized)
         json.put("matchesPlayed", matchesPlayed)
         json.put("reliability", reliability)
-        json.put("imageUri", imageUri.toString())
+        if (imageUri == null){
+           json.put("imageUri", JSONObject.NULL)
+        } else {
+            json.put("imageUri", imageUri.toString())
+        }
         json.put("sports", JSONArray(sports.map { it.toJSON() }))
         return json
     }

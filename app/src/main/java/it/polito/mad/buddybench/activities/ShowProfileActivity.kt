@@ -26,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.Utils
@@ -71,11 +72,10 @@ class ShowProfileActivity : AppCompatActivity() {
         reliabilityTv.text = profile.reliability.toString()
 
         var iv = findViewById<ImageView>(R.id.imageView)
-        if (profile.imageUri != null ){
+        if (profile.imageUri != null){
             try{
                 iv.setImageURI(profile.imageUri)
-
-            } catch (_: java.lang.Exception){
+            } catch (_: java.lang.RuntimeException){
                 /*maybe the image has been deleted
                 * retrieving the view we restore the default image
                 * otherwise blank one will appear*/

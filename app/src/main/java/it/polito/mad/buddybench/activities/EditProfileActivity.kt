@@ -2,40 +2,29 @@ package it.polito.mad.buddybench.activities
 
 import android.Manifest
 import android.app.Activity
-import android.content.ContentValues
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.net.Uri
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.*
-import android.view.View.OnLongClickListener
-import android.widget.Button
 import android.widget.EditText
-import android.widget.HorizontalScrollView
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.cardview.widget.CardView
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.dialogs.EditSportsDialog
-import it.polito.mad.buddybench.enums.Sports
-import it.polito.mad.buddybench.utils.Utils
 import org.json.JSONObject
-import org.w3c.dom.Text
-import java.io.FileDescriptor
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
+
 
 class EditProfileActivity : AppCompatActivity() {
     // ** Data
@@ -78,6 +67,18 @@ class EditProfileActivity : AppCompatActivity() {
 
         // ** Profile Image
         imageEdit = findViewById(R.id.imageEdit)
+        if (profile.imageUri != null ){
+            try{
+                imageEdit.setImageURI(profile.imageUri)
+
+            } catch (_: java.lang.Exception){
+                /*maybe the image has been deleted
+                * retrieving the view we restore the default image
+                * otherwise blank one will appear*/
+                imageEdit = findViewById(R.id.imageView)
+
+            }
+        }
         imageEdit.setOnLongClickListener{
             openCamera()
             true
@@ -112,13 +113,14 @@ class EditProfileActivity : AppCompatActivity() {
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri)
             launcherCamera.launch(cameraIntent)
+
         }
     }
 
     private fun onCameraImageReturned(response: androidx.activity.result.ActivityResult) {
         if (response.resultCode != Activity.RESULT_OK) return
 
-        val bitmap = uriToBitmap(image_uri!!)
+        val bitmap = BitmapUtils.uriToBitmap(contentResolver, image_uri!!)
         imageEdit.setImageBitmap(bitmap)
     }
 
@@ -126,22 +128,11 @@ class EditProfileActivity : AppCompatActivity() {
         if (response.resultCode != Activity.RESULT_OK) return
         image_uri = response.data?.data
 
-        val bitmap = uriToBitmap(image_uri!!)
+        val bitmap = BitmapUtils.uriToBitmap(contentResolver,image_uri!!)
         imageEdit.setImageBitmap(bitmap)
     }
 
-    private fun uriToBitmap(selectedFileUri: Uri): Bitmap? {
-        try {
-            val parcelFileDescriptor = contentResolver.openFileDescriptor(selectedFileUri, "r")
-            val fileDescriptor: FileDescriptor = parcelFileDescriptor!!.fileDescriptor
-            val image = BitmapFactory.decodeFileDescriptor(fileDescriptor)
-            parcelFileDescriptor.close()
-            return image
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return null
-    }
+
     private fun checkCameraPermission(): Boolean{
         if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED || checkSelfPermission(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -165,15 +156,17 @@ class EditProfileActivity : AppCompatActivity() {
             profile.fullName = fullNameEdit.text.toString()
             profile.nickname = nicknameEdit.text.toString()
             profile.location = localityEdit.text.toString()
-            profile.imageUri = image_uri
-            putString("profile", profile.toJSON().toString())
-            intent.putExtra("newProfile", profile.toJSON().toString())
-            println("new profile is")
-            println(profile.toJSON().toString())
+            profile.imageUri =  BitmapUtils.saveToInternalStorage(applicationContext, BitmapUtils.uriToBitmap(contentResolver, image_uri!!)!!)!!
+            val newProfileJSON = profile.toJSON().toString()
+            putString("profile", newProfileJSON)
+            intent.putExtra("newProfile", newProfileJSON)
             apply()
+            println(newProfileJSON)
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
+
+
 
     }
 
