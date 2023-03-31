@@ -161,7 +161,7 @@ class EditProfileActivity : AppCompatActivity() {
             putString("profile", newProfileJSON)
             intent.putExtra("newProfile", newProfileJSON)
             apply()
-            println(newProfileJSON)
+
             setResult(Activity.RESULT_OK, intent)
             finish()
         }

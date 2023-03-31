@@ -94,7 +94,6 @@ class ShowProfileActivity : AppCompatActivity() {
         val inflater: MenuInflater = menuInflater
 
         inflater.inflate(R.menu.menu_profile, menu)
-        println("Menu created")
         return true
     }
 
@@ -114,8 +113,6 @@ class ShowProfileActivity : AppCompatActivity() {
     private fun onEditReturn(response: androidx.activity.result.ActivityResult){
         if(response.resultCode == Activity.RESULT_OK){
             profile = Profile.fromJSON(JSONObject(response.data?.getStringExtra("newProfile").toString()))
-            println("profile passed")
-            println(profile.toJSON().toString())
             setGUI()
         }
     }

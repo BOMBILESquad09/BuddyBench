@@ -26,7 +26,6 @@ class Profile(var fullName: String?, var nickname: String?, var location: String
 
     companion object {
         fun fromJSON(jsonProfile: JSONObject): Profile{
-            println(jsonProfile.toString())
             val fullName = jsonProfile.getString("fullName")
             val nickname = jsonProfile.getString("nickname")
             val location = jsonProfile.getString("location")
