@@ -25,5 +25,6 @@
     <string name="edit">Edit</string>
     <string name="profileImage">profile.png</string>
     <string name="imageDir">imageDir</string>
+    <string name="errorOnEdit">Please fill the highlighted fields!</string>
 
 </resources>

@@ -23,6 +23,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.menu.MenuView.ItemView
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import it.polito.mad.buddybench.R
@@ -92,7 +93,6 @@ class ShowProfileActivity : AppCompatActivity() {
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
-
         inflater.inflate(R.menu.menu_profile, menu)
         return true
     }

@@ -3,6 +3,7 @@ package it.polito.mad.buddybench.classes
 
 import android.content.Context
 import android.net.Uri
+import android.provider.CalendarContract.EventDays
 import android.provider.ContactsContract.CommonDataKinds.Email
 import android.provider.Settings.Global.getString
 import android.view.LayoutInflater
@@ -24,18 +25,26 @@ import java.io.File
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getInt
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getString
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getJSONArray
+import java.text.DateFormat
+import java.time.Duration
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalAmount
+import java.util.Calendar
 
 
-class Profile(var fullName: String?, var nickname: String?, var email: String, var location: String?, var age: Int?, var matchesOrganized: Int?, var matchesPlayed: Int?, var reliability: Int, var imageUri: Uri?, var sports: List<Sport> ) {
-
+class Profile(var fullName: String?, var nickname: String?, var email: String, var location: String?, var birthday: LocalDate, var matchesOrganized: Int?, var reliability: Int, var imageUri: Uri?, var sports: List<Sport> ) {
+    var matchesPlayed:Int = sports.fold(0){a: Int, b: Sport -> a + b.matchesPlayed }
+    var age:Int = ChronoUnit.YEARS.between(birthday, LocalDate.now()).toInt()
     companion object {
 
         fun fromJSON(jsonProfile: JSONObject): Profile{
             val fullName = jsonProfile.getString("fullName", "No name")
             val nickname = jsonProfile.getString("nickname", "No nickname")
             val email = jsonProfile.getString("email", "No email")
+            val birthday = LocalDate.parse(jsonProfile.getString("birthday", "27/04/1999"),  DateTimeFormatter.ofPattern("dd/MM/yyyy"))
             val location = jsonProfile.getString("location", "No location")
-            val age = jsonProfile.getInt("age", 0)
             val matchesOrganized = jsonProfile.getInt("matchesOrganized",0)
             val reliability = jsonProfile.getInt("reliability",0)
             var imageUri:Uri? = null
@@ -49,14 +58,13 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
                 val jsonSport = sportsList.getJSONObject(i)
                 sports.add(Sport.fromJSON(jsonSport))
             }
-            val matchesPlayed = sports.fold(0){a: Int, b: Sport -> a + b.matchesPlayed }
-            return Profile(fullName, nickname, location, email, age, matchesOrganized, matchesPlayed, reliability, imageUri,sports)
+            return Profile(fullName, nickname, email, location, birthday, matchesOrganized, reliability, imageUri,sports)
         }
 
 
 
         fun mockJSON(): String {
-            return Profile("Vittorio", "Arpino", "varpino@buddybench.it", "Scafati", 23, 10, 10, 70,
+            return Profile("Vittorio", "Arpino", "varpino@buddybench.it", "Scafati", LocalDate.parse("27/04/1999", DateTimeFormatter.ofPattern("dd/MM/yyyy")), 10, 70,
                 null,
                 listOf(
                     Sport(Sports.TENNIS, Skills.SKILLED, 3),
@@ -71,7 +79,7 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
         json.put("nickname", nickname)
         json.put("location", location)
         json.put("email", email)
-        json.put("age", age)
+        json.put("birthday", birthday.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
         json.put("matchesOrganized", matchesOrganized)
         json.put("reliability", reliability)
         if (imageUri == null){
