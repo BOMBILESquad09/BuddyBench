@@ -48,7 +48,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
                     <ImageView
-                        android:id="@+id/imageView"
+                        android:id="@+id/imageEdit"
                         android:layout_width="170dp"
                         android:layout_height="170dp"
                         android:contentDescription="@string/profile_photo_cd"
@@ -94,6 +94,17 @@
                         android:fontFamily="@font/montserrat_medium_500"
                         android:gravity="center"
                         android:text="Nickname"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/emailView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/montserrat_medium_500"
+                        android:gravity="center"
+                        android:text="Email"
                         android:textSize="15sp" />
 
                     <LinearLayout

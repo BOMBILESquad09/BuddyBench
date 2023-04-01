@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/camera_button"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
         android:background="@drawable/rounded_shape"
         android:backgroundTint="#55000000"
         android:contentDescription="camera"
@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imageEdit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"

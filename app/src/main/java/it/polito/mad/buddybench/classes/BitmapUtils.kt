@@ -68,13 +68,12 @@ class BitmapUtils(){
         fun saveToInternalStorage(applicationContext: Context, bitmapImage: Bitmap, previousPath: Uri? = null): Uri? {
             val profileImageName =  applicationContext.getString(R.string.profileImage).format(LocalDateTime.now())
             val imageDir = applicationContext.getString(R.string.imageDir)
-
             val cw = ContextWrapper(applicationContext)
             val directory: File = cw.getDir(imageDir, AppCompatActivity.MODE_PRIVATE)
-            val mypath = File(directory,profileImageName)
+            val myPath = File(directory,profileImageName)
             var fos: FileOutputStream? = null
             try {
-                fos = FileOutputStream(mypath)
+                fos = FileOutputStream(myPath)
                 // Use the compress method on the BitMap object to write image to the OutputStream
                 bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos)
             } catch (e: Exception) {
@@ -88,9 +87,9 @@ class BitmapUtils(){
                     return null
                 }
             }
-            if (previousPath != null){
-                deleteFile(previousPath.toString())
-            }
+            if(previousPath != null) deleteFile(previousPath.toString())
+            
+
             return Uri.parse("${directory.absolutePath}/$profileImageName")
         }
 

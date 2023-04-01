@@ -23,18 +23,18 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 
-class Profile(var fullName: String?, var nickname: String?, var email: String, var location: String?, var birthday: LocalDate, var matchesOrganized: Int?, var reliability: Int, var imageUri: Uri?, var sports: List<Sport> ) {
+class Profile(var fullName: String?, var nickname: String?, var email: String, var location: String?, var birthdate: LocalDate, var reliability: Int, var imageUri: Uri?, var sports: List<Sport> ) {
     var matchesPlayed:Int = sports.fold(0){a: Int, b: Sport -> a + b.matchesPlayed }
-    var age:Int = ChronoUnit.YEARS.between(birthday, LocalDate.now()).toInt()
+    var age:Int = ChronoUnit.YEARS.between(birthdate, LocalDate.now()).toInt()
+    var matchesOrganized: Int = sports.fold(0){a:Int, b: Sport -> a + b.matchesOrganized}
     companion object {
 
         fun fromJSON(jsonProfile: JSONObject): Profile{
             val fullName = jsonProfile.getString("fullName", "No name")
             val nickname = jsonProfile.getString("nickname", "No nickname")
             val email = jsonProfile.getString("email", "No email")
-            val birthday = LocalDate.parse(jsonProfile.getString("birthday", "27/04/1999"),  DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            val birthday = LocalDate.parse(jsonProfile.getString("birthdate", "27/04/1999"),  DateTimeFormatter.ofPattern("dd/MM/yyyy"))
             val location = jsonProfile.getString("location", "No location")
-            val matchesOrganized = jsonProfile.getInt("matchesOrganized",0)
             val reliability = jsonProfile.getInt("reliability",0)
             var imageUri:Uri? = null
             try {
@@ -47,17 +47,17 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
                 val jsonSport = sportsList.getJSONObject(i)
                 sports.add(Sport.fromJSON(jsonSport))
             }
-            return Profile(fullName, nickname, email, location, birthday, matchesOrganized, reliability, imageUri,sports)
+            return Profile(fullName, nickname, email, location, birthday, reliability, imageUri,sports)
         }
 
 
 
         fun mockJSON(): String {
-            return Profile("Vittorio", "Arpino", "varpino@buddybench.it", "Scafati", LocalDate.parse("27/04/1999", DateTimeFormatter.ofPattern("dd/MM/yyyy")), 10, 70,
+            return Profile("Vittorio", "Arpino", "varpino@buddybench.it", "Scafati", LocalDate.parse("27/04/1999", DateTimeFormatter.ofPattern("dd/MM/yyyy")), 70,
                 null,
                 listOf(
-                    Sport(Sports.TENNIS, Skills.SKILLED, 3),
-                    Sport(Sports.FOOTBALL, Skills.NEWBIE, 7)
+                    Sport(Sports.TENNIS, Skills.SKILLED, 3, 2),
+                    Sport(Sports.FOOTBALL, Skills.NEWBIE, 7, 6)
                 )).toJSON().toString()
         }
 
@@ -76,8 +76,7 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
         json.put("nickname", nickname)
         json.put("location", location)
         json.put("email", email)
-        json.put("birthday", birthday.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-        json.put("matchesOrganized", matchesOrganized)
+        json.put("birthdate", birthdate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
         json.put("reliability", reliability)
         if (imageUri == null){
            json.put("imageUri", JSONObject.NULL)
