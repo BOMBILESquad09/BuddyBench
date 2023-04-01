@@ -5,11 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.view.LayoutInflater
-import android.widget.Button
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import it.polito.mad.buddybench.R
@@ -27,18 +23,18 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 
-class Profile(var fullName: String?, var nickname: String?, var email: String, var location: String?, var birthday: LocalDate, var matchesOrganized: Int?, var reliability: Int, var imageUri: Uri?, var sports: List<Sport> ) {
+class Profile(var fullName: String?, var nickname: String?, var email: String, var location: String?, var birthdate: LocalDate, var reliability: Int, var imageUri: Uri?, var sports: List<Sport> ) {
     var matchesPlayed:Int = sports.fold(0){a: Int, b: Sport -> a + b.matchesPlayed }
-    var age:Int = ChronoUnit.YEARS.between(birthday, LocalDate.now()).toInt()
+    var age:Int = ChronoUnit.YEARS.between(birthdate, LocalDate.now()).toInt()
+    var matchesOrganized: Int = sports.fold(0){a:Int, b: Sport -> a + b.matchesOrganized}
     companion object {
 
         fun fromJSON(jsonProfile: JSONObject): Profile{
             val fullName = jsonProfile.getString("fullName", "No name")
             val nickname = jsonProfile.getString("nickname", "No nickname")
             val email = jsonProfile.getString("email", "No email")
-            val birthday = LocalDate.parse(jsonProfile.getString("birthday", "27/04/1999"),  DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            val birthday = LocalDate.parse(jsonProfile.getString("birthdate", "27/04/1999"),  DateTimeFormatter.ofPattern("dd/MM/yyyy"))
             val location = jsonProfile.getString("location", "No location")
-            val matchesOrganized = jsonProfile.getInt("matchesOrganized",0)
             val reliability = jsonProfile.getInt("reliability",0)
             var imageUri:Uri? = null
             try {
@@ -51,17 +47,17 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
                 val jsonSport = sportsList.getJSONObject(i)
                 sports.add(Sport.fromJSON(jsonSport))
             }
-            return Profile(fullName, nickname, email, location, birthday, matchesOrganized, reliability, imageUri,sports)
+            return Profile(fullName, nickname, email, location, birthday, reliability, imageUri,sports)
         }
 
 
 
         fun mockJSON(): String {
-            return Profile("Vittorio", "Arpino", "varpino@buddybench.it", "Scafati", LocalDate.parse("27/04/1999", DateTimeFormatter.ofPattern("dd/MM/yyyy")), 10, 70,
+            return Profile("Vittorio", "Arpino", "varpino@buddybench.it", "Scafati", LocalDate.parse("27/04/1999", DateTimeFormatter.ofPattern("dd/MM/yyyy")), 70,
                 null,
                 listOf(
-                    Sport(Sports.TENNIS, Skills.SKILLED, 3),
-                    Sport(Sports.FOOTBALL, Skills.NEWBIE, 7)
+                    Sport(Sports.TENNIS, Skills.SKILLED, 3, 2),
+                    Sport(Sports.FOOTBALL, Skills.NEWBIE, 7, 6)
                 )).toJSON().toString()
         }
 
@@ -80,8 +76,7 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
         json.put("nickname", nickname)
         json.put("location", location)
         json.put("email", email)
-        json.put("birthday", birthday.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-        json.put("matchesOrganized", matchesOrganized)
+        json.put("birthdate", birthdate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
         json.put("reliability", reliability)
         if (imageUri == null){
            json.put("imageUri", JSONObject.NULL)
@@ -122,11 +117,11 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
             val sportSkillLevelText = sportCard.findViewById<TextView>(R.id.skill_level_card_text)
             val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
 
-            sportName.text = Utils.capitalize(sport.name.toString())
+            sportName.text = Utils.formatString(sport.name.toString())
             sportIcon.setImageResource(Sports.sportToIconDrawable(sport.name))
             // TODO: Non funziona
             // sportSkillLevel.setBackgroundColor(Skills.skillToColor(sport.skill))
-            sportSkillLevelText.text = Utils.capitalize(sport.skill.toString())
+            sportSkillLevelText.text = Utils.formatString(sport.skill.toString())
             sportGamesPlayed.text = String.format(context.resources.getString(R.string.games_played), sport.matchesPlayed)
 
             // ** Add card to container
@@ -136,7 +131,12 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
 
     }
 
-    fun populateSportCardsEdit(context: AppCompatActivity, sportContainer: LinearLayout, onDeleteSport: () -> Unit = {}) {
+    fun populateSportCardsEdit(
+        context: AppCompatActivity,
+        sportContainer: LinearLayout,
+        onDeleteSport: () -> Unit = {},
+        onSkillSelected: () -> Unit = {}
+    ) {
 
         sportContainer.removeAllViews()
 
@@ -169,11 +169,27 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
             val sportSkillLevelText = sportCard.findViewById<TextView>(R.id.skill_level_card_text)
             val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
 
+            // ** Sport skill level edit
+            sportSkillLevel.setOnClickListener() {
+                //Creating the instance of PopupMenu
+                val popup = PopupMenu(context, sportSkillLevel)
+                popup.menuInflater.inflate(R.menu.skill_level_edit, popup.menu)
+
+                popup.setOnMenuItemClickListener {
+                    this.updateSkillLevel(sport, Skills.fromJSON(it.title.toString().uppercase())!!)
+                    onSkillSelected()
+                    this.populateSportCardsEdit(context, sportContainer)
+                    true
+                }
+
+                popup.show()
+            }
+
             sportName.text = Utils.capitalize(sport.name.toString())
             sportIcon.setImageResource(Sports.sportToIconDrawable(sport.name))
             // TODO: Non funziona
             // sportSkillLevel.setBackgroundColor(Skills.skillToColor(sport.skill))
-            sportSkillLevelText.text = Utils.capitalize(sport.skill.toString())
+            sportSkillLevelText.text = Utils.formatString(sport.skill.toString())
             sportGamesPlayed.text = String.format(context.resources.getString(R.string.games_played), sport.matchesPlayed)
 
             // ** Add card to container
@@ -189,5 +205,9 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
             sportsList.add(sport.name)
         }
         return sportsList
+    }
+
+    private fun updateSkillLevel(sport: Sport, skill: Skills) {
+        this.sports.find { it.name == sport.name }?.skill = skill
     }
 }

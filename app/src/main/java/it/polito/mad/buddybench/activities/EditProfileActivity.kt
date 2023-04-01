@@ -13,26 +13,30 @@ import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.MutableLiveData
 import com.squareup.picasso.Picasso
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
+import it.polito.mad.buddybench.classes.Sport
+import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColor
+import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateEmail
+import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateString
 import it.polito.mad.buddybench.dialogs.EditSportsDialog
+import it.polito.mad.buddybench.enums.Skills
+import it.polito.mad.buddybench.enums.Sports
 import org.json.JSONObject
 import java.io.IOException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateString
-import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateLocalDate
-import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColor
-import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColorDate
 
-class EditProfileActivity : AppCompatActivity() {
+class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogListener {
     // ** Data
     private lateinit var profile: Profile
     private lateinit var datePicker: DatePickerDialog
+    private var birthdateListener:MutableLiveData<LocalDate> = MutableLiveData()
 
     // ** Profile Image
     private val launcherCamera =
@@ -43,13 +47,13 @@ class EditProfileActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             onGalleryImageReturned(it)
         }
-    private var image_uri: Uri? = null
-    private val RESULT_LOAD_IMAGE = 123
-    private val IMAGE_CAPTURE_CODE: Int = 654
+
     private lateinit var imageEdit: ImageView
+    private var imageUri: Uri? = null
 
     // ** Sports
     private lateinit var addSportButton: ImageButton
+    private lateinit var sportContainer: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,40 +70,36 @@ class EditProfileActivity : AppCompatActivity() {
         // ** Profile TextFields Edit
         val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
         fullNameEdit.doOnTextChanged { text, _, _, _ ->
-            changeColor(fullNameEdit, text.toString(), resources)
+            changeColor(fullNameEdit, validateString(text.toString()), resources)
         }
         fullNameEdit.setText(profile.fullName)
 
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
         nicknameEdit.doOnTextChanged { text, _, _, _ ->
-            changeColor(nicknameEdit, text.toString(), resources)
+            changeColor(nicknameEdit, validateString(text.toString()), resources)
 
         }
         nicknameEdit.setText(profile.nickname)
 
         val emailEdit = findViewById<EditText>(R.id.emailEdit)
         emailEdit.doOnTextChanged { text, _, _, _ ->
-            changeColor(emailEdit, text.toString(), resources)
+            changeColor(emailEdit, validateEmail(text.toString()), resources)
         }
         emailEdit.setText(profile.email)
 
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
         localityEdit.setText(profile.location)
         localityEdit.doOnTextChanged { text, _, _, _ ->
-            changeColor(localityEdit, text.toString(), resources)
+            changeColor(localityEdit, validateString(text.toString()), resources)
 
         }
 
-        val birthdayEdit = findViewById<EditText>(R.id.birthdayEdit)
-        birthdayEdit.setText(profile.birthday.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-        birthdayEdit.doOnTextChanged { text, _, _, _ ->
-            changeColorDate(birthdayEdit, text.toString(), resources)
+        birthdateListener.value = profile.birthdate
+        val birthdayButtonEdit = findViewById<Button>(R.id.birthdateEditButton)
+        birthdateListener.observe(this){
+            birthdayButtonEdit.text = it.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            profile.birthdate = it
         }
-
-        val birthdayButtonEdit = findViewById<Button>(R.id.birthdayEditButton)
-        birthdayButtonEdit.setText(profile.birthday.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-        // TODO: Add birthday DatePicker
-
         // ** Profile Image
         imageEdit = findViewById(R.id.imageEdit)
         Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
@@ -111,15 +111,15 @@ class EditProfileActivity : AppCompatActivity() {
         imageEdit.setOnClickListener {
             openGallery()
         }
-        val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
+        sportContainer = findViewById(R.id.sportsContainerEdit)
         sportContainer.removeAllViews()
 
         // ** Populate sport cards
-        profile.populateSportCards(this, sportContainer)
+        profile.populateSportCardsEdit(this, sportContainer, onDeleteSport = { saveEdit() }, onSkillSelected = { saveEdit() })
 
         // ** Add Sports Button
         addSportButton = findViewById(R.id.add_sport_button)
-        addSportButton.setOnClickListener() { openSportSelectionDialog() }
+        addSportButton.setOnClickListener { openSportSelectionDialog() }
         checkCameraPermission()
     }
 
@@ -137,28 +137,26 @@ class EditProfileActivity : AppCompatActivity() {
             val values = ContentValues()
             values.put(MediaStore.Images.Media.TITLE, "New Picture")
             values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera")
-            image_uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+            imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)!!
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri)
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
             launcherCamera.launch(cameraIntent)
         }
     }
 
     private fun onCameraImageReturned(response: androidx.activity.result.ActivityResult) {
         if (response.resultCode != Activity.RESULT_OK) return
-        val bitmap = BitmapUtils.uriToBitmap(contentResolver, image_uri!!)
+        val bitmap = BitmapUtils.uriToBitmap(contentResolver, imageUri!!)
         imageEdit.setImageBitmap(bitmap)
-        Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
-
     }
 
     private fun onGalleryImageReturned(response: androidx.activity.result.ActivityResult) {
         if (response.resultCode != Activity.RESULT_OK) return
-        image_uri = response.data?.data
-        val bitmap = BitmapUtils.uriToBitmap(contentResolver, image_uri!!)
+        imageUri = response.data?.data
+        val bitmap = BitmapUtils.uriToBitmap(contentResolver, imageUri!!)
         imageEdit.setImageBitmap(bitmap)
-        Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
 
+        Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
     }
 
 
@@ -181,7 +179,6 @@ class EditProfileActivity : AppCompatActivity() {
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
         val emailEdit = findViewById<EditText>(R.id.emailEdit)
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
-        val birthdayEdit = findViewById<TextView>(R.id.birthdayEdit)
 
         if (!validateString(fullNameEdit.text.toString())) {
             return false
@@ -189,13 +186,13 @@ class EditProfileActivity : AppCompatActivity() {
         if (!validateString(nicknameEdit.text.toString())) {
             return false
         }
-        if (!validateString(emailEdit.text.toString())) {
+        if (!validateEmail(emailEdit.text.toString())) {
             return false
         }
         if (!validateString(localityEdit.text.toString())) {
             return false
         }
-        if (!validateLocalDate(birthdayEdit.text.toString())) {
+        if (birthdateListener.value == null) {
             return false
         }
 
@@ -205,42 +202,40 @@ class EditProfileActivity : AppCompatActivity() {
     private fun saveEdit() {
         val sharedPref: SharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
+            val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
             val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
             val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
-            val emailEdit = findViewById<EditText>(R.id.emailEdit)
             val localityEdit = findViewById<EditText>(R.id.localityEdit)
-            val birthdayEdit = findViewById<TextView>(R.id.birthdayEdit)
+            val emailEdit = findViewById<EditText>(R.id.emailEdit)
             profile.fullName = fullNameEdit.text.toString()
             profile.nickname = nicknameEdit.text.toString()
-            profile.email = emailEdit.text.toString()
             profile.location = localityEdit.text.toString()
-            profile.birthday = LocalDate.parse(
-                findViewById<TextView>(R.id.birthdayEdit).text.toString(),
-                DateTimeFormatter.ofPattern("dd/MM/yyyy")
-            )
+            profile.birthdate = birthdateListener.value!!
+            profile.email = emailEdit.text.toString()
             Picasso.with(applicationContext).load(profile.imageUri).placeholder(R.drawable.person).into(imageEdit)
 
-            if (image_uri != null) {
+            if (imageUri != null) {
                 try {
                     profile.imageUri = BitmapUtils.saveToInternalStorage(
                         applicationContext,
-                        BitmapUtils.uriToBitmap(contentResolver, image_uri!!
+                        BitmapUtils.uriToBitmap(contentResolver, imageUri!!
                         )!!,profile.imageUri
                     )!!
                 } catch (_: IOException) {
 
                 }
             }
+
             val newProfileJSON = profile.toJSON().toString()
             putString("profile", newProfileJSON)
             intent.putExtra("newProfile", newProfileJSON)
             apply()
-
-            setResult(Activity.RESULT_OK, intent)
-            finish()
         }
+    }
 
-
+    private fun finishActivity() {
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 
     /**
@@ -252,7 +247,8 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     fun showDatePickerDialog(v: View) {
-        datePicker = DatePickerDialog(this, profile.birthday.year)
+        val myDateListener = DatePickerDialog.OnDateSetListener { _, year, month, day -> birthdateListener.value = LocalDate.of(year,month,day) }
+        datePicker = DatePickerDialog(this, myDateListener, profile.birthdate.year, profile.birthdate.monthValue, profile.birthdate.dayOfMonth)
         datePicker.show()
     }
 
@@ -278,9 +274,34 @@ class EditProfileActivity : AppCompatActivity() {
                     return false
                 }
                 saveEdit()
+                finishActivity()
                 return true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onDialogPositiveClick(dialog: DialogFragment, selectedItems: ArrayList<Sports?>) {
+        // ** Add new selected sports to user profile (and save to shared preferences)
+        val newSports = mutableListOf<Sport>()
+        val alreadySelectedSports = profile.sports
+        for (selectedSport in selectedItems) {
+            try {
+                checkNotNull(selectedSport)
+                val newSport: Sport = Sport(selectedSport, Skills.NEWBIE, 0)
+                newSports.add(newSport)
+            } catch (e: java.lang.IllegalStateException) {
+                continue
+            }
+        }
+        profile.sports = newSports.plus(alreadySelectedSports)
+        println("Profile Sports After ADD: ${profile.sports}")
+        saveEdit()
+
+        profile.populateSportCardsEdit(this, sportContainer, onDeleteSport = { saveEdit() })
+    }
+
+    override fun onDialogNegativeClick(dialog: DialogFragment) {
+        return
     }
 }

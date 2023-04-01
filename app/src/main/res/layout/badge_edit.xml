@@ -5,30 +5,34 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
     <androidx.cardview.widget.CardView
+        android:id="@+id/skill_level_card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:shape="ring"
-        app:cardCornerRadius="13dp"
-        android:layout_weight="2"
+        android:shape="oval"
+        android:clickable="true"
+        android:backgroundTint="@color/md_theme_light_primaryContainer"
+        app:cardElevation="0dp"
+        android:paddingVertical="8dp"
+        app:cardCornerRadius="99dp"
         tools:ignore="MissingConstraints">
 
         <TextView
-            android:layout_width="104dp"
+            android:id="@+id/skill_level_card_text"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_shape"
-            android:fontFamily="@font/gotham_bold"
+            android:fontFamily="@font/montserrat_medium_500"
             android:gravity="start|center"
-            android:padding="5dp"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
             android:text="@string/newbie"
+            android:elevation="0dp"
             android:textAlignment="center"
-            android:textSize="15sp"
-            tools:ignore="MissingConstraints" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="27dp"
-            android:layout_gravity="right"
-            android:src="@drawable/down_arrow" />
+            android:textSize="12sp"
+            tools:ignore="MissingConstraints"
+            android:drawablePadding="8dp"
+            app:drawableEndCompat="@drawable/round_arrow_drop_down_circle_24"
+            />
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

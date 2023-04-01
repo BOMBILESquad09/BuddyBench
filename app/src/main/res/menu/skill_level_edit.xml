@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/option_newbie"
+        android:title="@string/newbie" />
+    <item android:id="@+id/option_amateur"
+        android:title="@string/amateur" />
+    <item android:id="@+id/option_skilled"
+        android:title="@string/skilled" />
+    <item android:id="@+id/option_professional"
+        android:title="@string/professional" />
+    <item android:id="@+id/option_world_class"
+        android:title="@string/world_class" />
+</menu>

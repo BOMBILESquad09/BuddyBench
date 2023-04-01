@@ -1,20 +1,10 @@
 package it.polito.mad.buddybench.activities
 
-import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.ParcelFileDescriptor
-import android.provider.MediaStore
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -23,19 +13,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.view.menu.MenuView.ItemView
 import androidx.appcompat.widget.Toolbar
-import androidx.cardview.widget.CardView
 import com.squareup.picasso.Picasso
 import it.polito.mad.buddybench.R
-import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
-import it.polito.mad.buddybench.enums.Sports
-import it.polito.mad.buddybench.utils.Utils
 import org.json.JSONObject
-import java.io.File
-import java.io.FileDescriptor
-import java.io.IOException
 
 
 class ShowProfileActivity : AppCompatActivity() {
@@ -77,8 +59,7 @@ class ShowProfileActivity : AppCompatActivity() {
         val reliabilityTv = findViewById<TextView>(R.id.reliabilityView)
         reliabilityTv.text = profile.reliability.toString()
 
-        var iv = findViewById<ImageView>(R.id.imageView)
-        println(profile.imageUri)
+        val iv = findViewById<ImageView>(R.id.imageEdit)
         Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(iv)
 
 
