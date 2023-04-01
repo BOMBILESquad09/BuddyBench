@@ -136,7 +136,9 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
 
     }
 
-    fun populateSportCardsEdit(context: AppCompatActivity, sportContainer: LinearLayout) {
+    fun populateSportCardsEdit(context: AppCompatActivity, sportContainer: LinearLayout, onDeleteSport: () -> Unit = {}) {
+
+        sportContainer.removeAllViews()
 
         if (this.sports.isEmpty()) {
             val emptySportsText = TextView(context)
@@ -148,14 +150,15 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
 
 
         for (sport in this.sports) {
+            println("Sport: ${sport.name}")
             val sportCard = LayoutInflater.from(context).inflate(R.layout.card_sport_edit, null, false);
 
-            // TODO: Add listner to delete button
+            // TODO: Add listener to delete button
             val deleteButton = sportCard.findViewById<FrameLayout>(R.id.button_close)
             deleteButton.setOnClickListener {
                 val newSports = this.sports.filter { sportInList -> sportInList.name != sport.name}
                 this.sports = newSports
-                sportContainer.removeAllViews()
+                onDeleteSport()
                 this.populateSportCardsEdit(context, sportContainer)
             }
 

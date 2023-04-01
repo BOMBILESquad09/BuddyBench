@@ -123,7 +123,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         sportContainer.removeAllViews()
 
         // ** Populate sport cards
-        profile.populateSportCardsEdit(this, sportContainer)
+        profile.populateSportCardsEdit(this, sportContainer, onDeleteSport = { saveEdit() })
 
         // ** Add Sports Button
         addSportButton = findViewById(R.id.add_sport_button)
@@ -218,7 +218,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             profile.nickname = nicknameEdit.text.toString()
             profile.location = localityEdit.text.toString()
             profile.birthday = LocalDate.parse(
-                findViewById<EditText>(R.id.birthdayEdit).text.toString(),
+                birthdayEdit.text.toString(),
                 DateTimeFormatter.ofPattern("dd/MM/yyyy")
             )
             Picasso.with(applicationContext).load(profile.imageUri).placeholder(R.drawable.person).into(imageEdit)
@@ -299,9 +299,9 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
         profile.sports = newSports.plus(alreadySelectedSports)
         println("Profile Sports After ADD: ${profile.sports}")
-        profile.populateSportCards(this, sportContainer)
-
         saveEdit()
+
+        profile.populateSportCardsEdit(this, sportContainer, onDeleteSport = { saveEdit() })
     }
 
     override fun onDialogNegativeClick(dialog: DialogFragment) {
