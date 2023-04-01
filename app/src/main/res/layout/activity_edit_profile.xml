@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -147,22 +148,25 @@
                             android:layout_height="match_parent"
                             android:layout_weight="0.5" />
 
-                        <EditText
-                            android:id="@+id/birthdayEdit"
+                        <Button
+                            android:id="@+id/birthdayEditButton"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="0dp"
                             android:layout_weight="1"
-
-                            android:autofillHints=""
                             android:fontFamily="@font/montserrat_semibold_600"
-                            android:hint="Birthday"
-                            android:inputType="date"
-                            android:textAlignment="textStart"
-                            android:textSize="16sp"
-                            android:singleLine="true"/>
+                            android:text="Birthday"
+                            android:onClick="showDatePickerDialog" />
+
+                        <EditText
+                            android:id="@+id/birthdayEdit"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+
+                        />
 
                     </LinearLayout>
+
 
 
                 </LinearLayout>
@@ -180,6 +184,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="0dp"
                         android:fontFamily="@font/montserrat_bold_700"
+
                         android:text="@string/sports_section"
                         android:textSize="20sp"
                         app:layout_constraintBottom_toTopOf="@+id/sports_horizontal_scroll"

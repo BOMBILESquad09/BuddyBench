@@ -3,6 +3,7 @@ package it.polito.mad.buddybench.activities
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.*
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
@@ -49,6 +50,7 @@ import it.polito.mad.buddybench.enums.Sports
 class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogListener {
     // ** Data
     private lateinit var profile: Profile
+    private lateinit var datePicker: DatePickerDialog
 
     // ** Profile Image
     private val launcherCamera =
@@ -94,6 +96,12 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
         nicknameEdit.setText(profile.nickname)
 
+        val emailEdit = findViewById<EditText>(R.id.emailEdit)
+        emailEdit.doOnTextChanged { text, _, _, _ ->
+            changeColor(emailEdit, text.toString(), resources)
+        }
+        emailEdit.setText(profile.email)
+
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
         localityEdit.setText(profile.location)
         localityEdit.doOnTextChanged { text, _, _, _ ->
@@ -106,6 +114,9 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         birthdayEdit.doOnTextChanged { text, _, _, _ ->
             changeColorDate(birthdayEdit, text.toString(), resources)
         }
+
+        val birthdayButtonEdit = findViewById<Button>(R.id.birthdayEditButton)
+        birthdayButtonEdit.setText(profile.birthday.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
         // TODO: Add birthday DatePicker
 
         // ** Profile Image
@@ -156,6 +167,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         if (response.resultCode != Activity.RESULT_OK) return
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, image_uri!!)
         imageEdit.setImageBitmap(bitmap)
+        Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
     }
 
     private fun onGalleryImageReturned(response: androidx.activity.result.ActivityResult) {
@@ -163,6 +175,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         image_uri = response.data?.data
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, image_uri!!)
         imageEdit.setImageBitmap(bitmap)
+        Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
 
     }
 
@@ -184,6 +197,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     private fun formValidation(): Boolean {
         val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
+        val emailEdit = findViewById<EditText>(R.id.emailEdit)
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
         val birthdayEdit = findViewById<EditText>(R.id.birthdayEdit)
 
@@ -191,6 +205,9 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             return false
         }
         if (!validateString(nicknameEdit.text.toString())) {
+            return false
+        }
+        if (!validateString(emailEdit.text.toString())) {
             return false
         }
         if (!validateString(localityEdit.text.toString())) {
@@ -219,6 +236,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
                 birthdayEdit.text.toString(),
                 DateTimeFormatter.ofPattern("dd/MM/yyyy")
             )
+            Picasso.with(applicationContext).load(profile.imageUri).placeholder(R.drawable.person).into(imageEdit)
 
             if (image_uri != null) {
                 try {
@@ -250,6 +268,11 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     private fun openSportSelectionDialog() {
         val dialog = EditSportsDialog()
         dialog.show(supportFragmentManager, "edit_sports")
+    }
+
+    fun showDatePickerDialog(v: View) {
+        datePicker = DatePickerDialog(this, profile.birthday.year)
+        datePicker.show()
     }
 
 
