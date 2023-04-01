@@ -2,36 +2,27 @@ package it.polito.mad.buddybench.classes
 
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.Uri
-import android.provider.CalendarContract.EventDays
-import android.provider.ContactsContract.CommonDataKinds.Email
-import android.provider.Settings.Global.getString
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.Typeface
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.classes.JSONUtils.Companion.getInt
+import it.polito.mad.buddybench.classes.JSONUtils.Companion.getJSONArray
+import it.polito.mad.buddybench.classes.JSONUtils.Companion.getString
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.Utils
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.File
-import it.polito.mad.buddybench.classes.JSONUtils.Companion.getInt
-import it.polito.mad.buddybench.classes.JSONUtils.Companion.getString
-import it.polito.mad.buddybench.classes.JSONUtils.Companion.getJSONArray
-import java.text.DateFormat
-import java.time.Duration
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import java.time.temporal.TemporalAmount
-import java.util.Calendar
 
 
 class Profile(var fullName: String?, var nickname: String?, var email: String, var location: String?, var birthday: LocalDate, var matchesOrganized: Int?, var reliability: Int, var imageUri: Uri?, var sports: List<Sport> ) {
@@ -70,6 +61,14 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
                     Sport(Sports.TENNIS, Skills.SKILLED, 3),
                     Sport(Sports.FOOTBALL, Skills.NEWBIE, 7)
                 )).toJSON().toString()
+        }
+
+        fun getProfileFromSharedPreferences(context: Context): Profile {
+            val sharedPref: SharedPreferences = context.getSharedPreferences(
+                context.getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE
+            )
+            return fromJSON(JSONObject(sharedPref.getString("profile", mockJSON())!!))
         }
     }
 
@@ -127,10 +126,15 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
             // ** Add card to container
             sportContainer.addView(sportCard)   
         }
-
-
     }
 
-
-
+    fun getSportsEnum(): List<Sports> {
+        val sportsList = mutableListOf<Sports>()
+        println("getSportsEnum (this.sports): ${this.sports}")
+        for (sport in this.sports) {
+            println("getSportsEnum: $sport")
+            sportsList.add(sport.name)
+        }
+        return sportsList
+    }
 }

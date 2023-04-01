@@ -8,22 +8,30 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.classes.Profile
+import it.polito.mad.buddybench.classes.Sport
 import it.polito.mad.buddybench.enums.Sports
+import org.json.JSONObject
 
 class EditSportsDialog: DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
+
+            val profile = Profile.getProfileFromSharedPreferences(it)
+            val profileSports: List<Sports> = profile.getSportsEnum()
+            println("Profile Sports To Exclude: $profileSports")
+            val sportValues = Sports.getStringValues(profileSports)
+            println("Sport Values: ${sportValues}")
+
             // Selected Sports
             val selectedItems = ArrayList<Sports?>()
-            val sharedPref: SharedPreferences = it.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-
 
             // Use the Builder class for convenient dialog construction
             val builder = AlertDialog.Builder(it)
-            builder.setTitle(R.string.edit_your_sports)
+            builder.setTitle(R.string.add_sports)
                 // Specify the list array, the items to be selected by default (null for none),
                 // and the listener through which to receive callbacks when items are selected
-                .setMultiChoiceItems(R.array.sports, null
+                .setMultiChoiceItems(sportValues, null
                 ) { dialog, which, isChecked ->
 
                     println("${Sports.fromIntToEnum(which)}")

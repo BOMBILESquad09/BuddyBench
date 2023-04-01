@@ -117,9 +117,4 @@ class ShowProfileActivity : AppCompatActivity() {
         }
     }
 
-
-
-
-
-
 }
