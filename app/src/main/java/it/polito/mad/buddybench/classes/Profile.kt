@@ -98,6 +98,9 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
      * @param sportContainer The container layout in which to add the cards
      */
     fun populateSportCards(context: AppCompatActivity, sportContainer: LinearLayout) {
+
+        sportContainer.removeAllViews()
+
         if (this.sports.isEmpty()) {
             val emptySportsText = TextView(context)
             emptySportsText.text = context.getString(R.string.no_sports)

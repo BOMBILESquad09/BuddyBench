@@ -270,6 +270,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     override fun onDialogPositiveClick(dialog: DialogFragment, selectedItems: ArrayList<Sports?>) {
         // ** Add new selected sports to user profile (and save to shared preferences)
         val newSports = mutableListOf<Sport>()
+        val alreadySelectedSports = profile.sports
         for (selectedSport in selectedItems) {
             try {
                 checkNotNull(selectedSport)
@@ -279,7 +280,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
                 continue
             }
         }
-        profile.sports = newSports.plus(profile.sports)
+        profile.sports = newSports.plus(alreadySelectedSports)
+        println("Profile Sports After ADD: ${profile.sports}")
         profile.populateSportCards(this, sportContainer)
 
         saveEdit()
