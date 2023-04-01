@@ -30,7 +30,7 @@ import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateString
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColor
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
-
+import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateEmail
 class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogListener {
     // ** Data
     private lateinit var profile: Profile
@@ -67,27 +67,27 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         // ** Profile TextFields Edit
         val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
         fullNameEdit.doOnTextChanged { text, _, _, _ ->
-            changeColor(fullNameEdit, text.toString(), resources)
+            changeColor(fullNameEdit, validateString(text.toString()), resources)
         }
         fullNameEdit.setText(profile.fullName)
 
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
         nicknameEdit.doOnTextChanged { text, _, _, _ ->
-            changeColor(nicknameEdit, text.toString(), resources)
+            changeColor(nicknameEdit, validateString(text.toString()), resources)
 
         }
         nicknameEdit.setText(profile.nickname)
 
         val emailEdit = findViewById<EditText>(R.id.emailEdit)
         emailEdit.doOnTextChanged { text, _, _, _ ->
-            changeColor(emailEdit, text.toString(), resources)
+            changeColor(emailEdit, validateEmail(text.toString()), resources)
         }
         emailEdit.setText(profile.email)
 
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
         localityEdit.setText(profile.location)
         localityEdit.doOnTextChanged { text, _, _, _ ->
-            changeColor(localityEdit, text.toString(), resources)
+            changeColor(localityEdit, validateString(text.toString()), resources)
 
         }
 
@@ -189,7 +189,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         if (!validateString(nicknameEdit.text.toString())) {
             return false
         }
-        if (!validateString(emailEdit.text.toString())) {
+        if (!validateEmail(emailEdit.text.toString())) {
             return false
         }
         if (!validateString(localityEdit.text.toString())) {
@@ -209,10 +209,12 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
             val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
             val localityEdit = findViewById<EditText>(R.id.localityEdit)
+            val emailEdit = findViewById<EditText>(R.id.emailEdit)
             profile.fullName = fullNameEdit.text.toString()
             profile.nickname = nicknameEdit.text.toString()
             profile.location = localityEdit.text.toString()
             profile.birthday = birthdayListener.value!!
+            profile.email = emailEdit.text.toString()
             Picasso.with(applicationContext).load(profile.imageUri).placeholder(R.drawable.person).into(imageEdit)
             if (imageUri != null) {
                 try {
