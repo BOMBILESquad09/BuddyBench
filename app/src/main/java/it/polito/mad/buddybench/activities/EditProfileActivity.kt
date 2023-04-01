@@ -15,11 +15,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.*
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -29,6 +25,8 @@ import androidx.core.view.allViews
 import androidx.core.widget.doOnTextChanged
 import com.squareup.picasso.Picasso
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
@@ -44,6 +42,7 @@ import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateString
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateLocalDate
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColor
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColorDate
+import it.polito.mad.buddybench.dialogs.MyDateListener
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
 
@@ -51,7 +50,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     // ** Data
     private lateinit var profile: Profile
     private lateinit var datePicker: DatePickerDialog
-
+    private var birthdayListener:MutableLiveData<LocalDate> = MutableLiveData()
     // ** Profile Image
     private val launcherCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -61,11 +60,9 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             onGalleryImageReturned(it)
         }
-    private var image_uri: Uri? = null
-    private val RESULT_LOAD_IMAGE = 123
-    private val IMAGE_CAPTURE_CODE: Int = 654
-    private lateinit var imageEdit: ImageView
 
+    private lateinit var imageEdit: ImageView
+    private var imageUri: Uri? = null
     // ** Sports
     private lateinit var addSportButton: ImageButton
     private lateinit var sportContainer: LinearLayout
@@ -109,16 +106,17 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
         }
 
-        val birthdayEdit = findViewById<EditText>(R.id.birthdayEdit)
-        birthdayEdit.setText(profile.birthday.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-        birthdayEdit.doOnTextChanged { text, _, _, _ ->
-            changeColorDate(birthdayEdit, text.toString(), resources)
-        }
+
+
+        birthdayListener.value = profile.birthday
 
         val birthdayButtonEdit = findViewById<Button>(R.id.birthdayEditButton)
-        birthdayButtonEdit.setText(profile.birthday.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-        // TODO: Add birthday DatePicker
 
+        // TODO: Add birthday DatePicker
+        birthdayListener.observe(this){
+            birthdayButtonEdit.text = it.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            profile.birthday = it
+        }
         // ** Profile Image
         imageEdit = findViewById(R.id.imageEdit)
         Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
@@ -156,24 +154,24 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             val values = ContentValues()
             values.put(MediaStore.Images.Media.TITLE, "New Picture")
             values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera")
-            image_uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+            imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)!!
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri)
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
             launcherCamera.launch(cameraIntent)
         }
     }
 
     private fun onCameraImageReturned(response: androidx.activity.result.ActivityResult) {
         if (response.resultCode != Activity.RESULT_OK) return
-        val bitmap = BitmapUtils.uriToBitmap(contentResolver, image_uri!!)
+        val bitmap = BitmapUtils.uriToBitmap(contentResolver, imageUri!!)
         imageEdit.setImageBitmap(bitmap)
         Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
     }
 
     private fun onGalleryImageReturned(response: androidx.activity.result.ActivityResult) {
         if (response.resultCode != Activity.RESULT_OK) return
-        image_uri = response.data?.data
-        val bitmap = BitmapUtils.uriToBitmap(contentResolver, image_uri!!)
+        imageUri = response.data?.data
+        val bitmap = BitmapUtils.uriToBitmap(contentResolver, imageUri!!)
         imageEdit.setImageBitmap(bitmap)
         Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
 
@@ -199,7 +197,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
         val emailEdit = findViewById<EditText>(R.id.emailEdit)
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
-        val birthdayEdit = findViewById<EditText>(R.id.birthdayEdit)
 
         if (!validateString(fullNameEdit.text.toString())) {
             return false
@@ -213,7 +210,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         if (!validateString(localityEdit.text.toString())) {
             return false
         }
-        if (!validateLocalDate(birthdayEdit.text.toString())) {
+        if (birthdayListener.value == null) {
             return false
         }
 
@@ -224,32 +221,25 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         val sharedPref: SharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
             val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
-
             val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
             val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
             val localityEdit = findViewById<EditText>(R.id.localityEdit)
-            val birthdayEdit = findViewById<EditText>(R.id.birthdayEdit)
             profile.fullName = fullNameEdit.text.toString()
             profile.nickname = nicknameEdit.text.toString()
             profile.location = localityEdit.text.toString()
-            profile.birthday = LocalDate.parse(
-                birthdayEdit.text.toString(),
-                DateTimeFormatter.ofPattern("dd/MM/yyyy")
-            )
+            profile.birthday = birthdayListener.value!!
             Picasso.with(applicationContext).load(profile.imageUri).placeholder(R.drawable.person).into(imageEdit)
-
-            if (image_uri != null) {
+            if (imageUri != null) {
                 try {
                     profile.imageUri = BitmapUtils.saveToInternalStorage(
                         applicationContext,
-                        BitmapUtils.uriToBitmap(contentResolver, image_uri!!
+                        BitmapUtils.uriToBitmap(contentResolver, imageUri!!
                         )!!,profile.imageUri
                     )!!
                 } catch (_: IOException) {
 
                 }
             }
-
             val newProfileJSON = profile.toJSON().toString()
             putString("profile", newProfileJSON)
             intent.putExtra("newProfile", newProfileJSON)
@@ -271,7 +261,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     }
 
     fun showDatePickerDialog(v: View) {
-        datePicker = DatePickerDialog(this, profile.birthday.year)
+        val myDateListener = MyDateListener(birthdayListener)
+        datePicker = DatePickerDialog(this, myDateListener, profile.birthday.year, profile.birthday.monthValue, profile.birthday.dayOfMonth)
         datePicker.show()
     }
 
