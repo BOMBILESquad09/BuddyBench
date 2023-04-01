@@ -1,83 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingEnd="16dp"
-    >
+    tools:ignore="RtlSymmetry">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/edit_card"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/sport_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp"
+        android:layout_margin="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <LinearLayout
+            android:id="@+id/sport_card_linear_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:cardCornerRadius="15dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <include
-                layout="@layout/close_button"
-                android:id="@+id/close_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/edit_card"
-                android:layout_gravity="end" />
+            android:padding="16dp">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="20dp"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0"
-                        android:fontFamily="@font/montserrat_bold_700"
-                        android:gravity="start|center"
-                        android:text="@string/sport_tennis"
-                        android:textSize="20sp" />
-
-                    <ImageView
-                        android:layout_width="23dp"
-                        android:layout_height="26dp"
-                        android:layout_gravity="start"
-                        android:layout_marginStart="0dp"
-                        android:layout_weight="0"
-                        android:src="@drawable/tennis" />
-
-                </LinearLayout>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                tools:ignore="UseCompoundDrawables">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:id="@+id/sport_card_name"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:fontFamily="@font/montserrat_semibold_600"
-                    android:gravity="left"
-                    android:paddingStart="22dp"
-                    android:paddingEnd="10dp"
-                    android:text="20 games played"
-                    android:textSize="12dp"
+                    android:fontFamily="@font/montserrat_bold_700"
+                    android:gravity="start|center"
+                    android:text="@string/sport_tennis"
+                    android:textSize="14sp" />
 
-                    />
+                <ImageView
+                    android:id="@+id/sport_card_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:contentDescription="@string/sport_tennis"
+                    android:scaleX="1"
+                    android:scaleY="1"
+                    android:src="@drawable/tennis">
 
+                </ImageView>
 
-                <include
-                    layout="@layout/badge_edit"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="21dp"
-                    android:layout_marginTop="18dp"
-
-                    />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/games_played_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="@font/montserrat_regular_400"
+                android:gravity="start"
+                android:text="@string/games_played_default"
+                android:textSize="12sp" />
+
+
+            <include
+                layout="@layout/badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+    <include
+        android:id="@+id/close_button"
+        layout="@layout/close_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_margin="3dp"
+        android:elevation="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
