@@ -158,13 +158,14 @@
                             android:text="Birthday"
                             android:onClick="showDatePickerDialog" />
 
-                    </LinearLayout>
-                    <EditText
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:id="@+id/birthdayEdit"
-                        android:text="prova"
+                        <EditText
+                            android:id="@+id/birthdayEdit"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+
                         />
+
+                    </LinearLayout>
 
 
 

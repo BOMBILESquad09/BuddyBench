@@ -1,16 +1,10 @@
 package it.polito.mad.buddybench.activities
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.*
 import android.content.pm.PackageManager
-import android.content.res.ColorStateList
-import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.Color
-import android.icu.util.LocaleData
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -20,7 +14,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.widget.doOnTextChanged
 import com.squareup.picasso.Picasso
 import it.polito.mad.buddybench.R
@@ -28,8 +21,6 @@ import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.dialogs.EditSportsDialog
 import org.json.JSONObject
-import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -37,11 +28,11 @@ import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateString
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateLocalDate
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColor
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColorDate
-import it.polito.mad.buddybench.dialogs.DatePickerFragment
 
 class EditProfileActivity : AppCompatActivity() {
     // ** Data
     private lateinit var profile: Profile
+    private lateinit var datePicker: DatePickerDialog
 
     // ** Profile Image
     private val launcherCamera =
@@ -104,6 +95,9 @@ class EditProfileActivity : AppCompatActivity() {
         birthdayEdit.doOnTextChanged { text, _, _, _ ->
             changeColorDate(birthdayEdit, text.toString(), resources)
         }
+
+        val birthdayButtonEdit = findViewById<Button>(R.id.birthdayEditButton)
+        birthdayButtonEdit.setText(profile.birthday.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
         // TODO: Add birthday DatePicker
 
         // ** Profile Image
@@ -258,8 +252,8 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     fun showDatePickerDialog(v: View) {
-        val newFragment = DatePickerFragment()
-        newFragment.show(supportFragmentManager, "datePicker")
+        datePicker = DatePickerDialog(this, profile.birthday.year)
+        datePicker.show()
     }
 
 
