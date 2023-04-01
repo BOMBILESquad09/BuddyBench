@@ -84,6 +84,7 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
         if (imageUri == null){
            json.put("imageUri", JSONObject.NULL)
         } else {
+            println("Putting the image in Json")
             json.put("imageUri", imageUri.toString())
         }
         json.put("sports", JSONArray(sports.map { it.toJSON() }))

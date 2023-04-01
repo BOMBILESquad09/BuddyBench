@@ -16,8 +16,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintTop_toTopOf="parent"
             />
 
@@ -49,8 +49,8 @@
 
                     <ImageView
                         android:id="@+id/imageView"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
                         android:contentDescription="@string/profile_photo_cd"
                         android:scaleType="centerCrop"
                         android:src="@drawable/person" />

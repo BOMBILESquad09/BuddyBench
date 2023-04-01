@@ -49,8 +49,14 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     private lateinit var profile: Profile
 
     // ** Profile Image
-    private val launcherCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onCameraImageReturned(it)}
-    private val launcherGallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onGalleryImageReturned(it)}
+    private val launcherCamera =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            onCameraImageReturned(it)
+        }
+    private val launcherGallery =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            onGalleryImageReturned(it)
+        }
     private var image_uri: Uri? = null
     private val RESULT_LOAD_IMAGE = 123
     private val IMAGE_CAPTURE_CODE: Int = 654
@@ -60,7 +66,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     private lateinit var addSportButton: ImageButton
     private lateinit var sportContainer: LinearLayout
 
-    override fun onCreate(savedInstanceState: Bundle?){
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
 
@@ -80,7 +86,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         fullNameEdit.setText(profile.fullName)
 
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
-        nicknameEdit.doOnTextChanged{text, _, _, _ ->
+        nicknameEdit.doOnTextChanged { text, _, _, _ ->
             changeColor(nicknameEdit, text.toString(), resources)
 
         }
@@ -95,18 +101,18 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
         val birthdayEdit = findViewById<EditText>(R.id.birthdayEdit)
         birthdayEdit.setText(profile.birthday.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-        birthdayEdit.doOnTextChanged{ text, _, _, _ ->
+        birthdayEdit.doOnTextChanged { text, _, _, _ ->
             changeColorDate(birthdayEdit, text.toString(), resources)
         }
         // TODO: Add birthday DatePicker
 
         // ** Profile Image
         imageEdit = findViewById(R.id.imageEdit)
-        if (profile.imageUri != null ){
-            try{
+        if (profile.imageUri != null) {
+            try {
                 imageEdit.setImageURI(profile.imageUri)
 
-            } catch (_: java.lang.Exception){
+            } catch (_: java.lang.Exception) {
                 /*maybe the image has been deleted
                 * retrieving the view we restore the default image
                 * otherwise blank one will appear*/
@@ -114,11 +120,11 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
             }
         }
-        imageEdit.setOnLongClickListener{
+        imageEdit.setOnLongClickListener {
             openCamera()
             true
         }
-        imageEdit.setOnClickListener{
+        imageEdit.setOnClickListener {
             openGallery()
         }
         sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
@@ -132,15 +138,17 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         addSportButton.setOnClickListener() { openSportSelectionDialog() }
     }
 
-    private fun openGallery(){
-        if (checkCameraPermission()){
-            val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+    private fun openGallery() {
+        if (checkCameraPermission()) {
+            val galleryIntent =
+                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
 
             launcherGallery.launch(galleryIntent)
         }
     }
+
     private fun openCamera() {
-        if (checkCameraPermission()){
+        if (checkCameraPermission()) {
             val values = ContentValues()
             values.put(MediaStore.Images.Media.TITLE, "New Picture")
             values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera")
@@ -160,48 +168,52 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     private fun onGalleryImageReturned(response: androidx.activity.result.ActivityResult) {
         if (response.resultCode != Activity.RESULT_OK) return
         image_uri = response.data?.data
-        val bitmap = BitmapUtils.uriToBitmap(contentResolver,image_uri!!)
+        val bitmap = BitmapUtils.uriToBitmap(contentResolver, image_uri!!)
         imageEdit.setImageBitmap(bitmap)
     }
 
 
-    private fun checkCameraPermission(): Boolean{
+    private fun checkCameraPermission(): Boolean {
+        println("Jacopo e' bello")
         if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED || checkSelfPermission(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_DENIED
         ) {
-            val permission = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            println("Jacopo e' stupendo")
+            val permission =
+                arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             requestPermissions(permission, 121)
             return false
-
         }
         return true
     }
 
-    private fun formValidation(): Boolean{
+    private fun formValidation(): Boolean {
         val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
         val birthdayEdit = findViewById<EditText>(R.id.birthdayEdit)
 
-        if(!validateString( fullNameEdit.text.toString())){
+        if (!validateString(fullNameEdit.text.toString())) {
             return false
         }
-        if(!validateString(nicknameEdit.text.toString())){
+        if (!validateString(nicknameEdit.text.toString())) {
             return false
         }
-        if(!validateString(localityEdit.text.toString())){
+        if (!validateString(localityEdit.text.toString())) {
             return false
         }
-        if(!validateLocalDate(birthdayEdit.text.toString())){
+        if (!validateLocalDate(birthdayEdit.text.toString())) {
             return false
         }
 
         return true
     }
-    private fun saveEdit(){
-        val sharedPref: SharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        with (sharedPref.edit()) {
+
+    private fun saveEdit() {
+        val sharedPref: SharedPreferences =
+            getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
             val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
             val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
             val localityEdit = findViewById<EditText>(R.id.localityEdit)
@@ -209,14 +221,19 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             profile.fullName = fullNameEdit.text.toString()
             profile.nickname = nicknameEdit.text.toString()
             profile.location = localityEdit.text.toString()
-            profile.birthday = LocalDate.parse( findViewById<EditText>(R.id.birthdayEdit).text.toString(), DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            profile.birthday = LocalDate.parse(
+                findViewById<EditText>(R.id.birthdayEdit).text.toString(),
+                DateTimeFormatter.ofPattern("dd/MM/yyyy")
+            )
 
-            if (image_uri != null){
-                try{
-                profile.imageUri = BitmapUtils.saveToInternalStorage(
-                    applicationContext,
-                    BitmapUtils.uriToBitmap(contentResolver, image_uri!!)!!
-                )!!} catch (_: IOException){
+            if (image_uri != null) {
+                try {
+                    profile.imageUri = BitmapUtils.saveToInternalStorage(
+                        applicationContext,
+                        BitmapUtils.uriToBitmap(contentResolver, image_uri!!)!!
+                    )!!
+                    println("Setting imageUri")
+                } catch (_: IOException) {
 
                 }
             }
@@ -246,7 +263,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_profile_edit, menu)
 
-
         return true
     }
 
@@ -254,8 +270,12 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         // Handle item selection
         return when (item.itemId) {
             R.id.edit -> {
-                if(!formValidation()) {
-                    val toast = Toast.makeText(this, resources.getText(R.string.errorOnEdit), Toast.LENGTH_SHORT)
+                if (!formValidation()) {
+                    val toast = Toast.makeText(
+                        this,
+                        resources.getText(R.string.errorOnEdit),
+                        Toast.LENGTH_SHORT
+                    )
                     toast.show()
                     return false
                 }
