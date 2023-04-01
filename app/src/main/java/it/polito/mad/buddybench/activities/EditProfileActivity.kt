@@ -13,18 +13,16 @@ import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.cardview.widget.CardView
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
-import com.squareup.picasso.Picasso
 import androidx.lifecycle.MutableLiveData
+import com.squareup.picasso.Picasso
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.classes.Sport
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColor
-import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColorDate
-import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateLocalDate
+import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateEmail
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateString
 import it.polito.mad.buddybench.dialogs.EditSportsDialog
 import it.polito.mad.buddybench.enums.Skills
@@ -33,11 +31,6 @@ import org.json.JSONObject
 import java.io.IOException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateString
-import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColor
-import it.polito.mad.buddybench.enums.Skills
-import it.polito.mad.buddybench.enums.Sports
-import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateEmail
 
 class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogListener {
     // ** Data
