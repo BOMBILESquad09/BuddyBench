@@ -25,6 +25,7 @@ import androidx.appcompat.widget.Toolbar
 
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.widget.doOnTextChanged
+import com.squareup.picasso.Picasso
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
@@ -103,18 +104,8 @@ class EditProfileActivity : AppCompatActivity() {
 
         // ** Profile Image
         imageEdit = findViewById(R.id.imageEdit)
-        if (profile.imageUri != null) {
-            try {
-                imageEdit.setImageURI(profile.imageUri)
+        Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
 
-            } catch (_: java.lang.Exception) {
-                /*maybe the image has been deleted
-                * retrieving the view we restore the default image
-                * otherwise blank one will appear*/
-                imageEdit = findViewById(R.id.imageView)
-
-            }
-        }
         imageEdit.setOnLongClickListener {
             openCamera()
             true
@@ -131,6 +122,7 @@ class EditProfileActivity : AppCompatActivity() {
         // ** Add Sports Button
         addSportButton = findViewById(R.id.add_sport_button)
         addSportButton.setOnClickListener() { openSportSelectionDialog() }
+        checkCameraPermission()
     }
 
     private fun openGallery() {
@@ -158,6 +150,8 @@ class EditProfileActivity : AppCompatActivity() {
         if (response.resultCode != Activity.RESULT_OK) return
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, image_uri!!)
         imageEdit.setImageBitmap(bitmap)
+        Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
+
     }
 
     private fun onGalleryImageReturned(response: androidx.activity.result.ActivityResult) {
@@ -165,16 +159,17 @@ class EditProfileActivity : AppCompatActivity() {
         image_uri = response.data?.data
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, image_uri!!)
         imageEdit.setImageBitmap(bitmap)
+        Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
+
     }
 
 
     private fun checkCameraPermission(): Boolean {
-        println("Jacopo e' bello")
+
         if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED || checkSelfPermission(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_DENIED
         ) {
-            println("Jacopo e' stupendo")
             val permission =
                 arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             requestPermissions(permission, 121)
@@ -206,8 +201,7 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun saveEdit() {
-        val sharedPref: SharedPreferences =
-            getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        val sharedPref: SharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
             val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
             val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
@@ -220,14 +214,15 @@ class EditProfileActivity : AppCompatActivity() {
                 findViewById<EditText>(R.id.birthdayEdit).text.toString(),
                 DateTimeFormatter.ofPattern("dd/MM/yyyy")
             )
+            Picasso.with(applicationContext).load(profile.imageUri).placeholder(R.drawable.person).into(imageEdit)
 
             if (image_uri != null) {
                 try {
                     profile.imageUri = BitmapUtils.saveToInternalStorage(
                         applicationContext,
-                        BitmapUtils.uriToBitmap(contentResolver, image_uri!!)!!
+                        BitmapUtils.uriToBitmap(contentResolver, image_uri!!
+                        )!!,profile.imageUri
                     )!!
-                    println("Setting imageUri")
                 } catch (_: IOException) {
 
                 }
