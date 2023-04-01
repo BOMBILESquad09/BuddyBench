@@ -27,9 +27,9 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 
-class Profile(var fullName: String?, var nickname: String?, var email: String, var location: String?, var birthday: LocalDate, var reliability: Int, var imageUri: Uri?, var sports: List<Sport> ) {
+class Profile(var fullName: String?, var nickname: String?, var email: String, var location: String?, var birthdate: LocalDate, var reliability: Int, var imageUri: Uri?, var sports: List<Sport> ) {
     var matchesPlayed:Int = sports.fold(0){a: Int, b: Sport -> a + b.matchesPlayed }
-    var age:Int = ChronoUnit.YEARS.between(birthday, LocalDate.now()).toInt()
+    var age:Int = ChronoUnit.YEARS.between(birthdate, LocalDate.now()).toInt()
     var matchesOrganized: Int = sports.fold(0){a:Int, b: Sport -> a + b.matchesOrganized}
     companion object {
 
@@ -37,7 +37,7 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
             val fullName = jsonProfile.getString("fullName", "No name")
             val nickname = jsonProfile.getString("nickname", "No nickname")
             val email = jsonProfile.getString("email", "No email")
-            val birthday = LocalDate.parse(jsonProfile.getString("birthday", "27/04/1999"),  DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            val birthday = LocalDate.parse(jsonProfile.getString("birthdate", "27/04/1999"),  DateTimeFormatter.ofPattern("dd/MM/yyyy"))
             val location = jsonProfile.getString("location", "No location")
             val reliability = jsonProfile.getInt("reliability",0)
             var imageUri:Uri? = null
@@ -80,7 +80,7 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
         json.put("nickname", nickname)
         json.put("location", location)
         json.put("email", email)
-        json.put("birthday", birthday.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+        json.put("birthdate", birthdate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
         json.put("reliability", reliability)
         if (imageUri == null){
            json.put("imageUri", JSONObject.NULL)

@@ -35,7 +35,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     // ** Data
     private lateinit var profile: Profile
     private lateinit var datePicker: DatePickerDialog
-    private var birthdayListener:MutableLiveData<LocalDate> = MutableLiveData()
+    private var birthdateListener:MutableLiveData<LocalDate> = MutableLiveData()
     // ** Profile Image
     private val launcherCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -93,14 +93,14 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
 
 
-        birthdayListener.value = profile.birthday
+        birthdateListener.value = profile.birthdate
 
-        val birthdayButtonEdit = findViewById<Button>(R.id.birthdayEditButton)
+        val birthdayButtonEdit = findViewById<Button>(R.id.birthdateEditButton)
 
         // TODO: Add birthday DatePicker
-        birthdayListener.observe(this){
+        birthdateListener.observe(this){
             birthdayButtonEdit.text = it.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-            profile.birthday = it
+            profile.birthdate = it
         }
         // ** Profile Image
         imageEdit = findViewById(R.id.imageEdit)
@@ -193,7 +193,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         if (!validateString(localityEdit.text.toString())) {
             return false
         }
-        if (birthdayListener.value == null) {
+        if (birthdateListener.value == null) {
             return false
         }
 
@@ -211,7 +211,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             profile.fullName = fullNameEdit.text.toString()
             profile.nickname = nicknameEdit.text.toString()
             profile.location = localityEdit.text.toString()
-            profile.birthday = birthdayListener.value!!
+            profile.birthdate = birthdateListener.value!!
             profile.email = emailEdit.text.toString()
             Picasso.with(applicationContext).load(profile.imageUri).placeholder(R.drawable.person).into(imageEdit)
             if (imageUri != null) {
@@ -246,8 +246,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     }
 
     fun showDatePickerDialog(v: View) {
-        val myDateListener = DatePickerDialog.OnDateSetListener { _, year, month, day -> birthdayListener.value = LocalDate.of(year,month,day) }
-        datePicker = DatePickerDialog(this, myDateListener, profile.birthday.year, profile.birthday.monthValue, profile.birthday.dayOfMonth)
+        val myDateListener = DatePickerDialog.OnDateSetListener { _, year, month, day -> birthdateListener.value = LocalDate.of(year,month,day) }
+        datePicker = DatePickerDialog(this, myDateListener, profile.birthdate.year, profile.birthdate.monthValue, profile.birthdate.dayOfMonth)
         datePicker.show()
     }
 
