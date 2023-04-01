@@ -12,6 +12,7 @@ import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.cardview.widget.CardView
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
 import com.squareup.picasso.Picasso
@@ -104,15 +105,15 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         imageEdit.setOnClickListener {
             openGallery()
         }
-        sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
+        sportContainer = findViewById(R.id.sportsContainerEdit)
         sportContainer.removeAllViews()
 
         // ** Populate sport cards
-        profile.populateSportCardsEdit(this, sportContainer, onDeleteSport = { saveEdit() })
+        profile.populateSportCardsEdit(this, sportContainer, onDeleteSport = { saveEdit() }, onSkillSelected = { saveEdit() })
 
         // ** Add Sports Button
         addSportButton = findViewById(R.id.add_sport_button)
-        addSportButton.setOnClickListener() { openSportSelectionDialog() }
+        addSportButton.setOnClickListener { openSportSelectionDialog() }
         checkCameraPermission()
     }
 
@@ -150,9 +151,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, image_uri!!)
         imageEdit.setImageBitmap(bitmap)
         Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
-
     }
-
 
     private fun checkCameraPermission(): Boolean {
 

@@ -44,6 +44,7 @@ enum class Skills {
                 "SKILLED" -> SKILLED
                 "PROFESSIONAL" -> PROFESSIONAL
                 "WORLD_CLASS" -> WORLD_CLASS
+                "WORLD CLASS" -> WORLD_CLASS
                 else -> null
             }
         }
