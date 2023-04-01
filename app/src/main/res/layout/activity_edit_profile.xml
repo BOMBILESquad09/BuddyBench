@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,14 +28,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingHorizontal="16dp"
-                >
+                android:paddingHorizontal="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="36dp"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:padding="36dp">
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cardView"
@@ -116,8 +114,8 @@
                             android:fontFamily="@font/montserrat_medium_500"
                             android:gravity="center"
                             android:hint="Nickname"
-                            android:textSize="16sp"
-                            android:singleLine="true"/>
+                            android:singleLine="true"
+                            android:textSize="16sp" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -135,10 +133,10 @@
                                 android:autofillHints="name"
                                 android:fontFamily="@font/montserrat_semibold_600"
                                 android:hint="Locality"
+                                android:singleLine="true"
                                 android:textAlignment="textStart"
                                 android:textSize="16sp"
-                                app:drawableRightCompat="@drawable/location"
-                                android:singleLine="true"/>
+                                app:drawableRightCompat="@drawable/location" />
 
                             <View
                                 android:layout_width="0dp"
@@ -147,17 +145,14 @@
 
                             <EditText
                                 android:id="@+id/birthdayEdit"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="0dp"
-                                android:layout_weight="1"
-                                android:autofillHints=""
-                                android:fontFamily="@font/montserrat_semibold_600"
                                 android:hint="Birthday"
                                 android:inputType="date"
+                                android:singleLine="true"
                                 android:textAlignment="textStart"
                                 android:textSize="16sp"
-                                android:singleLine="true"/>
+                                android:layout_height="match_parent"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"/>
 
                         </LinearLayout>
 
@@ -178,8 +173,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_weight="1"
-                            android:gravity="start"
                             android:fontFamily="@font/montserrat_semibold_600"
+                            android:gravity="start"
                             android:text="@string/sports_section"
                             android:textSize="20sp" />
 
@@ -188,12 +183,12 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
-                            android:gravity="center"
-                            android:padding="8dp"
-                            android:src="@drawable/round_add_24_white"
                             android:background="@drawable/rounded_shape"
                             android:backgroundTint="@color/md_theme_light_primary"
-                            android:contentDescription="@string/add" />
+                            android:contentDescription="@string/add"
+                            android:gravity="center"
+                            android:padding="8dp"
+                            android:src="@drawable/round_add_24_white" />
 
                     </LinearLayout>
 

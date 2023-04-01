@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.allViews
 import androidx.core.widget.doOnTextChanged
 import com.squareup.picasso.Picasso
 import it.polito.mad.buddybench.R
@@ -117,7 +118,7 @@ class EditProfileActivity : AppCompatActivity() {
         sportContainer.removeAllViews()
 
         // ** Populate sport cards
-        profile.populateSportCards(this, sportContainer)
+        profile.populateSportCardsEdit(this, sportContainer)
 
         // ** Add Sports Button
         addSportButton = findViewById(R.id.add_sport_button)
@@ -203,6 +204,8 @@ class EditProfileActivity : AppCompatActivity() {
     private fun saveEdit() {
         val sharedPref: SharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
+            val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
+
             val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
             val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
             val localityEdit = findViewById<EditText>(R.id.localityEdit)

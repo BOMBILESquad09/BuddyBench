@@ -2,11 +2,14 @@ package it.polito.mad.buddybench.classes
 
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.Uri
 import android.provider.CalendarContract.EventDays
 import android.provider.ContactsContract.CommonDataKinds.Email
 import android.provider.Settings.Global.getString
 import android.view.LayoutInflater
+import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -130,6 +133,48 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
         }
 
 
+    }
+
+    fun populateSportCardsEdit(context: AppCompatActivity, sportContainer: LinearLayout) {
+
+        if (this.sports.isEmpty()) {
+            val emptySportsText = TextView(context)
+            emptySportsText.text = context.getString(R.string.no_sports)
+            sportContainer.addView(emptySportsText)
+
+            return
+        }
+
+
+        for (sport in this.sports) {
+            val sportCard = LayoutInflater.from(context).inflate(R.layout.card_sport_edit, null, false);
+
+            // TODO: Add listner to delete button
+            val deleteButton = sportCard.findViewById<FrameLayout>(R.id.button_close)
+            deleteButton.setOnClickListener {
+                val newSports = this.sports.filter { sportInList -> sportInList.name != sport.name}
+                this.sports = newSports
+                sportContainer.removeAllViews()
+                this.populateSportCardsEdit(context, sportContainer)
+            }
+
+            // ** Sport card dynamic values
+            val sportName = sportCard.findViewById<TextView>(R.id.sport_card_name);
+            val sportIcon = sportCard.findViewById<ImageView>(R.id.sport_card_icon);
+            val sportSkillLevel = sportCard.findViewById<CardView>(R.id.skill_level_card)
+            val sportSkillLevelText = sportCard.findViewById<TextView>(R.id.skill_level_card_text)
+            val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
+
+            sportName.text = Utils.capitalize(sport.name.toString())
+            sportIcon.setImageResource(Sports.sportToIconDrawable(sport.name))
+            // TODO: Non funziona
+            // sportSkillLevel.setBackgroundColor(Skills.skillToColor(sport.skill))
+            sportSkillLevelText.text = Utils.capitalize(sport.skill.toString())
+            sportGamesPlayed.text = String.format(context.resources.getString(R.string.games_played), sport.matchesPlayed)
+
+            // ** Add card to container
+            sportContainer.addView(sportCard)
+        }
     }
 
 
