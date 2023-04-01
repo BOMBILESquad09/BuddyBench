@@ -1,16 +1,10 @@
 package it.polito.mad.buddybench.activities
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.*
 import android.content.pm.PackageManager
-import android.content.res.ColorStateList
-import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.Color
-import android.icu.util.LocaleData
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -19,13 +13,9 @@ import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-
-import androidx.core.graphics.drawable.DrawableCompat
-import androidx.core.view.allViews
 import androidx.core.widget.doOnTextChanged
 import com.squareup.picasso.Picasso
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.BitmapUtils
@@ -33,16 +23,11 @@ import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.classes.Sport
 import it.polito.mad.buddybench.dialogs.EditSportsDialog
 import org.json.JSONObject
-import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateString
-import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateLocalDate
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColor
-import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColorDate
-import it.polito.mad.buddybench.dialogs.MyDateListener
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
 
@@ -261,7 +246,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     }
 
     fun showDatePickerDialog(v: View) {
-        val myDateListener = MyDateListener(birthdayListener)
+        val myDateListener = DatePickerDialog.OnDateSetListener { _, year, month, day -> birthdayListener.value = LocalDate.of(year,month,day) }
         datePicker = DatePickerDialog(this, myDateListener, profile.birthday.year, profile.birthday.monthValue, profile.birthday.dayOfMonth)
         datePicker.show()
     }

@@ -59,7 +59,7 @@ class ShowProfileActivity : AppCompatActivity() {
         val reliabilityTv = findViewById<TextView>(R.id.reliabilityView)
         reliabilityTv.text = profile.reliability.toString()
 
-        var iv = findViewById<ImageView>(R.id.imageEdit)
+        val iv = findViewById<ImageView>(R.id.imageEdit)
         println(profile.imageUri)
         Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(iv)
 
