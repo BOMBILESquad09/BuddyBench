@@ -10,6 +10,7 @@ import android.util.Base64
 import androidx.appcompat.app.AppCompatActivity
 import it.polito.mad.buddybench.R
 import java.io.*
+import java.time.LocalDateTime
 
 
 class BitmapUtils(){
@@ -65,9 +66,10 @@ class BitmapUtils(){
         fun saveToInternalStorage(applicationContext: Context, bitmapImage: Bitmap): Uri? {
             val profileImageName =  applicationContext.getString(R.string.profileImage)
             val imageDir = applicationContext.getString(R.string.imageDir)
+            val value = LocalDateTime.now()
             val cw = ContextWrapper(applicationContext)
             val directory: File = cw.getDir(imageDir, AppCompatActivity.MODE_PRIVATE)
-            val mypath = File(directory,profileImageName)
+            val mypath = File(directory,profileImageName + value)
             var fos: FileOutputStream? = null
             try {
                 fos = FileOutputStream(mypath)
@@ -85,7 +87,7 @@ class BitmapUtils(){
                 }
             }
 
-            return Uri.parse("${directory.absolutePath}/$profileImageName")
+            return Uri.parse("${directory.absolutePath}/$profileImageName$value")
         }
     }
 
