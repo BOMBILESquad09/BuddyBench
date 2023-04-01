@@ -38,13 +38,14 @@ enum class Sports {
             }
         }
 
-        fun getStringValues(): MutableList<CharSequence> {
+        fun getStringValues(excludeSports: List<Sports> = listOf()): Array<CharSequence> {
             val valuesArray = mutableListOf<CharSequence>()
-            for ((sport, index) in Sports.values().withIndex()) {
+            for (sport in Sports.values()) {
+                if (excludeSports.indexOf(sport) != -1) continue
                 valuesArray.add(sport.toString())
             }
 
-            return valuesArray
+            return valuesArray.toTypedArray()
         }
 
 
