@@ -51,7 +51,6 @@ class BitmapUtils(){
             return null
         }
 
-
         fun getResizedBitmap(image: Bitmap, maxSize: Int): Bitmap? {
             var width = image.width
             var height = image.height
