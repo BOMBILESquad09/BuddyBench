@@ -1,50 +1,35 @@
 package it.polito.mad.buddybench.activities
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
 import android.content.pm.PackageManager
-import android.content.res.ColorStateList
-import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.Color
-import android.icu.util.LocaleData
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.*
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-
-import androidx.core.graphics.drawable.DrawableCompat
-import androidx.core.view.allViews
 import androidx.core.widget.doOnTextChanged
-import com.squareup.picasso.Picasso
 import androidx.fragment.app.DialogFragment
+import com.squareup.picasso.Picasso
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.classes.Sport
+import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColor
+import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColorDate
+import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateLocalDate
+import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateString
 import it.polito.mad.buddybench.dialogs.EditSportsDialog
+import it.polito.mad.buddybench.enums.Skills
+import it.polito.mad.buddybench.enums.Sports
 import org.json.JSONObject
-import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateString
-import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateLocalDate
-import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColor
-import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColorDate
-import it.polito.mad.buddybench.enums.Skills
-import it.polito.mad.buddybench.enums.Sports
 
 class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogListener {
     // ** Data

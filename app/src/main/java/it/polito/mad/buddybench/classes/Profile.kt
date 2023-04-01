@@ -5,11 +5,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.view.LayoutInflater
-import android.widget.Button
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.view.MenuItem
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import it.polito.mad.buddybench.R
@@ -168,6 +165,24 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
             val sportSkillLevel = sportCard.findViewById<CardView>(R.id.skill_level_card)
             val sportSkillLevelText = sportCard.findViewById<TextView>(R.id.skill_level_card_text)
             val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
+
+            // ** Sport skill level edit
+            sportSkillLevel.setOnClickListener() {
+                //Creating the instance of PopupMenu
+                val popup = PopupMenu(context, sportSkillLevel)
+                popup.menuInflater.inflate(R.menu.skill_level_edit, popup.menu)
+
+                popup.setOnMenuItemClickListener { item ->
+                    Toast.makeText(
+                        context,
+                        "You Clicked : " + item.title,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    true
+                }
+
+                popup.show()
+            }
 
             sportName.text = Utils.capitalize(sport.name.toString())
             sportIcon.setImageResource(Sports.sportToIconDrawable(sport.name))

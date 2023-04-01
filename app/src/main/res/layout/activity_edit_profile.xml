@@ -209,6 +209,8 @@
                             android:orientation="horizontal"
                             android:paddingTop="20dp">
 
+                            <include layout="@layout/card_sport_edit" />
+
                         </LinearLayout>
 
                     </HorizontalScrollView>

@@ -83,11 +83,3 @@ class EditSportsDialog: DialogFragment() {
     }
 
 }
-
-/*
-val inflater = requireActivity().layoutInflater
-            builder.setView(inflater.inflate(R.layout.dialog_sport_selection, null))
-                .setPositiveButton("Save", DialogInterface.OnClickListener {
-                    dialogInterface, id -> println("Dialog save clicked")
-                }).setNegativeButton("Cancel", DialogInterface.OnClickListener { dialogInterface, id -> println("Cancel clicked") })
- */

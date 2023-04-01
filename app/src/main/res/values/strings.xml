@@ -27,5 +27,9 @@
     <string name="profileImage">profile%1$s.png</string>
     <string name="imageDir">imageDir</string>
     <string name="errorOnEdit">Please fill the highlighted fields!</string>
+    <string name="amateur">Amateur</string>
+    <string name="skilled">Skilled</string>
+    <string name="professional">Professional</string>
+    <string name="world_class">World Class</string>
 
 </resources>
