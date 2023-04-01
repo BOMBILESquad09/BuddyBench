@@ -24,12 +24,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.allViews
 import androidx.core.widget.doOnTextChanged
-import androidx.fragment.app.DialogFragment
+import com.squareup.picasso.Picasso
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
-import it.polito.mad.buddybench.classes.Sport
 import it.polito.mad.buddybench.dialogs.EditSportsDialog
 import org.json.JSONObject
 import java.io.File
@@ -41,10 +41,8 @@ import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateString
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateLocalDate
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColor
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColorDate
-import it.polito.mad.buddybench.enums.Skills
-import it.polito.mad.buddybench.enums.Sports
 
-class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogListener {
+class EditProfileActivity : AppCompatActivity() {
     // ** Data
     private lateinit var profile: Profile
 
@@ -64,7 +62,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
     // ** Sports
     private lateinit var addSportButton: ImageButton
-    private lateinit var sportContainer: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,18 +105,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
         // ** Profile Image
         imageEdit = findViewById(R.id.imageEdit)
-        if (profile.imageUri != null) {
-            try {
-                imageEdit.setImageURI(profile.imageUri)
+        Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
 
-            } catch (_: java.lang.Exception) {
-                /*maybe the image has been deleted
-                * retrieving the view we restore the default image
-                * otherwise blank one will appear*/
-                imageEdit = findViewById(R.id.imageView)
-
-            }
-        }
         imageEdit.setOnLongClickListener {
             openCamera()
             true
@@ -127,15 +114,16 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         imageEdit.setOnClickListener {
             openGallery()
         }
-        sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
+        val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
         sportContainer.removeAllViews()
 
         // ** Populate sport cards
-        profile.populateSportCards(this, sportContainer)
+        profile.populateSportCardsEdit(this, sportContainer)
 
         // ** Add Sports Button
         addSportButton = findViewById(R.id.add_sport_button)
         addSportButton.setOnClickListener() { openSportSelectionDialog() }
+        checkCameraPermission()
     }
 
     private fun openGallery() {
@@ -163,6 +151,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         if (response.resultCode != Activity.RESULT_OK) return
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, image_uri!!)
         imageEdit.setImageBitmap(bitmap)
+        Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
+
     }
 
     private fun onGalleryImageReturned(response: androidx.activity.result.ActivityResult) {
@@ -170,16 +160,17 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         image_uri = response.data?.data
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, image_uri!!)
         imageEdit.setImageBitmap(bitmap)
+        Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
+
     }
 
 
     private fun checkCameraPermission(): Boolean {
-        println("Jacopo e' bello")
+
         if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED || checkSelfPermission(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_DENIED
         ) {
-            println("Jacopo e' stupendo")
             val permission =
                 arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             requestPermissions(permission, 121)
@@ -211,9 +202,10 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     }
 
     private fun saveEdit() {
-        val sharedPref: SharedPreferences =
-            getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        val sharedPref: SharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
+            val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
+
             val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
             val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
             val localityEdit = findViewById<EditText>(R.id.localityEdit)
@@ -225,29 +217,29 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
                 findViewById<EditText>(R.id.birthdayEdit).text.toString(),
                 DateTimeFormatter.ofPattern("dd/MM/yyyy")
             )
+            Picasso.with(applicationContext).load(profile.imageUri).placeholder(R.drawable.person).into(imageEdit)
 
             if (image_uri != null) {
                 try {
                     profile.imageUri = BitmapUtils.saveToInternalStorage(
                         applicationContext,
-                        BitmapUtils.uriToBitmap(contentResolver, image_uri!!)!!
+                        BitmapUtils.uriToBitmap(contentResolver, image_uri!!
+                        )!!,profile.imageUri
                     )!!
-                    println("Setting imageUri")
                 } catch (_: IOException) {
 
                 }
             }
-
             val newProfileJSON = profile.toJSON().toString()
             putString("profile", newProfileJSON)
             intent.putExtra("newProfile", newProfileJSON)
             apply()
-        }
-    }
 
-    private fun finishActivity() {
-        setResult(Activity.RESULT_OK, intent)
-        finish()
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+        }
+
+
     }
 
     /**
@@ -280,34 +272,9 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
                     return false
                 }
                 saveEdit()
-                finishActivity()
                 return true
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    override fun onDialogPositiveClick(dialog: DialogFragment, selectedItems: ArrayList<Sports?>) {
-        // ** Add new selected sports to user profile (and save to shared preferences)
-        val newSports = mutableListOf<Sport>()
-        val alreadySelectedSports = profile.sports
-        for (selectedSport in selectedItems) {
-            try {
-                checkNotNull(selectedSport)
-                val newSport: Sport = Sport(selectedSport, Skills.NEWBIE, 0)
-                newSports.add(newSport)
-            } catch (e: java.lang.IllegalStateException) {
-                continue
-            }
-        }
-        profile.sports = newSports.plus(alreadySelectedSports)
-        println("Profile Sports After ADD: ${profile.sports}")
-        profile.populateSportCards(this, sportContainer)
-
-        saveEdit()
-    }
-
-    override fun onDialogNegativeClick(dialog: DialogFragment) {
-        return
     }
 }

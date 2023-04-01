@@ -4,25 +4,37 @@ package it.polito.mad.buddybench.classes
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
+import android.provider.CalendarContract.EventDays
+import android.provider.ContactsContract.CommonDataKinds.Email
+import android.provider.Settings.Global.getString
 import android.view.LayoutInflater
+import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.Typeface
 import it.polito.mad.buddybench.R
-import it.polito.mad.buddybench.classes.JSONUtils.Companion.getInt
-import it.polito.mad.buddybench.classes.JSONUtils.Companion.getJSONArray
-import it.polito.mad.buddybench.classes.JSONUtils.Companion.getString
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.Utils
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.File
+import it.polito.mad.buddybench.classes.JSONUtils.Companion.getInt
+import it.polito.mad.buddybench.classes.JSONUtils.Companion.getString
+import it.polito.mad.buddybench.classes.JSONUtils.Companion.getJSONArray
+import java.text.DateFormat
+import java.time.Duration
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalAmount
+import java.util.Calendar
 
 
 class Profile(var fullName: String?, var nickname: String?, var email: String, var location: String?, var birthday: LocalDate, var matchesOrganized: Int?, var reliability: Int, var imageUri: Uri?, var sports: List<Sport> ) {
@@ -62,14 +74,6 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
                     Sport(Sports.FOOTBALL, Skills.NEWBIE, 7)
                 )).toJSON().toString()
         }
-
-        fun getProfileFromSharedPreferences(context: Context): Profile {
-            val sharedPref: SharedPreferences = context.getSharedPreferences(
-                context.getString(R.string.preference_file_key),
-                Context.MODE_PRIVATE
-            )
-            return fromJSON(JSONObject(sharedPref.getString("profile", mockJSON())!!))
-        }
     }
 
     fun toJSON(): JSONObject {
@@ -99,9 +103,6 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
      * @param sportContainer The container layout in which to add the cards
      */
     fun populateSportCards(context: AppCompatActivity, sportContainer: LinearLayout) {
-
-        sportContainer.removeAllViews()
-
         if (this.sports.isEmpty()) {
             val emptySportsText = TextView(context)
             emptySportsText.text = context.getString(R.string.no_sports)
@@ -130,15 +131,52 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
             // ** Add card to container
             sportContainer.addView(sportCard)   
         }
+
+
     }
 
-    fun getSportsEnum(): List<Sports> {
-        val sportsList = mutableListOf<Sports>()
-        println("getSportsEnum (this.sports): ${this.sports}")
-        for (sport in this.sports) {
-            println("getSportsEnum: $sport")
-            sportsList.add(sport.name)
+    fun populateSportCardsEdit(context: AppCompatActivity, sportContainer: LinearLayout) {
+
+        if (this.sports.isEmpty()) {
+            val emptySportsText = TextView(context)
+            emptySportsText.text = context.getString(R.string.no_sports)
+            sportContainer.addView(emptySportsText)
+
+            return
         }
-        return sportsList
+
+
+        for (sport in this.sports) {
+            val sportCard = LayoutInflater.from(context).inflate(R.layout.card_sport_edit, null, false);
+
+            // TODO: Add listner to delete button
+            val deleteButton = sportCard.findViewById<FrameLayout>(R.id.button_close)
+            deleteButton.setOnClickListener {
+                val newSports = this.sports.filter { sportInList -> sportInList.name != sport.name}
+                this.sports = newSports
+                sportContainer.removeAllViews()
+                this.populateSportCardsEdit(context, sportContainer)
+            }
+
+            // ** Sport card dynamic values
+            val sportName = sportCard.findViewById<TextView>(R.id.sport_card_name);
+            val sportIcon = sportCard.findViewById<ImageView>(R.id.sport_card_icon);
+            val sportSkillLevel = sportCard.findViewById<CardView>(R.id.skill_level_card)
+            val sportSkillLevelText = sportCard.findViewById<TextView>(R.id.skill_level_card_text)
+            val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
+
+            sportName.text = Utils.capitalize(sport.name.toString())
+            sportIcon.setImageResource(Sports.sportToIconDrawable(sport.name))
+            // TODO: Non funziona
+            // sportSkillLevel.setBackgroundColor(Skills.skillToColor(sport.skill))
+            sportSkillLevelText.text = Utils.capitalize(sport.skill.toString())
+            sportGamesPlayed.text = String.format(context.resources.getString(R.string.games_played), sport.matchesPlayed)
+
+            // ** Add card to container
+            sportContainer.addView(sportCard)
+        }
     }
+
+
+
 }

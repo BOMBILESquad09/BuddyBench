@@ -5,11 +5,13 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.icu.util.LocaleData
 import android.net.Uri
 import android.util.Base64
 import androidx.appcompat.app.AppCompatActivity
 import it.polito.mad.buddybench.R
 import java.io.*
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 
@@ -25,6 +27,7 @@ class BitmapUtils(){
                 return image
             } catch (e: IOException) {
                 e.printStackTrace()
+                throw e
             }
             return null
         }
@@ -62,13 +65,13 @@ class BitmapUtils(){
             return Bitmap.createScaledBitmap(image, width, height, true)
         }
 
-        fun saveToInternalStorage(applicationContext: Context, bitmapImage: Bitmap): Uri? {
-            val profileImageName =  applicationContext.getString(R.string.profileImage)
+        fun saveToInternalStorage(applicationContext: Context, bitmapImage: Bitmap, previousPath: Uri? = null): Uri? {
+            val profileImageName =  applicationContext.getString(R.string.profileImage).format(LocalDateTime.now())
             val imageDir = applicationContext.getString(R.string.imageDir)
-            val value = LocalDateTime.now()
+
             val cw = ContextWrapper(applicationContext)
             val directory: File = cw.getDir(imageDir, AppCompatActivity.MODE_PRIVATE)
-            val mypath = File(directory,profileImageName + value)
+            val mypath = File(directory,profileImageName)
             var fos: FileOutputStream? = null
             try {
                 fos = FileOutputStream(mypath)
@@ -85,8 +88,19 @@ class BitmapUtils(){
                     return null
                 }
             }
+            if (previousPath != null){
+                deleteFile(previousPath.toString())
+            }
+            return Uri.parse("${directory.absolutePath}/$profileImageName")
+        }
 
-            return Uri.parse("${directory.absolutePath}/$profileImageName$value")
+        private fun deleteFile(filePath: String){
+            val file: File = File(filePath)
+            try {
+                file.delete()
+            } catch (_: IOException){
+
+            }
         }
     }
 
