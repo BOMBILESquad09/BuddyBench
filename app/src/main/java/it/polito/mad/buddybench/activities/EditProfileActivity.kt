@@ -3,6 +3,7 @@ package it.polito.mad.buddybench.activities
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.*
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
@@ -14,11 +15,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.*
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -40,6 +37,7 @@ import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateString
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateLocalDate
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColor
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColorDate
+import it.polito.mad.buddybench.dialogs.DatePickerFragment
 
 class EditProfileActivity : AppCompatActivity() {
     // ** Data
@@ -87,6 +85,12 @@ class EditProfileActivity : AppCompatActivity() {
 
         }
         nicknameEdit.setText(profile.nickname)
+
+        val emailEdit = findViewById<EditText>(R.id.emailEdit)
+        emailEdit.doOnTextChanged { text, _, _, _ ->
+            changeColor(emailEdit, text.toString(), resources)
+        }
+        emailEdit.setText(profile.email)
 
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
         localityEdit.setText(profile.location)
@@ -181,13 +185,17 @@ class EditProfileActivity : AppCompatActivity() {
     private fun formValidation(): Boolean {
         val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
+        val emailEdit = findViewById<EditText>(R.id.emailEdit)
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
-        val birthdayEdit = findViewById<EditText>(R.id.birthdayEdit)
+        val birthdayEdit = findViewById<TextView>(R.id.birthdayEdit)
 
         if (!validateString(fullNameEdit.text.toString())) {
             return false
         }
         if (!validateString(nicknameEdit.text.toString())) {
+            return false
+        }
+        if (!validateString(emailEdit.text.toString())) {
             return false
         }
         if (!validateString(localityEdit.text.toString())) {
@@ -205,13 +213,15 @@ class EditProfileActivity : AppCompatActivity() {
         with(sharedPref.edit()) {
             val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
             val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
+            val emailEdit = findViewById<EditText>(R.id.emailEdit)
             val localityEdit = findViewById<EditText>(R.id.localityEdit)
-            val birthdayEdit = findViewById<EditText>(R.id.birthdayEdit)
+            val birthdayEdit = findViewById<TextView>(R.id.birthdayEdit)
             profile.fullName = fullNameEdit.text.toString()
             profile.nickname = nicknameEdit.text.toString()
+            profile.email = emailEdit.text.toString()
             profile.location = localityEdit.text.toString()
             profile.birthday = LocalDate.parse(
-                findViewById<EditText>(R.id.birthdayEdit).text.toString(),
+                findViewById<TextView>(R.id.birthdayEdit).text.toString(),
                 DateTimeFormatter.ofPattern("dd/MM/yyyy")
             )
             Picasso.with(applicationContext).load(profile.imageUri).placeholder(R.drawable.person).into(imageEdit)
@@ -245,6 +255,11 @@ class EditProfileActivity : AppCompatActivity() {
     private fun openSportSelectionDialog() {
         val dialog = EditSportsDialog()
         dialog.show(supportFragmentManager, "edit_sports")
+    }
+
+    fun showDatePickerDialog(v: View) {
+        val newFragment = DatePickerFragment()
+        newFragment.show(supportFragmentManager, "datePicker")
     }
 
 

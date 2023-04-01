@@ -62,6 +62,9 @@ class ShowProfileActivity : AppCompatActivity() {
         val ageTv = findViewById<TextView>(R.id.ageView)
         ageTv.text = getString(R.string.age).format(profile.age)
 
+        val emailTv = findViewById<TextView>(R.id.emailView)
+        emailTv.text = profile.email
+
         val locationTv = findViewById<TextView>(R.id.locationView)
         locationTv.text = profile.location
 
