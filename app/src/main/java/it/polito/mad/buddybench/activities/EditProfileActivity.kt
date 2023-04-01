@@ -27,9 +27,11 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.allViews
 import androidx.core.widget.doOnTextChanged
 import com.squareup.picasso.Picasso
+import androidx.fragment.app.DialogFragment
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
+import it.polito.mad.buddybench.classes.Sport
 import it.polito.mad.buddybench.dialogs.EditSportsDialog
 import org.json.JSONObject
 import java.io.File
@@ -41,8 +43,10 @@ import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateString
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateLocalDate
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColor
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColorDate
+import it.polito.mad.buddybench.enums.Skills
+import it.polito.mad.buddybench.enums.Sports
 
-class EditProfileActivity : AppCompatActivity() {
+class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogListener {
     // ** Data
     private lateinit var profile: Profile
 
@@ -62,6 +66,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     // ** Sports
     private lateinit var addSportButton: ImageButton
+    private lateinit var sportContainer: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,11 +119,11 @@ class EditProfileActivity : AppCompatActivity() {
         imageEdit.setOnClickListener {
             openGallery()
         }
-        val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
+        sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
         sportContainer.removeAllViews()
 
         // ** Populate sport cards
-        profile.populateSportCardsEdit(this, sportContainer)
+        profile.populateSportCardsEdit(this, sportContainer, onDeleteSport = { saveEdit() })
 
         // ** Add Sports Button
         addSportButton = findViewById(R.id.add_sport_button)
@@ -152,7 +157,6 @@ class EditProfileActivity : AppCompatActivity() {
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, image_uri!!)
         imageEdit.setImageBitmap(bitmap)
         Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
-
     }
 
     private fun onGalleryImageReturned(response: androidx.activity.result.ActivityResult) {
@@ -214,7 +218,7 @@ class EditProfileActivity : AppCompatActivity() {
             profile.nickname = nicknameEdit.text.toString()
             profile.location = localityEdit.text.toString()
             profile.birthday = LocalDate.parse(
-                findViewById<EditText>(R.id.birthdayEdit).text.toString(),
+                birthdayEdit.text.toString(),
                 DateTimeFormatter.ofPattern("dd/MM/yyyy")
             )
             Picasso.with(applicationContext).load(profile.imageUri).placeholder(R.drawable.person).into(imageEdit)
@@ -230,16 +234,17 @@ class EditProfileActivity : AppCompatActivity() {
 
                 }
             }
+
             val newProfileJSON = profile.toJSON().toString()
             putString("profile", newProfileJSON)
             intent.putExtra("newProfile", newProfileJSON)
             apply()
-
-            setResult(Activity.RESULT_OK, intent)
-            finish()
         }
+    }
 
-
+    private fun finishActivity() {
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 
     /**
@@ -272,9 +277,34 @@ class EditProfileActivity : AppCompatActivity() {
                     return false
                 }
                 saveEdit()
+                finishActivity()
                 return true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onDialogPositiveClick(dialog: DialogFragment, selectedItems: ArrayList<Sports?>) {
+        // ** Add new selected sports to user profile (and save to shared preferences)
+        val newSports = mutableListOf<Sport>()
+        val alreadySelectedSports = profile.sports
+        for (selectedSport in selectedItems) {
+            try {
+                checkNotNull(selectedSport)
+                val newSport: Sport = Sport(selectedSport, Skills.NEWBIE, 0)
+                newSports.add(newSport)
+            } catch (e: java.lang.IllegalStateException) {
+                continue
+            }
+        }
+        profile.sports = newSports.plus(alreadySelectedSports)
+        println("Profile Sports After ADD: ${profile.sports}")
+        saveEdit()
+
+        profile.populateSportCardsEdit(this, sportContainer, onDeleteSport = { saveEdit() })
+    }
+
+    override fun onDialogNegativeClick(dialog: DialogFragment) {
+        return
     }
 }

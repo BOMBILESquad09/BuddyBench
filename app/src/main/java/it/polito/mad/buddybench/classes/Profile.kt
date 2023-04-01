@@ -4,9 +4,6 @@ package it.polito.mad.buddybench.classes
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
-import android.provider.CalendarContract.EventDays
-import android.provider.ContactsContract.CommonDataKinds.Email
-import android.provider.Settings.Global.getString
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.FrameLayout
@@ -15,26 +12,19 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.Typeface
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.classes.JSONUtils.Companion.getInt
+import it.polito.mad.buddybench.classes.JSONUtils.Companion.getJSONArray
+import it.polito.mad.buddybench.classes.JSONUtils.Companion.getString
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.Utils
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.File
-import it.polito.mad.buddybench.classes.JSONUtils.Companion.getInt
-import it.polito.mad.buddybench.classes.JSONUtils.Companion.getString
-import it.polito.mad.buddybench.classes.JSONUtils.Companion.getJSONArray
-import java.text.DateFormat
-import java.time.Duration
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import java.time.temporal.TemporalAmount
-import java.util.Calendar
 
 
 class Profile(var fullName: String?, var nickname: String?, var email: String, var location: String?, var birthday: LocalDate, var matchesOrganized: Int?, var reliability: Int, var imageUri: Uri?, var sports: List<Sport> ) {
@@ -74,6 +64,14 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
                     Sport(Sports.FOOTBALL, Skills.NEWBIE, 7)
                 )).toJSON().toString()
         }
+
+        fun getProfileFromSharedPreferences(context: Context): Profile {
+            val sharedPref: SharedPreferences = context.getSharedPreferences(
+                context.getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE
+            )
+            return fromJSON(JSONObject(sharedPref.getString("profile", mockJSON())!!))
+        }
     }
 
     fun toJSON(): JSONObject {
@@ -103,6 +101,9 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
      * @param sportContainer The container layout in which to add the cards
      */
     fun populateSportCards(context: AppCompatActivity, sportContainer: LinearLayout) {
+
+        sportContainer.removeAllViews()
+
         if (this.sports.isEmpty()) {
             val emptySportsText = TextView(context)
             emptySportsText.text = context.getString(R.string.no_sports)
@@ -135,7 +136,9 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
 
     }
 
-    fun populateSportCardsEdit(context: AppCompatActivity, sportContainer: LinearLayout) {
+    fun populateSportCardsEdit(context: AppCompatActivity, sportContainer: LinearLayout, onDeleteSport: () -> Unit = {}) {
+
+        sportContainer.removeAllViews()
 
         if (this.sports.isEmpty()) {
             val emptySportsText = TextView(context)
@@ -147,14 +150,15 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
 
 
         for (sport in this.sports) {
+            println("Sport: ${sport.name}")
             val sportCard = LayoutInflater.from(context).inflate(R.layout.card_sport_edit, null, false);
 
-            // TODO: Add listner to delete button
+            // TODO: Add listener to delete button
             val deleteButton = sportCard.findViewById<FrameLayout>(R.id.button_close)
             deleteButton.setOnClickListener {
                 val newSports = this.sports.filter { sportInList -> sportInList.name != sport.name}
                 this.sports = newSports
-                sportContainer.removeAllViews()
+                onDeleteSport()
                 this.populateSportCardsEdit(context, sportContainer)
             }
 
@@ -177,6 +181,13 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
         }
     }
 
-
-
+    fun getSportsEnum(): List<Sports> {
+        val sportsList = mutableListOf<Sports>()
+        println("getSportsEnum (this.sports): ${this.sports}")
+        for (sport in this.sports) {
+            println("getSportsEnum: $sport")
+            sportsList.add(sport.name)
+        }
+        return sportsList
+    }
 }
