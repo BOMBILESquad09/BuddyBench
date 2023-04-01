@@ -27,6 +27,10 @@ class Sport(val name: Sports, var skill: Skills, val matchesPlayed: Int): java.i
         }
     }
 
+    fun getSportEnum(): Sports {
+        return this.name
+    }
+
     fun toJSON(): JSONObject{
         val json = JSONObject()
         json.put("name", Sports.toJSON(name))

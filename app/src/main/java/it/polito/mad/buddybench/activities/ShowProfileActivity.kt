@@ -110,6 +110,4 @@ class ShowProfileActivity : AppCompatActivity() {
             setGUI()
         }
     }
-
-
 }
