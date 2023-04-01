@@ -156,7 +156,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         if (response.resultCode != Activity.RESULT_OK) return
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, image_uri!!)
         imageEdit.setImageBitmap(bitmap)
-        Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
     }
 
     private fun onGalleryImageReturned(response: androidx.activity.result.ActivityResult) {
@@ -164,7 +163,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         image_uri = response.data?.data
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, image_uri!!)
         imageEdit.setImageBitmap(bitmap)
-        Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
 
     }
 
@@ -221,7 +219,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
                 birthdayEdit.text.toString(),
                 DateTimeFormatter.ofPattern("dd/MM/yyyy")
             )
-            Picasso.with(applicationContext).load(profile.imageUri).placeholder(R.drawable.person).into(imageEdit)
 
             if (image_uri != null) {
                 try {

@@ -68,7 +68,6 @@ class BitmapUtils(){
         fun saveToInternalStorage(applicationContext: Context, bitmapImage: Bitmap, previousPath: Uri? = null): Uri? {
             val profileImageName =  applicationContext.getString(R.string.profileImage).format(LocalDateTime.now())
             val imageDir = applicationContext.getString(R.string.imageDir)
-
             val cw = ContextWrapper(applicationContext)
             val directory: File = cw.getDir(imageDir, AppCompatActivity.MODE_PRIVATE)
             val mypath = File(directory,profileImageName)
@@ -88,9 +87,7 @@ class BitmapUtils(){
                     return null
                 }
             }
-            if (previousPath != null){
-                deleteFile(previousPath.toString())
-            }
+
             return Uri.parse("${directory.absolutePath}/$profileImageName")
         }
 
