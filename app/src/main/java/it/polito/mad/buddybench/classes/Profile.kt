@@ -5,11 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.view.LayoutInflater
-import android.widget.Button
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import it.polito.mad.buddybench.R
@@ -121,11 +117,11 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
             val sportSkillLevelText = sportCard.findViewById<TextView>(R.id.skill_level_card_text)
             val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
 
-            sportName.text = Utils.capitalize(sport.name.toString())
+            sportName.text = Utils.formatString(sport.name.toString())
             sportIcon.setImageResource(Sports.sportToIconDrawable(sport.name))
             // TODO: Non funziona
             // sportSkillLevel.setBackgroundColor(Skills.skillToColor(sport.skill))
-            sportSkillLevelText.text = Utils.capitalize(sport.skill.toString())
+            sportSkillLevelText.text = Utils.formatString(sport.skill.toString())
             sportGamesPlayed.text = String.format(context.resources.getString(R.string.games_played), sport.matchesPlayed)
 
             // ** Add card to container
@@ -135,7 +131,12 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
 
     }
 
-    fun populateSportCardsEdit(context: AppCompatActivity, sportContainer: LinearLayout, onDeleteSport: () -> Unit = {}) {
+    fun populateSportCardsEdit(
+        context: AppCompatActivity,
+        sportContainer: LinearLayout,
+        onDeleteSport: () -> Unit = {},
+        onSkillSelected: () -> Unit = {}
+    ) {
 
         sportContainer.removeAllViews()
 
@@ -168,11 +169,27 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
             val sportSkillLevelText = sportCard.findViewById<TextView>(R.id.skill_level_card_text)
             val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
 
+            // ** Sport skill level edit
+            sportSkillLevel.setOnClickListener() {
+                //Creating the instance of PopupMenu
+                val popup = PopupMenu(context, sportSkillLevel)
+                popup.menuInflater.inflate(R.menu.skill_level_edit, popup.menu)
+
+                popup.setOnMenuItemClickListener {
+                    this.updateSkillLevel(sport, Skills.fromJSON(it.title.toString().uppercase())!!)
+                    onSkillSelected()
+                    this.populateSportCardsEdit(context, sportContainer)
+                    true
+                }
+
+                popup.show()
+            }
+
             sportName.text = Utils.capitalize(sport.name.toString())
             sportIcon.setImageResource(Sports.sportToIconDrawable(sport.name))
             // TODO: Non funziona
             // sportSkillLevel.setBackgroundColor(Skills.skillToColor(sport.skill))
-            sportSkillLevelText.text = Utils.capitalize(sport.skill.toString())
+            sportSkillLevelText.text = Utils.formatString(sport.skill.toString())
             sportGamesPlayed.text = String.format(context.resources.getString(R.string.games_played), sport.matchesPlayed)
 
             // ** Add card to container
@@ -188,5 +205,9 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
             sportsList.add(sport.name)
         }
         return sportsList
+    }
+
+    private fun updateSkillLevel(sport: Sport, skill: Skills) {
+        this.sports.find { it.name == sport.name }?.skill = skill
     }
 }

@@ -14,28 +14,30 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.doOnTextChanged
-import com.squareup.picasso.Picasso
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.MutableLiveData
+import com.squareup.picasso.Picasso
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.classes.Sport
+import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColor
+import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateEmail
+import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateString
 import it.polito.mad.buddybench.dialogs.EditSportsDialog
+import it.polito.mad.buddybench.enums.Skills
+import it.polito.mad.buddybench.enums.Sports
 import org.json.JSONObject
 import java.io.IOException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateString
-import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColor
-import it.polito.mad.buddybench.enums.Skills
-import it.polito.mad.buddybench.enums.Sports
-import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateEmail
+
 class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogListener {
     // ** Data
     private lateinit var profile: Profile
     private lateinit var datePicker: DatePickerDialog
     private var birthdateListener:MutableLiveData<LocalDate> = MutableLiveData()
+
     // ** Profile Image
     private val launcherCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -48,6 +50,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
     private lateinit var imageEdit: ImageView
     private var imageUri: Uri? = null
+
     // ** Sports
     private lateinit var addSportButton: ImageButton
     private lateinit var sportContainer: LinearLayout
@@ -91,13 +94,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
         }
 
-
-
         birthdateListener.value = profile.birthdate
-
         val birthdayButtonEdit = findViewById<Button>(R.id.birthdateEditButton)
-
-        // TODO: Add birthday DatePicker
         birthdateListener.observe(this){
             birthdayButtonEdit.text = it.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
             profile.birthdate = it
@@ -113,15 +111,15 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         imageEdit.setOnClickListener {
             openGallery()
         }
-        sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
+        sportContainer = findViewById(R.id.sportsContainerEdit)
         sportContainer.removeAllViews()
 
         // ** Populate sport cards
-        profile.populateSportCardsEdit(this, sportContainer, onDeleteSport = { saveEdit() })
+        profile.populateSportCardsEdit(this, sportContainer, onDeleteSport = { saveEdit() }, onSkillSelected = { saveEdit() })
 
         // ** Add Sports Button
         addSportButton = findViewById(R.id.add_sport_button)
-        addSportButton.setOnClickListener() { openSportSelectionDialog() }
+        addSportButton.setOnClickListener { openSportSelectionDialog() }
         checkCameraPermission()
     }
 
@@ -158,6 +156,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, imageUri!!)
         imageEdit.setImageBitmap(bitmap)
 
+        Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
     }
 
 
@@ -214,6 +213,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             profile.birthdate = birthdateListener.value!!
             profile.email = emailEdit.text.toString()
             Picasso.with(applicationContext).load(profile.imageUri).placeholder(R.drawable.person).into(imageEdit)
+
             if (imageUri != null) {
                 try {
                     profile.imageUri = BitmapUtils.saveToInternalStorage(
@@ -225,6 +225,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
                 }
             }
+
             val newProfileJSON = profile.toJSON().toString()
             putString("profile", newProfileJSON)
             intent.putExtra("newProfile", newProfileJSON)
