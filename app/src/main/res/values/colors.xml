@@ -1,5 +1,6 @@
 
 <resources>
+    <color name="error">#FF0000</color>
     <color name="seed">#1b1b6c</color>
     <color name="md_theme_light_primary">#1b1b6c</color>
     <color name="md_theme_light_onPrimary">#FFFFFF</color>

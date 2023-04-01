@@ -3,6 +3,8 @@ package it.polito.mad.buddybench.classes
 
 import android.content.Context
 import android.net.Uri
+import android.provider.CalendarContract.EventDays
+import android.provider.ContactsContract.CommonDataKinds.Email
 import android.provider.Settings.Global.getString
 import android.view.LayoutInflater
 import android.widget.ImageView
@@ -20,41 +22,49 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
+import it.polito.mad.buddybench.classes.JSONUtils.Companion.getInt
+import it.polito.mad.buddybench.classes.JSONUtils.Companion.getString
+import it.polito.mad.buddybench.classes.JSONUtils.Companion.getJSONArray
+import java.text.DateFormat
+import java.time.Duration
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalAmount
+import java.util.Calendar
 
 
-class Profile(var fullName: String?, var nickname: String?, var location: String?, var age: Int?, var matchesOrganized: Int?, var matchesPlayed: Int?, var reliability: Int, var imageUri: Uri?, var sports: List<Sport> ): java.io.Serializable {
-
+class Profile(var fullName: String?, var nickname: String?, var email: String, var location: String?, var birthday: LocalDate, var matchesOrganized: Int?, var reliability: Int, var imageUri: Uri?, var sports: List<Sport> ) {
+    var matchesPlayed:Int = sports.fold(0){a: Int, b: Sport -> a + b.matchesPlayed }
+    var age:Int = ChronoUnit.YEARS.between(birthday, LocalDate.now()).toInt()
     companion object {
+
         fun fromJSON(jsonProfile: JSONObject): Profile{
-            println(jsonProfile.toString())
-            val fullName = jsonProfile.getString("fullName")
-            val nickname = jsonProfile.getString("nickname")
-            val location = jsonProfile.getString("location")
-            val age = jsonProfile.getInt("age")
-            val matchesOrganized = jsonProfile.getInt("matchesOrganized")
-            val matchesPlayed = jsonProfile.getInt("matchesPlayed")
-            val reliability = jsonProfile.getInt("reliability")
+            val fullName = jsonProfile.getString("fullName", "No name")
+            val nickname = jsonProfile.getString("nickname", "No nickname")
+            val email = jsonProfile.getString("email", "No email")
+            val birthday = LocalDate.parse(jsonProfile.getString("birthday", "27/04/1999"),  DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            val location = jsonProfile.getString("location", "No location")
+            val matchesOrganized = jsonProfile.getInt("matchesOrganized",0)
+            val reliability = jsonProfile.getInt("reliability",0)
             var imageUri:Uri? = null
             try {
                 imageUri = Uri.parse(jsonProfile.getString("imageUri"))
             } catch (_: JSONException){
             }
-
-
-            val sportsList = jsonProfile.getJSONArray("sports")
-
+            val sportsList = jsonProfile.getJSONArray("sports", JSONArray())
             val sports = mutableListOf<Sport>()
             for(i in 0 until sportsList.length()) {
                 val jsonSport = sportsList.getJSONObject(i)
                 sports.add(Sport.fromJSON(jsonSport))
             }
-            return Profile(fullName, nickname, location, age, matchesOrganized, matchesPlayed, reliability, imageUri,sports)
+            return Profile(fullName, nickname, email, location, birthday, matchesOrganized, reliability, imageUri,sports)
         }
 
 
 
         fun mockJSON(): String {
-            return Profile("Vittorio", "Arpino", "Scafati", 23, 10, 10, 70,
+            return Profile("Vittorio", "Arpino", "varpino@buddybench.it", "Scafati", LocalDate.parse("27/04/1999", DateTimeFormatter.ofPattern("dd/MM/yyyy")), 10, 70,
                 null,
                 listOf(
                     Sport(Sports.TENNIS, Skills.SKILLED, 3),
@@ -68,11 +78,16 @@ class Profile(var fullName: String?, var nickname: String?, var location: String
         json.put("fullName", fullName)
         json.put("nickname", nickname)
         json.put("location", location)
-        json.put("age", age)
+        json.put("email", email)
+        json.put("birthday", birthday.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
         json.put("matchesOrganized", matchesOrganized)
-        json.put("matchesPlayed", matchesPlayed)
         json.put("reliability", reliability)
-        json.put("imageUri", imageUri.toString())
+        if (imageUri == null){
+           json.put("imageUri", JSONObject.NULL)
+        } else {
+            println("Putting the image in Json")
+            json.put("imageUri", imageUri.toString())
+        }
         json.put("sports", JSONArray(sports.map { it.toJSON() }))
         return json
     }
@@ -113,6 +128,10 @@ class Profile(var fullName: String?, var nickname: String?, var location: String
             // ** Add card to container
             sportContainer.addView(sportCard)   
         }
+
+
     }
+
+
 
 }

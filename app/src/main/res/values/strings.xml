@@ -23,5 +23,8 @@
     <string name="edit_your_sports">Edit your sports</string>
     <string name="close">close</string>
     <string name="edit">Edit</string>
+    <string name="profileImage">profile%1$s.png</string>
+    <string name="imageDir">imageDir</string>
+    <string name="errorOnEdit">Please fill the highlighted fields!</string>
 
 </resources>

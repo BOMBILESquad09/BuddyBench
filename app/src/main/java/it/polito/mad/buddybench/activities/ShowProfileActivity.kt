@@ -23,9 +23,12 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.menu.MenuView.ItemView
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
+import com.squareup.picasso.Picasso
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.Utils
@@ -33,6 +36,7 @@ import org.json.JSONObject
 import java.io.File
 import java.io.FileDescriptor
 import java.io.IOException
+
 
 class ShowProfileActivity : AppCompatActivity() {
     private lateinit var profile: Profile
@@ -71,18 +75,9 @@ class ShowProfileActivity : AppCompatActivity() {
         reliabilityTv.text = profile.reliability.toString()
 
         var iv = findViewById<ImageView>(R.id.imageView)
-        if (profile.imageUri != null ){
-            try{
-                iv.setImageURI(profile.imageUri)
+        println(profile.imageUri)
+        Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(iv)
 
-            } catch (_: java.lang.Exception){
-                /*maybe the image has been deleted
-                * retrieving the view we restore the default image
-                * otherwise blank one will appear*/
-                iv = findViewById(R.id.imageView)
-
-            }
-        }
 
         val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
         sportContainer.removeAllViews()
@@ -92,9 +87,7 @@ class ShowProfileActivity : AppCompatActivity() {
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
-
         inflater.inflate(R.menu.menu_profile, menu)
-        println("Menu created")
         return true
     }
 
@@ -114,15 +107,9 @@ class ShowProfileActivity : AppCompatActivity() {
     private fun onEditReturn(response: androidx.activity.result.ActivityResult){
         if(response.resultCode == Activity.RESULT_OK){
             profile = Profile.fromJSON(JSONObject(response.data?.getStringExtra("newProfile").toString()))
-            println("profile passed")
-            println(profile.toJSON().toString())
             setGUI()
         }
     }
-
-
-
-
 
 
 }

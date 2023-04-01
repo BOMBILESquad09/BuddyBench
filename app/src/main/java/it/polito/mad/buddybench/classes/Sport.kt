@@ -7,7 +7,6 @@ import org.json.JSONObject
 class Sport(val name: Sports, var skill: Skills, val matchesPlayed: Int): java.io.Serializable {
     companion object{
         fun fromJSON(jsonSport: JSONObject): Sport {
-            println(jsonSport)
             val name = jsonSport.getString("name")
             val sportName = Sports.fromJSON(name)
 
