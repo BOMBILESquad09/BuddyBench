@@ -95,7 +95,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
 
         birthdateListener.value = profile.birthdate
-        val birthdayButtonEdit = findViewById<Button>(R.id.birthdateEditButton)
+        val birthdayButtonEdit = findViewById<Button>(R.id.birthdayEditButton)
         birthdateListener.observe(this){
             birthdayButtonEdit.text = it.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
             profile.birthdate = it
@@ -247,7 +247,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     }
 
     fun showDatePickerDialog(v: View) {
-        val myDateListener = DatePickerDialog.OnDateSetListener { _, year, month, day -> birthdateListener.value = LocalDate.of(year,month,day) }
+        val myDateListener = DatePickerDialog.OnDateSetListener { _, year, month, day -> birthdateListener.value = LocalDate.of(year,month + 1,day) }
         datePicker = DatePickerDialog(this, myDateListener, profile.birthdate.year, profile.birthdate.monthValue, profile.birthdate.dayOfMonth)
         datePicker.show()
     }
