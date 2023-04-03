@@ -36,9 +36,10 @@ import java.time.format.DateTimeFormatter
 class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogListener {
     // ** Data
     private lateinit var profile: Profile
-    private lateinit var datePicker: DatePickerDialog
+    private var datePicker: DatePickerDialog? = null
+    private var editSportDialog: EditSportsDialog? = null
+    private var alertDialog: AlertDialog? = null
     private var birthdateListener: MutableLiveData<LocalDate> = MutableLiveData()
-    private lateinit var alertDialog: AlertDialog
 
     // ** Profile Image
     private val launcherCamera =
@@ -108,21 +109,22 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
         // ** Profile Image
         imageEdit = findViewById(R.id.imageEdit)
-        Picasso.with(applicationContext).load("file://${profile.imageUri}")
+        Picasso.with(applicationContext).load("${profile.imageUri}")
             .placeholder(R.drawable.person).into(imageEdit)
         val options = arrayOf<CharSequence>("Take Photo", "Choose from Gallery", "Cancel")
-        imageEdit.setOnClickListener {
-            val builder = AlertDialog.Builder(this)
-            builder.setItems(options) { dialog, idx ->
-                when (options[idx]) {
-                    "Take Photo" -> openCamera()
-                    "Choose from Gallery" -> openGallery()
-                    "Cancel" -> dialog.dismiss()
-                }
+        val builder = AlertDialog.Builder(this)
+        builder.setItems(options) { dialog, idx ->
+            when (options[idx]) {
+                "Take Photo" -> openCamera()
+                "Choose from Gallery" -> openGallery()
+                "Cancel" -> dialog.dismiss()
             }
-            alertDialog = builder.create()
-            alertDialog.setCancelable(true)
-            alertDialog.show()
+        }
+        alertDialog = builder.create()
+        alertDialog!!.setCancelable(true)
+
+        imageEdit.setOnClickListener {
+            alertDialog!!.show()
         }
 
         sportContainer = findViewById(R.id.sportsContainerEdit)
@@ -258,8 +260,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
      * Open sport selection dialog
      */
     private fun openSportSelectionDialog() {
-        val dialog = EditSportsDialog(profile)
-        dialog.show(supportFragmentManager, "edit_sports")
+        editSportDialog = EditSportsDialog(profile)
+        editSportDialog!!.show(supportFragmentManager, "edit_sports")
     }
 
     fun showDatePickerDialog(v: View) {
@@ -273,7 +275,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             profile.birthdate.monthValue,
             profile.birthdate.dayOfMonth
         )
-        datePicker.show()
+        datePicker!!.show()
     }
 
 
@@ -327,21 +329,26 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         return
     }
 
-    override fun onPause() {
-        super.onPause()
-        alertDialog.dismiss()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        alertDialog.dismiss()
-    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putString("profile", profile.toJSON().toString())
         super.onSaveInstanceState(outState)
     }
 
+    override fun onPause() {
+        alertDialog?.dismiss()
+        datePicker?.dismiss()
+        editSportDialog?.dismiss()
+        super.onPause()
+
+    }
+
+    override fun onDestroy() {
+        alertDialog?.dismiss()
+        datePicker?.dismiss()
+        editSportDialog?.dismiss()
+        super.onDestroy()
+    }
 
 
 }
