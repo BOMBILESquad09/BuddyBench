@@ -84,16 +84,6 @@
                             android:gravity="center"
                             android:text="Full Name"
                             android:textSize="20dp" />
-                        <TextView
-                            android:id="@+id/ageView"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/montserrat_semibold_600"
-                            android:gravity="center"
-                            android:text="0 years old"
-                            android:textSize="15sp" />
 
 
                         <LinearLayout
@@ -124,6 +114,16 @@
 
 
                         </LinearLayout>
+                        <TextView
+                            android:id="@+id/ageView"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/montserrat_semibold_600"
+                            android:gravity="center"
+                            android:text="0 years old"
+                            android:textSize="15sp" />
 
 
                     </LinearLayout>
