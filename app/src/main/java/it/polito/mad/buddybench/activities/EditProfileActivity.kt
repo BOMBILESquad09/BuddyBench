@@ -11,6 +11,7 @@ import android.provider.MediaStore
 import android.view.*
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.doOnTextChanged
@@ -36,7 +37,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     // ** Data
     private lateinit var profile: Profile
     private lateinit var datePicker: DatePickerDialog
-    private var birthdateListener:MutableLiveData<LocalDate> = MutableLiveData()
+    private var birthdateListener: MutableLiveData<LocalDate> = MutableLiveData()
+    private lateinit var alertDialog: AlertDialog
 
     // ** Profile Image
     private val launcherCamera =
@@ -96,21 +98,29 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
         birthdateListener.value = profile.birthdate
         val birthdayButtonEdit = findViewById<Button>(R.id.birthdayEditButton)
-        birthdateListener.observe(this){
+        birthdateListener.observe(this) {
             birthdayButtonEdit.text = it.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
             profile.birthdate = it
         }
         // ** Profile Image
         imageEdit = findViewById(R.id.imageEdit)
-        Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
-
-        imageEdit.setOnLongClickListener {
-            openCamera()
-            true
-        }
+        Picasso.with(applicationContext).load("file://${profile.imageUri}")
+            .placeholder(R.drawable.person).into(imageEdit)
+        val options = arrayOf<CharSequence>("Take Photo", "Choose from Gallery", "Cancel")
         imageEdit.setOnClickListener {
-            openGallery()
+            val builder = AlertDialog.Builder(this)
+            builder.setItems(options) { dialog, idx ->
+                when (options[idx]) {
+                    "Take Photo" -> openCamera()
+                    "Choose from Gallery" -> openGallery()
+                    "Cancel" -> dialog.dismiss()
+                }
+            }
+            alertDialog = builder.create()
+            alertDialog.setCancelable(true)
+            alertDialog.show()
         }
+
         sportContainer = findViewById(R.id.sportsContainerEdit)
         sportContainer.removeAllViews()
 
@@ -137,7 +147,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             val values = ContentValues()
             values.put(MediaStore.Images.Media.TITLE, "New Picture")
             values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera")
-            imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)!!
+            imageUri =
+                contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)!!
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
             launcherCamera.launch(cameraIntent)
@@ -199,7 +210,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     }
 
     private fun saveEdit() {
-        val sharedPref: SharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        val sharedPref: SharedPreferences =
+            getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
             val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
             val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
@@ -216,8 +228,9 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
                 try {
                     profile.imageUri = BitmapUtils.saveToInternalStorage(
                         applicationContext,
-                        BitmapUtils.uriToBitmap(contentResolver, imageUri!!
-                        )!!,profile.imageUri
+                        BitmapUtils.uriToBitmap(
+                            contentResolver, imageUri!!
+                        )!!, profile.imageUri
                     )!!
                 } catch (_: IOException) {
 
@@ -245,8 +258,16 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     }
 
     fun showDatePickerDialog(v: View) {
-        val myDateListener = DatePickerDialog.OnDateSetListener { _, year, month, day -> birthdateListener.value = LocalDate.of(year,month + 1,day) }
-        datePicker = DatePickerDialog(this, myDateListener, profile.birthdate.year, profile.birthdate.monthValue, profile.birthdate.dayOfMonth)
+        val myDateListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
+            birthdateListener.value = LocalDate.of(year, month + 1, day)
+        }
+        datePicker = DatePickerDialog(
+            this,
+            myDateListener,
+            profile.birthdate.year,
+            profile.birthdate.monthValue,
+            profile.birthdate.dayOfMonth
+        )
         datePicker.show()
     }
 
@@ -294,12 +315,20 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
         profile.sports = newSports.plus(alreadySelectedSports)
         println("Profile Sports After ADD: ${profile.sports}")
-
-
         profile.populateSportCardsEdit(this, sportContainer)
     }
 
     override fun onDialogNegativeClick(dialog: DialogFragment) {
         return
+    }
+
+    override fun onPause() {
+        super.onPause()
+        alertDialog.dismiss()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        alertDialog.dismiss()
     }
 }
