@@ -115,7 +115,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         sportContainer.removeAllViews()
 
         // ** Populate sport cards
-        profile.populateSportCardsEdit(this, sportContainer, onDeleteSport = { saveEdit() }, onSkillSelected = { saveEdit() })
+        profile.populateSportCardsEdit(this, sportContainer)
 
         // ** Add Sports Button
         addSportButton = findViewById(R.id.add_sport_button)
@@ -156,7 +156,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, imageUri!!)
         imageEdit.setImageBitmap(bitmap)
 
-        Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
     }
 
 
@@ -212,7 +211,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             profile.location = localityEdit.text.toString()
             profile.birthdate = birthdateListener.value!!
             profile.email = emailEdit.text.toString()
-            Picasso.with(applicationContext).load(profile.imageUri).placeholder(R.drawable.person).into(imageEdit)
 
             if (imageUri != null) {
                 try {
@@ -296,9 +294,9 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
         profile.sports = newSports.plus(alreadySelectedSports)
         println("Profile Sports After ADD: ${profile.sports}")
-        saveEdit()
 
-        profile.populateSportCardsEdit(this, sportContainer, onDeleteSport = { saveEdit() })
+
+        profile.populateSportCardsEdit(this, sportContainer)
     }
 
     override fun onDialogNegativeClick(dialog: DialogFragment) {
