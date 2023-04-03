@@ -40,6 +40,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     private var editSportDialog: EditSportsDialog? = null
     private var alertDialog: AlertDialog? = null
     private var birthdateListener: MutableLiveData<LocalDate> = MutableLiveData()
+    private var dialogOpened: String? = null
 
     // ** Profile Image
     private val launcherCamera =
@@ -52,7 +53,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
 
     private lateinit var imageEdit: ImageView
-    private  var imageUri: Uri? = null
+    private var imageUri: Uri? = null
 
     // ** Sports
     private lateinit var addSportButton: ImageButton
@@ -62,6 +63,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
 
+        val dialogOpenPreviusly = savedInstanceState?.getString("dialog")
 
         // ** Toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -69,8 +71,9 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         toolbar.setNavigationOnClickListener { finish() }
 
         // ** Profile Data
-        val stringedProfile = savedInstanceState?.getString("profile") ?: intent.getStringExtra("profile")!!
-        profile =  Profile.fromJSON(JSONObject(stringedProfile))
+        val stringedProfile =
+            savedInstanceState?.getString("profile") ?: intent.getStringExtra("profile")!!
+        profile = Profile.fromJSON(JSONObject(stringedProfile))
 
         // ** Profile TextFields Edit
         val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
@@ -137,6 +140,17 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         addSportButton = findViewById(R.id.add_sport_button)
         addSportButton.setOnClickListener { openSportSelectionDialog() }
         checkCameraPermission()
+
+        if (dialogOpenPreviusly == "alertDialog") {
+            alertDialog?.show()
+        }
+        if (dialogOpenPreviusly == "datePicker") {
+            showDatePickerDialog(null)
+        }
+        if (dialogOpenPreviusly == "editSportDialog") {
+            openSportSelectionDialog()
+        }
+
     }
 
     private fun openGallery() {
@@ -152,7 +166,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             val values = ContentValues()
             values.put(MediaStore.Images.Media.TITLE, "New Picture")
             values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera")
-            imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)!!
+            imageUri =
+                contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)!!
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
             launcherCamera.launch(cameraIntent)
@@ -265,7 +280,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         editSportDialog!!.show(supportFragmentManager, "edit_sports")
     }
 
-    fun showDatePickerDialog(v: View) {
+    fun showDatePickerDialog(v: View?) {
         val myDateListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
             birthdateListener.value = LocalDate.of(year, month + 1, day)
         }
@@ -278,7 +293,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         )
         datePicker!!.show()
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
@@ -333,10 +347,22 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putString("profile", profile.toJSON().toString())
+        println("On saving state....")
+        if (dialogOpened != null)
+            outState.putString("dialog", dialogOpened)
         super.onSaveInstanceState(outState)
     }
 
     override fun onPause() {
+        println("On pausing....")
+        if (alertDialog?.isShowing == true)
+            dialogOpened = "alertDialog"
+        else if (datePicker?.isShowing == true)
+            dialogOpened = "datePicker"
+        else if (editSportDialog?.showsDialog == true)
+            dialogOpened = "editSportDialog"
+        else
+            dialogOpened = null
         alertDialog?.dismiss()
         datePicker?.dismiss()
         editSportDialog?.dismiss()
