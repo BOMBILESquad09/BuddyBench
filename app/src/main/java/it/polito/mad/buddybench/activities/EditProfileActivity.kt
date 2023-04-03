@@ -108,7 +108,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
         // ** Profile Image
         imageEdit = findViewById(R.id.imageEdit)
-        Picasso.with(applicationContext).load("file://${profile.imageUri}")
+        Picasso.with(applicationContext).load("${profile.imageUri}")
             .placeholder(R.drawable.person).into(imageEdit)
         val options = arrayOf<CharSequence>("Take Photo", "Choose from Gallery", "Cancel")
         imageEdit.setOnClickListener {
@@ -141,7 +141,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         if (checkCameraPermission()) {
             val galleryIntent =
                 Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-
             launcherGallery.launch(galleryIntent)
         }
     }
@@ -159,14 +158,16 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     }
 
     private fun onCameraImageReturned(response: androidx.activity.result.ActivityResult) {
-        if (response.resultCode != Activity.RESULT_OK) return
+        //TODO: on rotation the image is not returned. Its possible to retrieve the bitmap of the snapped photo in the bundle, but the methods are deprecated or requiring API 33
+        if (response.resultCode != Activity.RESULT_OK || imageUri == null) return
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, imageUri!!)
         imageEdit.setImageBitmap(bitmap)
         profile.imageUri = imageUri
     }
 
     private fun onGalleryImageReturned(response: androidx.activity.result.ActivityResult) {
-        if (response.resultCode != Activity.RESULT_OK) return
+        //TODO: on rotation the image is not returned
+        if (response.resultCode != Activity.RESULT_OK || response.data == null) return
         imageUri = response.data?.data
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, imageUri!!)
         imageEdit.setImageBitmap(bitmap)
@@ -327,15 +328,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         return
     }
 
-    override fun onPause() {
-        super.onPause()
-        alertDialog.dismiss()
-    }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        alertDialog.dismiss()
-    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putString("profile", profile.toJSON().toString())
