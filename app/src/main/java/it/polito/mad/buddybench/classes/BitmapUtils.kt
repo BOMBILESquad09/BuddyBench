@@ -90,7 +90,7 @@ class BitmapUtils(){
             if(previousPath != null) deleteFile(previousPath.toString())
             
 
-            return Uri.parse("${directory.absolutePath}/$profileImageName")
+            return Uri.parse("file://${directory.absolutePath}/$profileImageName")
         }
 
         private fun deleteFile(filePath: String){

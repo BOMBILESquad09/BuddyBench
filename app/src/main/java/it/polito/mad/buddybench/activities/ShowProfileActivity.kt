@@ -60,7 +60,7 @@ class ShowProfileActivity : AppCompatActivity() {
         reliabilityTv.text = profile.reliability.toString()
 
         val iv = findViewById<ImageView>(R.id.imageEdit)
-        Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(iv)
+        Picasso.with(applicationContext).load("${profile.imageUri}").placeholder(R.drawable.person).into(iv)
 
 
         val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)

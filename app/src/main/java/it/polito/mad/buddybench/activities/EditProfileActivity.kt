@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.squareup.picasso.Picasso
 import it.polito.mad.buddybench.R
@@ -36,7 +37,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     // ** Data
     private lateinit var profile: Profile
     private lateinit var datePicker: DatePickerDialog
-    private var birthdateListener:MutableLiveData<LocalDate> = MutableLiveData()
+    private var birthdateListener: MutableLiveData<LocalDate> = MutableLiveData()
 
     // ** Profile Image
     private val launcherCamera =
@@ -49,7 +50,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
 
     private lateinit var imageEdit: ImageView
-    private var imageUri: Uri? = null
+    private  var imageUri: Uri? = null
 
     // ** Sports
     private lateinit var addSportButton: ImageButton
@@ -59,31 +60,35 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
 
+
         // ** Toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener { finish() }
 
         // ** Profile Data
-        profile = Profile.fromJSON(JSONObject(intent.getStringExtra("profile")!!))
+        val stringedProfile = savedInstanceState?.getString("profile") ?: intent.getStringExtra("profile")!!
+        profile =  Profile.fromJSON(JSONObject(stringedProfile))
 
         // ** Profile TextFields Edit
         val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
         fullNameEdit.doOnTextChanged { text, _, _, _ ->
             changeColor(fullNameEdit, validateString(text.toString()), resources)
+            profile.fullName = text.toString()
         }
         fullNameEdit.setText(profile.fullName)
 
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
         nicknameEdit.doOnTextChanged { text, _, _, _ ->
             changeColor(nicknameEdit, validateString(text.toString()), resources)
-
+            profile.nickname = text.toString()
         }
         nicknameEdit.setText(profile.nickname)
 
         val emailEdit = findViewById<EditText>(R.id.emailEdit)
         emailEdit.doOnTextChanged { text, _, _, _ ->
             changeColor(emailEdit, validateEmail(text.toString()), resources)
+            profile.email = text.toString()
         }
         emailEdit.setText(profile.email)
 
@@ -91,7 +96,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         localityEdit.setText(profile.location)
         localityEdit.doOnTextChanged { text, _, _, _ ->
             changeColor(localityEdit, validateString(text.toString()), resources)
-
+            profile.location = text.toString()
         }
 
         birthdateListener.value = profile.birthdate
@@ -102,8 +107,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
         // ** Profile Image
         imageEdit = findViewById(R.id.imageEdit)
-        Picasso.with(applicationContext).load("file://${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
-
+        Picasso.with(applicationContext).load("${profile.imageUri}").placeholder(R.drawable.person).into(imageEdit)
         imageEdit.setOnLongClickListener {
             openCamera()
             true
@@ -148,13 +152,15 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         if (response.resultCode != Activity.RESULT_OK) return
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, imageUri!!)
         imageEdit.setImageBitmap(bitmap)
+        profile.imageUri = imageUri
     }
 
     private fun onGalleryImageReturned(response: androidx.activity.result.ActivityResult) {
         if (response.resultCode != Activity.RESULT_OK) return
-        imageUri = response.data?.data
+        imageUri = response.data?.data!!
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, imageUri!!)
         imageEdit.setImageBitmap(bitmap)
+        profile.imageUri = imageUri
 
     }
 
@@ -240,7 +246,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
      * Open sport selection dialog
      */
     private fun openSportSelectionDialog() {
-        val dialog = EditSportsDialog()
+        val dialog = EditSportsDialog(profile)
         dialog.show(supportFragmentManager, "edit_sports")
     }
 
@@ -294,12 +300,18 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
         profile.sports = newSports.plus(alreadySelectedSports)
         println("Profile Sports After ADD: ${profile.sports}")
-
-
         profile.populateSportCardsEdit(this, sportContainer)
     }
 
     override fun onDialogNegativeClick(dialog: DialogFragment) {
         return
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString("profile", profile.toJSON().toString())
+        super.onSaveInstanceState(outState)
+    }
+
+
+
 }

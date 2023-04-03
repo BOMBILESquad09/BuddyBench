@@ -4,12 +4,18 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.DialogFragment
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Profile
+import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.utils.Utils
 
-class EditSportsDialog: DialogFragment() {
+class EditSportsDialog(val profile: Profile): DialogFragment() {
 
     // Use this instance of the interface to deliver action events
     private lateinit var listener: NoticeDialogListener
@@ -26,7 +32,6 @@ class EditSportsDialog: DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
 
-            val profile = Profile.getProfileFromSharedPreferences(it)
             val profileSports: List<Sports> = profile.getSportsEnum()
             val sportValues = Sports.getStringValues(profileSports)
 
@@ -81,5 +86,7 @@ class EditSportsDialog: DialogFragment() {
                     " must implement NoticeDialogListener"))
         }
     }
+
+
 
 }

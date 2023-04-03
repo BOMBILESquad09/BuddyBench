@@ -89,6 +89,24 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
     }
 
 
+
+
+    fun getSportsEnum(): List<Sports> {
+        val sportsList = mutableListOf<Sports>()
+        println("getSportsEnum (this.sports): ${this.sports}")
+        for (sport in this.sports) {
+            println("getSportsEnum: $sport")
+            sportsList.add(sport.name)
+        }
+        return sportsList
+    }
+
+    private fun updateSkillLevel(sport: Sport, skill: Skills) {
+        this.sports.find { it.name == sport.name }?.skill = skill
+    }
+
+    //TODO: BETTER TO MOVE THE FOLLOWING METHODS IN ANOTHER FILE
+
     /**
      * Adds sport cards to the profile section relative to the profile.sports values
      * The context (activity) and the container layout are passed as parameters
@@ -96,9 +114,7 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
      * @param sportContainer The container layout in which to add the cards
      */
     fun populateSportCards(context: AppCompatActivity, sportContainer: LinearLayout) {
-
         sportContainer.removeAllViews()
-
         if (this.sports.isEmpty()) {
             val emptySportsText = TextView(context)
             emptySportsText.text = context.getString(R.string.no_sports)
@@ -106,7 +122,7 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
 
             return
         }
-        
+
         for (sport in this.sports) {
             val sportCard = LayoutInflater.from(context).inflate(R.layout.card_sport, null, false);
 
@@ -125,10 +141,8 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
             sportGamesPlayed.text = String.format(context.resources.getString(R.string.games_played), sport.matchesPlayed)
 
             // ** Add card to container
-            sportContainer.addView(sportCard)   
+            sportContainer.addView(sportCard)
         }
-
-
     }
 
     fun populateSportCardsEdit(
@@ -144,7 +158,6 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
             val emptySportsText = TextView(context)
             emptySportsText.text = context.getString(R.string.no_sports)
             sportContainer.addView(emptySportsText)
-
             return
         }
 
@@ -195,19 +208,5 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
             // ** Add card to container
             sportContainer.addView(sportCard)
         }
-    }
-
-    fun getSportsEnum(): List<Sports> {
-        val sportsList = mutableListOf<Sports>()
-        println("getSportsEnum (this.sports): ${this.sports}")
-        for (sport in this.sports) {
-            println("getSportsEnum: $sport")
-            sportsList.add(sport.name)
-        }
-        return sportsList
-    }
-
-    private fun updateSkillLevel(sport: Sport, skill: Skills) {
-        this.sports.find { it.name == sport.name }?.skill = skill
     }
 }
