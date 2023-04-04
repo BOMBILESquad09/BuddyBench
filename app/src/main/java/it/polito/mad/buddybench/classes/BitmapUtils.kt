@@ -67,10 +67,8 @@ class BitmapUtils(){
 
         fun saveToInternalStorage(applicationContext: Context, bitmapImage: Bitmap, previousPath: Uri? = null): Uri? {
             val profileImageName =  applicationContext.getString(R.string.profileImage).format(LocalDateTime.now())
-            val imageDir = applicationContext.getString(R.string.imageDir)
-            val cw = ContextWrapper(applicationContext)
-            val directory: File = cw.getDir(imageDir, AppCompatActivity.MODE_PRIVATE)
-            val myPath = File(directory,profileImageName)
+            val directory: File = applicationContext.filesDir
+            val myPath = File(directory, profileImageName)
             var fos: FileOutputStream? = null
             try {
                 fos = FileOutputStream(myPath)
