@@ -83,13 +83,12 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
         nameEdit.setText(profile.name)
 
-        /*val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
+        val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
         surnameEdit.doOnTextChanged { text, _, _, _ ->
             changeColor(nameEdit, validateString(text.toString()), resources)
             profile.surname = text.toString()
         }
         surnameEdit.setText(profile.surname)
-        * */
 
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
         nicknameEdit.doOnTextChanged { text, _, _, _ ->
@@ -218,17 +217,17 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     private fun formValidation(): Boolean {
         val nameEdit = findViewById<EditText>(R.id.nameEdit)
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
-        // val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
+         val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
         val emailEdit = findViewById<EditText>(R.id.emailEdit)
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
 
         if (!validateString(nameEdit.text.toString())) {
             return false
         }
-        /*
+
         if(!validateString(surnameEdit.text.toString())) {
             return false
-        }*/
+        }
         if (!validateString(nicknameEdit.text.toString())) {
             return false
         }
@@ -249,12 +248,12 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
         val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
         val nameEdit = findViewById<EditText>(R.id.nameEdit)
-        // val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
+         val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
         val emailEdit = findViewById<EditText>(R.id.emailEdit)
         profile.name = nameEdit.text.toString()
-        //profile.surname = surnameEdit.text.toString()
+        profile.surname = surnameEdit.text.toString()
         profile.nickname = nicknameEdit.text.toString()
         profile.location = localityEdit.text.toString()
         profile.birthdate = birthdateListener.value!!
