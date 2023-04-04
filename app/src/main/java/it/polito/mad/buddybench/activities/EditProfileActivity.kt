@@ -125,21 +125,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
         val cardViewImage = findViewById<CardView>(R.id.cardView)
         registerForContextMenu(cardViewImage)
-//        val options = arrayOf<CharSequence>("Take Photo", "Choose from Gallery", "Cancel")
-//        val builder = AlertDialog.Builder(this)
-//        builder.setItems(options) { dialog, idx ->
-//            when (options[idx]) {
-//                "Take Photo" -> openCamera()
-//                "Choose from Gallery" -> openGallery()
-//                "Cancel" -> dialog.dismiss()
-//            }
-//        }
-//        alertDialog = builder.create()
-//        alertDialog!!.setCancelable(true)
-//
-//        imageEdit.setOnClickListener {
-//            alertDialog!!.show()
-//        }
+
+
 
         sportContainer = findViewById(R.id.sportsContainerEdit)
         sportContainer.removeAllViews()
