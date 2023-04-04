@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.cardview.widget.CardView
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.MutableLiveData
@@ -38,7 +39,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     private lateinit var profile: Profile
     private var datePicker: DatePickerDialog? = null
     private var editSportDialog: EditSportsDialog? = null
-    private var alertDialog: AlertDialog? = null
+    private var contextMenu: ContextMenu? = null
     private var birthdateListener: MutableLiveData<LocalDate> = MutableLiveData()
     private var dialogOpened: String? = null
 
@@ -83,13 +84,12 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
         nameEdit.setText(profile.name)
 
-        /*val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
+        val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
         surnameEdit.doOnTextChanged { text, _, _, _ ->
             changeColor(nameEdit, validateString(text.toString()), resources)
             profile.surname = text.toString()
         }
         surnameEdit.setText(profile.surname)
-        * */
 
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
         nicknameEdit.doOnTextChanged { text, _, _, _ ->
@@ -122,21 +122,11 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         imageEdit = findViewById(R.id.imageEdit)
         Picasso.with(applicationContext).load("${profile.imageUri}")
             .placeholder(R.drawable.person).into(imageEdit)
-        val options = arrayOf<CharSequence>("Take Photo", "Choose from Gallery", "Cancel")
-        val builder = AlertDialog.Builder(this)
-        builder.setItems(options) { dialog, idx ->
-            when (options[idx]) {
-                "Take Photo" -> openCamera()
-                "Choose from Gallery" -> openGallery()
-                "Cancel" -> dialog.dismiss()
-            }
-        }
-        alertDialog = builder.create()
-        alertDialog!!.setCancelable(true)
 
-        imageEdit.setOnClickListener {
-            alertDialog!!.show()
-        }
+        val cardViewImage = findViewById<CardView>(R.id.cardView)
+        registerForContextMenu(cardViewImage)
+
+
 
         sportContainer = findViewById(R.id.sportsContainerEdit)
         sportContainer.removeAllViews()
@@ -149,9 +139,9 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         addSportButton.setOnClickListener { openSportSelectionDialog() }
         checkCameraPermission()
 
-        if (dialogOpenPreviusly == "alertDialog") {
-            alertDialog?.show()
-        }
+//        if (dialogOpenPreviusly == "contextMenu") {
+//            contextMenu?.
+//        }
         if (dialogOpenPreviusly == "datePicker") {
             showDatePickerDialog(null)
         }
@@ -218,17 +208,17 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     private fun formValidation(): Boolean {
         val nameEdit = findViewById<EditText>(R.id.nameEdit)
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
-        // val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
+         val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
         val emailEdit = findViewById<EditText>(R.id.emailEdit)
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
 
         if (!validateString(nameEdit.text.toString())) {
             return false
         }
-        /*
+
         if(!validateString(surnameEdit.text.toString())) {
             return false
-        }*/
+        }
         if (!validateString(nicknameEdit.text.toString())) {
             return false
         }
@@ -249,12 +239,12 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
         val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
         val nameEdit = findViewById<EditText>(R.id.nameEdit)
-        // val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
+         val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
         val emailEdit = findViewById<EditText>(R.id.emailEdit)
         profile.name = nameEdit.text.toString()
-        //profile.surname = surnameEdit.text.toString()
+        profile.surname = surnameEdit.text.toString()
         profile.nickname = nicknameEdit.text.toString()
         profile.location = localityEdit.text.toString()
         profile.birthdate = birthdateListener.value!!
@@ -307,7 +297,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_profile_edit, menu)
-
         return true
     }
 
@@ -365,15 +354,15 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
     override fun onPause() {
         println("On pausing....")
-        dialogOpened = if (alertDialog?.isShowing == true)
-            "alertDialog"
-        else if (datePicker?.isShowing == true)
-            "datePicker"
-        else if (editSportDialog?.isVisible == true)
-            "editSportDialog"
+        if (contextMenu?.hasVisibleItems() == true)
+            dialogOpened = "contextMenu"
+        if (datePicker?.isShowing == true)
+            dialogOpened = "datePicker"
+        else if (editSportDialog?.showsDialog == true)
+            dialogOpened = "editSportDialog"
         else
-            null
-        alertDialog?.dismiss()
+            dialogOpened = null
+        contextMenu?.close()
         datePicker?.dismiss()
         editSportDialog?.dismiss()
         super.onPause()
@@ -381,10 +370,35 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     }
 
     override fun onDestroy() {
-        alertDialog?.dismiss()
+        contextMenu?.close()
         datePicker?.dismiss()
         editSportDialog?.dismiss()
         super.onDestroy()
+    }
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu?,
+        v: View?,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        val inflater: MenuInflater = menuInflater
+        contextMenu = menu
+        inflater.inflate(R.menu.menu_camera_edit, menu)
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.takePhoto -> {
+                openCamera()
+                true
+            }
+            R.id.goToGallery -> {
+                openGallery()
+                true
+            }
+            else -> super.onContextItemSelected(item)
+        }
     }
 
 

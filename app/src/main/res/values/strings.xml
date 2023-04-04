@@ -25,6 +25,8 @@
     <string name="add_sports">Add sports</string>
     <string name="close">close</string>
     <string name="edit">Edit</string>
+    <string name="takePhoto">Take a photo</string>
+    <string name="goGallery">Choose from gallery</string>
     <string name="profileImage">profile%1$s.png</string>
     <string name="imageDir">imageDir</string>
     <string name="errorOnEdit">Please fill the highlighted fields!</string>

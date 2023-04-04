@@ -40,7 +40,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-
+                    android:padding="5dp"
                     app:cardCornerRadius="250dp"
                     app:layout_constraintBottom_toTopOf="@+id/linearLayout"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -91,6 +91,20 @@
                         android:fontFamily="@font/montserrat_bold_700"
                         android:gravity="center"
                         android:hint="Full Name"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        android:textSize="16sp"
+                        />
+
+                    <EditText
+                        android:id="@+id/surnameEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:autofillHints="name"
+                        android:fontFamily="@font/montserrat_bold_700"
+                        android:gravity="center"
+                        android:hint="Surname"
                         android:inputType="text"
                         android:singleLine="true"
                         android:textSize="16sp"
