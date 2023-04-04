@@ -144,7 +144,7 @@
                         <View
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="0.5" />
+                            android:layout_weight="0.25" />
 
                         <androidx.cardview.widget.CardView
                             app:cardCornerRadius="100dp"
