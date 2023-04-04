@@ -23,13 +23,13 @@ import org.json.JSONObject
 class ShowProfileActivity : AppCompatActivity() {
     private lateinit var profile: Profile
     private val launcherEdit = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onEditReturn(it)}
-
+    private lateinit var sharedPref: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        val sharedPref: SharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
         setGUI()
     }
@@ -90,8 +90,14 @@ class ShowProfileActivity : AppCompatActivity() {
 
     private fun onEditReturn(response: androidx.activity.result.ActivityResult){
         if(response.resultCode == Activity.RESULT_OK){
-            profile = Profile.fromJSON(JSONObject(response.data?.getStringExtra("newProfile").toString()))
-            setGUI()
+            with(sharedPref.edit()) {
+                val newProfileJSON = profile.toJSON().toString()
+                putString("profile", newProfileJSON)
+                apply()
+                profile = Profile.fromJSON(JSONObject(response.data?.getStringExtra("newProfile").toString()))
+                setGUI()
+            }
+
         }
     }
 }

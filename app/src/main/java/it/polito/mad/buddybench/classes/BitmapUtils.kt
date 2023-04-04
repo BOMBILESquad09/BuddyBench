@@ -69,6 +69,7 @@ class BitmapUtils(){
             val profileImageName =  applicationContext.getString(R.string.profileImage).format(LocalDateTime.now())
             val directory: File = applicationContext.filesDir
             val myPath = File(directory, profileImageName)
+
             var fos: FileOutputStream? = null
             try {
                 fos = FileOutputStream(myPath)

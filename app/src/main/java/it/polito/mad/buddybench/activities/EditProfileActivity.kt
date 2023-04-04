@@ -232,40 +232,35 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         return true
     }
 
-    private fun saveEdit() {
-        val sharedPref: SharedPreferences =
-            getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        with(sharedPref.edit()) {
-            val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
-            val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
-            val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
-            val localityEdit = findViewById<EditText>(R.id.localityEdit)
-            val emailEdit = findViewById<EditText>(R.id.emailEdit)
-            profile.fullName = fullNameEdit.text.toString()
-            profile.nickname = nicknameEdit.text.toString()
-            profile.location = localityEdit.text.toString()
-            profile.birthdate = birthdateListener.value!!
-            profile.email = emailEdit.text.toString()
+    private fun prepareEdit() {
 
-            if (imageUri != null) {
-                try {
-                    profile.imageUri = BitmapUtils.saveToInternalStorage(
-                        applicationContext,
-                        BitmapUtils.uriToBitmap(
-                            contentResolver, imageUri!!
-                        )!!, profile.imageUri
-                    )!!
-                } catch (_: IOException) {
+        val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
+        val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
+        val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
+        val localityEdit = findViewById<EditText>(R.id.localityEdit)
+        val emailEdit = findViewById<EditText>(R.id.emailEdit)
+        profile.fullName = fullNameEdit.text.toString()
+        profile.nickname = nicknameEdit.text.toString()
+        profile.location = localityEdit.text.toString()
+        profile.birthdate = birthdateListener.value!!
+        profile.email = emailEdit.text.toString()
 
-                }
+        if (imageUri != null) {
+            try {
+                profile.imageUri = BitmapUtils.saveToInternalStorage(
+                    applicationContext,
+                    BitmapUtils.uriToBitmap(
+                        contentResolver, imageUri!!
+                    )!!, profile.imageUri
+                )!!
+            } catch (_: IOException) {
+
             }
-
-            val newProfileJSON = profile.toJSON().toString()
-            putString("profile", newProfileJSON)
-            intent.putExtra("newProfile", newProfileJSON)
-            apply()
         }
+        val newProfileJSON = profile.toJSON().toString()
+        intent.putExtra("newProfile", newProfileJSON)
     }
+
 
     private fun finishActivity() {
         setResult(Activity.RESULT_OK, intent)
@@ -314,7 +309,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
                     toast.show()
                     return false
                 }
-                saveEdit()
+                prepareEdit()
                 finishActivity()
                 return true
             }
