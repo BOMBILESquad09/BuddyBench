@@ -28,6 +28,7 @@ class ShowProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.title = "Profile"
         setSupportActionBar(toolbar)
         sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))

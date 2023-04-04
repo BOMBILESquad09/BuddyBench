@@ -88,13 +88,13 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:autofillHints="name"
+                        android:backgroundTint="@color/md_theme_dark_onPrimary"
                         android:fontFamily="@font/montserrat_bold_700"
                         android:gravity="center"
-                        android:hint="Full Name"
+                        android:hint="Name"
                         android:inputType="text"
                         android:singleLine="true"
-                        android:textSize="16sp"
-                        />
+                        android:textSize="16sp" />
 
                     <EditText
                         android:id="@+id/surnameEdit"
@@ -102,13 +102,13 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:autofillHints="name"
+                        android:backgroundTint="@color/md_theme_dark_onPrimary"
                         android:fontFamily="@font/montserrat_bold_700"
                         android:gravity="center"
                         android:hint="Surname"
                         android:inputType="text"
                         android:singleLine="true"
-                        android:textSize="16sp"
-                        />
+                        android:textSize="16sp" />
 
                     <EditText
                         android:id="@+id/nicknameEdit"
@@ -116,6 +116,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:autofillHints="username"
+                        android:backgroundTint="@color/md_theme_dark_onPrimary"
                         android:fontFamily="@font/montserrat_medium_500"
                         android:gravity="center"
                         android:hint="Nickname"
@@ -123,11 +124,12 @@
                         android:textSize="16sp" />
 
                     <EditText
-                        android:id="@+id/emailEdit"
+                        android:id="@+id/Email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:autofillHints="username"
+                        android:backgroundTint="@color/md_theme_dark_onPrimary"
                         android:fontFamily="@font/montserrat_medium_500"
                         android:gravity="center"
                         android:hint="Email"
@@ -148,6 +150,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:autofillHints="name"
+                            android:backgroundTint="@color/md_theme_dark_onPrimary"
                             android:fontFamily="@font/montserrat_semibold_600"
                             android:hint="Locality"
                             android:singleLine="true"

@@ -68,39 +68,39 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
         // ** Toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.title = "Profile"
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener { finish() }
 
         // ** Profile Data
-        val stringedProfile =
-            savedInstanceState?.getString("profile") ?: intent.getStringExtra("profile")!!
+        val stringedProfile = savedInstanceState?.getString("profile") ?: intent.getStringExtra("profile")!!
         profile = Profile.fromJSON(JSONObject(stringedProfile))
 
         // ** Profile TextFields Edit
         val nameEdit = findViewById<EditText>(R.id.nameEdit)
         nameEdit.doOnTextChanged { text, _, _, _ ->
-            changeColor(nameEdit, validateString(text.toString()), resources)
+            changeColor(nameEdit, true, resources)
             profile.name = text.toString()
         }
         nameEdit.setText(profile.name)
 
         val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
         surnameEdit.doOnTextChanged { text, _, _, _ ->
-            changeColor(nameEdit, validateString(text.toString()), resources)
+            changeColor(surnameEdit, true, resources)
             profile.surname = text.toString()
         }
         surnameEdit.setText(profile.surname)
 
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
         nicknameEdit.doOnTextChanged { text, _, _, _ ->
-            changeColor(nicknameEdit, validateString(text.toString()), resources)
+            changeColor(nicknameEdit, true, resources)
             profile.nickname = text.toString()
         }
         nicknameEdit.setText(profile.nickname)
 
-        val emailEdit = findViewById<EditText>(R.id.emailEdit)
+        val emailEdit = findViewById<EditText>(R.id.Email)
         emailEdit.doOnTextChanged { text, _, _, _ ->
-            changeColor(emailEdit, validateEmail(text.toString()), resources)
+            changeColor(emailEdit, true, resources)
             profile.email = text.toString()
         }
         emailEdit.setText(profile.email)
@@ -108,7 +108,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
         localityEdit.setText(profile.location)
         localityEdit.doOnTextChanged { text, _, _, _ ->
-            changeColor(localityEdit, validateString(text.toString()), resources)
+            changeColor(localityEdit, true, resources)
             profile.location = text.toString()
         }
 
@@ -208,41 +208,47 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     private fun formValidation(): Boolean {
         val nameEdit = findViewById<EditText>(R.id.nameEdit)
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
-         val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
-        val emailEdit = findViewById<EditText>(R.id.emailEdit)
+        val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
+        val emailEdit = findViewById<EditText>(R.id.Email)
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
-
-        if (!validateString(nameEdit.text.toString())) {
-            return false
+        var flag = true
+        val drawableError = R.drawable.error
+        if (!changeColor(nameEdit, validateString(nameEdit.text.toString()), resources)) {
+            nameEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
+            flag = false
         }
 
-        if(!validateString(surnameEdit.text.toString())) {
-            return false
+        if(!changeColor(surnameEdit, validateString(surnameEdit.text.toString()), resources)){
+            surnameEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
+            flag = false
         }
-        if (!validateString(nicknameEdit.text.toString())) {
-            return false
+        if (!changeColor(nicknameEdit, validateString(nicknameEdit.text.toString()), resources)) {
+            nicknameEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
+            flag = false
         }
-        if (!validateEmail(emailEdit.text.toString())) {
-            return false
+        if (!changeColor(emailEdit, validateEmail(emailEdit.text.toString()), resources)) {
+            nicknameEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
+            flag = false
         }
-        if (!validateString(localityEdit.text.toString())) {
-            return false
+        if (!changeColor(localityEdit, validateString(localityEdit.text.toString()), resources)) {
+            localityEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
+            flag = false
         }
         if (birthdateListener.value == null) {
-            return false
+            flag = false
         }
 
-        return true
+        return flag
     }
 
     private fun prepareEdit() {
 
         val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
         val nameEdit = findViewById<EditText>(R.id.nameEdit)
-         val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
+        val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
-        val emailEdit = findViewById<EditText>(R.id.emailEdit)
+        val emailEdit = findViewById<EditText>(R.id.Email)
         profile.name = nameEdit.text.toString()
         profile.surname = surnameEdit.text.toString()
         profile.nickname = nicknameEdit.text.toString()
@@ -310,6 +316,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
                         resources.getText(R.string.errorOnEdit),
                         Toast.LENGTH_SHORT
                     )
+
                     toast.show()
                     return false
                 }

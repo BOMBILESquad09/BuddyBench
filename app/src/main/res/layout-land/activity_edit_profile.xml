@@ -80,11 +80,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        app:layout_constraintBottom_toTopOf="@+id/textView"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/cardView">
+                        app:layout_constraintStart_toStartOf="parent">
 
                         <EditText
                             android:id="@+id/nameEdit"
@@ -92,9 +89,10 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:autofillHints="name"
+                            android:backgroundTint="@color/md_theme_dark_onPrimary"
                             android:fontFamily="@font/montserrat_bold_700"
                             android:gravity="center"
-                            android:hint="Full Name"
+                            android:hint="Name"
                             android:inputType="text"
                             android:singleLine="true"
                             android:textSize="16sp" />
@@ -102,7 +100,7 @@
                         <View
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="0.5" />
+                            android:layout_weight="0.12" />
 
                         <EditText
                             android:id="@+id/surnameEdit"
@@ -110,6 +108,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:autofillHints="name"
+                            android:backgroundTint="@color/md_theme_dark_onPrimary"
                             android:fontFamily="@font/montserrat_bold_700"
                             android:gravity="center"
                             android:hint="Surname"
@@ -120,29 +119,49 @@
                         <View
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="0.5" />
+                            android:layout_weight="0.12" />
 
                         <EditText
-                            android:id="@+id/nicknameEdit"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/Email"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.3"
+                            android:layout_weight="1."
                             android:autofillHints="username"
+                            android:backgroundTint="@color/md_theme_dark_onPrimary"
                             android:fontFamily="@font/montserrat_medium_500"
                             android:gravity="center"
-                            android:hint="Nickname"
                             android:singleLine="true"
                             android:textSize="16sp" />
+
 
 
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/linearLayoutDown"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent">
+
+                        <EditText
+                            android:id="@+id/nicknameEdit"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/md_theme_dark_onPrimary"
+                            android:fontFamily="@font/montserrat_medium_500"
+                            android:gravity="center"
+                            android:hint="Nickname"
+                            android:singleLine="true"
+                            android:textColorLink="#881A1A"
+                            android:textSize="16sp" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.12" />
 
                         <EditText
                             android:id="@+id/localityEdit"
@@ -151,10 +170,11 @@
                             android:layout_weight="1"
 
                             android:autofillHints="name"
+                            android:backgroundTint="@color/md_theme_dark_onPrimary"
                             android:fontFamily="@font/montserrat_semibold_600"
+                            android:gravity="center"
                             android:hint="Locality"
                             android:singleLine="true"
-                            android:textAlignment="textStart"
                             android:textSize="16sp"
                             app:drawableRightCompat="@drawable/location" />
 
@@ -162,14 +182,14 @@
                         <View
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="0.5" />
+                            android:layout_weight="0.12" />
 
                         <androidx.cardview.widget.CardView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="0.5dp"
                             android:layout_marginBottom="2dp"
-                            android:layout_weight="2"
+                            android:layout_weight="1"
                             app:cardCornerRadius="100dp">
 
                             <Button
@@ -184,25 +204,7 @@
                                 app:drawableRightCompat="@drawable/birthday" />
 
 
-
                         </androidx.cardview.widget.CardView>
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.5" />
-
-                        <EditText
-                            android:id="@+id/emailEdit"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1.5"
-                            android:autofillHints="username"
-                            android:fontFamily="@font/montserrat_medium_500"
-                            android:gravity="center"
-                            android:hint="Email"
-                            android:singleLine="true"
-                            android:textSize="16sp" />
 
 
                     </LinearLayout>

@@ -101,12 +101,7 @@
                             android:orientation="horizontal"
                             tools:ignore="UseCompoundDrawables">
 
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:contentDescription="@string/turin"
-                                android:src="@drawable/location" />
+
 
                             <TextView
                                 android:id="@+id/locationView"
@@ -118,6 +113,12 @@
                                 android:text="@string/turin"
                                 android:textAlignment="center"
                                 android:textSize="15sp" />
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:contentDescription="@string/turin"
+                                android:src="@drawable/location" />
 
 
                         </LinearLayout>
@@ -185,7 +186,7 @@
                                 android:fontFamily="@font/montserrat_bold_700"
                                 android:gravity="center"
                                 android:text="80"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 tools:layout_editor_absoluteX="16dp"
                                 tools:layout_editor_absoluteY="571dp" />
 
@@ -215,7 +216,7 @@
                                 android:fontFamily="@font/montserrat_bold_700"
                                 android:gravity="center"
                                 android:text="80"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 tools:layout_editor_absoluteX="-23dp"
                                 tools:layout_editor_absoluteY="-18dp" />
 
@@ -244,7 +245,7 @@
                                 android:fontFamily="@font/montserrat_bold_700"
                                 android:gravity="center"
                                 android:text="80%"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 tools:layout_editor_absoluteX="16dp"
                                 tools:layout_editor_absoluteY="92dp" />
 
@@ -267,10 +268,11 @@
                     android:id="@+id/textView"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="2dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/montserrat_bold_700"
-                    android:gravity="center"
+                    android:gravity="center|start"
                     android:text="@string/sports_section"
                     android:textSize="20sp"
                     app:layout_constraintBottom_toTopOf="@+id/sports_horizontal_scroll"

@@ -23,7 +23,7 @@ class ValidationUtils {
             //at least two characters after the last dot
             return Patterns.EMAIL_ADDRESS.matcher(string).matches();
         }
-        fun validateLocalDate(string: String?): Boolean{
+        private fun validateLocalDate(string: String?): Boolean{
             try{
                 println(DateTimeFormatter.ofPattern("dd/MM/yyyy").parse(string))
             } catch (_: java.lang.Exception){
@@ -32,26 +32,31 @@ class ValidationUtils {
             return true
         }
 
-        fun changeColor(ev: EditText, success: Boolean, resources: Resources){
+        fun changeColor(ev: EditText, success: Boolean, resources: Resources): Boolean{
             if(!success){
-                ev.backgroundTintList =
-                    ColorStateList.valueOf(resources.getColor(R.color.error, null))
+                ev.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.error, null))
+                return false
             }
             else{
                 ev.backgroundTintList =
-                    ColorStateList.valueOf(resources.getColor(R.color.md_theme_dark_background,null))
+                    ColorStateList.valueOf(resources.getColor(R.color.md_theme_dark_onPrimary,null))
+                ev.setCompoundDrawablesWithIntrinsicBounds(0, 0,0, 0)
+
             }
+            return true
         }
 
-        fun changeColorDate(ev: EditText, string:String, resources: Resources){
+        fun changeColorDate(ev: EditText, string:String, resources: Resources): Boolean{
             if(!validateLocalDate(string)){
                 ev.backgroundTintList =
                     ColorStateList.valueOf(resources.getColor(R.color.error, null))
+                return false
             }
             else{
                 ev.backgroundTintList =
                     ColorStateList.valueOf(resources.getColor(R.color.md_theme_dark_background,null))
             }
+            return true
         }
     }
 }
