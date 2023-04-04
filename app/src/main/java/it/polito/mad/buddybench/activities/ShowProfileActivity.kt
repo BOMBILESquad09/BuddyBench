@@ -57,7 +57,7 @@ class ShowProfileActivity : AppCompatActivity() {
         matchesOrganizedTv.text = profile.matchesOrganized.toString()
 
         val reliabilityTv = findViewById<TextView>(R.id.reliabilityView)
-        reliabilityTv.text = profile.reliability.toString()
+        reliabilityTv.text = getString(R.string.reliabilityValue).format(profile.reliability)
 
         val iv = findViewById<ImageView>(R.id.imageEdit)
         Picasso.with(applicationContext).load("${profile.imageUri}").placeholder(R.drawable.person).into(iv)
@@ -97,7 +97,8 @@ class ShowProfileActivity : AppCompatActivity() {
                 profile = Profile.fromJSON(JSONObject(response.data?.getStringExtra("newProfile").toString()))
                 setGUI()
             }
-
         }
     }
+
+
 }

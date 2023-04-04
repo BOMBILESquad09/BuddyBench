@@ -9,6 +9,7 @@
     <string name="newbie">Newbie</string>
     <string name="sports_section">Sports</string>
     <string name="reliability">Reliability</string>
+    <string name="reliabilityValue">%1$d%%</string>
     <string name="played">Played</string>
     <string name="organized">Organized</string>
     <string name="sport_tennis">Tennis</string>
