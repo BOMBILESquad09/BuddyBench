@@ -23,14 +23,16 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 
-class Profile(var fullName: String?, var nickname: String?, var email: String, var location: String?, var birthdate: LocalDate, var reliability: Int, var imageUri: Uri?, var sports: List<Sport> ) {
+class Profile(var name: String?, var surname: String?, var nickname: String?, var email: String, var location: String?, var birthdate: LocalDate, var reliability: Int, var imageUri: Uri?, var sports: List<Sport> ) {
     var matchesPlayed:Int = sports.fold(0){a: Int, b: Sport -> a + b.matchesPlayed }
     var age:Int = ChronoUnit.YEARS.between(birthdate, LocalDate.now()).toInt()
     var matchesOrganized: Int = sports.fold(0){a:Int, b: Sport -> a + b.matchesOrganized}
+    var fullName = "$name $surname"
     companion object {
 
         fun fromJSON(jsonProfile: JSONObject): Profile{
-            val fullName = jsonProfile.getString("fullName", "No name")
+            val name = jsonProfile.getString("name", "No name")
+            val surname = jsonProfile.getString("surname", "No surname")
             val nickname = jsonProfile.getString("nickname", "No nickname")
             val email = jsonProfile.getString("email", "No email")
             val birthday = LocalDate.parse(jsonProfile.getString("birthdate", "27/04/1999"),  DateTimeFormatter.ofPattern("dd/MM/yyyy"))
@@ -47,13 +49,13 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
                 val jsonSport = sportsList.getJSONObject(i)
                 sports.add(Sport.fromJSON(jsonSport))
             }
-            return Profile(fullName, nickname, email, location, birthday, reliability, imageUri,sports)
+            return Profile(name, surname, nickname, email, location, birthday, reliability, imageUri,sports)
         }
 
 
 
         fun mockJSON(): String {
-            return Profile("Vittorio", "Arpino", "varpino@buddybench.it", "Scafati", LocalDate.parse("27/04/1999", DateTimeFormatter.ofPattern("dd/MM/yyyy")), 70,
+            return Profile("Vittorio", "Arpino","TheNextLayer", "varpino@buddybench.it", "Scafati", LocalDate.parse("27/04/1999", DateTimeFormatter.ofPattern("dd/MM/yyyy")), 70,
                 null,
                 listOf(
                     Sport(Sports.TENNIS, Skills.SKILLED, 3, 2),
@@ -72,7 +74,8 @@ class Profile(var fullName: String?, var nickname: String?, var email: String, v
 
     fun toJSON(): JSONObject {
         val json = JSONObject()
-        json.put("fullName", fullName)
+        json.put("name", name)
+        json.put("surname",surname)
         json.put("nickname", nickname)
         json.put("location", location)
         json.put("email", email)

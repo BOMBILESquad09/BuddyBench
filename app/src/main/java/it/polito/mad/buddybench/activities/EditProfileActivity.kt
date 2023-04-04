@@ -76,12 +76,20 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         profile = Profile.fromJSON(JSONObject(stringedProfile))
 
         // ** Profile TextFields Edit
-        val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
-        fullNameEdit.doOnTextChanged { text, _, _, _ ->
-            changeColor(fullNameEdit, validateString(text.toString()), resources)
-            profile.fullName = text.toString()
+        val nameEdit = findViewById<EditText>(R.id.nameEdit)
+        nameEdit.doOnTextChanged { text, _, _, _ ->
+            changeColor(nameEdit, validateString(text.toString()), resources)
+            profile.name = text.toString()
         }
-        fullNameEdit.setText(profile.fullName)
+        nameEdit.setText(profile.name)
+
+        /*val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
+        surnameEdit.doOnTextChanged { text, _, _, _ ->
+            changeColor(nameEdit, validateString(text.toString()), resources)
+            profile.surname = text.toString()
+        }
+        surnameEdit.setText(profile.surname)
+        * */
 
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
         nicknameEdit.doOnTextChanged { text, _, _, _ ->
@@ -208,14 +216,19 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     }
 
     private fun formValidation(): Boolean {
-        val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
+        val nameEdit = findViewById<EditText>(R.id.nameEdit)
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
+        // val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
         val emailEdit = findViewById<EditText>(R.id.emailEdit)
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
 
-        if (!validateString(fullNameEdit.text.toString())) {
+        if (!validateString(nameEdit.text.toString())) {
             return false
         }
+        /*
+        if(!validateString(surnameEdit.text.toString())) {
+            return false
+        }*/
         if (!validateString(nicknameEdit.text.toString())) {
             return false
         }
@@ -235,11 +248,13 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     private fun prepareEdit() {
 
         val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
-        val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
+        val nameEdit = findViewById<EditText>(R.id.nameEdit)
+        // val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
         val emailEdit = findViewById<EditText>(R.id.emailEdit)
-        profile.fullName = fullNameEdit.text.toString()
+        profile.name = nameEdit.text.toString()
+        //profile.surname = surnameEdit.text.toString()
         profile.nickname = nicknameEdit.text.toString()
         profile.location = localityEdit.text.toString()
         profile.birthdate = birthdateListener.value!!
