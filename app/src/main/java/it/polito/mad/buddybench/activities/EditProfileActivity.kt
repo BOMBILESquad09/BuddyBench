@@ -365,14 +365,14 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
     override fun onPause() {
         println("On pausing....")
-        if (alertDialog?.isShowing == true)
-            dialogOpened = "alertDialog"
+        dialogOpened = if (alertDialog?.isShowing == true)
+            "alertDialog"
         else if (datePicker?.isShowing == true)
-            dialogOpened = "datePicker"
-        else if (editSportDialog?.showsDialog == true)
-            dialogOpened = "editSportDialog"
+            "datePicker"
+        else if (editSportDialog?.isVisible == true)
+            "editSportDialog"
         else
-            dialogOpened = null
+            null
         alertDialog?.dismiss()
         datePicker?.dismiss()
         editSportDialog?.dismiss()

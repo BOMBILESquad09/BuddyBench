@@ -1,6 +1,9 @@
 package it.polito.mad.buddybench.enums
 
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.toUpperCase
 import it.polito.mad.buddybench.R
+import java.util.*
 
 enum class Sports {
     FOOTBALL,
@@ -25,7 +28,7 @@ enum class Sports {
                 TENNIS -> "TENNIS"
                 BASKETBALL -> "BASKETBALL"
                 VOLLEYBALL -> "VOLLEYBALL"
-            }
+            }.lowercase()
         }
 
         fun fromJSON(sport: String): Sports? {
@@ -42,7 +45,7 @@ enum class Sports {
             val valuesArray = mutableListOf<CharSequence>()
             for (sport in Sports.values()) {
                 if (excludeSports.indexOf(sport) != -1) continue
-                valuesArray.add(sport.toString())
+                valuesArray.add(sport.toString().lowercase().replaceFirstChar { it.uppercase() })
             }
 
             return valuesArray.toTypedArray()

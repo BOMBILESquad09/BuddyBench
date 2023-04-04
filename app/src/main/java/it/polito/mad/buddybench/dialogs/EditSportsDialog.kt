@@ -15,7 +15,7 @@ import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.Utils
 
-class EditSportsDialog(val profile: Profile): DialogFragment() {
+class EditSportsDialog(private val profile: Profile): DialogFragment() {
 
     // Use this instance of the interface to deliver action events
     private lateinit var listener: NoticeDialogListener
