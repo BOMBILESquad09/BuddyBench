@@ -84,7 +84,7 @@
                         android:fontFamily="@font/montserrat_bold_700"
                         android:gravity="center"
                         android:text="Full Name"
-                        android:textSize="25sp" />
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/nickNameView"
@@ -94,7 +94,7 @@
                         android:fontFamily="@font/montserrat_medium_500"
                         android:gravity="center"
                         android:text="Nickname"
-                        android:textSize="15sp" />
+                        android:textSize="12sp" />
 
                     <TextView
                         android:id="@+id/emailView"
@@ -105,7 +105,7 @@
                         android:fontFamily="@font/montserrat_medium_500"
                         android:gravity="center"
                         android:text="Email"
-                        android:textSize="15sp" />
+                        android:textSize="12sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -124,7 +124,7 @@
                             android:fontFamily="@font/montserrat_semibold_600"
                             android:text="@string/turin"
                             android:textAlignment="textEnd"
-                            android:textSize="15sp" />
+                            android:textSize="12sp" />
 
                         <View
                             android:layout_width="0dp"
@@ -141,7 +141,7 @@
                             android:fontFamily="@font/montserrat_semibold_600"
                             android:text="23 years old"
                             android:textAlignment="textStart"
-                            android:textSize="15sp" />
+                            android:textSize="12sp" />
 
                     </LinearLayout>
 
@@ -166,7 +166,7 @@
                                 android:fontFamily="@font/montserrat_bold_700"
                                 android:gravity="center"
                                 android:text="80"
-                                android:textSize="24sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -193,7 +193,7 @@
                                 android:fontFamily="@font/montserrat_bold_700"
                                 android:gravity="center"
                                 android:text="80"
-                                android:textSize="24sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -220,7 +220,7 @@
                                 android:fontFamily="@font/montserrat_bold_700"
                                 android:gravity="center"
                                 android:text="80%"
-                                android:textSize="24sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:layout_width="match_parent"

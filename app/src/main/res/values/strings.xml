@@ -34,5 +34,6 @@
     <string name="skilled">Skilled</string>
     <string name="professional">Professional</string>
     <string name="world_class">World Class</string>
+    <string name="email">Email</string>
 
 </resources>

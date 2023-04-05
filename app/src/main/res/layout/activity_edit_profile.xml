@@ -82,33 +82,47 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/cardView">
 
-                    <EditText
-                        android:id="@+id/nameEdit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:autofillHints="name"
-                        android:backgroundTint="@color/md_theme_dark_onPrimary"
-                        android:fontFamily="@font/montserrat_bold_700"
-                        android:gravity="center"
-                        android:hint="Name"
-                        android:inputType="text"
-                        android:singleLine="true"
-                        android:textSize="16sp" />
 
-                    <EditText
-                        android:id="@+id/surnameEdit"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
                         android:layout_weight="1"
-                        android:autofillHints="name"
-                        android:backgroundTint="@color/md_theme_dark_onPrimary"
-                        android:fontFamily="@font/montserrat_bold_700"
-                        android:gravity="center"
-                        android:hint="Surname"
-                        android:inputType="text"
-                        android:singleLine="true"
-                        android:textSize="16sp" />
+                        android:orientation="horizontal"
+                        >
+
+                        <EditText
+                            android:id="@+id/nameEdit"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"                            android:autofillHints="name"
+                            android:backgroundTint="@color/md_theme_dark_onPrimary"
+                            android:fontFamily="@font/montserrat_bold_700"
+                            android:gravity="center"
+                            android:hint="Name"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            android:textSize="12sp" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.25" />
+
+                        <EditText
+                            android:id="@+id/surnameEdit"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"                            android:autofillHints="name"
+                            android:backgroundTint="@color/md_theme_dark_onPrimary"
+                            android:fontFamily="@font/montserrat_bold_700"
+                            android:gravity="center"
+                            android:hint="Surname"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            android:textSize="12sp" />
+
+                    </LinearLayout>
 
                     <EditText
                         android:id="@+id/nicknameEdit"
@@ -121,7 +135,7 @@
                         android:gravity="center"
                         android:hint="Nickname"
                         android:singleLine="true"
-                        android:textSize="16sp" />
+                        android:textSize="12sp" />
 
                     <EditText
                         android:id="@+id/Email"
@@ -134,7 +148,7 @@
                         android:gravity="center"
                         android:hint="Email"
                         android:singleLine="true"
-                        android:textSize="16sp" />
+                        android:textSize="12sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -155,7 +169,7 @@
                             android:hint="Locality"
                             android:singleLine="true"
                             android:textAlignment="textStart"
-                            android:textSize="16sp"
+                            android:textSize="12sp"
                             app:drawableRightCompat="@drawable/location" />
 
                         <View
@@ -163,26 +177,22 @@
                             android:layout_height="match_parent"
                             android:layout_weight="0.25" />
 
-                        <androidx.cardview.widget.CardView
-                            app:cardCornerRadius="100dp"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="0.5dp"
-                            android:layout_marginBottom="2dp"
-                            android:layout_weight="1">
 
-                            <Button
+
+                            <EditText
                                 android:id="@+id/birthdayEditButton"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:backgroundTint="#ffffff"
-                                android:fontFamily="@font/montserrat_semibold_600"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
                                 android:onClick="showDatePickerDialog"
-                                android:text="Birthdate"
-                                android:textColor="#1b1b6c"
+                                android:fontFamily="@font/montserrat_semibold_600"
+                                android:hint="Birthdate"
+                                android:focusable="false"
+                                android:clickable="true"
+                                android:textAlignment="textStart"
+                                android:textSize="12sp"
                                 app:drawableRightCompat="@drawable/birthday" />
 
-                        </androidx.cardview.widget.CardView>
 
                     </LinearLayout>
 
@@ -202,9 +212,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="0dp"
                         android:fontFamily="@font/montserrat_bold_700"
-
                         android:text="@string/sports_section"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         app:layout_constraintBottom_toTopOf="@+id/sports_horizontal_scroll"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"

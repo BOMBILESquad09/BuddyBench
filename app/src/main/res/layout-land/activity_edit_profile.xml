@@ -126,6 +126,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1."
+                            android:hint="@string/email"
                             android:autofillHints="username"
                             android:backgroundTint="@color/md_theme_dark_onPrimary"
                             android:fontFamily="@font/montserrat_medium_500"
@@ -168,9 +169,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-
                             android:autofillHints="name"
-                            android:backgroundTint="@color/md_theme_dark_onPrimary"
                             android:fontFamily="@font/montserrat_semibold_600"
                             android:gravity="center"
                             android:hint="Locality"

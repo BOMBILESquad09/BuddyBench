@@ -8,10 +8,10 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Editable
 import android.view.*
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
@@ -64,7 +64,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
 
-        val dialogOpenPreviusly = savedInstanceState?.getString("dialog")
+        val dialogOpenPreviously = savedInstanceState?.getString("dialog")
 
         // ** Toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -113,9 +113,9 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
 
         birthdateListener.value = profile.birthdate
-        val birthdayButtonEdit = findViewById<Button>(R.id.birthdayEditButton)
+        val birthdayButtonEdit = findViewById<EditText>(R.id.birthdayEditButton)
         birthdateListener.observe(this) {
-            birthdayButtonEdit.text = it.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            birthdayButtonEdit.setText(it.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
             profile.birthdate = it
         }
         // ** Profile Image
@@ -139,13 +139,13 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         addSportButton.setOnClickListener { openSportSelectionDialog() }
         checkCameraPermission()
 
-//        if (dialogOpenPreviusly == "contextMenu") {
+//        if (dialogOpenPreviously == "contextMenu") {
 //            contextMenu?.
 //        }
-        if (dialogOpenPreviusly == "datePicker") {
+        if (dialogOpenPreviously == "datePicker") {
             showDatePickerDialog(null)
         }
-        if (dialogOpenPreviusly == "editSportDialog") {
+        if (dialogOpenPreviously == "editSportDialog") {
             openSportSelectionDialog()
         }
 
@@ -363,12 +363,12 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         println("On pausing....")
         if (contextMenu?.hasVisibleItems() == true)
             dialogOpened = "contextMenu"
-        if (datePicker?.isShowing == true)
-            dialogOpened = "datePicker"
+        dialogOpened = if (datePicker?.isShowing == true)
+            "datePicker"
         else if (editSportDialog?.showsDialog == true)
-            dialogOpened = "editSportDialog"
+            "editSportDialog"
         else
-            dialogOpened = null
+            null
         contextMenu?.close()
         datePicker?.dismiss()
         editSportDialog?.dismiss()
