@@ -6,7 +6,7 @@ enum class Skills {
     NEWBIE,
     AMATEUR,
     SKILLED,
-    PROFESSIONAL,
+    PRO,
     WORLD_CLASS;
 
     companion object {
@@ -22,7 +22,7 @@ enum class Skills {
                 NEWBIE -> R.color.md_theme_dark_error
                 AMATEUR -> R.color.md_theme_dark_background
                 SKILLED -> R.color.md_theme_dark_background
-                PROFESSIONAL -> R.color.md_theme_dark_error
+                PRO -> R.color.md_theme_dark_error
                 WORLD_CLASS -> R.color.md_theme_dark_background
             }
         }
@@ -32,7 +32,7 @@ enum class Skills {
                 NEWBIE -> "NEWBIE"
                 AMATEUR -> "AMATEUR"
                 SKILLED -> "SKILLED"
-                PROFESSIONAL -> "PROFESSIONAL"
+                PRO -> "PRO"
                 WORLD_CLASS -> "WORLD_CLASS"
             }
         }
@@ -42,7 +42,7 @@ enum class Skills {
                 "NEWBIE" -> NEWBIE
                 "AMATEUR" -> AMATEUR
                 "SKILLED" -> SKILLED
-                "PROFESSIONAL" -> PROFESSIONAL
+                "PRO" -> PRO
                 "WORLD_CLASS" -> WORLD_CLASS
                 "WORLD CLASS" -> WORLD_CLASS
                 else -> null

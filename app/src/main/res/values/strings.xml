@@ -32,8 +32,15 @@
     <string name="errorOnEdit">Please fill the highlighted fields!</string>
     <string name="amateur">Amateur</string>
     <string name="skilled">Skilled</string>
-    <string name="professional">Professional</string>
+    <string name="professional">Pro </string>
     <string name="world_class">World Class</string>
     <string name="email">Email</string>
+    <string name="errorBirthdate">You live in the future?</string>
+    <string name="nameLabel">Name</string>
+    <string name="surnameLabel">Surname</string>
+    <string name="nicknameLabel">Nickname</string>
+    <string name="emailLabel">Email</string>
+    <string name="localityLabel">Locality</string>
+    <string name="birthdateLabel">Birthdate</string>
 
 </resources>

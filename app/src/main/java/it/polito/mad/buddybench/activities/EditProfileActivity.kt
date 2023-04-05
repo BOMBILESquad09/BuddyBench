@@ -288,7 +288,21 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
     fun showDatePickerDialog(v: View?) {
         val myDateListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
-            birthdateListener.value = LocalDate.of(year, month + 1, day)
+
+            val date = LocalDate.of(year, month + 1, day)
+            //the user must be 18+ yo??
+            if(!date.isAfter(LocalDate.now())){
+                birthdateListener.value = date
+            } else {
+                val toast = Toast.makeText(
+                    this,
+                    resources.getText(R.string.errorBirthdate),
+                    Toast.LENGTH_SHORT
+                )
+
+                toast.show()
+            }
+
         }
         datePicker = DatePickerDialog(
             this,
