@@ -24,306 +24,313 @@
             app:navigationIcon="@drawable/round_arrow_back_24"
             />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingVertical="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:padding="5dp"
-                    app:cardCornerRadius="250dp"
-                    app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/toolbar">
+                    android:layout_weight="1"
+                    android:gravity="center">
 
-                    <ImageView
-                        android:id="@+id/imageEdit"
-                        android:layout_width="200dp"
-                        android:layout_height="200dp"
-                        android:contentDescription="@string/profile_photo_cd"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/person"
-                        />
-                    <include
-                        layout="@layout/camera_button"
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center" />
+                        android:layout_gravity="center"
+                        android:padding="5dp"
+                        app:cardCornerRadius="250dp"
+                        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@+id/linearLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toTopOf="@+id/textView"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cardView">
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:orientation="horizontal"
-                        >
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="0dp"
+                        <ImageView
+                            android:id="@+id/imageEdit"
+                            android:layout_width="200dp"
+                            android:layout_height="200dp"
+                            android:contentDescription="@string/profile_photo_cd"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/person"
+                            />
+                        <include
+                            layout="@layout/camera_button"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:hint="@string/nameLabel"
-                            android:textColorHint="@color/md_theme_dark_inverseOnSurface"
-                            app:boxStrokeColor="#FF0000"
-                            >
-
-                            <EditText
-                                android:id="@+id/nameEdit"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:autofillHints="name"
-                                android:backgroundTint="@color/md_theme_dark_onPrimary"
-                                android:fontFamily="@font/montserrat_medium_500"
-                                android:gravity="center"
-                                android:hint="@string/nameLabel"
-                                android:inputType="text"
-                                android:singleLine="true"
-                                android:text="@string/nameLabel"
-                                android:textSize="16sp" />
-
-                        </com.google.android.material.textfield.TextInputLayout>
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.25" />
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:hint="@string/surnameLabel"
-                            android:textColorHint="@color/md_theme_dark_inverseOnSurface"
-                            app:boxStrokeColor="#FF0000"
-                            >
-                        <EditText
-                            android:id="@+id/surnameEdit"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:backgroundTint="@color/md_theme_dark_onPrimary"
-                            android:fontFamily="@font/montserrat_medium_500"
-                            android:text="@string/surnameLabel"
-                            android:hint="@string/surnameLabel"
-                            android:gravity="center"
-                            android:inputType="text"
-                            android:singleLine="true"
-                            android:textSize="16sp" />
-                        </com.google.android.material.textfield.TextInputLayout>
-                    </LinearLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:hint="@string/nicknameLabel"
-                        android:textColorHint="@color/md_theme_dark_inverseOnSurface"
-                        app:boxStrokeColor="#FF0000"
-                        >
-                        <EditText
-                            android:id="@+id/nicknameEdit"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:autofillHints="username"
-                            android:backgroundTint="@color/md_theme_dark_onPrimary"
-                            android:fontFamily="@font/montserrat_medium_500"
-                            android:gravity="center"
-                            android:hint="@string/nicknameLabel"
-                            android:text="@string/nicknameLabel"
-                            android:singleLine="true"
-                            android:textSize="16sp" />
+                            android:layout_gravity="center" />
 
 
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/emailLabel"
-                        android:textColorHint="@color/md_theme_dark_inverseOnSurface"
-                        app:boxStrokeColor="#FF0000"
-                        >
-                    <EditText
-                        android:id="@+id/Email"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:autofillHints="username"
-                        android:backgroundTint="@color/md_theme_dark_onPrimary"
-                        android:fontFamily="@font/montserrat_medium_500"
-                        android:gravity="center"
-                        android:hint="@string/emailLabel"
-                        android:text="@string/emailLabel"
-                        android:singleLine="true"
-                        android:textSize="16sp" />
-                    </com.google.android.material.textfield.TextInputLayout>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:hint="@string/localityLabel"
-                            android:textColorHint="@color/md_theme_dark_inverseOnSurface"
-                            app:boxStrokeColor="#FF0000"
-                            >
-                        <EditText
-                            android:id="@+id/localityEdit"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-
-                            android:autofillHints="name"
-                            android:backgroundTint="@color/md_theme_dark_onPrimary"
-                            android:fontFamily="@font/montserrat_medium_500"
-                            android:hint="@string/localityLabel"
-                            android:text="@string/localityLabel"
-                            android:singleLine="true"
-                            android:textAlignment="textStart"
-                            android:textSize="16sp"
-                            app:drawableRightCompat="@drawable/location" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.25" />
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:hint="@string/birthdateLabel"
-                            android:textColorHint="@color/md_theme_dark_inverseOnSurface"
-                            app:boxStrokeColor="#FF0000"
-
-                            >
-                            <EditText
-                                android:id="@+id/birthdayEditButton"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:onClick="showDatePickerDialog"
-                                android:fontFamily="@font/montserrat_medium_500"
-                                android:hint="@string/birthdateLabel"
-                                android:focusable="false"
-                                android:clickable="true"
-                                android:textAlignment="textStart"
-                                android:text="01/01/2001"
-                                android:textSize="16sp"
-                                app:drawableRightCompat="@drawable/birthday" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                    </LinearLayout>
-
-
+                    </androidx.cardview.widget.CardView>
                 </LinearLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="0.1">
-                </View>
-
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1.5"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
                     android:orientation="vertical">
 
                     <LinearLayout
+                        android:id="@+id/linearLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/textView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:fontFamily="@font/montserrat_bold_700"
-                            android:text="@string/sports_section"
-                            android:textSize="18sp"
-                            app:layout_constraintBottom_toTopOf="@+id/sports_horizontal_scroll"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-                            android:layout_marginEnd="5dp"/>
-
-                        <ImageButton
-                            android:id="@+id/add_sport_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/rounded_shape"
-                            android:backgroundTint="@color/md_theme_light_primary"
-                            android:contentDescription="@string/add"
-                            android:src="@drawable/round_add_24_white" />
-
-                    </LinearLayout>
-
-                    <HorizontalScrollView
-                        android:id="@+id/sports_horizontal_scroll"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="10dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:orientation="vertical"
+                        android:paddingVertical="16dp"
+                        app:layout_constraintBottom_toTopOf="@+id/textView"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView">
+                        app:layout_constraintTop_toBottomOf="@+id/cardView">
+
 
                         <LinearLayout
-                            android:id="@+id/sportsContainerEdit"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:baselineAligned="false"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
                             android:orientation="horizontal"
-                            android:paddingTop="20dp">
+                            android:layout_marginBottom="8dp"
+                            >
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:hint="@string/nameLabel"
+                                android:textColorHint="@color/md_theme_dark_inverseOnSurface"
+                                app:boxStrokeColor="#FF0000"
+                                >
+
+                                <EditText
+                                    android:id="@+id/nameEdit"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:autofillHints="name"
+                                    android:backgroundTint="@color/md_theme_dark_onPrimary"
+                                    android:fontFamily="@font/montserrat_medium_500"
+                                    android:gravity="center"
+                                    android:hint="@string/nameLabel"
+                                    android:inputType="text"
+                                    android:singleLine="true"
+                                    android:text="@string/nameLabel"
+                                    android:textSize="16sp" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.25" />
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:hint="@string/surnameLabel"
+                                android:textColorHint="@color/md_theme_dark_inverseOnSurface"
+                                app:boxStrokeColor="#FF0000"
+                                >
+                                <EditText
+                                    android:id="@+id/surnameEdit"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:backgroundTint="@color/md_theme_dark_onPrimary"
+                                    android:fontFamily="@font/montserrat_medium_500"
+                                    android:text="@string/surnameLabel"
+                                    android:hint="@string/surnameLabel"
+                                    android:gravity="center"
+                                    android:inputType="text"
+                                    android:singleLine="true"
+                                    android:textSize="16sp" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </LinearLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:hint="@string/nicknameLabel"
+                            android:textColorHint="@color/md_theme_dark_inverseOnSurface"
+                            app:boxStrokeColor="#FF0000"
+                            android:layout_marginBottom="8dp"
+                            >
+                            <EditText
+                                android:id="@+id/nicknameEdit"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:autofillHints="username"
+                                android:backgroundTint="@color/md_theme_dark_onPrimary"
+                                android:fontFamily="@font/montserrat_medium_500"
+                                android:gravity="center"
+                                android:hint="@string/nicknameLabel"
+                                android:text="@string/nicknameLabel"
+                                android:singleLine="true"
+                                android:textSize="16sp" />
+
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/emailLabel"
+                            android:textColorHint="@color/md_theme_dark_inverseOnSurface"
+                            app:boxStrokeColor="#FF0000"
+                            android:layout_marginBottom="8dp"
+                            >
+                            <EditText
+                                android:id="@+id/Email"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:autofillHints="username"
+                                android:backgroundTint="@color/md_theme_dark_onPrimary"
+                                android:fontFamily="@font/montserrat_medium_500"
+                                android:gravity="center"
+                                android:hint="@string/emailLabel"
+                                android:text="@string/emailLabel"
+                                android:singleLine="true"
+                                android:textSize="16sp" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:hint="@string/localityLabel"
+                                android:textColorHint="@color/md_theme_dark_inverseOnSurface"
+                                app:boxStrokeColor="#FF0000"
+                                >
+                                <EditText
+                                    android:id="@+id/localityEdit"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="text"
+                                    android:autofillHints="name"
+                                    android:backgroundTint="@color/md_theme_dark_onPrimary"
+                                    android:fontFamily="@font/montserrat_medium_500"
+                                    android:hint="@string/localityLabel"
+                                    android:singleLine="true"
+                                    android:textAlignment="textStart"
+                                    android:textSize="16sp"
+                                    app:drawableRightCompat="@drawable/location" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.25" />
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:hint="@string/birthdateLabel"
+                                android:textColorHint="@color/md_theme_dark_inverseOnSurface"
+                                app:boxStrokeColor="#FF0000"
+
+                                >
+                                <EditText
+                                    android:id="@+id/birthdayEditButton"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:onClick="showDatePickerDialog"
+                                    android:fontFamily="@font/montserrat_medium_500"
+                                    android:hint="@string/birthdateLabel"
+                                    android:focusable="false"
+                                    android:clickable="true"
+                                    android:textAlignment="textStart"
+                                    android:text="01/01/2001"
+                                    android:textSize="16sp"
+                                    app:drawableRightCompat="@drawable/birthday" />
+                            </com.google.android.material.textfield.TextInputLayout>
 
                         </LinearLayout>
 
 
-                    </HorizontalScrollView>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:orientation="horizontal"
+                            android:paddingVertical="16dp">
+
+                            <TextView
+                                android:id="@+id/textView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:fontFamily="@font/montserrat_bold_700"
+                                android:text="@string/sports_section"
+                                android:textSize="18sp"
+                                app:layout_constraintBottom_toTopOf="@+id/sports_horizontal_scroll"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+                                android:layout_marginEnd="5dp"/>
+
+                            <ImageButton
+                                android:id="@+id/add_sport_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/rounded_shape"
+                                android:backgroundTint="@color/md_theme_light_primary"
+                                android:contentDescription="@string/add"
+                                android:src="@drawable/round_add_24_white" />
+
+                        </LinearLayout>
+
+                        <HorizontalScrollView
+                            android:id="@+id/sports_horizontal_scroll"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textView">
+
+                            <LinearLayout
+                                android:id="@+id/sportsContainerEdit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:baselineAligned="false"
+                                android:orientation="horizontal"
+                                >
+
+                                <include layout="@layout/card_sport_edit"  />
+
+                            </LinearLayout>
+
+
+                        </HorizontalScrollView>
+                    </LinearLayout>
+
+
+
                 </LinearLayout>
-
-
-
             </LinearLayout>
-        </LinearLayout>
+
+
+        </ScrollView>
 
     </LinearLayout>
 
