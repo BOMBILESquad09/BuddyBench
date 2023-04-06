@@ -102,9 +102,7 @@ class ShowProfileActivity : AppCompatActivity() {
 
                 val newProfile = Profile.fromJSON(JSONObject(response.data?.getStringExtra("newProfile").toString()))
                 val newProfileJSON = newProfile.toJSON().toString()
-                println(newProfile.imageUri )
-                println(profile.imageUri)
-                println(profile.imageUri.toString() == newProfile.imageUri.toString())
+
                 val newImageUri =  if(newProfile.imageUri != null &&  newProfile.imageUri.toString() != profile.imageUri.toString())
                     BitmapUtils.saveToInternalStorage(applicationContext, BitmapUtils.uriToBitmap(contentResolver, newProfile.imageUri!!)!!) else profile.imageUri
                 profile.imageUri = newImageUri?:profile.imageUri
@@ -118,6 +116,7 @@ class ShowProfileActivity : AppCompatActivity() {
                     )
                     toast.show()
                 }
+                profile = newProfile
                 putString("profile", newProfileJSON)
                 apply()
 
