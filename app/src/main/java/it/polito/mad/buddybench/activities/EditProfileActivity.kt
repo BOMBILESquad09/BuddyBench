@@ -1,4 +1,4 @@
-package it.polito.mad.buddybench.activities
+package it.polito.mad.buddybench. activities
 
 import android.Manifest
 import android.app.Activity
@@ -53,6 +53,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     private var dialogOpened: ActivityState? = null
     private var tempCalendarDate: LocalDate? = null
     private var popupOpened: PopupMenu? = null
+    private var tempSelectedSport: ArrayList<Sports>? = null
     // ** Profile Image
     private val launcherCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -138,10 +139,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         val cardViewImage = findViewById<CardView>(R.id.cardView)
         registerForContextMenu(cardViewImage)
 
-
-
-
-
         sportContainer = findViewById(R.id.sportsContainerEdit)
         sportContainer.removeAllViews()
 
@@ -163,7 +160,12 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             showDatePickerDialog(null)
         }
         if (dialogOpenPreviously == ActivityState.EditSportsOpened) {
-            openSportSelectionDialog()
+
+            tempSelectedSport = savedInstanceState?.getStringArrayList("tempSelectedSport")?.map { s -> Sports.fromJSON(s) } as ArrayList<Sports>
+            if (tempSelectedSport != null)
+                editSportDialog?.selectedItems = tempSelectedSport!!
+            openSportSelectionDialog(tempSelectedSport)
+            tempSelectedSport = null
         }
 
     }
@@ -229,6 +231,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         val emailEdit = findViewById<EditText>(R.id.Email)
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
         var flag = true
+        var flagEmail = true
         val drawableError = R.drawable.error
         if (!changeColor(nameEdit, validateString(nameEdit.text.toString()), resources)) {
             nameEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
@@ -245,7 +248,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
         if (!changeColor(emailEdit, validateEmail(emailEdit.text.toString()), resources)) {
             emailEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
-            flag = false
+            flagEmail = false
         }
         if (!changeColor(localityEdit, validateString(localityEdit.text.toString()), resources)) {
             localityEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
@@ -254,13 +257,27 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         if (birthdateListener.value == null) {
             flag = false
         }
+        if (!flag){
+            val toast = Toast.makeText(
+                this,
+                resources.getText(R.string.errorOnEdit),
+                Toast.LENGTH_SHORT
+            )
+            toast.show()
+        } else if (!flagEmail){
+            val toast = Toast.makeText(
+                this,
+                resources.getText(R.string.errorOnEmail),
+                Toast.LENGTH_SHORT
+            )
+            toast.show()
+        }
 
-        return flag
+        return flag || flagEmail
     }
 
     private fun prepareEdit() {
 
-        val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
         val nameEdit = findViewById<EditText>(R.id.nameEdit)
         val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
@@ -272,19 +289,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         profile.location = localityEdit.text.toString()
         profile.birthdate = birthdateListener.value!!
         profile.email = emailEdit.text.toString()
-
-        if (imageUri != null) {
-            try {
-                profile.imageUri = BitmapUtils.saveToInternalStorage(
-                    applicationContext,
-                    BitmapUtils.uriToBitmap(
-                        contentResolver, imageUri!!
-                    )!!, profile.imageUri
-                )!!
-            } catch (_: IOException) {
-
-            }
-        }
+        profile.imageUri = imageUri
+        println(profile.imageUri)
         val newProfileJSON = profile.toJSON().toString()
         intent.putExtra("newProfile", newProfileJSON)
     }
@@ -298,8 +304,9 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     /**
      * Open sport selection dialog
      */
-    private fun openSportSelectionDialog() {
-        editSportDialog = EditSportsDialog(profile)
+    private fun openSportSelectionDialog(selectedItems: ArrayList<Sports>? = ArrayList()) {
+        editSportDialog = EditSportsDialog(profile, selectedItems!!)
+
         editSportDialog!!.show(supportFragmentManager, "edit_sports")
     }
 
@@ -344,13 +351,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         return when (item.itemId) {
             R.id.edit -> {
                 if (!formValidation()) {
-                    val toast = Toast.makeText(
-                        this,
-                        resources.getText(R.string.errorOnEdit),
-                        Toast.LENGTH_SHORT
-                    )
-
-                    toast.show()
                     return false
                 }
                 prepareEdit()
@@ -361,14 +361,14 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
     }
 
-    override fun onDialogPositiveClick(dialog: DialogFragment, selectedItems: ArrayList<Sports?>) {
+    override fun onDialogPositiveClick(dialog: DialogFragment, selectedItems: ArrayList<Sports>) {
         // ** Add new selected sports to user profile (and save to shared preferences)
         val newSports = mutableListOf<Sport>()
         val alreadySelectedSports = profile.sports
         for (selectedSport in selectedItems) {
             try {
                 checkNotNull(selectedSport)
-                val newSport: Sport = Sport(selectedSport, Skills.NEWBIE, 0)
+                val newSport = Sport(selectedSport, Skills.NEWBIE, 0)
                 newSports.add(newSport)
             } catch (e: java.lang.IllegalStateException) {
                 continue
@@ -388,21 +388,21 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         outState.putString("profile", profile.toJSON().toString())
         println("On saving state....")
         if (dialogOpened != null) {
-
             outState.putString("dialog", dialogOpened?.name)
-
             if(tempCalendarDate != null && dialogOpened == ActivityState.DatePickerOpened){
                 outState.putString("tempCalendarDate", tempCalendarDate!!.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+            }
+            if(dialogOpened == ActivityState.EditSportsOpened && tempSelectedSport != null ){
+                outState.putStringArrayList("tempSelectedSport", tempSelectedSport!!.map { sport -> sport.name } as java.util.ArrayList<String>)
             }
         }
         super.onSaveInstanceState(outState)
     }
 
     override fun onPause() {
-        println("On pausing....")
         if (contextMenu?.hasVisibleItems() == true)
             dialogOpened = ActivityState.ContextMenuOpened
-        dialogOpened = if (datePicker?.isShowing == true){
+            dialogOpened = if (datePicker?.isShowing == true){
             val year = datePicker?.datePicker?.year
             val month = datePicker?.datePicker?.month
             val day = datePicker?.datePicker?.dayOfMonth
@@ -411,16 +411,15 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
 
         else if (editSportDialog?.showsDialog == true){
+            tempSelectedSport = editSportDialog?.selectedItems
+
             ActivityState.EditSportsOpened
         }
         else
             null
 
-        println(popupOpened)
         popupOpened?.setOnDismissListener { println("dismiss") }
-
         popupOpened?.dismiss()
-        println(popupOpened)
         datePicker?.dismiss()
         editSportDialog?.dismiss()
         super.onPause()
@@ -455,7 +454,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
 
 
-    fun populateSportCardsEdit(
+    private fun populateSportCardsEdit(
         context: AppCompatActivity,
         sportContainer: LinearLayout,
         onDeleteSport: () -> Unit = {},

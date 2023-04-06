@@ -66,8 +66,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:orientation="vertical"
-                android:paddingEnd="16dp"
-                >
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -88,20 +88,12 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1.5"
                             android:fontFamily="@font/montserrat_bold_700"
-                            android:gravity="center"
+                            android:gravity="center_vertical"
                             android:text="Full Name"
                             android:textSize="20dp" />
 
 
-                        <TextView
-                            android:id="@+id/nickNameView"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/montserrat_semibold_600"
-                            android:gravity="center"
-                            android:text="Nickname"
-                            android:textSize="16sp" />
+
 
 
                     </LinearLayout>
@@ -110,7 +102,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1">
-                    <!--
+                        <TextView
+                            android:id="@+id/nickNameView"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/montserrat_semibold_600"
+                            android:gravity="center_vertical"
+                            android:text="Nickname"
+                            android:textSize="16sp" />
+                        <!--
                         <TextView
                             android:id="@+id/emailView"
                             android:layout_width="0dp"
@@ -125,7 +126,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:gravity="center_horizontal"
+                            android:gravity="center_vertical"
                             android:orientation="horizontal"
                             tools:ignore="UseCompoundDrawables">
 
@@ -158,7 +159,7 @@
                             android:layout_gravity="center"
                             android:layout_weight="1"
                             android:fontFamily="@font/montserrat_semibold_600"
-                            android:gravity="center"
+                            android:gravity="center_vertical"
                             android:text="0 years old"
                             android:textSize="16sp" />
                     </LinearLayout>
@@ -264,9 +265,9 @@
                 </LinearLayout>
 
                 <View
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.1">
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.1">
 
                 </View>
 
@@ -275,6 +276,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="1.5"
                     android:orientation="vertical">
+
                     <TextView
                         android:id="@+id/textView"
                         android:layout_width="match_parent"
