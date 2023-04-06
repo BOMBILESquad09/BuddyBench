@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.*
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -78,6 +79,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.title = "Profile"
         setSupportActionBar(toolbar)
+        toolbar.setTitleTextColor(Color.WHITE)
+
         toolbar.setNavigationOnClickListener { finish() }
         // ** Profile Data
         val stringedProfile = savedInstanceState?.getString("profile") ?: intent.getStringExtra("profile")!!
