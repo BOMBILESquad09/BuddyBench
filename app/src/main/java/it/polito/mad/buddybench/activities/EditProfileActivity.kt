@@ -264,6 +264,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
                 Toast.LENGTH_SHORT
             )
             toast.show()
+            return false
         } else if (!flagEmail){
             val toast = Toast.makeText(
                 this,
@@ -271,9 +272,9 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
                 Toast.LENGTH_SHORT
             )
             toast.show()
+            return false
         }
-
-        return flag || flagEmail
+        return true
     }
 
     private fun prepareEdit() {
@@ -289,8 +290,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         profile.location = localityEdit.text.toString()
         profile.birthdate = birthdateListener.value!!
         profile.email = emailEdit.text.toString()
-        profile.imageUri = imageUri
-        println(profile.imageUri)
+        profile.imageUri = imageUri ?: profile.imageUri
         val newProfileJSON = profile.toJSON().toString()
         intent.putExtra("newProfile", newProfileJSON)
     }

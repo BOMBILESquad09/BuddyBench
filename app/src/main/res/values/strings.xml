@@ -7,7 +7,7 @@
     <string name="caption">Caption</string>
     <string name="preference_file_key">buddyBenchPreferencesFile</string>
     <string name="newbie">Newbie</string>
-    <string name="sports_section">Sports</string>
+    <string name="sports_section">Played sports</string>
     <string name="reliability">Reliability</string>
     <string name="reliabilityValue">%1$d%%</string>
     <string name="played">Games played</string>

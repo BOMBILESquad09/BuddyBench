@@ -39,6 +39,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
             var imageUri:Uri? = null
             try {
                 imageUri = Uri.parse(jsonProfile.getString("imageUri"))
+
             } catch (_: JSONException){
             }
             val sportsList = jsonProfile.getJSONArray("sports", JSONArray())
