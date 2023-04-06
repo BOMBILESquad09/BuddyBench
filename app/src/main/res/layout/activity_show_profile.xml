@@ -67,8 +67,8 @@
                 <LinearLayout
                     android:id="@+id/linearLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:orientation="vertical"
                     app:layout_constraintBottom_toTopOf="@+id/textView"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -79,38 +79,36 @@
                     <TextView
                         android:id="@+id/fullNameView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_height="0dp"
+                        android:layout_weight="1.2"
                         android:fontFamily="@font/montserrat_bold_700"
                         android:gravity="center"
                         android:text="Full Name"
-                        android:textSize="18sp" />
+                        android:textSize="20sp" />
 
                     <TextView
                         android:id="@+id/nickNameView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
                         android:fontFamily="@font/montserrat_medium_500"
                         android:gravity="center"
                         android:text="Nickname"
-                        android:textSize="12sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/emailView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
                         android:fontFamily="@font/montserrat_medium_500"
                         android:gravity="center"
                         android:text="Email"
-                        android:textSize="12sp" />
+                        android:textSize="16sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
                         android:orientation="horizontal">
 
@@ -118,13 +116,15 @@
                         <TextView
                             android:id="@+id/locationView"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:drawableRight="@drawable/location"
                             android:fontFamily="@font/montserrat_semibold_600"
                             android:text="@string/turin"
                             android:textAlignment="textEnd"
-                            android:textSize="12sp" />
+                            android:gravity="center_vertical"
+                            android:textSize="16sp"
+                            android:drawableRight="@drawable/location"
+                            tools:ignore="RtlCompat" />
 
                         <View
                             android:layout_width="0dp"
@@ -135,20 +135,22 @@
                         <TextView
                             android:id="@+id/ageView"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_marginEnd="0dp"
                             android:layout_weight="1"
                             android:fontFamily="@font/montserrat_semibold_600"
                             android:text="23 years old"
+                            android:gravity="center_vertical"
                             android:textAlignment="textStart"
-                            android:textSize="12sp" />
+                            android:textSize="16sp"
+                            tools:ignore="RtlCompat" />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
                         android:baselineAligned="false"
                         android:orientation="horizontal">
 
@@ -237,41 +239,54 @@
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/textView"
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:fontFamily="@font/montserrat_bold_700"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.1">
+                </View>
 
-                    android:text="@string/sports_section"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toTopOf="@+id/sports_horizontal_scroll"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
-
-                <HorizontalScrollView
-                    android:id="@+id/sports_horizontal_scroll"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView">
+                    android:layout_height="0dp"
+                    android:layout_weight="1.2"
+                    android:orientation="vertical">
 
-                    <LinearLayout
-                        android:paddingTop="20dp"
-                        android:id="@+id/sportsContainerEdit"
-                        android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold_700"
+
+                        android:text="@string/sports_section"
+                        android:textSize="20sp"
+                        app:layout_constraintBottom_toTopOf="@+id/sports_horizontal_scroll"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+                    <HorizontalScrollView
+                        android:id="@+id/sports_horizontal_scroll"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal">
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView">
 
-                    </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/sportsContainerEdit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:baselineAligned="false"
+                            android:orientation="horizontal"
+                            android:paddingTop="20dp">
+
+                        </LinearLayout>
 
 
-                </HorizontalScrollView>
+                    </HorizontalScrollView>
+                </LinearLayout>
+
 
             </LinearLayout>
         </LinearLayout>
