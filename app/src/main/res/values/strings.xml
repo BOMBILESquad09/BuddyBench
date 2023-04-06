@@ -17,7 +17,7 @@
     <string name="profile_photo_cd">profile_photo_cd</string>
     <string name="games_played">%1$s games played</string>
     <string name="turin">Turin</string>
-    <string name="age">%1$d years old</string>
+    <string name="age">%1$d y.o.</string>
     <string name="save">SAVE</string>
     <string name="add">ADD</string>
     <string name="no_sports">No sports</string>
@@ -36,7 +36,7 @@
     <string name="world_class">World Class</string>
     <string name="email">Email</string>
     <string name="errorBirthdate">You live in the future?</string>
-    <string name="nameLabel">Name</string>
+    <string name="nameLabel">First Name</string>
     <string name="surnameLabel">Surname</string>
     <string name="nicknameLabel">Nickname</string>
     <string name="emailLabel">Email</string>

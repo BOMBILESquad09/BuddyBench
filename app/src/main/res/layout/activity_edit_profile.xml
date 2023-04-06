@@ -208,7 +208,6 @@
                             android:id="@+id/localityEdit"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-
                             android:autofillHints="name"
                             android:backgroundTint="@color/md_theme_dark_onPrimary"
                             android:fontFamily="@font/montserrat_medium_500"
@@ -217,7 +216,7 @@
                             android:singleLine="true"
                             android:textAlignment="textStart"
                             android:textSize="16sp"
-                            app:drawableRightCompat="@drawable/location" />
+                            android:drawableEnd="@drawable/location" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <View

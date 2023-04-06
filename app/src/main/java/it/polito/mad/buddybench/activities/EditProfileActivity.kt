@@ -8,15 +8,13 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.Editable
 import android.view.*
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
-import androidx.core.view.doOnAttach
-import androidx.core.view.forEach
+
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.MutableLiveData
@@ -119,7 +117,9 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         localityEdit.doOnTextChanged { text, _, _, _ ->
             changeColor(localityEdit, true, resources)
             profile.location = text.toString()
+            localityEdit.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.location,0)
         }
+
 
         birthdateListener.value = profile.birthdate
         val birthdayButtonEdit = findViewById<EditText>(R.id.birthdayEditButton)
@@ -241,7 +241,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             flag = false
         }
         if (!changeColor(emailEdit, validateEmail(emailEdit.text.toString()), resources)) {
-            nicknameEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
+            emailEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
             flag = false
         }
         if (!changeColor(localityEdit, validateString(localityEdit.text.toString()), resources)) {

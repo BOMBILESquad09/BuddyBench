@@ -1,13 +1,11 @@
 package it.polito.mad.buddybench.classes
 
 
-import android.content.Context
-import android.content.SharedPreferences
+
 import android.net.Uri
 import android.view.LayoutInflater
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getInt
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getJSONArray
@@ -63,13 +61,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
                 )).toJSON().toString()
         }
 
-        fun getProfileFromSharedPreferences(context: Context): Profile {
-            val sharedPref: SharedPreferences = context.getSharedPreferences(
-                context.getString(R.string.preference_file_key),
-                Context.MODE_PRIVATE
-            )
-            return fromJSON(JSONObject(sharedPref.getString("profile", mockJSON())!!))
-        }
+
     }
 
     fun toJSON(): JSONObject {
@@ -127,18 +119,17 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
         }
 
         for (sport in this.sports) {
-            val sportCard = LayoutInflater.from(context).inflate(R.layout.card_sport, null, false);
+            val sportCard = LayoutInflater.from(context).inflate(R.layout.card_sport, null, false)
 
             // ** Sport card dynamic values
-            val sportName = sportCard.findViewById<TextView>(R.id.sport_card_name);
-            val sportIcon = sportCard.findViewById<ImageView>(R.id.sport_card_icon);
-            val sportSkillLevel = sportCard.findViewById<CardView>(R.id.skill_level_card)
+            val sportName = sportCard.findViewById<TextView>(R.id.sport_card_name)
+            val sportIcon = sportCard.findViewById<ImageView>(R.id.sport_card_icon)
             val sportSkillLevelText = sportCard.findViewById<TextView>(R.id.skill_level_card_text)
             val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
 
             sportName.text = Utils.formatString(sport.name.toString())
             sportIcon.setImageResource(Sports.sportToIconDrawable(sport.name))
-            // TODO: Non funziona
+            // TODO: Doesn't work
             // sportSkillLevel.setBackgroundColor(Skills.skillToColor(sport.skill))
             sportSkillLevelText.text = Utils.formatString(sport.skill.toString())
             sportGamesPlayed.text = String.format(context.resources.getString(R.string.games_played), sport.matchesPlayed)
