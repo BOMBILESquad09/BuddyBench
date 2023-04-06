@@ -15,6 +15,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
+import androidx.core.view.doOnAttach
+import androidx.core.view.forEach
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.MutableLiveData
@@ -29,20 +31,29 @@ import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateString
 import it.polito.mad.buddybench.dialogs.EditSportsDialog
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.utils.Utils
 import org.json.JSONObject
 import java.io.IOException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+
 class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogListener {
+
+    enum class ActivityState{
+        DatePickerOpened,
+        EditSportsOpened,
+        ContextMenuOpened
+    }
     // ** Data
     private lateinit var profile: Profile
     private var datePicker: DatePickerDialog? = null
     private var editSportDialog: EditSportsDialog? = null
     private var contextMenu: ContextMenu? = null
     private var birthdateListener: MutableLiveData<LocalDate> = MutableLiveData()
-    private var dialogOpened: String? = null
-
+    private var dialogOpened: ActivityState? = null
+    private var tempCalendarDate: LocalDate? = null
+    private var popupOpened: PopupMenu? = null
     // ** Profile Image
     private val launcherCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -63,19 +74,17 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
-
-        val dialogOpenPreviously = savedInstanceState?.getString("dialog")
+        println("Creating Edit Activity...")
 
         // ** Toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.title = "Profile"
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener { finish() }
-
         // ** Profile Data
         val stringedProfile = savedInstanceState?.getString("profile") ?: intent.getStringExtra("profile")!!
         profile = Profile.fromJSON(JSONObject(stringedProfile))
-
+        this.closeContextMenu()
         // ** Profile TextFields Edit
         val nameEdit = findViewById<EditText>(R.id.nameEdit)
         nameEdit.doOnTextChanged { text, _, _, _ ->
@@ -128,24 +137,29 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
 
 
+
+
         sportContainer = findViewById(R.id.sportsContainerEdit)
         sportContainer.removeAllViews()
 
         // ** Populate sport cards
-        profile.populateSportCardsEdit(this, sportContainer)
+        populateSportCardsEdit(this, sportContainer)
 
         // ** Add Sports Button
         addSportButton = findViewById(R.id.add_sport_button)
         addSportButton.setOnClickListener { openSportSelectionDialog() }
         checkCameraPermission()
+        val dialogOpenPreviously = if (savedInstanceState?.getString("dialog") != null)
+            ActivityState.valueOf(savedInstanceState.getString("dialog")!!) else null
 
-//        if (dialogOpenPreviously == "contextMenu") {
-//            contextMenu?.
-//        }
-        if (dialogOpenPreviously == "datePicker") {
+        /*if (dialogOpenPreviously == ActivityState.ContextMenuOpened) {
+            cardViewImage.showContextMenu()
+        }*/
+        if (dialogOpenPreviously == ActivityState.DatePickerOpened) {
+            tempCalendarDate = LocalDate.parse(savedInstanceState?.getString("tempCalendarDate"), DateTimeFormatter.ofPattern("dd/MM/yyyy"))
             showDatePickerDialog(null)
         }
-        if (dialogOpenPreviously == "editSportDialog") {
+        if (dialogOpenPreviously == ActivityState.EditSportsOpened) {
             openSportSelectionDialog()
         }
 
@@ -304,13 +318,15 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             }
 
         }
+
         datePicker = DatePickerDialog(
             this,
             myDateListener,
-            profile.birthdate.year,
-            profile.birthdate.monthValue,
-            profile.birthdate.dayOfMonth
+            tempCalendarDate?.year?:profile.birthdate.year,
+            tempCalendarDate?.monthValue?:profile.birthdate.monthValue,
+            tempCalendarDate?.dayOfMonth?:profile.birthdate.dayOfMonth
         )
+        tempCalendarDate = null
         datePicker!!.show()
     }
 
@@ -357,7 +373,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
         profile.sports = newSports.plus(alreadySelectedSports)
         println("Profile Sports After ADD: ${profile.sports}")
-        profile.populateSportCardsEdit(this, sportContainer)
+        populateSportCardsEdit(this, sportContainer)
     }
 
     override fun onDialogNegativeClick(dialog: DialogFragment) {
@@ -368,33 +384,44 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putString("profile", profile.toJSON().toString())
         println("On saving state....")
-        if (dialogOpened != null)
-            outState.putString("dialog", dialogOpened)
+        if (dialogOpened != null) {
+
+            outState.putString("dialog", dialogOpened?.name)
+
+            if(tempCalendarDate != null && dialogOpened == ActivityState.DatePickerOpened){
+                outState.putString("tempCalendarDate", tempCalendarDate!!.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+            }
+        }
         super.onSaveInstanceState(outState)
     }
 
     override fun onPause() {
         println("On pausing....")
         if (contextMenu?.hasVisibleItems() == true)
-            dialogOpened = "contextMenu"
-        dialogOpened = if (datePicker?.isShowing == true)
-            "datePicker"
-        else if (editSportDialog?.showsDialog == true)
-            "editSportDialog"
+            dialogOpened = ActivityState.ContextMenuOpened
+        dialogOpened = if (datePicker?.isShowing == true){
+            val year = datePicker?.datePicker?.year
+            val month = datePicker?.datePicker?.month
+            val day = datePicker?.datePicker?.dayOfMonth
+            tempCalendarDate = LocalDate.of(year!!, month!!, day!!)
+            ActivityState.DatePickerOpened
+        }
+
+        else if (editSportDialog?.showsDialog == true){
+            ActivityState.EditSportsOpened
+        }
         else
             null
-        contextMenu?.close()
+
+        println(popupOpened)
+        popupOpened?.setOnDismissListener { println("dismiss") }
+
+        popupOpened?.dismiss()
+        println(popupOpened)
         datePicker?.dismiss()
         editSportDialog?.dismiss()
         super.onPause()
 
-    }
-
-    override fun onDestroy() {
-        contextMenu?.close()
-        datePicker?.dismiss()
-        editSportDialog?.dismiss()
-        super.onDestroy()
     }
 
     override fun onCreateContextMenu(
@@ -407,6 +434,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         contextMenu = menu
         inflater.inflate(R.menu.menu_camera_edit, menu)
     }
+
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
@@ -423,4 +451,70 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     }
 
 
+
+    fun populateSportCardsEdit(
+        context: AppCompatActivity,
+        sportContainer: LinearLayout,
+        onDeleteSport: () -> Unit = {},
+        onSkillSelected: () -> Unit = {},
+    ) {
+
+        sportContainer.removeAllViews()
+
+        if (profile.sports.isEmpty()) {
+            val emptySportsText = TextView(context)
+            emptySportsText.text = context.getString(R.string.no_sports)
+            sportContainer.addView(emptySportsText)
+            return
+        }
+
+
+        for (sport in profile.sports) {
+            println("Sport: ${sport.name}")
+            val sportCard = LayoutInflater.from(context).inflate(R.layout.card_sport_edit, null, false);
+
+            // TODO: Add listener to delete button
+            val deleteButton = sportCard.findViewById<FrameLayout>(R.id.button_close)
+            deleteButton.setOnClickListener {
+                val newSports = profile.sports.filter { sportInList -> sportInList.name != sport.name}
+                profile.sports = newSports
+                onDeleteSport()
+                this.populateSportCardsEdit(context, sportContainer)
+            }
+
+            // ** Sport card dynamic values
+            val sportName = sportCard.findViewById<TextView>(R.id.sport_card_name);
+            val sportIcon = sportCard.findViewById<ImageView>(R.id.sport_card_icon);
+            val sportSkillLevel = sportCard.findViewById<CardView>(R.id.skill_level_card)
+            val sportSkillLevelText = sportCard.findViewById<TextView>(R.id.skill_level_card_text)
+            val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
+
+            // ** Sport skill level edit
+            sportSkillLevel.setOnClickListener() {
+                //Creating the instance of PopupMenu
+                val popup = PopupMenu(context, sportSkillLevel)
+                popup.menuInflater.inflate(R.menu.skill_level_edit, popup.menu)
+                popup.setOnMenuItemClickListener {
+                    profile.updateSkillLevel(sport, Skills.fromJSON(it.title.toString().uppercase())!!)
+                    onSkillSelected()
+                    populateSportCardsEdit(context, sportContainer)
+                    true
+                }
+                popupOpened = popup
+
+                popup.show()
+            }
+
+            sportName.text = Utils.capitalize(sport.name.toString())
+            sportIcon.setImageResource(Sports.sportToIconDrawable(sport.name))
+            // TODO: Non funziona
+            // sportSkillLevel.setBackgroundColor(Skills.skillToColor(sport.skill))
+            sportSkillLevelText.text = Utils.formatString(sport.skill.toString())
+            sportGamesPlayed.text = String.format(context.resources.getString(R.string.games_played), sport.matchesPlayed)
+
+            // ** Add card to container
+            sportContainer.addView(sportCard)
+
+        }
+    }
 }

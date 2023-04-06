@@ -11,11 +11,13 @@ import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.squareup.picasso.Picasso
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
 import org.json.JSONObject
 
@@ -45,8 +47,9 @@ class ShowProfileActivity : AppCompatActivity() {
         val ageTv = findViewById<TextView>(R.id.ageView)
         ageTv.text = getString(R.string.age).format(profile.age)
 
+        /*
         val emailTv = findViewById<TextView>(R.id.emailView)
-        emailTv.text = profile.email
+        emailTv.text = profile.email*/
 
         val locationTv = findViewById<TextView>(R.id.locationView)
         locationTv.text = profile.location
@@ -70,6 +73,8 @@ class ShowProfileActivity : AppCompatActivity() {
         // ** Populate sport cards
         profile.populateSportCards(this, sportContainer)
     }
+
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_profile, menu)
@@ -92,10 +97,22 @@ class ShowProfileActivity : AppCompatActivity() {
     private fun onEditReturn(response: androidx.activity.result.ActivityResult){
         if(response.resultCode == Activity.RESULT_OK){
             with(sharedPref.edit()) {
+
+                profile = Profile.fromJSON(JSONObject(response.data?.getStringExtra("newProfile").toString()))
                 val newProfileJSON = profile.toJSON().toString()
+                val newImageUri = BitmapUtils.saveToInternalStorage(applicationContext, BitmapUtils.uriToBitmap(contentResolver, profile.imageUri!!)!!)
+                profile.imageUri = newImageUri?:profile.imageUri
+                if(newImageUri == null){
+                    val toast = Toast.makeText(
+                        applicationContext,
+                        "Something went wrong while saving the profile image...",
+                        Toast.LENGTH_SHORT
+                    )
+                    toast.show()
+                }
                 putString("profile", newProfileJSON)
                 apply()
-                profile = Profile.fromJSON(JSONObject(response.data?.getStringExtra("newProfile").toString()))
+
                 setGUI()
             }
         }

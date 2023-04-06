@@ -104,7 +104,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
         return sportsList
     }
 
-    private fun updateSkillLevel(sport: Sport, skill: Skills) {
+    fun updateSkillLevel(sport: Sport, skill: Skills) {
         this.sports.find { it.name == sport.name }?.skill = skill
     }
 
@@ -148,68 +148,6 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
         }
     }
 
-    fun populateSportCardsEdit(
-        context: AppCompatActivity,
-        sportContainer: LinearLayout,
-        onDeleteSport: () -> Unit = {},
-        onSkillSelected: () -> Unit = {}
-    ) {
-
-        sportContainer.removeAllViews()
-
-        if (this.sports.isEmpty()) {
-            val emptySportsText = TextView(context)
-            emptySportsText.text = context.getString(R.string.no_sports)
-            sportContainer.addView(emptySportsText)
-            return
-        }
 
 
-        for (sport in this.sports) {
-            println("Sport: ${sport.name}")
-            val sportCard = LayoutInflater.from(context).inflate(R.layout.card_sport_edit, null, false);
-
-            // TODO: Add listener to delete button
-            val deleteButton = sportCard.findViewById<FrameLayout>(R.id.button_close)
-            deleteButton.setOnClickListener {
-                val newSports = this.sports.filter { sportInList -> sportInList.name != sport.name}
-                this.sports = newSports
-                onDeleteSport()
-                this.populateSportCardsEdit(context, sportContainer)
-            }
-
-            // ** Sport card dynamic values
-            val sportName = sportCard.findViewById<TextView>(R.id.sport_card_name);
-            val sportIcon = sportCard.findViewById<ImageView>(R.id.sport_card_icon);
-            val sportSkillLevel = sportCard.findViewById<CardView>(R.id.skill_level_card)
-            val sportSkillLevelText = sportCard.findViewById<TextView>(R.id.skill_level_card_text)
-            val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
-
-            // ** Sport skill level edit
-            sportSkillLevel.setOnClickListener() {
-                //Creating the instance of PopupMenu
-                val popup = PopupMenu(context, sportSkillLevel)
-                popup.menuInflater.inflate(R.menu.skill_level_edit, popup.menu)
-
-                popup.setOnMenuItemClickListener {
-                    this.updateSkillLevel(sport, Skills.fromJSON(it.title.toString().uppercase())!!)
-                    onSkillSelected()
-                    this.populateSportCardsEdit(context, sportContainer)
-                    true
-                }
-
-                popup.show()
-            }
-
-            sportName.text = Utils.capitalize(sport.name.toString())
-            sportIcon.setImageResource(Sports.sportToIconDrawable(sport.name))
-            // TODO: Non funziona
-            // sportSkillLevel.setBackgroundColor(Skills.skillToColor(sport.skill))
-            sportSkillLevelText.text = Utils.formatString(sport.skill.toString())
-            sportGamesPlayed.text = String.format(context.resources.getString(R.string.games_played), sport.matchesPlayed)
-
-            // ** Add card to container
-            sportContainer.addView(sportCard)
-        }
-    }
 }

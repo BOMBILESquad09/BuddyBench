@@ -110,7 +110,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1">
-
+                    <!--
                         <TextView
                             android:id="@+id/emailView"
                             android:layout_width="0dp"
@@ -119,7 +119,7 @@
                             android:fontFamily="@font/montserrat_medium_500"
                             android:gravity="center"
                             android:text="Email"
-                            android:textSize="16sp" />
+                            android:textSize="16sp" />-->
 
                         <LinearLayout
                             android:layout_width="0dp"
