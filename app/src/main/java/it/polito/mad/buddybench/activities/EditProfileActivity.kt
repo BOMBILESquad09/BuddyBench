@@ -3,11 +3,13 @@ package it.polito.mad.buddybench. activities
 import android.Manifest
 import android.app.Activity
 import android.app.DatePickerDialog
-import android.content.*
+import android.content.ContentValues
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.provider.MediaStore
 import android.view.*
 import android.widget.*
@@ -32,7 +34,7 @@ import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.Utils
 import org.json.JSONObject
-import java.io.IOException
+
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -74,7 +76,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
-        println("Creating Edit Activity...")
 
         // ** Toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -149,24 +150,9 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         addSportButton = findViewById(R.id.add_sport_button)
         addSportButton.setOnClickListener { openSportSelectionDialog() }
         checkCameraPermission()
-        val dialogOpenPreviously = if (savedInstanceState?.getString("dialog") != null)
-            ActivityState.valueOf(savedInstanceState.getString("dialog")!!) else null
 
-        /*if (dialogOpenPreviously == ActivityState.ContextMenuOpened) {
-            cardViewImage.showContextMenu()
-        }*/
-        if (dialogOpenPreviously == ActivityState.DatePickerOpened) {
-            tempCalendarDate = LocalDate.parse(savedInstanceState?.getString("tempCalendarDate"), DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-            showDatePickerDialog(null)
-        }
-        if (dialogOpenPreviously == ActivityState.EditSportsOpened) {
 
-            tempSelectedSport = savedInstanceState?.getStringArrayList("tempSelectedSport")?.map { s -> Sports.fromJSON(s) } as ArrayList<Sports>
-            if (tempSelectedSport != null)
-                editSportDialog?.selectedItems = tempSelectedSport!!
-            openSportSelectionDialog(tempSelectedSport)
-            tempSelectedSport = null
-        }
+        restoreDialog(savedInstanceState)
 
     }
 
@@ -312,7 +298,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
     fun showDatePickerDialog(v: View?) {
         val myDateListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
-
             val date = LocalDate.of(year, month + 1, day)
             //the user must be 18+ yo??
             if(!date.isAfter(LocalDate.now())){
@@ -323,12 +308,10 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
                     resources.getText(R.string.errorBirthdate),
                     Toast.LENGTH_SHORT
                 )
-
                 toast.show()
             }
 
         }
-
         datePicker = DatePickerDialog(
             this,
             myDateListener,
@@ -375,11 +358,14 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             }
         }
         profile.sports = newSports.plus(alreadySelectedSports)
-        println("Profile Sports After ADD: ${profile.sports}")
         populateSportCardsEdit(this, sportContainer)
+        dialog.dismiss()
+        editSportDialog = null
     }
 
     override fun onDialogNegativeClick(dialog: DialogFragment) {
+        dialog.dismiss()
+        editSportDialog = null
         return
     }
 
@@ -400,9 +386,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     }
 
     override fun onPause() {
-        if (contextMenu?.hasVisibleItems() == true)
-            dialogOpened = ActivityState.ContextMenuOpened
-            dialogOpened = if (datePicker?.isShowing == true){
+
+        dialogOpened = if (datePicker?.isShowing == true){
             val year = datePicker?.datePicker?.year
             val month = datePicker?.datePicker?.month
             val day = datePicker?.datePicker?.dayOfMonth
@@ -411,19 +396,26 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
 
         else if (editSportDialog?.showsDialog == true){
+            println("edit sport aperto")
             tempSelectedSport = editSportDialog?.selectedItems
-
             ActivityState.EditSportsOpened
         }
         else
             null
 
-        popupOpened?.setOnDismissListener { println("dismiss") }
+
+
         popupOpened?.dismiss()
         datePicker?.dismiss()
         editSportDialog?.dismiss()
         super.onPause()
 
+    }
+
+
+    override fun onResume() {
+        //restoreDialog(intent.extras)
+        super.onResume()
     }
 
     override fun onCreateContextMenu(
@@ -462,7 +454,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     ) {
 
         sportContainer.removeAllViews()
-
+        println("populating")
         if (profile.sports.isEmpty()) {
             val emptySportsText = TextView(context)
             emptySportsText.text = context.getString(R.string.no_sports)
@@ -503,7 +495,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
                     true
                 }
                 popupOpened = popup
-
+                popup.setOnDismissListener { println("jjjjjjjjjj") }
                 popup.show()
             }
 
@@ -518,5 +510,29 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             sportContainer.addView(sportCard)
 
         }
+    }
+
+
+    private fun restoreDialog(savedInstanceState: Bundle?){
+        var dialogOpenPreviously = if (savedInstanceState?.getString("dialog") != null)
+            ActivityState.valueOf(savedInstanceState.getString("dialog")!!) else null
+        println("dialogo precedente")
+        println(dialogOpenPreviously?.name)
+        println("----")
+        /*if (dialogOpenPreviously == ActivityState.ContextMenuOpened) {
+            cardViewImage.showContextMenu()
+        }*/
+        if (dialogOpenPreviously == ActivityState.DatePickerOpened) {
+            tempCalendarDate = LocalDate.parse(savedInstanceState?.getString("tempCalendarDate"), DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            showDatePickerDialog(null)
+        }
+        if (dialogOpenPreviously == ActivityState.EditSportsOpened) {
+            tempSelectedSport = savedInstanceState?.getStringArrayList("tempSelectedSport")?.map { s -> Sports.fromJSON(s) } as ArrayList<Sports>
+            if (tempSelectedSport != null)
+                editSportDialog?.selectedItems = tempSelectedSport!!
+            openSportSelectionDialog(tempSelectedSport)
+            tempSelectedSport = null
+        }
+
     }
 }

@@ -66,6 +66,8 @@ class EditSportsDialog(private val profile: Profile,var selectedItems: ArrayList
                 }
                 .setNegativeButton("cancel") { dialog, id ->
                     listener.onDialogNegativeClick(this)
+
+
                 }
 
 
