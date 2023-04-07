@@ -48,8 +48,8 @@
 
                     <ImageView
                         android:id="@+id/imageEdit"
-                        android:layout_width="170dp"
-                        android:layout_height="170dp"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
                         android:contentDescription="@string/profile_photo_cd"
                         android:scaleType="centerCrop"
                         android:src="@drawable/person" />
@@ -82,7 +82,7 @@
                         android:layout_weight="1.2"
                         android:fontFamily="@font/montserrat_bold_700"
                         android:gravity="center"
-                        android:text="Full Name"
+                        android:text="@string/full_name"
                         android:textSize="20sp" />
 
                     <TextView
@@ -92,7 +92,7 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/montserrat_semibold_600"
                         android:gravity="center"
-                        android:text="Nickname"
+                        android:text="@string/nickname"
                         android:textSize="16sp" />
                     <!--
                     <TextView
