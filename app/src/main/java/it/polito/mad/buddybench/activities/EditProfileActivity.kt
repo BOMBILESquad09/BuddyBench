@@ -414,7 +414,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
 
     override fun onResume() {
-        //restoreDialog(intent.extras)
+        restoreDialog(null)
         super.onResume()
     }
 
@@ -514,20 +514,19 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
 
     private fun restoreDialog(savedInstanceState: Bundle?){
-        var dialogOpenPreviously = if (savedInstanceState?.getString("dialog") != null)
-            ActivityState.valueOf(savedInstanceState.getString("dialog")!!) else null
-        println("dialogo precedente")
-        println(dialogOpenPreviously?.name)
-        println("----")
+        val dialogOpenPreviously = if (savedInstanceState?.getString("dialog") != null)
+            ActivityState.valueOf(savedInstanceState.getString("dialog")!!) else dialogOpened
+
         /*if (dialogOpenPreviously == ActivityState.ContextMenuOpened) {
             cardViewImage.showContextMenu()
         }*/
         if (dialogOpenPreviously == ActivityState.DatePickerOpened) {
-            tempCalendarDate = LocalDate.parse(savedInstanceState?.getString("tempCalendarDate"), DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+
+            tempCalendarDate = tempCalendarDate ?: LocalDate.parse(savedInstanceState?.getString("tempCalendarDate"), DateTimeFormatter.ofPattern("dd/MM/yyyy"))
             showDatePickerDialog(null)
         }
         if (dialogOpenPreviously == ActivityState.EditSportsOpened) {
-            tempSelectedSport = savedInstanceState?.getStringArrayList("tempSelectedSport")?.map { s -> Sports.fromJSON(s) } as ArrayList<Sports>
+            tempSelectedSport = tempSelectedSport?:savedInstanceState?.getStringArrayList("tempSelectedSport")?.map { s -> Sports.fromJSON(s) } as ArrayList<Sports>
             if (tempSelectedSport != null)
                 editSportDialog?.selectedItems = tempSelectedSport!!
             openSportSelectionDialog(tempSelectedSport)
