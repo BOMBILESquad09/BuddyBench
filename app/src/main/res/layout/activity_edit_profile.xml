@@ -12,19 +12,23 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="#1b1b6c"
-
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/round_arrow_back_24" />
+
         <ScrollView
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:fillViewport="true">
 
             <LinearLayout
@@ -32,10 +36,9 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingStart="16dp"
-
                 android:paddingEnd="16dp">
 
-
+                <!-- Image View -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -72,6 +75,7 @@
                     </androidx.cardview.widget.CardView>
                 </LinearLayout>
 
+                <!-- Profile Data -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -165,9 +169,9 @@
                                 android:backgroundTint="@color/md_theme_dark_onPrimary"
                                 android:fontFamily="@font/montserrat_medium_500"
                                 android:gravity=""
-                                android:inputType="textNoSuggestions"
-
                                 android:hint="@string/nicknameLabel"
+
+                                android:inputType="textNoSuggestions"
                                 android:singleLine="true"
                                 android:text="@string/nicknameLabel"
                                 android:textSize="16sp" />
@@ -189,12 +193,12 @@
                                 android:layout_height="wrap_content"
                                 android:backgroundTint="@color/md_theme_dark_onPrimary"
                                 android:fontFamily="@font/montserrat_medium_500"
-                                android:gravity=""
-                                android:inputType="textNoSuggestions"
                                 android:hint="@string/emailLabel"
+                                android:inputType="textEmailAddress"
                                 android:singleLine="true"
                                 android:text="@string/emailLabel"
-                                android:textSize="16sp" />
+                                android:textSize="16sp"
+                                android:autofillHints="emailAddress" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <LinearLayout
@@ -218,9 +222,9 @@
                                     android:backgroundTint="@color/md_theme_dark_onPrimary"
                                     android:fontFamily="@font/montserrat_medium_500"
                                     android:hint="@string/localityLabel"
-                                    android:text="@string/localityLabel"
                                     android:inputType="textNoSuggestions"
                                     android:singleLine="true"
+                                    android:text="@string/localityLabel"
                                     android:textAlignment="textStart"
                                     android:textSize="16sp"
                                     app:drawableRightCompat="@drawable/location" />
@@ -271,7 +275,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:orientation="horizontal"
-                            android:paddingVertical="6dp">
+                            android:paddingVertical="16dp">
 
                             <TextView
                                 android:id="@+id/textView"
@@ -302,16 +306,16 @@
                             android:id="@+id/sports_horizontal_scroll"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/textView">
+                            android:paddingBottom="16dp"
+                            >
 
                             <LinearLayout
                                 android:id="@+id/sportsContainerEdit"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:baselineAligned="false"
-                                android:orientation="horizontal">
+                                android:orientation="horizontal"
+                                >
 
                                 <include layout="@layout/card_sport_edit" />
 
@@ -325,6 +329,7 @@
                 </LinearLayout>
 
             </LinearLayout>
+
         </ScrollView>
 
     </LinearLayout>

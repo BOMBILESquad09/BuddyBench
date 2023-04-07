@@ -20,312 +20,316 @@
             app:layout_constraintTop_toTopOf="parent"
             />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-
-                    app:cardCornerRadius="250dp"
-                    app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/toolbar">
-
-                    <ImageView
-                        android:id="@+id/imageEdit"
-                        android:layout_width="200dp"
-                        android:layout_height="200dp"
-                        android:contentDescription="@string/profile_photo_cd"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/person" />
-
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingVertical="16dp">
 
                 <LinearLayout
-                    android:id="@+id/linearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="0.8"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    >
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        app:cardCornerRadius="250dp"
+                        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+                        <ImageView
+                            android:id="@+id/imageEdit"
+                            android:layout_width="200dp"
+                            android:layout_height="200dp"
+                            android:contentDescription="@string/profile_photo_cd"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/person" />
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"
                     android:orientation="vertical"
-                    app:layout_constraintBottom_toTopOf="@+id/textView"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cardView">
-
-                    <TextView
-                        android:id="@+id/fullNameView"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1.2"
-                        android:fontFamily="@font/montserrat_bold_700"
-                        android:gravity="center"
-                        android:text="@string/full_name"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/nickNameView"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/montserrat_semibold_600"
-                        android:gravity="center"
-                        android:text="@string/nickname"
-                        android:textSize="16sp" />
-                    <!--
-                    <TextView
-                        android:id="@+id/emailView"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/montserrat_medium_500"
-                        android:gravity="center"
-                        android:text="Email"
-                        android:textSize="16sp" />-->
+                    android:paddingVertical="16dp">
 
                     <LinearLayout
+                        android:id="@+id/linearLayout"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
-
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:orientation="horizontal"
-                            tools:ignore="UseCompoundDrawables">
-
-
-                            <TextView
-                                android:id="@+id/locationView"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/montserrat_semibold_600"
-                                android:gravity="center"
-                                android:text="@string/turin"
-                                android:textAlignment="center"
-                                android:textSize="16sp" />
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:contentDescription="@string/location_icon"
-                                android:src="@drawable/location" />
-
-
-                        </LinearLayout>
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.1">
-                        </View>
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toTopOf="@+id/textView"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/cardView">
 
                         <TextView
-                            android:id="@+id/ageView"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginEnd="0dp"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/montserrat_semibold_600"
-                            android:text="23 years old"
+                            android:id="@+id/fullNameView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_bold_700"
                             android:gravity="center"
+                            android:text="@string/full_name"
+                            android:textSize="20sp"
+                            android:paddingBottom="8dp"/>
+
+                        <TextView
+                            android:id="@+id/nickNameView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_semibold_600"
+                            android:gravity="center"
+                            android:text="@string/nickname"
                             android:textSize="16sp"
-                            tools:ignore="RtlCompat" />
+                            android:paddingBottom="8dp"/>
+                        <!--
+                        <TextView
+                            android:id="@+id/emailView"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/montserrat_medium_500"
+                            android:gravity="center"
+                            android:text="Email"
+                            android:textSize="16sp" />-->
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="horizontal"
+                                tools:ignore="UseCompoundDrawables">
+
+
+                                <TextView
+                                    android:id="@+id/locationView"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:fontFamily="@font/montserrat_semibold_600"
+                                    android:gravity="center"
+                                    android:text="@string/turin"
+                                    android:textAlignment="center"
+                                    android:textSize="16sp" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:contentDescription="@string/location_icon"
+                                    android:src="@drawable/location" />
+
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.1">
+                            </View>
+
+                            <TextView
+                                android:id="@+id/ageView"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginEnd="0dp"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/montserrat_semibold_600"
+                                android:text="23 years old"
+                                android:gravity="center"
+                                android:textSize="16sp"
+                                tools:ignore="RtlCompat" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="0.05">
-                </View>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="0.6"
-                    android:baselineAligned="false"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat_bold_700"
-                        android:text="@string/games_section"
-                        android:paddingVertical="6dp"
-                        android:textSize="20sp"
-                        app:layout_constraintBottom_toTopOf="@+id/sports_horizontal_scroll"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:paddingVertical="16dp"
+                        android:orientation="vertical">
 
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_bold_700"
+                            android:text="@string/games_section"
+                            android:paddingVertical="6dp"
+                            android:textSize="20sp"
+                            app:layout_constraintBottom_toTopOf="@+id/sports_horizontal_scroll"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
+                            android:orientation="horizontal">
 
-                            <TextView
-                                android:id="@+id/matchesOrganizedView"
+
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/montserrat_bold_700"
-                                android:gravity="center"
-                                android:text="80"
-                                android:textSize="18sp" />
+                                android:layout_weight="1"
+                                android:orientation="vertical">
 
-                            <TextView
+                                <TextView
+                                    android:id="@+id/matchesOrganizedView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:fontFamily="@font/montserrat_bold_700"
+                                    android:gravity="center"
+                                    android:text="80"
+                                    android:textSize="18sp" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/montserrat_bold_700"
+                                    android:gravity="center"
+                                    android:text="@string/organized"
+                                    android:textSize="12sp" />
+
+
+                            </LinearLayout>
+
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:fontFamily="@font/montserrat_bold_700"
-                                android:gravity="center"
-                                android:text="@string/organized"
-                                android:textSize="12sp" />
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/matchesPlayedView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:fontFamily="@font/montserrat_bold_700"
+                                    android:gravity="center"
+                                    android:text="80"
+                                    android:textSize="18sp" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/montserrat_bold_700"
+                                    android:gravity="center"
+                                    android:text="@string/played"
+                                    android:textSize="12sp" />
 
 
-                        </LinearLayout>
+                            </LinearLayout>
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/matchesPlayedView"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/montserrat_bold_700"
-                                android:gravity="center"
-                                android:text="80"
-                                android:textSize="18sp" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/montserrat_bold_700"
-                                android:gravity="center"
-                                android:text="@string/played"
-                                android:textSize="12sp" />
-
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/reliabilityView"
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/montserrat_bold_700"
-                                android:gravity="center"
-                                android:text="80%"
-                                android:textSize="18sp" />
+                                android:layout_weight="1"
+                                android:orientation="vertical">
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/montserrat_bold_700"
-                                android:gravity="center"
-                                android:text="@string/reliability"
-                                android:textSize="12sp" />
+                                <TextView
+                                    android:id="@+id/reliabilityView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:fontFamily="@font/montserrat_bold_700"
+                                    android:gravity="center"
+                                    android:text="80%"
+                                    android:textSize="18sp" />
 
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/montserrat_bold_700"
+                                    android:gravity="center"
+                                    android:text="@string/reliability"
+                                    android:textSize="12sp" />
+
+
+                            </LinearLayout>
 
                         </LinearLayout>
 
                     </LinearLayout>
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1.5"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/textView"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat_bold_700"
-                        android:text="@string/sports_section"
-                        android:paddingVertical="8dp"
-                        android:textSize="20sp"
-                        app:layout_constraintBottom_toTopOf="@+id/sports_horizontal_scroll"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+                        android:layout_height="0dp"
+                        android:layout_weight="1.5"
+                        android:orientation="vertical">
 
-                    <HorizontalScrollView
-                        android:id="@+id/sports_horizontal_scroll"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView">
+                        <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_bold_700"
+                            android:text="@string/sports_section"
+                            android:paddingVertical="8dp"
+                            android:textSize="20sp"
+                            app:layout_constraintBottom_toTopOf="@+id/sports_horizontal_scroll"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
-                        <LinearLayout
-                            android:id="@+id/sportsContainerEdit"
-                            android:layout_width="wrap_content"
+                        <HorizontalScrollView
+                            android:id="@+id/sports_horizontal_scroll"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:baselineAligned="false"
-                            android:orientation="horizontal">
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textView">
 
-                        </LinearLayout>
+                            <LinearLayout
+                                android:id="@+id/sportsContainerEdit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:baselineAligned="false"
+                                android:orientation="horizontal">
+
+                                <include layout="@layout/card_sport" />
+
+                            </LinearLayout>
 
 
-                    </HorizontalScrollView>
+                        </HorizontalScrollView>
+                    </LinearLayout>
+
+
                 </LinearLayout>
-
-
             </LinearLayout>
-        </LinearLayout>
+
+        </ScrollView>
 
     </LinearLayout>
 
