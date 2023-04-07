@@ -287,7 +287,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:orientation="horizontal"
-                            android:paddingVertical="8dp">
+                            android:paddingVertical="6dp">
 
                             <TextView
                                 android:id="@+id/textView"
@@ -318,7 +318,6 @@
                             android:id="@+id/sports_horizontal_scroll"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingBottom="16dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView">
