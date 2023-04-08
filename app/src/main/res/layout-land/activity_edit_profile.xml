@@ -6,10 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -25,7 +21,8 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+            android:paddingEnd="16dp"
+            android:baselineAligned="false">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -138,7 +135,7 @@
                                     android:backgroundTint="@color/md_theme_dark_onPrimary"
                                     android:fontFamily="@font/montserrat_medium_500"
                                     android:gravity=""
-                                    android:hint="Surname"
+                                    android:hint="@string/surnameLabel"
                                     android:inputType="textNoSuggestions"
                                     android:singleLine="true"
                                     android:text="@string/surnameLabel"
@@ -168,7 +165,7 @@
                                     android:backgroundTint="@color/md_theme_dark_onPrimary"
                                     android:fontFamily="@font/montserrat_medium_500"
                                     android:gravity=""
-                                    android:hint="Nickname"
+                                    android:hint="@string/nickname"
                                     android:inputType="textNoSuggestions"
                                     android:singleLine="true"
                                     android:text="@string/nicknameLabel"
@@ -184,7 +181,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:paddingVertical="10dp"
+                            android:paddingTop="10dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent">
 
@@ -292,13 +289,14 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:orientation="horizontal"
-                            android:paddingVertical="0dp">
+                            android:paddingVertical="12dp"
+                            android:gravity="center_vertical"
+                            >
 
                             <TextView
                                 android:id="@+id/textView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-
                                 android:fontFamily="@font/montserrat_bold_700"
                                 android:text="@string/sports_section"
                                 android:textSize="18sp"
@@ -306,6 +304,7 @@
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.5"
                                 app:layout_constraintStart_toStartOf="parent"
+                                android:layout_marginEnd="8dp"
                                 app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
                             <ImageButton
@@ -333,8 +332,10 @@
                                 android:layout_height="wrap_content"
                                 android:baselineAligned="false"
                                 android:orientation="horizontal"
+                                android:paddingBottom="8dp"
                                 >
 
+                                <include layout="@layout/card_sport_edit" />
 
                             </LinearLayout>
 
@@ -349,8 +350,6 @@
             </ScrollView>
 
         </LinearLayout>
-
-    </LinearLayout>
 
 </LinearLayout>
 
