@@ -110,7 +110,7 @@
                                     android:inputType="textNoSuggestions"
                                     android:singleLine="true"
                                     android:text="@string/nameLabel"
-                                    android:textSize="16sp"
+                                    android:textSize="15sp"
                                     android:nextFocusDown="@+id/surnameEdit"
                                     />
 
@@ -142,7 +142,7 @@
                                     android:inputType="textNoSuggestions"
                                     android:singleLine="true"
                                     android:text="@string/surnameLabel"
-                                    android:textSize="16sp"
+                                    android:textSize="15sp"
                                     android:nextFocusDown="@+id/nicknameEdit"/>
 
                             </com.google.android.material.textfield.TextInputLayout>
@@ -173,7 +173,7 @@
                                     android:singleLine="true"
                                     android:text="@string/nicknameLabel"
                                     android:textColorLink="#881A1A"
-                                    android:textSize="16sp"
+                                    android:textSize="15sp"
                                     android:nextFocusDown="@+id/emailEdit"/>
                             </com.google.android.material.textfield.TextInputLayout>
 
@@ -209,7 +209,7 @@
 
                                     android:singleLine="true"
                                     android:text="@string/emailLabel"
-                                    android:textSize="16sp"
+                                    android:textSize="15sp"
                                     android:nextFocusDown="@+id/localityEdit"/>
 
                             </com.google.android.material.textfield.TextInputLayout>
@@ -240,8 +240,8 @@
 
                                     android:singleLine="true"
                                     android:text="@string/localityLabel"
-                                    android:textSize="16sp"
-                                    app:drawableRightCompat="@drawable/location"
+                                    android:textSize="15sp"
+
                                     android:nextFocusDown="@+id/birthdayEditButton"/>
 
                             </com.google.android.material.textfield.TextInputLayout>
@@ -273,8 +273,8 @@
                                     android:hint="Birthdate"
                                     android:onClick="showDatePickerDialog"
                                     android:text="@string/birthdateLabel"
-                                    android:textSize="16sp"
-                                    app:drawableRightCompat="@drawable/birthday" />
+                                    android:textSize="15sp"
+                                     />
                             </com.google.android.material.textfield.TextInputLayout>
 
                         </LinearLayout>
@@ -292,13 +292,13 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:orientation="horizontal"
-                            android:paddingVertical="6dp">
+                            android:paddingVertical="0dp">
 
                             <TextView
                                 android:id="@+id/textView"
                                 android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_marginEnd="5dp"
+                                android:layout_height="wrap_content"
+
                                 android:fontFamily="@font/montserrat_bold_700"
                                 android:text="@string/sports_section"
                                 android:textSize="18sp"

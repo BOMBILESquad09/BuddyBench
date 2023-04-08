@@ -30,7 +30,6 @@
             android:elevation="0dp"
             android:textAlignment="center"
             android:textSize="12sp"
-            tools:ignore="MissingConstraints"
             android:drawablePadding="8dp"
             app:drawableEndCompat="@drawable/round_arrow_drop_down_circle_24"
             />

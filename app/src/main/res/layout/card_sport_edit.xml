@@ -5,6 +5,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingEnd="16dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp"
     tools:ignore="RtlSymmetry">
 
 
@@ -18,6 +20,7 @@
         android:layout_marginBottom="1dp"
         android:orientation="vertical"
         app:cardCornerRadius="20dp"
+        android:paddingBottom="16dp"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,7 +31,6 @@
             android:id="@+id/sport_card_linear_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -47,7 +49,7 @@
                     android:fontFamily="@font/montserrat_bold_700"
                     android:gravity="start|center"
                     android:text="@string/sport_tennis"
-                    android:textSize="14sp" />
+                    android:textSize="15sp" />
 
                 <ImageView
                     android:id="@+id/sport_card_icon"
@@ -67,13 +69,15 @@
                 android:id="@+id/games_played_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+
                 android:fontFamily="@font/montserrat_regular_400"
                 android:gravity="start"
                 android:text="@string/games_played_default"
-                android:textSize="12sp" />
+                android:textSize="15sp" />
 
-
+            <View
+                android:layout_width="10dp"
+                android:layout_height="10dp"/>
             <include
                 layout="@layout/badge_edit"
                 android:layout_width="wrap_content"

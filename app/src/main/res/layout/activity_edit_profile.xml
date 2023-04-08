@@ -27,9 +27,10 @@
             app:navigationIcon="@drawable/round_arrow_back_24" />
 
         <ScrollView
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true">
+            android:fillViewport="true"
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -227,7 +228,7 @@
                                     android:text="@string/localityLabel"
                                     android:textAlignment="textStart"
                                     android:textSize="16sp"
-                                    app:drawableRightCompat="@drawable/location" />
+                                     />
                             </com.google.android.material.textfield.TextInputLayout>
 
                             <View
@@ -257,7 +258,7 @@
                                     android:text="01/01/2001"
                                     android:textAlignment="textStart"
                                     android:textSize="16sp"
-                                    app:drawableRightCompat="@drawable/birthday" />
+                                     />
                             </com.google.android.material.textfield.TextInputLayout>
 
                         </LinearLayout>
@@ -304,9 +305,9 @@
 
                         <HorizontalScrollView
                             android:id="@+id/sports_horizontal_scroll"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingBottom="16dp"
+
                             >
 
                             <LinearLayout
@@ -314,6 +315,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:baselineAligned="false"
+
                                 android:orientation="horizontal"
                                 >
 
@@ -322,7 +324,11 @@
                             </LinearLayout>
 
 
+
                         </HorizontalScrollView>
+                        <View
+                            android:layout_width="wrap_content"
+                            android:layout_height="75dp"/>
                     </LinearLayout>
 
 

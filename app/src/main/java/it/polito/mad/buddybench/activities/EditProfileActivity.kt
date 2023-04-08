@@ -76,13 +76,11 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
-
         // ** Toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.title = "Profile"
         setSupportActionBar(toolbar)
         toolbar.setTitleTextColor(Color.WHITE)
-
         toolbar.setNavigationOnClickListener { finish() }
         // ** Profile Data
         val stringedProfile = savedInstanceState?.getString("profile") ?: intent.getStringExtra("profile")!!
@@ -122,7 +120,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         localityEdit.doOnTextChanged { text, _, _, _ ->
             changeColor(localityEdit, true, resources)
             profile.location = text.toString()
-            localityEdit.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.location,0)
+            //localityEdit.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.location,0)
         }
 
 
@@ -197,7 +195,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
 
     private fun checkCameraPermission(): Boolean {
-
         if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED || checkSelfPermission(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_DENIED
@@ -264,7 +261,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     }
 
     private fun prepareEdit() {
-
         val nameEdit = findViewById<EditText>(R.id.nameEdit)
         val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
@@ -292,7 +288,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
      */
     private fun openSportSelectionDialog(selectedItems: ArrayList<Sports>? = ArrayList()) {
         editSportDialog = EditSportsDialog(profile, selectedItems!!)
-
         editSportDialog!!.show(supportFragmentManager, "edit_sports")
     }
 
