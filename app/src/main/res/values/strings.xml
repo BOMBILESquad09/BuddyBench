@@ -22,7 +22,7 @@
     <string name="location_icon">location icon</string>
     <string name="save">SAVE</string>
     <string name="add">ADD</string>
-    <string name="no_sports">No sports</string>
+    <string name="no_sports">No sports yet, add new ones!</string>
     <string name="edit_your_sports">Edit your sports</string>
     <string name="add_sports">Add sports</string>
     <string name="close">close</string>

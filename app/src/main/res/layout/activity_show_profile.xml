@@ -38,6 +38,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:gravity="center"
+                    android:id ="@+id/imageContainer"
                     >
 
                     <androidx.cardview.widget.CardView
@@ -69,7 +70,8 @@
                     android:layout_height="0dp"
                     android:layout_weight="2"
                     android:orientation="vertical"
-                    android:paddingVertical="16dp">
+                    android:paddingVertical="10dp"
+                    >
 
                     <LinearLayout
                         android:id="@+id/linearLayout"
@@ -289,13 +291,13 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:paddingBottom="10dp"
                             android:id="@+id/textView"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/montserrat_bold_700"
                             android:text="@string/sports_section"
-                            android:paddingVertical="8dp"
-                            android:textSize="20sp"
+                            android:textSize="18sp"
                             app:layout_constraintBottom_toTopOf="@+id/sports_horizontal_scroll"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
@@ -323,10 +325,11 @@
 
 
                         </HorizontalScrollView>
+                        <View
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"/>
                     </LinearLayout>
-                    <View
-                        android:layout_width="wrap_content"
-                        android:layout_height="75dp"/>
+
 
                 </LinearLayout>
             </LinearLayout>

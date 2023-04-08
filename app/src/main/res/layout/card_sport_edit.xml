@@ -5,7 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingEnd="16dp"
-    android:layout_marginBottom="10dp"
+
     tools:ignore="RtlSymmetry">
 
 
@@ -56,8 +56,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
                     android:contentDescription="@string/sport_tennis"
-                    android:scaleX="1"
-                    android:scaleY="1"
                     android:src="@drawable/tennis">
 
                 </ImageView>

@@ -3,6 +3,7 @@ package it.polito.mad.buddybench.classes
 
 
 import android.net.Uri
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -115,7 +116,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
             val emptySportsText = TextView(context)
             emptySportsText.text = context.getString(R.string.no_sports)
             sportContainer.addView(emptySportsText)
-
+            emptySportsText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
             return
         }
 

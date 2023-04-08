@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.provider.MediaStore
+import android.util.TypedValue
 import android.view.*
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
@@ -134,7 +135,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         imageEdit = findViewById(R.id.imageEdit)
         Picasso.with(applicationContext).load("${profile.imageUri}")
             .placeholder(R.drawable.person).into(imageEdit)
-
+        resizeImageView()
         val cardViewImage = findViewById<CardView>(R.id.cardView)
         registerForContextMenu(cardViewImage)
 
@@ -152,6 +153,21 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
         restoreDialog(savedInstanceState)
 
+    }
+
+    private  fun resizeImageView(){
+        val iv = findViewById<ImageView>(R.id.imageEdit)
+        val ll = findViewById<LinearLayout>(R.id.imageContainer)
+        ll.post {
+            val width = ll.width
+            val height = ll.height
+            if(width == height) return@post
+            val diameter = width.coerceAtMost(height)
+            println(diameter)
+
+            iv.layoutParams = FrameLayout.LayoutParams(diameter, diameter)
+            iv.requestLayout()
+        }
     }
 
     private fun openGallery() {
@@ -179,6 +195,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         //TODO: on rotation the image is not returned. Its possible to retrieve the bitmap of the snapped photo in the bundle, but the methods are deprecated or requiring API 33
         if (response.resultCode != Activity.RESULT_OK || imageUri == null) return
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, imageUri!!)
+        println(imageUri)
         imageEdit.setImageBitmap(bitmap)
         profile.imageUri = imageUri
     }
@@ -453,7 +470,9 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         if (profile.sports.isEmpty()) {
             val emptySportsText = TextView(context)
             emptySportsText.text = context.getString(R.string.no_sports)
+            emptySportsText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
             sportContainer.addView(emptySportsText)
+            resizeImageView()
             return
         }
 
@@ -490,7 +509,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
                     true
                 }
                 popupOpened = popup
-                popup.setOnDismissListener { println("jjjjjjjjjj") }
                 popup.show()
             }
 

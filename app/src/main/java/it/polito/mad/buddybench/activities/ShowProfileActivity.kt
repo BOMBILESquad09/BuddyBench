@@ -6,9 +6,11 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Im
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -16,6 +18,8 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.cardview.widget.CardView
+import androidx.viewpager.widget.ViewPager
 import com.squareup.picasso.Picasso
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.BitmapUtils
@@ -35,6 +39,7 @@ class ShowProfileActivity : AppCompatActivity() {
         toolbar.setTitleTextColor(Color.WHITE)
         setSupportActionBar(toolbar)
         sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+
         profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
         setGUI()
     }
@@ -66,6 +71,7 @@ class ShowProfileActivity : AppCompatActivity() {
         reliabilityTv.text = getString(R.string.reliabilityValue).format(profile.reliability)
 
         val iv = findViewById<ImageView>(R.id.imageEdit)
+        resizeImageView(iv)
         Picasso.with(applicationContext).load("${profile.imageUri}").placeholder(R.drawable.person).into(iv)
 
 
@@ -97,6 +103,7 @@ class ShowProfileActivity : AppCompatActivity() {
     }
 
     private fun onEditReturn(response: androidx.activity.result.ActivityResult){
+        println("hiii")
         if(response.resultCode == Activity.RESULT_OK){
             with(sharedPref.edit()) {
 
@@ -106,7 +113,7 @@ class ShowProfileActivity : AppCompatActivity() {
                 val newImageUri =  if(newProfile.imageUri != null &&  newProfile.imageUri.toString() != profile.imageUri.toString())
                     BitmapUtils.saveToInternalStorage(applicationContext, BitmapUtils.uriToBitmap(contentResolver, newProfile.imageUri!!)!!) else profile.imageUri
                 profile.imageUri = newImageUri?:profile.imageUri
-
+                println("salvatooo")
 
                 if(newImageUri == null){
                     val toast = Toast.makeText(
@@ -123,6 +130,21 @@ class ShowProfileActivity : AppCompatActivity() {
                 setGUI()
             }
         }
+    }
+
+    private  fun resizeImageView(iv: ImageView){
+
+        val ll = findViewById<LinearLayout>(R.id.imageContainer)
+        ll.post {
+            val width = ll.width
+            val height = ll.height
+            val diameter = width.coerceAtMost(height)
+            println(diameter)
+
+            iv.layoutParams = FrameLayout.LayoutParams(diameter, diameter)
+            iv.requestLayout()
+        }
+
     }
 
 
