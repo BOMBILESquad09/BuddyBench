@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.provider.MediaStore
 import android.util.TypedValue
 import android.view.*
@@ -22,7 +21,6 @@ import androidx.cardview.widget.CardView
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.MutableLiveData
-import com.squareup.picasso.Picasso
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
@@ -133,8 +131,11 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
         // ** Profile Image
         imageEdit = findViewById(R.id.imageEdit)
-        Picasso.with(applicationContext).load("${profile.imageUri}")
-            .placeholder(R.drawable.person).into(imageEdit)
+        try{
+            imageEdit.setImageURI(profile.imageUri)
+        } catch (_: Exception){
+            imageEdit.setImageResource(R.drawable.person)
+        }
         resizeImageView()
         val cardViewImage = findViewById<CardView>(R.id.cardView)
         registerForContextMenu(cardViewImage)
@@ -161,9 +162,9 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         ll.post {
             val width = ll.width
             val height = ll.height
+
             if(width == height) return@post
             val diameter = width.coerceAtMost(height)
-            println(diameter)
 
             iv.layoutParams = FrameLayout.LayoutParams(diameter, diameter)
             iv.requestLayout()
@@ -195,7 +196,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         //TODO: on rotation the image is not returned. Its possible to retrieve the bitmap of the snapped photo in the bundle, but the methods are deprecated or requiring API 33
         if (response.resultCode != Activity.RESULT_OK || imageUri == null) return
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, imageUri!!)
-        println(imageUri)
         imageEdit.setImageBitmap(bitmap)
         profile.imageUri = imageUri
     }
@@ -383,8 +383,9 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
 
     override fun onSaveInstanceState(outState: Bundle) {
+        profile.imageUri = imageUri?:profile.imageUri
         outState.putString("profile", profile.toJSON().toString())
-        println("On saving state....")
+
         if (dialogOpened != null) {
             outState.putString("dialog", dialogOpened?.name)
             if(tempCalendarDate != null && dialogOpened == ActivityState.DatePickerOpened){
@@ -408,7 +409,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
 
         else if (editSportDialog?.showsDialog == true){
-            println("edit sport aperto")
             tempSelectedSport = editSportDialog?.selectedItems
             ActivityState.EditSportsOpened
         }
@@ -466,7 +466,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     ) {
 
         sportContainer.removeAllViews()
-        println("populating")
         if (profile.sports.isEmpty()) {
             val emptySportsText = TextView(context)
             emptySportsText.text = context.getString(R.string.no_sports)
@@ -478,7 +477,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
 
         for (sport in profile.sports) {
-            println("Sport: ${sport.name}")
             val sportCard = LayoutInflater.from(context).inflate(R.layout.card_sport_edit, null, false);
 
             // TODO: Add listener to delete button

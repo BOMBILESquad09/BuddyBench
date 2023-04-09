@@ -78,7 +78,6 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
         if (imageUri == null){
            json.put("imageUri", JSONObject.NULL)
         } else {
-            println("Putting the image in Json")
             json.put("imageUri", imageUri.toString())
         }
         json.put("sports", JSONArray(sports.map { it.toJSON() }))
@@ -90,9 +89,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
 
     fun getSportsEnum(): List<Sports> {
         val sportsList = mutableListOf<Sports>()
-        println("getSportsEnum (this.sports): ${this.sports}")
         for (sport in this.sports) {
-            println("getSportsEnum: $sport")
             sportsList.add(sport.name)
         }
         return sportsList

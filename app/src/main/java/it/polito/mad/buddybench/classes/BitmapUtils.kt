@@ -19,7 +19,6 @@ class BitmapUtils(){
 
     companion object{
         fun uriToBitmap(contentResolver: ContentResolver, selectedFileUri: Uri): Bitmap? {
-            println("uriToBitmap")
             try {
                 val parcelFileDescriptor = contentResolver.openFileDescriptor(selectedFileUri, "r")
                 val fileDescriptor: FileDescriptor = parcelFileDescriptor!!.fileDescriptor
@@ -27,7 +26,6 @@ class BitmapUtils(){
                 parcelFileDescriptor.close()
                 return image
             } catch (e: Exception) {
-                println("errorrreee")
                 e.printStackTrace()
                 throw e
             }
@@ -38,7 +36,6 @@ class BitmapUtils(){
             val byteArrayOutputStream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
             val byteArray: ByteArray = byteArrayOutputStream.toByteArray()
-            println("okkk")
             return Base64.encodeToString(byteArray, Base64.DEFAULT)
         }
 
@@ -68,43 +65,37 @@ class BitmapUtils(){
         }
 
         fun saveToInternalStorage(applicationContext: Context, bitmapImage: Bitmap, previousPath: Uri? = null): Uri? {
-            println("saveToInternalStorage")
+
             val profileImageName =  applicationContext.getString(R.string.profileImage).format(LocalDateTime.now())
             val directory: File = applicationContext.filesDir
             val myPath = File(directory, profileImageName)
 
             var fos: FileOutputStream? = null
             try {
-                println("okokokok")
                 fos = FileOutputStream(myPath)
                 // Use the compress method on the BitMap object to write image to the OutputStream
-                bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos)
+                bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, fos)
             } catch (e: Exception) {
-                println("errore")
                 e.printStackTrace()
                 return null
             } finally {
                 try {
                     fos!!.close()
-                    println("sss")
                     if(previousPath != null) deleteFile(previousPath.toString())
                 } catch (e: Exception) {
-                    println("errore qui")
                     e.printStackTrace()
                     return null
                 }
             }
-            println("aaaa")
+
             return Uri.parse("file://${directory.absolutePath}/$profileImageName")
         }
 
         private fun deleteFile(filePath: String){
             val file: File = File(filePath)
-            println("seghenn")
             try {
                 file.delete()
             } catch (_: java.lang.Exception){
-                println("ookkkkk")
             }
         }
     }

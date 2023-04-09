@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     >
 
@@ -19,8 +19,7 @@
             app:navigationIcon="@drawable/round_arrow_back_24" />
 
         <ScrollView
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
             >
@@ -60,7 +59,8 @@
                             android:layout_height="200dp"
                             android:contentDescription="@string/profile_photo_cd"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/person" />
+                            android:src="@drawable/person"
+                            android:background="@drawable/person"/>
 
                         <include
                             layout="@layout/camera_button"
@@ -78,7 +78,6 @@
                     android:layout_height="0dp"
                     android:layout_weight="2"
                     android:orientation="vertical"
-                    android:paddingVertical="10dp"
 
                     >
 
@@ -87,7 +86,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:paddingVertical="10dp"
+                        android:layout_marginTop="10dp"
                         app:layout_constraintBottom_toTopOf="@+id/textView"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
@@ -121,7 +120,7 @@
                                     android:inputType="textNoSuggestions"
                                     android:singleLine="true"
                                     android:text="@string/nameLabel"
-                                    android:textSize="16sp" />
+                                    android:textSize="15sp" />
 
                             </com.google.android.material.textfield.TextInputLayout>
 
@@ -149,7 +148,7 @@
                                     android:inputType="textNoSuggestions"
                                     android:singleLine="true"
                                     android:text="@string/surnameLabel"
-                                    android:textSize="16sp" />
+                                    android:textSize="15sp" />
                             </com.google.android.material.textfield.TextInputLayout>
                         </LinearLayout>
 
@@ -174,7 +173,7 @@
                                 android:inputType="textNoSuggestions"
                                 android:singleLine="true"
                                 android:text="@string/nicknameLabel"
-                                android:textSize="16sp" />
+                                android:textSize="15sp" />
 
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -197,7 +196,7 @@
                                 android:inputType="textEmailAddress"
                                 android:singleLine="true"
                                 android:text="@string/emailLabel"
-                                android:textSize="16sp"
+                                android:textSize="15sp"
                                 android:autofillHints="emailAddress" />
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -226,7 +225,7 @@
                                     android:singleLine="true"
                                     android:text="@string/localityLabel"
                                     android:textAlignment="textStart"
-                                    android:textSize="16sp"
+                                    android:textSize="15sp"
                                     />
                             </com.google.android.material.textfield.TextInputLayout>
 
@@ -242,7 +241,6 @@
                                 android:hint="@string/birthdateLabel"
                                 android:textColorHint="@color/md_theme_dark_inverseOnSurface"
                                 app:boxStrokeColor="#FF0000"
-
                                 >
 
                                 <EditText
@@ -256,19 +254,23 @@
                                     android:onClick="showDatePickerDialog"
                                     android:text="01/01/2001"
                                     android:textAlignment="textStart"
-                                    android:textSize="16sp"
+                                    android:textSize="15sp"
                                     />
+
                             </com.google.android.material.textfield.TextInputLayout>
+
 
                         </LinearLayout>
 
 
                     </LinearLayout>
 
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
+                        android:layout_marginTop="5dp"
                         >
 
                         <LinearLayout
@@ -285,7 +287,7 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/montserrat_bold_700"
                                 android:text="@string/sports_section"
-                                android:textSize="18sp"
+                                android:textSize="17sp"
                                 app:layout_constraintBottom_toTopOf="@+id/sports_horizontal_scroll"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.5"
@@ -297,6 +299,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/rounded_shape"
+                                android:layout_gravity="center_vertical"
                                 android:backgroundTint="@color/md_theme_light_primary"
                                 android:contentDescription="@string/add"
                                 android:src="@drawable/round_add_24_white"
@@ -322,9 +325,7 @@
                                 <include layout="@layout/card_sport_edit" />
                             </LinearLayout>
                         </HorizontalScrollView>
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"/>
+
 
                     </LinearLayout>
 

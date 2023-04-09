@@ -25,11 +25,11 @@
             android:fontFamily="@font/montserrat_medium_500"
             android:gravity="start|center"
             android:paddingHorizontal="12dp"
-            android:paddingVertical="8dp"
+            android:paddingVertical="5dp"
             android:text="@string/newbie"
             android:elevation="0dp"
             android:textAlignment="center"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:drawablePadding="8dp"
             app:drawableEndCompat="@drawable/round_arrow_drop_down_circle_24"
             />

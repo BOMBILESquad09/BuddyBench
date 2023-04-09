@@ -59,7 +59,8 @@
                             android:layout_height="200dp"
                             android:contentDescription="@string/profile_photo_cd"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/person" />
+                            android:src="@drawable/person"
+                            android:background="@drawable/person"/>
 
                     </androidx.cardview.widget.CardView>
 
@@ -70,7 +71,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="2"
                     android:orientation="vertical"
-                    android:paddingVertical="10dp"
+
                     >
 
                     <LinearLayout
@@ -78,6 +79,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
+                        android:layout_marginTop="10dp"
+
                         app:layout_constraintBottom_toTopOf="@+id/textView"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
@@ -325,9 +328,7 @@
 
 
                         </HorizontalScrollView>
-                        <View
-                            android:layout_width="wrap_content"
-                            android:layout_height="40dp"/>
+
                     </LinearLayout>
 
 
