@@ -108,12 +108,9 @@ class ShowProfileActivity : AppCompatActivity() {
             with(sharedPref.edit()) {
 
                 val newProfile = Profile.fromJSON(JSONObject(response.data?.getStringExtra("newProfile").toString()))
-                val newProfileJSON = newProfile.toJSON().toString()
-
                 val newImageUri =  if(newProfile.imageUri != null &&  newProfile.imageUri.toString() != profile.imageUri.toString())
-                    BitmapUtils.saveToInternalStorage(applicationContext, BitmapUtils.uriToBitmap(contentResolver, newProfile.imageUri!!)!!) else profile.imageUri
-                profile.imageUri = newImageUri?:profile.imageUri
-
+                    BitmapUtils.saveToInternalStorage(applicationContext, BitmapUtils.uriToBitmap(contentResolver, newProfile.imageUri!!)!!, profile.imageUri) else profile.imageUri
+                println(newImageUri)
                 if(newImageUri == null){
                     val toast = Toast.makeText(
                         applicationContext,
@@ -123,7 +120,9 @@ class ShowProfileActivity : AppCompatActivity() {
                     toast.show()
                 }
                 profile = newProfile
-                putString("profile", newProfileJSON)
+                profile.imageUri = newImageUri?:profile.imageUri
+
+                putString("profile", profile.toJSON().toString())
                 apply()
 
                 setGUI()

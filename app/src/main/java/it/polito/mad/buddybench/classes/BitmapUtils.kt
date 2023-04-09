@@ -87,15 +87,21 @@ class BitmapUtils(){
                     return null
                 }
             }
-
-            return Uri.parse("file://${directory.absolutePath}/$profileImageName")
+            return Uri.parse("${directory.absolutePath}/$profileImageName")
         }
 
         private fun deleteFile(filePath: String){
-            val file: File = File(filePath)
+            val file = File(filePath)
+            println(filePath)
             try {
+
                 file.delete()
-            } catch (_: java.lang.Exception){
+
+
+
+            } catch (e: IOException){
+                print("erroreeee")
+                e.printStackTrace()
             }
         }
     }
