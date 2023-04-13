@@ -1,16 +1,10 @@
 package it.polito.mad.buddybench.Database
 
-import CourtTimeDao
-import InvitationDao
-import ReservationDao
-import SportDao
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.Database
-import it.polito.mad.buddybench.DAO.CourtDao
-import it.polito.mad.buddybench.DAO.UserDao
-import it.polito.mad.buddybench.DAO.UserSportDao
+import it.polito.mad.buddybench.DAO.*
 import it.polito.mad.buddybench.Entities.*
 
 @Database(
@@ -22,7 +16,7 @@ import it.polito.mad.buddybench.Entities.*
         Sport::class,
         User::class,
         UserSport::class
-    ], version = 1
+    ], version = 1, exportSchema = false
 )
 abstract class CourtReservationDatabase: RoomDatabase() {
 

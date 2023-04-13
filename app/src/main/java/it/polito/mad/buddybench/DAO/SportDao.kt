@@ -1,14 +1,19 @@
-import androidx.lifecycle.LiveData
-import androidx.room.*
+package it.polito.mad.buddybench.DAO
+
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy.Companion.REPLACE
+import androidx.room.Query
 import it.polito.mad.buddybench.Entities.Sport
 
 @Dao
 interface SportDao {
 
-    @Query("SELECT * FROM SPORT")
-    fun getAll(): LiveData<List<Sport>>
+    @Query("SELECT * FROM Sport")
+    fun getAll(): List<Sport>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = REPLACE)
     fun save(sport: Sport)
 
     @Delete

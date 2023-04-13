@@ -27,12 +27,12 @@ data class CourtTime(
     val court: Int,
 
     @ColumnInfo(name = "openingTime")
-    val openingTime: LocalTime,
+    val openingTime: String,
 
     @ColumnInfo(name = "closingTime")
-    val closingTime: LocalTime,
+    val closingTime: String,
 
     @ColumnInfo(name = "dayOfWeek")
-    val dayOfWeek: LocalDate,
+    val dayOfWeek: String,
 
     )

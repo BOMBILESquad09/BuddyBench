@@ -7,13 +7,13 @@ import it.polito.mad.buddybench.Entities.User
 @Dao
 interface UserDao {
 
-    @Query("SELECT * FROM USER")
-    fun getAll(): LiveData<List<User>>
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun save(user: User)
 
     @Delete
     fun delete(user: User)
+
+    @Query("SELECT * FROM Users")
+    fun getAll(): List<User>
 
 }

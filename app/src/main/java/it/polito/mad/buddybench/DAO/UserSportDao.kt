@@ -7,8 +7,8 @@ import it.polito.mad.buddybench.Entities.UserSport
 @Dao
 interface UserSportDao {
 
-    @Query("SELECT * FROM USERSPORT")
-    fun getAll(): LiveData<List<UserSport>>
+    @Query("SELECT * FROM UserSport")
+    fun getAll(): List<UserSport>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun save(userSport: UserSport)

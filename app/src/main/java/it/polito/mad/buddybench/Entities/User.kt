@@ -3,12 +3,12 @@ package it.polito.mad.buddybench.Entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.time.LocalDate
 
 @Entity(tableName = "Users")
 data class User (
 
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
     val id: Int = 0,
 
     @ColumnInfo(name = "name")
@@ -21,7 +21,7 @@ data class User (
     val nickname: String,
 
     @ColumnInfo(name = "birthdate")
-    val birthdate: LocalDate,
+    val birthdate: String,
 
     @ColumnInfo(name = "location")
     val location: String,

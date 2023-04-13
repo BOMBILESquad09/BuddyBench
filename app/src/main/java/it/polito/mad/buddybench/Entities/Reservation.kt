@@ -37,12 +37,12 @@ data class Reservation(
     val court: Int,
 
     @ColumnInfo(name = "date")
-    val date: LocalDate,
+    val date: String,
 
     @ColumnInfo(name = "startTime")
-    val startTime: LocalTime,
+    val startTime: String,
 
     @ColumnInfo(name = "endTime")
-    val endTime: LocalTime,
+    val endTime: String,
 
     )
