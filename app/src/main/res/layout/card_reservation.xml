@@ -37,7 +37,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingLeft="16dp"
-                android:paddingTop="24dp">
+                android:paddingTop="12dp"
+                android:paddingRight="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -47,10 +48,24 @@
                     android:textColor="@color/md_theme_light_onPrimary"
                     android:textSize="14sp">
                 </TextView>
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
 
+                </View>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="8dp"
+                    android:paddingHorizontal="24dp"
+                    android:background="@drawable/rounded_shape_card"
+                    android:fontFamily="@font/montserrat_bold_700"
+                    android:text="@string/manage"
+                    android:textSize="12sp">
 
-
+                </TextView>
 
 
             </LinearLayout>
