@@ -20,14 +20,15 @@
             android:paddingVertical="4dp"
             android:paddingHorizontal="10dp"
             android:elevation="1dp"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:layout_margin="10dp"
             android:background="@drawable/rounded_shape_card"
             android:backgroundTint="#000000"
             android:textColor="#FFFFFF"
             android:fontFamily="@font/montserrat_semibold_600"
-            android:text="4.5 ★"
-            android:textSize="10sp">
+            android:text="@string/court_rating"
+            android:drawableEnd="@drawable/star_24"
+            android:textSize="11sp">
         </TextView>
 
         <LinearLayout
