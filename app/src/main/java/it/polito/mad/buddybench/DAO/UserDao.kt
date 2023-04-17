@@ -13,7 +13,7 @@ interface UserDao {
     @Delete
     fun delete(user: User)
 
-    @Query("SELECT * FROM Users")
+    @Query("SELECT * FROM User")
     fun getAll(): List<User>
 
 }

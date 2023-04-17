@@ -9,14 +9,14 @@ import it.polito.mad.buddybench.Entities.*
 
 @Database(
     entities = [
+        Sport::class,
         Court::class,
         CourtTime::class,
         Invitation::class,
         Reservation::class,
-        Sport::class,
-        User::class,
-        UserSport::class
-    ], version = 1, exportSchema = false
+        UserSport::class,
+        User::class
+    ], version = 1, exportSchema = true
 )
 abstract class CourtReservationDatabase: RoomDatabase() {
 
@@ -37,7 +37,8 @@ abstract class CourtReservationDatabase: RoomDatabase() {
                     context.applicationContext,
                     CourtReservationDatabase::class.java,
                     "CourtReservationDatabase"
-                ).build()
+                ).createFromAsset("database/CourtReservationDB.db")
+                    .build()
                 INSTANCE = i
                 INSTANCE
             })!!

@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.Entities
 
+import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -28,7 +29,7 @@ data class Court(
     val address: String,
 
     @ColumnInfo(name = "feeHour")
-    val feeHour: Float,
+    val feeHour: Int,
 
     @ColumnInfo(name = "sport")
     val sport: Int,

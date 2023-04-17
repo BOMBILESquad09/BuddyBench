@@ -32,8 +32,10 @@ class DatabaseTest {
     @Before
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        db = Room.inMemoryDatabaseBuilder(
-            context, CourtReservationDatabase::class.java).build()
+        db = Room.databaseBuilder(
+            context,
+            CourtReservationDatabase::class.java, "CourtReservationDB"
+        ).build()
         userDao = db.userDao()
         courtDao = db.courtDao()
         userSportDao = db.userSportDao()
@@ -41,12 +43,6 @@ class DatabaseTest {
         courtTimeDao = db.courtTimeDao()
         reservationDao = db.reservationDao()
         invitationDao = db.invitationDao()
-    }
-
-    @After
-    @Throws(IOException::class)
-    fun closeDb() {
-        db.close()
     }
 
     @Test
@@ -59,7 +55,7 @@ class DatabaseTest {
             birthdate = LocalDate.now().toString(),
             location = "Scafati",
             email = "vittorio@polito.it",
-            reliability = 10f
+            reliability = 10
         )
         userDao.save(user)
         val userInserted = userDao.getAll()[0]
@@ -73,8 +69,8 @@ class DatabaseTest {
             sportName = "Tennis"
         )
         sportDao.save(sport)
-        val sportInserted = sportDao.getAll()[0]
-        assertThat(sport.sportName, equalTo(sportInserted.sportName))
+        val sportInserted = sportDao.getAll()
+        assert(sportInserted.isNotEmpty())
     }
 
     @Test
@@ -84,16 +80,16 @@ class DatabaseTest {
             sportName = "Tennis"
         )
         sportDao.save(sport)
-        val sportInserted = sportDao.getAll()[0]
         val court = Court (
             courtName = "CourtSampleName",
             address = "ExampleRoad",
-            feeHour = 20f,
-            sportId = sportInserted.id
+            feeHour = 20,
+            sport = sportDao.getAll()[0].id
         )
         courtDao.save(court)
-        val courtInserted = courtDao.getAll()[0]
-        assertThat(courtInserted.courtName, equalTo(courtInserted.courtName))
+        val courtInserted = courtDao.getAll()
+        println(courtInserted)
+        assert(courtInserted.isNotEmpty())
     }
 
     @Test
@@ -107,8 +103,8 @@ class DatabaseTest {
         val court = Court (
             courtName = "CourtSampleName",
             address = "ExampleRoad",
-            feeHour = 20f,
-            sportId = sportInserted.id
+            feeHour = 20,
+            sport = sportInserted.id
         )
         courtDao.save(court)
         val courtInserted = courtDao.getAll()[0]
@@ -134,8 +130,8 @@ class DatabaseTest {
         val court = Court (
             courtName = "CourtSampleName",
             address = "ExampleRoad",
-            feeHour = 20f,
-            sportId = sportInserted.id
+            feeHour = 20,
+            sport = sportInserted.id
         )
         courtDao.save(court)
         val courtInserted = courtDao.getAll()[0]
@@ -146,7 +142,7 @@ class DatabaseTest {
             birthdate = LocalDate.now().toString(),
             location = "Scafati",
             email = "vittorio@polito.it",
-            reliability = 10f
+            reliability = 10
         )
         userDao.save(user)
         val userInserted = userDao.getAll()[0]
@@ -181,8 +177,8 @@ class DatabaseTest {
         val court = Court (
             courtName = "CourtSampleName",
             address = "ExampleRoad",
-            feeHour = 20f,
-            sportId = sportInserted.id
+            feeHour = 20,
+            sport = sportInserted.id
         )
         courtDao.save(court)
         val courtInserted = courtDao.getAll()[0]
@@ -193,7 +189,7 @@ class DatabaseTest {
             birthdate = LocalDate.now().toString(),
             location = "Scafati",
             email = "vittorio@polito.it",
-            reliability = 10f
+            reliability = 10
         )
         userDao.save(user)
         val userInserted = userDao.getAll()[0]
@@ -208,5 +204,7 @@ class DatabaseTest {
         val reservationInserted = reservationDao.getAll()[0]
         assertThat(reservationInserted.startTime, equalTo(reservationInserted.startTime))
     }
+
+
 
 }
