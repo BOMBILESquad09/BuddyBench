@@ -33,7 +33,7 @@ class DatabaseTest {
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(
-            context, CourtReservationDatabase::class.java).allowMainThreadQueries().build()
+            context, CourtReservationDatabase::class.java).build()
         userDao = db.userDao()
         courtDao = db.courtDao()
         userSportDao = db.userSportDao()
