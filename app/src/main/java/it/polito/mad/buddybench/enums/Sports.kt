@@ -61,6 +61,16 @@ enum class Sports {
                 else -> null
             }
         }
+
+        fun fromIntToString(value: Int): String? {
+            return when(value) {
+                0 -> "Football"
+                1 -> "BasketBall"
+                2 -> "Tennis"
+                3 -> "Volleyball"
+                else -> null
+            }
+        }
     }
 
 

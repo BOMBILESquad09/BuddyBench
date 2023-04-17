@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import it.polito.mad.buddybench.DTO.CourtDTO
+import it.polito.mad.buddybench.DTO.CourtTimeDTO
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -36,3 +38,12 @@ data class CourtTime(
     val dayOfWeek: String,
 
     )
+
+fun CourtTime.toCourtTimeDTO(): CourtTimeDTO {
+    return CourtTimeDTO(
+        court = this.court,
+        openingTime = LocalTime.parse(this.openingTime),
+        closingTime = LocalTime.parse(this.closingTime),
+        dayOfWeek = this.dayOfWeek
+    )
+}

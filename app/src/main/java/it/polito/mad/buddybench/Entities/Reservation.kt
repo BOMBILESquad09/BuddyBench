@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import it.polito.mad.buddybench.DTO.InvitationDTO
+import it.polito.mad.buddybench.DTO.ReservationDTO
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -46,3 +48,13 @@ data class Reservation(
     val endTime: String,
 
     )
+
+fun Reservation.toReservationDTO(): ReservationDTO {
+    return ReservationDTO(
+        userOrganizer = this.userOrganizer,
+        court = this.court,
+        date = LocalDate.parse(this.date),
+        startTime = LocalTime.parse(this.startTime),
+        endTime = LocalTime.parse(this.endTime)
+    )
+}

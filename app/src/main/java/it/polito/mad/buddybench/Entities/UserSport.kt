@@ -4,6 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import it.polito.mad.buddybench.DTO.ReservationDTO
+import it.polito.mad.buddybench.DTO.UserSportDTO
+import java.time.LocalDate
+import java.time.LocalTime
 
 @Entity(
     tableName = "UserSport", foreignKeys = arrayOf(
@@ -45,3 +49,14 @@ data class UserSport(
     val sport: Int
 
     )
+
+fun UserSport.toUserSportDTO(): UserSportDTO {
+    return UserSportDTO(
+        user = this.user,
+        skill = this.skill,
+        gamesOrganized = this.gamesOrganized,
+        gamesPlayed = this.gamesPlayed,
+        sport = this.sport,
+
+    )
+}
