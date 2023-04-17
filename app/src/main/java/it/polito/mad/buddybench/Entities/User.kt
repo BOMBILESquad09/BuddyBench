@@ -6,10 +6,14 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.util.TableInfo
+import it.polito.mad.buddybench.DTO.UserDTO
+import java.time.LocalDate
 
-@Entity(tableName = "User",
-    indices = [Index(value = ["email"], unique = true)])
-data class User (
+@Entity(
+    tableName = "User",
+    indices = [Index(value = ["email"], unique = true)]
+)
+data class User(
 
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
@@ -36,3 +40,15 @@ data class User (
     val reliability: Int
 
 )
+
+fun User.toUserDTO(): UserDTO {
+    return UserDTO(
+        name = this.name,
+        surname = this.surname,
+        nickname = this.nickname,
+        birthdate = LocalDate.parse(this.birthdate),
+        location = this.location,
+        email = this.email,
+        reliability = this.reliability
+    )
+}

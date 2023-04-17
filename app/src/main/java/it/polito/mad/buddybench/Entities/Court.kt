@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import it.polito.mad.buddybench.DTO.CourtDTO
 
 @Entity(
     tableName = "Court", foreignKeys = arrayOf(
@@ -35,3 +36,12 @@ data class Court(
     val sport: Int,
 
     )
+
+fun Court.toCourtDTO(): CourtDTO {
+    return CourtDTO(
+        courtName = this.courtName,
+        address = this.address,
+        feeHour = this.feeHour,
+        sport = this.sport
+    )
+}

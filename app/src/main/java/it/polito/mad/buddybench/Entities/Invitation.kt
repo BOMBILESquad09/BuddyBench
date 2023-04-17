@@ -4,6 +4,9 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import it.polito.mad.buddybench.DTO.CourtTimeDTO
+import it.polito.mad.buddybench.DTO.InvitationDTO
+import java.time.LocalTime
 
 @Entity(
     tableName = "Invitation", foreignKeys = arrayOf(
@@ -41,3 +44,13 @@ data class Invitation(
     val user: Int
 
 )
+
+fun Invitation.toInvitationDTO(): InvitationDTO {
+    return InvitationDTO(
+        reservation = this.reservation,
+        confirmed = this.confirmed,
+        presence = this.presence,
+        user = this.user,
+
+    )
+}
