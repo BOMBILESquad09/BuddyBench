@@ -31,7 +31,6 @@ data class Court(
     val feeHour: Float,
 
     @ColumnInfo(name = "sport")
-    val sportId: Int,
-
+    val sport: Int,
 
     )

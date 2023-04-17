@@ -2,9 +2,12 @@ package it.polito.mad.buddybench.Entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
+import androidx.room.util.TableInfo
 
-@Entity(tableName = "Users")
+@Entity(tableName = "User",
+    indices = [Index(value = ["email"], unique = true)])
 data class User (
 
     @PrimaryKey(autoGenerate = true)
@@ -26,10 +29,11 @@ data class User (
     @ColumnInfo(name = "location")
     val location: String,
 
+
     @ColumnInfo(name = "email")
     val email: String,
 
     @ColumnInfo(name = "reliability")
-    val reliability: Float
+    val reliability: Int
 
 )
