@@ -36,7 +36,6 @@ class CalendarActivity : AppCompatActivity() {
 
                 return DayViewContainer(view)
             }
-
             // Called every time we need to reuse a container.
             override fun bind(container: DayViewContainer, data: CalendarDay) {
                 container.day = data
@@ -52,7 +51,6 @@ class CalendarActivity : AppCompatActivity() {
                     }
                 }
                 container.textView.text = data.date.dayOfMonth.toString()
-
                 container.setBackground(selectedDate, this@CalendarActivity )
                 container.setTextColor(selectedDate, this@CalendarActivity)
                 container.reservations = reservations[data.date]
@@ -100,6 +98,8 @@ class CalendarActivity : AppCompatActivity() {
 
             }
         }
+
+
     }
 }
 
