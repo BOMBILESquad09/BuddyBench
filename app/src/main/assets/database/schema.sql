@@ -1,4 +1,12 @@
 
+DROP TABLE IF EXISTS sport;
+DROP TABLE IF EXISTS court;
+DROP TABLE IF EXISTS court_timetable;
+DROP TABLE IF EXISTS invitation;
+DROP TABLE IF EXISTS reservation;
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS user_sport;
+
 
 CREATE  TABLE sport(
     name VARCHAR(20) PRIMARY KEY
@@ -24,7 +32,7 @@ CREATE  TABLE court(
     FOREIGN KEY (sport) REFERENCES sport(name)
 );
 
-CREATE  TABLE usersport(
+CREATE  TABLE user_sport(
     id NUMBER  PRIMARY KEY,
     user NUMBER NOT NULL,
     sport VARCHAR(20) NOT NULL,
@@ -35,7 +43,7 @@ CREATE  TABLE usersport(
     FOREIGN KEY (user) REFERENCES user(id)
 );
 
-CREATE TABLE court_timetable(
+CREATE TABLE court_time(
     id NUMBER PRIMARY KEY,
     court NUMBER NOT NULL,
     day_of_week NUMBER NOT NULL,
@@ -46,10 +54,12 @@ CREATE TABLE court_timetable(
 
 CREATE  TABLE reservation(
     id NUMBER PRIMARY KEY,
+    user NUMBER NOT NULL,
     court NUMBER NOT NULL,
     date DATE NOT NULL,
-    start_time NOT NULL,
-    end_time NOT NULL,
+    start_time NUMBER  NOT NULL,
+    end_time NUMBER NOT NULL,
+    FOREIGN KEY (user) REFERENCES user(id)
     FOREIGN KEY (court) REFERENCES court(id)
 );
 

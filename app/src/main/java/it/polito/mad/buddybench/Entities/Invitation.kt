@@ -47,7 +47,6 @@ fun InvitationWithReservationAndUser.toInvitationDTO(): InvitationDTO {
         reservation = this.reservation.toReservationDTO(
             user = this.userInvited,
             court = this.court,
-            sport = this.sport
         ),
         confirmed = this.invitation.confirmed,
         presence = this.invitation.presence,
@@ -82,15 +81,6 @@ data class InvitationWithReservationAndUser(
     )
     val court: Court,
 
-    @Relation(
-        parentColumn = "reservation",
-        entityColumn = "id",
-        associateBy = Junction(
-            value = Court::class,
-            parentColumn = "sport",
-            entityColumn = "id"
-        )
-    )
-    val sport: Sport
+
 
 )

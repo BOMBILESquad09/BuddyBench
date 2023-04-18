@@ -7,7 +7,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 @Entity(
-    tableName = "UserSport", foreignKeys = arrayOf(
+    tableName = "user_sport", foreignKeys = arrayOf(
         ForeignKey(
             entity = User::class,
             parentColumns = arrayOf("id"),
@@ -36,10 +36,10 @@ data class UserSport(
     @ColumnInfo(name = "skill")
     val skill: String,
 
-    @ColumnInfo(name = "gamesPlayed")
+    @ColumnInfo(name = "games_played")
     val gamesPlayed: Int,
 
-    @ColumnInfo(name = "gamesOrganized")
+    @ColumnInfo(name = "games_organized")
     val gamesOrganized: Int,
 
     @ColumnInfo(name = "sport")

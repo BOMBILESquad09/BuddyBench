@@ -5,7 +5,7 @@ import androidx.room.*
 import it.polito.mad.buddybench.DTO.CourtDTO
 
 @Entity(
-    tableName = "Court", foreignKeys = arrayOf(
+    tableName = "court", foreignKeys = arrayOf(
         ForeignKey(
             entity = Sport::class,
             parentColumns = arrayOf("name"),
@@ -13,20 +13,20 @@ import it.polito.mad.buddybench.DTO.CourtDTO
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.CASCADE
         ),
-    ), indices = [Index(value = ["courtName", "sport"], unique = true)]
+    ), indices = [Index(value = ["name", "sport"], unique = true)]
 )
 data class Court(
 
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
 
-    @ColumnInfo(name = "courtName")
+    @ColumnInfo(name = "name")
     val name: String,
 
     @ColumnInfo(name = "address")
     val address: String,
 
-    @ColumnInfo(name = "feeHour")
+    @ColumnInfo(name = "fee_hour")
     val feeHour: Int,
 
     @ColumnInfo(name = "sport")

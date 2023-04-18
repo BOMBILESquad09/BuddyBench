@@ -17,13 +17,13 @@ class ReservationRepository @Inject constructor(
 
     fun save(reservationDTO: ReservationDTO) {
         val user = userDao.getUserByEmail(reservationDTO.userOrganizer.email)!!
-        val courtWithSport = courtDao.getByNameAndSport(reservationDTO.court.courtName, reservationDTO.court.sport)
+        val courtWithSport = courtDao.getByNameAndSport(reservationDTO.court.name, reservationDTO.court.sport)
         reservationDao.save(reservationDTO.toEntity(user.id, courtWithSport.court.id))
     }
 
     fun delete(reservationDTO: ReservationDTO) {
         val user = userDao.getUserByEmail(reservationDTO.userOrganizer.email)!!
-        val courtWithSport = courtDao.getByNameAndSport(reservationDTO.court.courtName, reservationDTO.court.sport)
+        val courtWithSport = courtDao.getByNameAndSport(reservationDTO.court.name, reservationDTO.court.sport)
         reservationDao.delete(reservationDTO.toEntity(user.id, courtWithSport.court.id))
     }
 

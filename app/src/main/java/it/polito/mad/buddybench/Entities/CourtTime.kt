@@ -3,11 +3,12 @@ package it.polito.mad.buddybench.Entities
 import androidx.room.*
 import it.polito.mad.buddybench.DTO.CourtDTO
 import it.polito.mad.buddybench.DTO.CourtTimeDTO
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 
 @Entity(
-    tableName = "CourtTime", foreignKeys = arrayOf(
+    tableName = "court_time", foreignKeys = arrayOf(
         ForeignKey(
             entity = Court::class,
             parentColumns = arrayOf("id"),
@@ -25,30 +26,30 @@ data class CourtTime(
     @ColumnInfo(name = "court")
     val court: Int,
 
-    @ColumnInfo(name = "openingTime")
-    val openingTime: String,
+    @ColumnInfo(name = "opening_time")
+    val openingTime: Int,
 
-    @ColumnInfo(name = "closingTime")
-    val closingTime: String,
+    @ColumnInfo(name = "closing_time")
+    val closingTime: Int,
 
-    @ColumnInfo(name = "dayOfWeek")
-    val dayOfWeek: String,
+    @ColumnInfo(name = "day_of_week")
+    val dayOfWeek: Int,
 
     )
 
-fun CourtTimeWithCourt.toCourtTimeDTO(): CourtTimeDTO {
+fun CourtWithCourtTime.toCourtTimeDTO(): CourtTimeDTO {
     return CourtTimeDTO(
         courtName = this.court.name,
-        sport = this.sport.name,
+        sport = this.court.sport,
         address = this.court.address,
         feeHour = this.court.feeHour,
-        openingTime = LocalTime.parse(this.courtTime.openingTime),
-        closingTime = LocalTime.parse(this.courtTime.closingTime),
-        dayOfWeek = this.courtTime.dayOfWeek
+        openingTime = LocalTime.of(this.courtTime.openingTime,0),
+        closingTime = LocalTime.of(this.courtTime.closingTime,0),
+        dayOfWeek = DayOfWeek.of(this.courtTime.dayOfWeek)
     )
 }
 
-data class CourtTimeWithCourt(
+data class CourtWithCourtTime(
 
     @Embedded val courtTime: CourtTime,
 
@@ -58,15 +59,6 @@ data class CourtTimeWithCourt(
     )
     val court: Court,
 
-    @Relation(
-        parentColumn = "court",
-        entityColumn = "id",
-        associateBy = Junction (
-            value = Court::class,
-            parentColumn = "sport",
-            entityColumn = "id"
-        )
-    )
-    val sport: Sport
+
 
 )

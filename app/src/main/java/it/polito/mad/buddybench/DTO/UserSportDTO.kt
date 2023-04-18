@@ -15,13 +15,13 @@ class UserSportDTO(
     val gamesOrganized: Int,
     val sport: String
 ) {
-    fun toEntity(userId: Int, sportId: Int): UserSport {
+    fun toEntity(userId: Int): UserSport {
         return UserSport(
             user = userId,
             skill = this.skill,
             gamesPlayed = this.gamesPlayed,
             gamesOrganized = this.gamesOrganized,
-            sport = sportId,
+            sport = this.sport,
         )
     }
 

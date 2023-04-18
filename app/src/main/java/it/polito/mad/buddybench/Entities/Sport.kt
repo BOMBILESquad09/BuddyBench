@@ -8,7 +8,7 @@ import it.polito.mad.buddybench.DTO.SportDTO
 import java.time.LocalDate
 import java.time.LocalTime
 
-@Entity(tableName = "Sport")
+@Entity(tableName = "sport")
 data class Sport (
 
     @PrimaryKey

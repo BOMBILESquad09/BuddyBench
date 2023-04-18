@@ -29,7 +29,7 @@ class ReservationDTO(val userOrganizer: UserDTO,
 
     companion object{
 
-        fun createUser(): User {
+        private fun createUser(): User {
             return User(
                 name = "Vittorio",
                 surname = "Arpino",
@@ -41,9 +41,9 @@ class ReservationDTO(val userOrganizer: UserDTO,
             )
         }
 
-        fun createCourt(sport: String, feeHour: Int = 20): Court {
+        private fun createCourt(sport: String, feeHour: Int = 20): Court {
             return Court(
-                courtName = "CourtSampleName",
+                name = "CourtSampleName",
                 address = "ExampleRoad",
                 feeHour = feeHour,
                 sport = sport
@@ -56,13 +56,13 @@ class ReservationDTO(val userOrganizer: UserDTO,
             val timeNow = LocalTime.now()
             val endNow = timeNow.plusHours(1)
             val timeLaterEnd = timeNow.plusHours(3)
-            val list =  listOf(ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO("Tennis"), now,timeNow, endNow, ),
-                    ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO("Tennis"), later, timeNow, timeLaterEnd),
-                ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO("Tennis"), later, timeNow, timeLaterEnd),
-                ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO("Tennis"), later, timeNow, timeLaterEnd),
-                ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO("Tennis"), later, timeNow, timeLaterEnd),
-                ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO("Tennis"), later, timeNow, timeLaterEnd),
-                ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO("Tennis"), later, timeNow, timeLaterEnd),
+            val list =  listOf(ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), now,timeNow, endNow, ),
+                    ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd),
+                ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd),
+                ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd),
+                ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd),
+                ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd),
+                ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd),
 
             )
             val hm = HashMap<LocalDate, MutableList<ReservationDTO>>()
@@ -77,16 +77,18 @@ class ReservationDTO(val userOrganizer: UserDTO,
             return hm as HashMap<LocalDate, List<ReservationDTO>>
         }
     }
+
+    fun toEntity(userOrganizer: Int, court: Int): Reservation {
+        return Reservation (
+            userOrganizer = userOrganizer,
+            court = court,
+            startTime = this.startTime.hour,
+            date = this.date.toString(),
+        )
+    }
 }
 
-fun ReservationDTO.toEntity(userOrganizer: Int, court: Int): Reservation {
-    return Reservation (
-        userOrganizer = userOrganizer,
-        court = court,
-        startTime = this.startTime.toString(),
-        date = this.date.toString(),
-    )
-}
+
 
 
 
