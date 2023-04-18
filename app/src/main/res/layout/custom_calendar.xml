@@ -66,11 +66,11 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/md_theme_dark_onPrimary">
 
         <com.kizitonwose.calendar.view.CalendarView
-            android:id="@+id/exFiveCalendar"
+            android:id="@+id/calendar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cv_dayViewResource="@layout/calendar_day_item"
@@ -78,7 +78,7 @@
             />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/exFiveRv"
+            android:id="@+id/reservations"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false" />

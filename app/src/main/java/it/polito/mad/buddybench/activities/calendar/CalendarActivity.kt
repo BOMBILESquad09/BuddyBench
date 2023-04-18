@@ -1,4 +1,4 @@
-package it.polito.mad.buddybench.activities
+package it.polito.mad.buddybench.activities.calendar
 
 
 import android.graphics.Color
@@ -12,7 +12,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.children
 import com.kizitonwose.calendar.core.*
 import com.kizitonwose.calendar.view.*
+import it.polito.mad.buddybench.DTO.ReservationDTO
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.enums.Sports
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.Month
@@ -21,49 +23,13 @@ import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.*
 
-
-class DayViewContainer(view: View) : ViewContainer(view) {
-    val textView: TextView = view.findViewById(R.id.dayText)
-    val textViewContainer: ConstraintLayout = view.findViewById(R.id.dayTextContainer)
-    lateinit var day: CalendarDay
-
-    fun setOnClickCallback(callback : (View) -> Unit){
-        textViewContainer.setOnClickListener(callback)
-    }
-    // With ViewBinding
-    //val textView = CalendarDayLayoutBinding.bind(view).calendarDayText
-}
-
-fun YearMonth.displayText(short: Boolean = false): String {
-    return "${this.month.displayText(short = short)} ${this.year}"
-}
-
-fun Month.displayText(short: Boolean = true): String {
-    val style = if (short) TextStyle.SHORT else TextStyle.FULL
-    return getDisplayName(style, Locale.ENGLISH)
-}
-
-fun DayOfWeek.displayText(uppercase: Boolean = false): String {
-    return getDisplayName(TextStyle.SHORT, Locale.ENGLISH).let { value ->
-        if (uppercase) value.uppercase(Locale.ENGLISH) else value
-    }
-}
-
-
-class MonthViewContainer(view: View) : ViewContainer(view) {
-    // Alternatively, you can add an ID to the container layout and use findViewById()
-    val titlesContainer = view as ViewGroup
-}
-
-
 class CalendarActivity : AppCompatActivity() {
-     var  selectedDate: LocalDate? = null
-
-
+    var  selectedDate: LocalDate? = null
+    val reservations = ReservationDTO.mockReservationDTOs()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.custom_calendar)
-        val calendarView = findViewById<CalendarView>(R.id.exFiveCalendar)
+        val calendarView = findViewById<CalendarView>(R.id.calendar)
         calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
             // Called only when a new container is needed.
             override fun create(view: View): DayViewContainer {
@@ -79,7 +45,6 @@ class CalendarActivity : AppCompatActivity() {
                         if (selectedDate != container.day.date) {
                             val oldDate = selectedDate
                             selectedDate = container.day.date
-
                             if(oldDate != null)
                                 calendarView.notifyDateChanged(oldDate)
                             calendarView.notifyDateChanged(data.date)
@@ -88,22 +53,12 @@ class CalendarActivity : AppCompatActivity() {
                 }
                 container.textView.text = data.date.dayOfMonth.toString()
 
-                if(selectedDate == container.day.date){
-                    container.textView.setTextColor(Color.RED)
-                    container.textViewContainer.setBackgroundColor(getColor(R.color.md_theme_dark_primary))
-                }
-                else if (data.position == DayPosition.MonthDate) {
-                    container.textView.setTextColor(Color.BLACK)
-                    container.textViewContainer.setBackgroundColor(Color.WHITE)
-
-                } else {
-                    container.textView.setTextColor(Color.GRAY)
-                    container.textViewContainer.setBackgroundColor(Color.WHITE)
-
-                }
+                container.setBackground(selectedDate, this@CalendarActivity )
+                container.setTextColor(selectedDate, this@CalendarActivity)
+                container.reservations = reservations[data.date]
+                container.setSportsIcon(this@CalendarActivity)
             }
         }
-
 
         val currentMonth = YearMonth.now()
         val startMonth = currentMonth.minusMonths(100)  // Adjust as needed
@@ -115,24 +70,14 @@ class CalendarActivity : AppCompatActivity() {
 
         calendarView.monthHeaderBinder = object : MonthHeaderFooterBinder<MonthViewContainer> {
             override fun create(view: View) = MonthViewContainer(view)
-            override fun bind(container: MonthViewContainer, data: CalendarMonth) {
-                // Remember that the header is reused so this will be called for each month.
-                // However, the first day of the week will not change so no need to bind
-                // the same view every time it is reused.
+            override fun bind(container: MonthViewContainer, data: CalendarMonth){
                 if (container.titlesContainer.tag == null) {
                     container.titlesContainer.tag = data.yearMonth
-
                     (container.titlesContainer.children.first() as ViewGroup).children.map { it as TextView }
                         .forEachIndexed { index, textView ->
                             val dayOfWeek = daysOfWeek[index]
                             val title = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
                             textView.text = title
-                            // In the code above, we use the same `daysOfWeek` list
-                            // that was created when we set up the calendar.
-                            // However, we can also get the `daysOfWeek` list from the month data:
-                            // val daysOfWeek = data.weekDays.first().map { it.date.dayOfWeek }
-                            // Alternatively, you can get the value for this specific index:
-                            // val dayOfWeek = data.weekDays.first()[index].date.dayOfWeek
                         }
                 }
             }
@@ -145,17 +90,11 @@ class CalendarActivity : AppCompatActivity() {
         }
         previousButton.setOnClickListener {
             calendarView.findFirstVisibleMonth()?.let {
-
                 calendarView.smoothScrollToMonth(it.yearMonth.previousMonth)
-
             }
         }
 
-
-
         nextButton.setOnClickListener {
-            println(calendarView.findFirstVisibleMonth()?.yearMonth)
-
             calendarView.findFirstVisibleMonth()?.let {
                 calendarView.smoothScrollToMonth(it.yearMonth.nextMonth)
 
