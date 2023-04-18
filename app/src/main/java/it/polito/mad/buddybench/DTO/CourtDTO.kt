@@ -11,6 +11,26 @@ class CourtDTO(courtName: String, address: String, feeHour: Int, sport: Int) {
 
 }
 
+data class CourtCompleteDTO (
+
+    val courtName: String,
+    val address: String,
+    val feeHour: Int,
+    val sport: String
+
+)
+
+fun CourtCompleteDTO.toEntity(mappingSports: Map<String, Int>): Court {
+
+    return Court(
+        courtName = this.courtName,
+        address = this.address,
+        feeHour = this.feeHour,
+        sport = mappingSports[this.sport]!!
+    )
+
+}
+
 fun CourtDTO.toEntity(): Court {
     return Court(
         courtName = this.courtName,

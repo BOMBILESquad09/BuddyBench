@@ -15,6 +15,35 @@ class UserSportDTO(user: Int, skill: String, gamesPlayed: Int, gamesOrganized: I
 
 }
 
+data class UserSportDTOComplete(
+
+    val skill: String,
+    val gamesPlayed: Int,
+    val gamesOrganized: Int,
+    val sport: String,
+
+    val name: String,
+    val surname: String,
+    val nickname: String,
+    val birthdate: String,
+    val location: String,
+    val email: String,
+    val reliability: String
+
+)
+
+
+
+fun UserSportDTOComplete.toEntity(userId: Int, sportId: Int): UserSport {
+    return UserSport(
+        user = userId,
+        skill = this.skill,
+        gamesPlayed = this.gamesPlayed,
+        gamesOrganized = this.gamesOrganized,
+        sport = sportId
+    )
+}
+
 fun UserSportDTO.toEntity(): UserSport {
     return UserSport(
         user = this.user,

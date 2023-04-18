@@ -13,6 +13,30 @@ class CourtTimeDTO(court: Int, openingTime: LocalTime, closingTime: LocalTime, d
 
 }
 
+data class CourtTimeCompleteDTO(
+
+    val openingTime: String,
+    val closingTime: String,
+    val dayOfWeek: String,
+
+    val courtName: String,
+    val address: String,
+    val feeHour: Int,
+    val sport: String
+
+)
+
+/** Usalo a tuo rischio e pericolo -> Prenditi la responsabilita' sul courtId **/
+fun CourtTimeCompleteDTO.toEntity(courtId: Int): CourtTime {
+    return CourtTime (
+        court = courtId,
+        openingTime = this.openingTime,
+        closingTime = this.closingTime,
+        dayOfWeek = this.dayOfWeek,
+    )
+}
+
+
 fun CourtTimeDTO.toEntity(): CourtTime {
     return CourtTime(
         court = this.court,

@@ -53,3 +53,32 @@ class ReservationDTO(val userOrganizer: Int,
     }
 }
 
+data class ReservationCompleteDTO(
+    val name: String,
+    val surname: String,
+    val nickname: String,
+    val birthdate: String,
+    val location: String,
+    val email: String,
+    val reliability: String,
+
+    val courtName: String,
+    val address: String,
+    val feeHour: Int,
+    val sport: String,
+
+    val date: String,
+    val startTime: String,
+    val endTime: String
+)
+
+fun ReservationCompleteDTO.toEntity(userOrganizer: Int, court: Int): Reservation {
+    return Reservation (
+        userOrganizer = userOrganizer,
+        court = court,
+        startTime = this.startTime,
+        endTime = this.endTime,
+        date = this.date,
+    )
+}
+
