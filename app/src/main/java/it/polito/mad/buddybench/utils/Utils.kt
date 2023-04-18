@@ -91,7 +91,6 @@ class Utils {
 
         private fun getConsecutiveNumbers(srcList: List<DayOfWeek>): List<List<DayOfWeek>> {
             return srcList.fold(mutableListOf<MutableList<DayOfWeek>>()) { acc, i ->
-                println(i)
                 if (acc.isEmpty() || acc.last().last() != i - 1) {
                     acc.add(mutableListOf(i))
                 } else acc.last().add(i)

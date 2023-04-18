@@ -66,7 +66,6 @@ object DatabaseModule {
     @Provides
     fun provideReservationRepo(appDatabase: CourtReservationDatabase): ReservationRepository {
 
-        println(appDatabase.reservationDao().getAll())
         val x =  ReservationRepository(
             appDatabase.reservationDao(),
             appDatabase.userDao(),
@@ -74,7 +73,6 @@ object DatabaseModule {
             appDatabase.courtTimeDao(),
             appDatabase.unavailableDayCourtDao()
         )
-        println(x.getAll())
         return x
     }
     @Singleton

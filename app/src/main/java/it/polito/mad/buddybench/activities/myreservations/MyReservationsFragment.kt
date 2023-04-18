@@ -48,14 +48,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getAllByUser(context.profile.email).observe(viewLifecycleOwner) {
-            refresh()
-            refreshCalendar()
-        }
 
-        viewModel.selectedDate.observe(viewLifecycleOwner){
-            refresh()
-        }
 
 
         calendarView = view.findViewById(R.id.calendar)
@@ -142,10 +135,21 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
             }
             if(calendarDay != null)
                 calendarView.notifyDayChanged(calendarDay)
-
         }
+        calendarView.notifyDayChanged(CalendarDay(viewModel.selectedDate.value ?: LocalDate.now(), DayPosition.MonthDate))
     }
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.getAllByUser(context.profile.email).observe(viewLifecycleOwner) {
+            refresh()
+            refreshCalendar()
+        }
+
+        viewModel.selectedDate.observe(viewLifecycleOwner){
+            refresh()
+        }
+    }
 
 
 }

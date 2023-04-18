@@ -156,7 +156,6 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
             val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
 
             sportName.text = Utils.formatString(sport.name.toString())
-            println(sportName.text)
             sportIcon?.setImageResource(Sports.sportToIconDrawable(sport.name))
             // TODO: Doesn't work
             //sportSkillLevelText.setBackgroundColor(Skills.skillToColor(sport.skill))
@@ -191,8 +190,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
             sportContainer.addView(sportCard)
         }
 
-        print("------------size-----------------")
-        println(sportContainer.size)
+        
 
     }
 }

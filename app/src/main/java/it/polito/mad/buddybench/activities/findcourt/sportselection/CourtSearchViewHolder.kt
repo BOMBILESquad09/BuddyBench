@@ -40,7 +40,6 @@ class CourtSearchViewHolder(val v: View, val callback: (String, Sports) -> Unit)
         val bitmap = try {
             BitmapFactory.decodeStream(courtImage.context?.assets?.open("courtImages/" + court.path + ".jpg"))
         } catch (_: FileNotFoundException) {
-            println(court.path)
             BitmapFactory.decodeStream(courtImage.context?.assets?.open("courtImages/default_image.jpg"))
         }
         courtImage.setImageBitmap(bitmap)

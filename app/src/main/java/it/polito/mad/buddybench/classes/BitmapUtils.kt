@@ -92,7 +92,6 @@ class BitmapUtils(){
 
         private fun deleteFile(filePath: String){
             val file = File(filePath)
-            println(filePath)
             try {
 
                 file.delete()

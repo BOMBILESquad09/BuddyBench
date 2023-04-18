@@ -111,7 +111,6 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             lastCourts = it
             diffResult.dispatchUpdatesTo(recyclerView.adapter!!)
             recyclerView.scrollToPosition(0)
-
         }
 
         parent.viewModel.selectedSport.observe(viewLifecycleOwner){
@@ -126,7 +125,6 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             b.setImageBitmap(bitmap)
 
             textNearButton.text = getString(R.string.court_search_phrase, it.toString().lowercase().replaceFirstChar { c -> c.uppercase() })
-            parent.viewModel.getCourtsBySport(it, parent.viewModel.getSelectedDate())
 
             textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
             parent.context.findViewById<ImageView>(R.id.close_selection).visibility = View.VISIBLE
@@ -159,6 +157,11 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
         val confirmButton = bottomSheetDialog.findViewById<Button>(R.id.confirmFilter)
         bottomSheetDialog.show()
+    }
+
+    override  fun onStart() {
+        super.onStart()
+        parent.viewModel.getCourtsBySport( )
     }
 
 
