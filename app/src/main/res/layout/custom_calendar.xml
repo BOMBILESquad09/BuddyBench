@@ -67,7 +67,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/md_theme_dark_onPrimary">
+        >
 
         <com.kizitonwose.calendar.view.CalendarView
             android:id="@+id/calendar"
@@ -76,7 +76,7 @@
             app:cv_dayViewResource="@layout/calendar_day_item"
             app:cv_monthHeaderResource="@layout/calendar_header"
             />
-
+        <include layout="@layout/card_reservation"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/reservations"
             android:layout_width="match_parent"

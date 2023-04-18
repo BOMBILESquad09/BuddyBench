@@ -63,7 +63,7 @@ class DayViewContainer(view: View) : ViewContainer(view) {
         if(reservations != null){
             reservationsContainer.removeAllViews()
             reservations!!.forEachIndexed { idx, _  ->
-                if (idx == 3 && idx != (reservations!!.size -1) ){
+                if (idx == 2 && idx != (reservations!!.size -1) ){
                     val overflowText = context.layoutInflater.inflate(
                         R.layout.overflow_text,
                         reservationsContainer
