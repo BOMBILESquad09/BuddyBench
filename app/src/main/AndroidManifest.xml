@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31" >
         <activity
-            android:name=".activities.ShowProfileActivity"
+            android:name=".activities.calendar.CalendarActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
