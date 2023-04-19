@@ -13,8 +13,6 @@ class SportRepository @Inject constructor(private val sportDao: SportDao) {
 
     fun insert(sport: SportDTO) = sportDao.save(sport.toEntity())
 
-    fun update(sport: SportDTO) = sportDao.save(sport.toEntity())
-
     fun delete(sport: SportDTO) = sportDao.delete(sport.toEntity())
 
 }

@@ -3,9 +3,14 @@ package it.polito.mad.buddybench.DTO
 import it.polito.mad.buddybench.Entities.Court
 import it.polito.mad.buddybench.enums.Sports
 
-class CourtDTO(val courtName: String, val address: String, val feeHour: Int, val sport: String) {
+class CourtDTO(courtName: String, address: String, feeHour: Int, sport: String) {
 
+    val courtName = courtName
+    val address = address
+    val feeHour = feeHour
+    val sport = sport
 
+}
 
     fun toEntity(sportId: Int): Court {
         return Court(

@@ -39,7 +39,7 @@ data class CourtTime(
 fun CourtTimeWithCourt.toCourtTimeDTO(): CourtTimeDTO {
     return CourtTimeDTO(
         courtName = this.court.courtName,
-        sport = this.sport.sportName,
+        sport = this.sport.id,
         address = this.court.address,
         feeHour = this.court.feeHour,
         openingTime = LocalTime.parse(this.courtTime.openingTime),
@@ -61,7 +61,7 @@ data class CourtTimeWithCourt(
     @Relation(
         parentColumn = "court",
         entityColumn = "id",
-        associateBy = Junction(
+        associateBy = Junction (
             value = Court::class,
             parentColumn = "sport",
             entityColumn = "id"

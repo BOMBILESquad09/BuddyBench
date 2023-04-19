@@ -41,28 +41,25 @@ data class Reservation(
     @ColumnInfo(name = "startTime")
     val startTime: String,
 
-    @ColumnInfo(name = "endTime")
-    val endTime: String,
-
     )
 
 fun ReservationWithUserAndCourt.toReservationDTO(): ReservationDTO {
     return ReservationDTO(
         userOrganizer = this.userOrganizer.toUserDTO(),
-        court = this.court.toCourtDTO(this.sport.sportName),
+        court = this.court.toCourtDTO(this.sport.id),
         date = LocalDate.parse(this.reservation.date),
         startTime = LocalTime.parse(this.reservation.startTime),
-        endTime = LocalTime.parse(this.reservation.endTime)
+        endTime = LocalTime.parse(this.reservation.startTime).plusHours(1)
     )
 }
 
 fun Reservation.toReservationDTO(user: User, court: Court, sport: Sport): ReservationDTO {
     return ReservationDTO (
         userOrganizer = user.toUserDTO(),
-        court = court.toCourtDTO(sport.sportName),
+        court = court.toCourtDTO(sport.id),
         date = LocalDate.parse(this.date),
         startTime = LocalTime.parse(this.startTime),
-        endTime = LocalTime.parse(this.endTime)
+        endTime = LocalTime.parse(this.startTime).plusHours(1)
     )
 }
 
