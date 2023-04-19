@@ -2,7 +2,6 @@ package it.polito.mad.buddybench.repositories
 
 import it.polito.mad.buddybench.DAO.UserDao
 import it.polito.mad.buddybench.DTO.UserDTO
-import it.polito.mad.buddybench.DTO.toEntity
 import it.polito.mad.buddybench.Entities.toUserDTO
 import javax.inject.Inject
 

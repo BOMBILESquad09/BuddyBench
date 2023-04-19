@@ -5,7 +5,6 @@ import it.polito.mad.buddybench.DAO.CourtTimeDao
 import it.polito.mad.buddybench.DAO.SportDao
 import it.polito.mad.buddybench.DAO.UserDao
 import it.polito.mad.buddybench.DTO.CourtTimeDTO
-import it.polito.mad.buddybench.DTO.toEntity
 import it.polito.mad.buddybench.Entities.toCourtTimeDTO
 import javax.inject.Inject
 

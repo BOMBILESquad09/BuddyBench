@@ -6,7 +6,6 @@ import it.polito.mad.buddybench.DAO.ReservationDao
 import it.polito.mad.buddybench.DAO.UserDao
 import it.polito.mad.buddybench.DTO.InvitationDTO
 import it.polito.mad.buddybench.DTO.ReservationDTO
-import it.polito.mad.buddybench.DTO.toEntity
 import it.polito.mad.buddybench.Entities.toInvitationDTO
 import javax.inject.Inject
 

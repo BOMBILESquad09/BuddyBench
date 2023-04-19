@@ -76,15 +76,17 @@ class ReservationDTO(val userOrganizer: UserDTO,
             return hm as HashMap<LocalDate, List<ReservationDTO>>
         }
     }
+
+    fun toEntity(userOrganizer: Int, court: Int): Reservation {
+        return Reservation (
+            userOrganizer = userOrganizer,
+            court = court,
+            startTime = this.startTime.toString(),
+            endTime = this.endTime.toString(),
+            date = this.date.toString(),
+        )
+    }
 }
 
-fun ReservationDTO.toEntity(userOrganizer: Int, court: Int): Reservation {
-    return Reservation (
-        userOrganizer = userOrganizer,
-        court = court,
-        startTime = this.startTime.toString(),
-        endTime = this.endTime.toString(),
-        date = this.date.toString(),
-    )
-}
+
 

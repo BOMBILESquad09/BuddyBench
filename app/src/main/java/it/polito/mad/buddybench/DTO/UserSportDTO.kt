@@ -9,27 +9,22 @@ import it.polito.mad.buddybench.Entities.toUserDTO
 import java.time.LocalDate
 
 class UserSportDTO(
-    user: User,
-    skill: String,
-    gamesPlayed: Int,
-    gamesOrganized: Int,
-    sport: String
+    val user: User,
+    val skill: String,
+    val gamesPlayed: Int,
+    val gamesOrganized: Int,
+    val sport: String
 ) {
+    fun toEntity(userId: Int, sportId: Int): UserSport {
+        return UserSport(
+            user = userId,
+            skill = this.skill,
+            gamesPlayed = this.gamesPlayed,
+            gamesOrganized = this.gamesOrganized,
+            sport = sportId,
+        )
+    }
 
-    val user = user.toUserDTO()
-    val skill = skill
-    val gamesPlayed = gamesPlayed
-    val gamesOrganized = gamesOrganized
-    val sport = sport
 
 }
 
-fun UserSportDTO.toEntity(userId: Int, sportId: Int): UserSport {
-    return UserSport(
-        user = userId,
-        skill = this.skill,
-        gamesPlayed = this.gamesPlayed,
-        gamesOrganized = this.gamesOrganized,
-        sport = sportId,
-    )
-}
