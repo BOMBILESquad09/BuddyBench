@@ -6,7 +6,6 @@ import it.polito.mad.buddybench.Entities.Sport
 
 class SportDTO(sportName: String) {
     val sportName = sportName
-
 }
 
 fun SportDTO.toEntity(): Sport {

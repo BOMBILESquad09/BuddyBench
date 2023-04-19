@@ -16,7 +16,4 @@ interface InvitationDao {
     @Delete
     fun delete(invitation: Invitation)
 
-    @Query("SELECT I.* FROM User U, Invitation I, Reservation R WHERE U.id == I.user AND R.id == I.reservation " +
-            "AND U.email == :email AND R.date > :currDate")
-    fun getInvitationByEmailAndDate(email: String, currDate: String): List<Invitation>
 }
