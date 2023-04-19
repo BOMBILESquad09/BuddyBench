@@ -8,7 +8,7 @@ import it.polito.mad.buddybench.DTO.CourtDTO
     tableName = "Court", foreignKeys = arrayOf(
         ForeignKey(
             entity = Sport::class,
-            parentColumns = arrayOf("id"),
+            parentColumns = arrayOf("name"),
             childColumns = arrayOf("sport"),
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.CASCADE
@@ -21,7 +21,7 @@ data class Court(
     val id: Int = 0,
 
     @ColumnInfo(name = "courtName")
-    val courtName: String,
+    val name: String,
 
     @ColumnInfo(name = "address")
     val address: String,
@@ -39,25 +39,25 @@ data class CourtWithSport (
     @Embedded val court: Court,
     @Relation(
         parentColumn = "sport",
-        entityColumn = "id"
+        entityColumn = "name"
     )
     val sport: Sport
 )
 
 fun CourtWithSport.toCourtDTO(): CourtDTO {
     return CourtDTO(
-        courtName = this.court.courtName,
+        name = this.court.name,
         address = this.court.address,
         feeHour = this.court.feeHour,
-        sport = this.sport.id
+        sport = this.sport.name
     )
 }
 
-fun Court.toCourtDTO(sportName: String): CourtDTO {
+fun Court.toCourtDTO(): CourtDTO {
     return CourtDTO(
-        courtName = this.courtName,
+        name = this.name,
         address = this.address,
         feeHour = this.feeHour,
-        sport = sportName
+        sport = this.sport
     )
 }

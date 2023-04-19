@@ -38,8 +38,8 @@ data class CourtTime(
 
 fun CourtTimeWithCourt.toCourtTimeDTO(): CourtTimeDTO {
     return CourtTimeDTO(
-        courtName = this.court.courtName,
-        sport = this.sport.id,
+        courtName = this.court.name,
+        sport = this.sport.name,
         address = this.court.address,
         feeHour = this.court.feeHour,
         openingTime = LocalTime.parse(this.courtTime.openingTime),

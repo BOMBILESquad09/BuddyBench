@@ -4,12 +4,12 @@ import androidx.room.ColumnInfo
 import androidx.room.PrimaryKey
 import it.polito.mad.buddybench.Entities.Sport
 
-class SportDTO(val sportName: String) {
+class SportDTO(val name: String) {
 
 
     fun toEntity(): Sport {
         return Sport (
-            sportName = this.sportName
+            name = this.name
         )
     }
 }

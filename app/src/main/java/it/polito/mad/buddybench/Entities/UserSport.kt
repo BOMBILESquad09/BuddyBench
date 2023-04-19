@@ -17,7 +17,7 @@ import java.time.LocalTime
         ),
         ForeignKey(
             entity = Sport::class,
-            parentColumns = arrayOf("id"),
+            parentColumns = arrayOf("name"),
             childColumns = arrayOf("sport"),
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.CASCADE
@@ -57,7 +57,7 @@ data class UserSportsWithUserAndSport(
 
     @Relation(
         parentColumn = "sport",
-        entityColumn = "id"
+        entityColumn = "name"
     )
     val sport: Sport,
 )
@@ -68,7 +68,7 @@ fun UserSportsWithUserAndSport.toUserSportDTO(): UserSportDTO {
         skill = this.userSport.skill,
         gamesOrganized = this.userSport.gamesOrganized,
         gamesPlayed = this.userSport.gamesPlayed,
-        sport = this.sport.id,
+        sport = this.sport.name,
 
         )
 }

@@ -12,13 +12,13 @@ import java.time.LocalTime
 data class Sport (
 
     @PrimaryKey
-    val id: String,
+    val name: String,
 
 
 )
 
 fun Sport.toSportDTO(): SportDTO {
     return SportDTO(
-        sportName = id
+        name = name
     )
 }
