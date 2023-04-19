@@ -1,9 +1,6 @@
 package it.polito.mad.buddybench.Entities
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
 import it.polito.mad.buddybench.DTO.CourtTimeDTO
 import it.polito.mad.buddybench.DTO.InvitationDTO
 import java.time.LocalTime
@@ -45,12 +42,55 @@ data class Invitation(
 
 )
 
-fun Invitation.toInvitationDTO(): InvitationDTO {
+fun InvitationWithReservationAndUser.toInvitationDTO(): InvitationDTO {
     return InvitationDTO(
-        reservation = this.reservation,
-        confirmed = this.confirmed,
-        presence = this.presence,
-        user = this.user,
+        reservation = this.reservation.toReservationDTO(
+            user = this.userInvited,
+            court = this.court,
+            sport = this.sport
+        ),
+        confirmed = this.invitation.confirmed,
+        presence = this.invitation.presence,
+        userInvited = this.userInvited.toUserDTO(),
 
-    )
+        )
 }
+
+data class InvitationWithReservationAndUser(
+
+    @Embedded val invitation: Invitation,
+    @Relation(
+        parentColumn = "user",
+        entityColumn = "id"
+    )
+    val userInvited: User,
+
+    @Relation(
+        parentColumn = "reservation",
+        entityColumn = "id",
+    )
+    val reservation: Reservation,
+
+    @Relation(
+        parentColumn = "reservation",
+        entityColumn = "id",
+        associateBy = Junction(
+            value = Reservation::class,
+            parentColumn = "court",
+            entityColumn = "id"
+        )
+    )
+    val court: Court,
+
+    @Relation(
+        parentColumn = "reservation",
+        entityColumn = "id",
+        associateBy = Junction(
+            value = Court::class,
+            parentColumn = "sport",
+            entityColumn = "id"
+        )
+    )
+    val sport: Sport
+
+)

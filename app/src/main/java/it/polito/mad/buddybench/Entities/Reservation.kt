@@ -1,9 +1,6 @@
 package it.polito.mad.buddybench.Entities
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
 import it.polito.mad.buddybench.DTO.InvitationDTO
 import it.polito.mad.buddybench.DTO.ReservationDTO
 import java.time.LocalDate
@@ -49,12 +46,50 @@ data class Reservation(
 
     )
 
-fun Reservation.toReservationDTO(): ReservationDTO {
+fun ReservationWithUserAndCourt.toReservationDTO(): ReservationDTO {
     return ReservationDTO(
-        userOrganizer = this.userOrganizer,
-        court = this.court,
+        userOrganizer = this.userOrganizer.toUserDTO(),
+        court = this.court.toCourtDTO(this.sport.sportName),
+        date = LocalDate.parse(this.reservation.date),
+        startTime = LocalTime.parse(this.reservation.startTime),
+        endTime = LocalTime.parse(this.reservation.endTime)
+    )
+}
+
+fun Reservation.toReservationDTO(user: User, court: Court, sport: Sport): ReservationDTO {
+    return ReservationDTO (
+        userOrganizer = user.toUserDTO(),
+        court = court.toCourtDTO(sport.sportName),
         date = LocalDate.parse(this.date),
         startTime = LocalTime.parse(this.startTime),
         endTime = LocalTime.parse(this.endTime)
     )
 }
+
+data class ReservationWithUserAndCourt(
+
+    @Embedded val reservation: Reservation,
+    @Relation(
+        parentColumn = "userOrganizer",
+        entityColumn = "id"
+    )
+    val userOrganizer: User,
+
+    @Relation(
+        parentColumn = "court",
+        entityColumn = "id",
+    )
+    val court: Court,
+
+    @Relation(
+        parentColumn = "court",
+        entityColumn = "id",
+        associateBy = Junction(
+            value = Court::class,
+            parentColumn = "sport",
+            entityColumn = "id"
+        )
+    )
+    val sport: Sport
+
+)

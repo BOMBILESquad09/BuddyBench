@@ -1,8 +1,9 @@
 package it.polito.mad.buddybench.DTO
 
 import it.polito.mad.buddybench.Entities.Court
+import it.polito.mad.buddybench.enums.Sports
 
-class CourtDTO(courtName: String, address: String, feeHour: Int, sport: Int) {
+class CourtDTO(courtName: String, address: String, feeHour: Int, sport: String) {
 
     val courtName = courtName
     val address = address
@@ -11,31 +12,11 @@ class CourtDTO(courtName: String, address: String, feeHour: Int, sport: Int) {
 
 }
 
-data class CourtCompleteDTO (
-
-    val courtName: String,
-    val address: String,
-    val feeHour: Int,
-    val sport: String
-
-)
-
-fun CourtCompleteDTO.toEntity(mappingSports: Map<String, Int>): Court {
-
+fun CourtDTO.toEntity(sportId: Int): Court {
     return Court(
         courtName = this.courtName,
         address = this.address,
         feeHour = this.feeHour,
-        sport = mappingSports[this.sport]!!
-    )
-
-}
-
-fun CourtDTO.toEntity(): Court {
-    return Court(
-        courtName = this.courtName,
-        address = this.address,
-        feeHour = this.feeHour,
-        sport = this.sport
+        sport = sportId
     )
 }

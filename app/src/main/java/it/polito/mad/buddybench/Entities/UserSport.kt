@@ -1,9 +1,6 @@
 package it.polito.mad.buddybench.Entities
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
 import it.polito.mad.buddybench.DTO.ReservationDTO
 import it.polito.mad.buddybench.DTO.UserSportDTO
 import java.time.LocalDate
@@ -48,15 +45,31 @@ data class UserSport(
     @ColumnInfo(name = "sport")
     val sport: Int
 
-    )
+)
 
-fun UserSport.toUserSportDTO(): UserSportDTO {
+data class UserSportsWithUserAndSport(
+    @Embedded val userSport: UserSport,
+    @Relation(
+        parentColumn = "user",
+        entityColumn = "id"
+    )
+    val user: User,
+
+    @Relation(
+        parentColumn = "sport",
+        entityColumn = "id"
+    )
+    val sport: Sport,
+)
+
+fun UserSportsWithUserAndSport.toUserSportDTO(): UserSportDTO {
     return UserSportDTO(
-        user = this.user,
-        skill = this.skill,
-        gamesOrganized = this.gamesOrganized,
-        gamesPlayed = this.gamesPlayed,
-        sport = this.sport,
+        user = user,
+        skill = this.userSport.skill,
+        gamesOrganized = this.userSport.gamesOrganized,
+        gamesPlayed = this.userSport.gamesPlayed,
+        sport = this.sport.sportName,
 
-    )
+        )
 }
+

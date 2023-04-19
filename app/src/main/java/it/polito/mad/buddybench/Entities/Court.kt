@@ -1,10 +1,7 @@
 package it.polito.mad.buddybench.Entities
 
 import androidx.annotation.NonNull
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
 import it.polito.mad.buddybench.DTO.CourtDTO
 
 @Entity(
@@ -37,11 +34,30 @@ data class Court(
 
     )
 
-fun Court.toCourtDTO(): CourtDTO {
+data class CourtWithSport (
+
+    @Embedded val court: Court,
+    @Relation(
+        parentColumn = "sport",
+        entityColumn = "id"
+    )
+    val sport: Sport
+)
+
+fun CourtWithSport.toCourtDTO(): CourtDTO {
+    return CourtDTO(
+        courtName = this.court.courtName,
+        address = this.court.address,
+        feeHour = this.court.feeHour,
+        sport = this.sport.sportName
+    )
+}
+
+fun Court.toCourtDTO(sportName: String): CourtDTO {
     return CourtDTO(
         courtName = this.courtName,
         address = this.address,
         feeHour = this.feeHour,
-        sport = this.sport
+        sport = sportName
     )
 }

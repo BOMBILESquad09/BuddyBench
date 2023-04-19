@@ -1,9 +1,6 @@
 package it.polito.mad.buddybench.Entities
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
 import it.polito.mad.buddybench.DTO.CourtDTO
 import it.polito.mad.buddybench.DTO.CourtTimeDTO
 import java.time.LocalDate
@@ -39,11 +36,37 @@ data class CourtTime(
 
     )
 
-fun CourtTime.toCourtTimeDTO(): CourtTimeDTO {
+fun CourtTimeWithCourt.toCourtTimeDTO(): CourtTimeDTO {
     return CourtTimeDTO(
-        court = this.court,
-        openingTime = LocalTime.parse(this.openingTime),
-        closingTime = LocalTime.parse(this.closingTime),
-        dayOfWeek = this.dayOfWeek
+        courtName = this.court.courtName,
+        sport = this.sport.sportName,
+        address = this.court.address,
+        feeHour = this.court.feeHour,
+        openingTime = LocalTime.parse(this.courtTime.openingTime),
+        closingTime = LocalTime.parse(this.courtTime.closingTime),
+        dayOfWeek = this.courtTime.dayOfWeek
     )
 }
+
+data class CourtTimeWithCourt(
+
+    @Embedded val courtTime: CourtTime,
+
+    @Relation(
+        parentColumn = "court",
+        entityColumn = "id",
+    )
+    val court: Court,
+
+    @Relation(
+        parentColumn = "court",
+        entityColumn = "id",
+        associateBy = Junction(
+            value = Court::class,
+            parentColumn = "sport",
+            entityColumn = "id"
+        )
+    )
+    val sport: Sport
+
+)

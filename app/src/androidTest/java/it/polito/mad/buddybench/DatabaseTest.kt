@@ -82,6 +82,7 @@ class DatabaseTest {
         courtDao.save(court)
 
         val courtInserted = courtDao.getAll()
+        println(courtInserted)
         assert(courtInserted.isNotEmpty())
     }
 
@@ -96,14 +97,14 @@ class DatabaseTest {
         val courtInserted = courtDao.getAll()[0]
 
         val courtTime = CourtTime(
-            court = courtInserted.id,
+            court = courtInserted.court.id,
             openingTime = LocalTime.of(8, 30).toString(),
             closingTime = LocalTime.of(20, 30).toString(),
             dayOfWeek = LocalDate.now().dayOfWeek.toString()
         )
         courtTimeDao.save(courtTime)
         val courtTimeInserted = courtTimeDao.getAll()[0]
-        assertThat(courtTimeInserted.dayOfWeek, equalTo(courtTime.dayOfWeek))
+        assertThat(courtTimeInserted.courtTime.dayOfWeek, equalTo(courtTime.dayOfWeek))
     }
 
     @Test
@@ -135,7 +136,7 @@ class DatabaseTest {
         val userInserted = userDao.getAll()[0]
         val reservation = Reservation(
             userOrganizer = userInserted.id,
-            court = courtInserted.id,
+            court = courtInserted.court.id,
             date = LocalDate.now().toString(),
             startTime = LocalTime.of(8, 30).toString(),
             endTime = LocalTime.of(10, 30).toString(),
@@ -143,14 +144,15 @@ class DatabaseTest {
         reservationDao.save(reservation)
         val reservationInserted = reservationDao.getAll()[0]
         val invitation = Invitation(
-            reservation = reservationInserted.id,
+            reservation = reservationInserted.reservation.id,
             confirmed = true,
             presence = true,
             user = userInserted.id
         )
         invitationDao.save(invitation)
         val invitationInserted = invitationDao.getAll()[0]
-        assertThat(invitationInserted.confirmed, equalTo(invitation.confirmed))
+        println(invitationInserted)
+        assertThat(invitationInserted.invitation.confirmed, equalTo(invitation.confirmed))
     }
 
     @Test
@@ -182,14 +184,15 @@ class DatabaseTest {
         val userInserted = userDao.getAll()[0]
         val reservation = Reservation(
             userOrganizer = userInserted.id,
-            court = courtInserted.id,
+            court = courtInserted.court.id,
             date = LocalDate.now().toString(),
             startTime = LocalTime.of(8, 30).toString(),
             endTime = LocalTime.of(10, 30).toString(),
         )
         reservationDao.save(reservation)
         val reservationInserted = reservationDao.getAll()[0]
-        assertThat(reservationInserted.startTime, equalTo(reservationInserted.startTime))
+        println(reservationInserted)
+        assertThat(reservationInserted.reservation.startTime, equalTo(reservationInserted.reservation.startTime))
     }
 
     @Test
@@ -207,8 +210,8 @@ class DatabaseTest {
 
         val courtInserted = courtDao.getAll()[0]
         val userInserted = userDao.getAll()[0]
-        val reservationFuture = Utils.createFutureReservation(courtInserted.id, userInserted.id)
-        val reservationPast = Utils.createPastReservation(courtInserted.id, userInserted.id)
+        val reservationFuture = Utils.createFutureReservation(courtInserted.court.id, userInserted.id)
+        val reservationPast = Utils.createPastReservation(courtInserted.court.id, userInserted.id)
         reservationDao.save(reservationFuture)
         reservationDao.save(reservationPast)
 
@@ -233,14 +236,14 @@ class DatabaseTest {
 
         val courtInserted = courtDao.getAll()[0]
         val userInserted = userDao.getAll()[0]
-        val reservationFuture = Utils.createFutureReservation(courtInserted.id, userInserted.id)
-        val reservationPast = Utils.createPastReservation(courtInserted.id, userInserted.id)
+        val reservationFuture = Utils.createFutureReservation(courtInserted.court.id, userInserted.id)
+        val reservationPast = Utils.createPastReservation(courtInserted.court.id, userInserted.id)
         reservationDao.save(reservationFuture)
         reservationDao.save(reservationPast)
 
         val reservationsList = reservationDao.getAll()
         reservationsList.forEach {
-            val invitation = Utils.createInvitation(it.id, userInserted.id)
+            val invitation = Utils.createInvitation(it.reservation.id, userInserted.id)
             invitationDao.save(invitation)
         }
 
