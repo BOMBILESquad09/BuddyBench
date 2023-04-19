@@ -24,12 +24,12 @@ class UserSportDTO(
 
 }
 
-fun UserSportDTO.toEntity(userId: Int, sportId: Int): UserSport {
+fun UserSportDTO.toEntity(userId: Int, sport: String): UserSport {
     return UserSport(
         user = userId,
         skill = this.skill,
         gamesPlayed = this.gamesPlayed,
         gamesOrganized = this.gamesOrganized,
-        sport = sportId,
+        sport = sport,
     )
 }

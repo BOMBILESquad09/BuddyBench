@@ -11,16 +11,14 @@ import java.time.LocalTime
 @Entity(tableName = "Sport")
 data class Sport (
 
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
+    val id: String,
 
-    @ColumnInfo(name = "sportName")
-    val sportName: String
 
 )
 
 fun Sport.toSportDTO(): SportDTO {
     return SportDTO(
-        sportName = sportName
+        sportName = id
     )
 }

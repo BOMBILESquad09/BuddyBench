@@ -10,6 +10,6 @@ class SportDTO(sportName: String) {
 
 fun SportDTO.toEntity(): Sport {
     return Sport (
-        sportName = this.sportName
+        id = this.sportName
     )
 }

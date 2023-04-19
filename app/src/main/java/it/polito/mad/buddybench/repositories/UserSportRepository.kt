@@ -20,19 +20,13 @@ class UserSportRepository @Inject constructor(
     fun save(userSportDTO: UserSportDTO) {
         val sport = sportDao.getSportByName(userSportDTO.sport)!!
         val user = userDao.getUserByEmail(userSportDTO.user.email)!!
-        userSportDao.save(userSportDTO.toEntity(sport.id, user.id))
-    }
-
-    fun update(userSportDTO: UserSportDTO) {
-        val sport = sportDao.getSportByName(userSportDTO.sport)!!
-        val user = userDao.getUserByEmail(userSportDTO.user.email)!!
-        userSportDao.save(userSportDTO.toEntity(sport.id, user.id))
+        userSportDao.save(userSportDTO.toEntity( user.id, sport.id))
     }
 
     fun delete(userSportDTO: UserSportDTO) {
         val sport = sportDao.getSportByName(userSportDTO.sport)!!
         val user = userDao.getUserByEmail(userSportDTO.user.email)!!
-        userSportDao.delete(userSportDTO.toEntity(sport.id, user.id))
+        userSportDao.delete(userSportDTO.toEntity(user.id, sport.id))
     }
 
 }

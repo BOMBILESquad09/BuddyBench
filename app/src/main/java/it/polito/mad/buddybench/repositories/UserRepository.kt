@@ -14,8 +14,6 @@ class UserRepository @Inject constructor(private val userDao: UserDao) {
         userDao.save(user.toEntity())
     }
 
-    fun update(user: UserDTO) = userDao.save(user.toEntity())
-
     fun delete(user: UserDTO) = userDao.save(user.toEntity())
 
 }

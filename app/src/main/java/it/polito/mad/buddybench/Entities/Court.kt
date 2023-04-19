@@ -30,7 +30,7 @@ data class Court(
     val feeHour: Int,
 
     @ColumnInfo(name = "sport")
-    val sport: Int,
+    val sport: String,
 
     )
 
@@ -49,7 +49,7 @@ fun CourtWithSport.toCourtDTO(): CourtDTO {
         courtName = this.court.courtName,
         address = this.court.address,
         feeHour = this.court.feeHour,
-        sport = this.sport.sportName
+        sport = this.sport.id
     )
 }
 

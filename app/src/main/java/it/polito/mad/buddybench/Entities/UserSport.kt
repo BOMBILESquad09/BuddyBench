@@ -43,7 +43,7 @@ data class UserSport(
     val gamesOrganized: Int,
 
     @ColumnInfo(name = "sport")
-    val sport: Int
+    val sport: String
 
 )
 
@@ -68,7 +68,7 @@ fun UserSportsWithUserAndSport.toUserSportDTO(): UserSportDTO {
         skill = this.userSport.skill,
         gamesOrganized = this.userSport.gamesOrganized,
         gamesPlayed = this.userSport.gamesPlayed,
-        sport = this.sport.sportName,
+        sport = this.sport.id,
 
         )
 }

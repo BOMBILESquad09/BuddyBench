@@ -12,11 +12,11 @@ class CourtDTO(courtName: String, address: String, feeHour: Int, sport: String) 
 
 }
 
-fun CourtDTO.toEntity(sportId: Int): Court {
+fun CourtDTO.toEntity(sport: String): Court {
     return Court(
         courtName = this.courtName,
         address = this.address,
         feeHour = this.feeHour,
-        sport = sportId
+        sport = sport
     )
 }

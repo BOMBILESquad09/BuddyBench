@@ -49,7 +49,7 @@ data class Reservation(
 fun ReservationWithUserAndCourt.toReservationDTO(): ReservationDTO {
     return ReservationDTO(
         userOrganizer = this.userOrganizer.toUserDTO(),
-        court = this.court.toCourtDTO(this.sport.sportName),
+        court = this.court.toCourtDTO(this.sport.id),
         date = LocalDate.parse(this.reservation.date),
         startTime = LocalTime.parse(this.reservation.startTime),
         endTime = LocalTime.parse(this.reservation.endTime)
@@ -59,7 +59,7 @@ fun ReservationWithUserAndCourt.toReservationDTO(): ReservationDTO {
 fun Reservation.toReservationDTO(user: User, court: Court, sport: Sport): ReservationDTO {
     return ReservationDTO (
         userOrganizer = user.toUserDTO(),
-        court = court.toCourtDTO(sport.sportName),
+        court = court.toCourtDTO(sport.id),
         date = LocalDate.parse(this.date),
         startTime = LocalTime.parse(this.startTime),
         endTime = LocalTime.parse(this.endTime)

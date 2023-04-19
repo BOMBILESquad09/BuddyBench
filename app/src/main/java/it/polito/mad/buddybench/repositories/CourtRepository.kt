@@ -17,12 +17,7 @@ class CourtRepository @Inject constructor(
 
     fun getAll(): List<CourtDTO> = courtDao.getAll().map { it.toCourtDTO() }
 
-    fun insert(court: CourtDTO) {
-        val sport = sportDao.getSportByName(court.sport)!!
-        courtDao.save(court.toEntity(sport.id))
-    }
-
-    fun update(court: CourtDTO) {
+    fun save(court: CourtDTO) {
         val sport = sportDao.getSportByName(court.sport)!!
         courtDao.save(court.toEntity(sport.id))
     }
@@ -30,6 +25,11 @@ class CourtRepository @Inject constructor(
     fun delete(court: CourtDTO) {
         val sport = sportDao.getSportByName(court.sport)!!
         courtDao.delete(court.toEntity(sport.id))
+    }
+
+    fun getCourtsBySports(sport: String): List<CourtDTO> {
+        val sport = sportDao.getSportByName(sport)!!
+        return courtDao.getCourtsBySport(sport.id).map { it.toCourtDTO() }
     }
 
 }
