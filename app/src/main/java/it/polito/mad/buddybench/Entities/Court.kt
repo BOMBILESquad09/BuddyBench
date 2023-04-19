@@ -12,8 +12,8 @@ import it.polito.mad.buddybench.DTO.CourtDTO
             childColumns = arrayOf("sport"),
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.CASCADE
-        )
-    )
+        ),
+    ), indices = [Index(value = ["courtName", "sport"], unique = true)]
 )
 data class Court(
 

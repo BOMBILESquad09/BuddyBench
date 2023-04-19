@@ -84,7 +84,6 @@ fun ReservationDTO.toEntity(userOrganizer: Int, court: Int): Reservation {
         userOrganizer = userOrganizer,
         court = court,
         startTime = this.startTime.toString(),
-        endTime = this.endTime.toString(),
         date = this.date.toString(),
     )
 }
