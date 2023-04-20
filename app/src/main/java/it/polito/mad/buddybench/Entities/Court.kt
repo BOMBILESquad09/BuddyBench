@@ -33,26 +33,6 @@ data class Court(
     val sport: String,
 
     )
-
-data class CourtWithSport (
-
-    @Embedded val court: Court,
-    @Relation(
-        parentColumn = "sport",
-        entityColumn = "name"
-    )
-    val sport: Sport
-)
-
-fun CourtWithSport.toCourtDTO(): CourtDTO {
-    return CourtDTO(
-        name = this.court.name,
-        address = this.court.address,
-        feeHour = this.court.feeHour,
-        sport = this.sport.name
-    )
-}
-
 fun Court.toCourtDTO(): CourtDTO {
     return CourtDTO(
         name = this.name,

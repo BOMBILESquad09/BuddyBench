@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase
 import androidx.room.Database
 import it.polito.mad.buddybench.DAO.*
 import it.polito.mad.buddybench.Entities.*
+import it.polito.mad.buddybench.repositories.UserRepository
 
 @Database(
     entities = [

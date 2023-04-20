@@ -2,6 +2,9 @@ package it.polito.mad.buddybench.DAO
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import it.polito.mad.buddybench.Entities.User
 
 @Dao

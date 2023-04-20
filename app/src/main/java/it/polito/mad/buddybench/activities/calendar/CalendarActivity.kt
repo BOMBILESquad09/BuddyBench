@@ -12,9 +12,16 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.children
 import com.kizitonwose.calendar.core.*
 import com.kizitonwose.calendar.view.*
+import dagger.hilt.android.AndroidEntryPoint
+import it.polito.mad.buddybench.DAO.ReservationDao
+import it.polito.mad.buddybench.DAO.UserDao
 import it.polito.mad.buddybench.DTO.ReservationDTO
+import it.polito.mad.buddybench.Database.CourtReservationDatabase
+import it.polito.mad.buddybench.Database.DatabaseModule
+import it.polito.mad.buddybench.Entities.User
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.repositories.UserRepository
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.Month
@@ -22,12 +29,16 @@ import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.*
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class CalendarActivity : AppCompatActivity() {
     var  selectedDate: LocalDate? = null
     val reservations = ReservationDTO.mockReservationDTOs()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.custom_calendar)
         val calendarView = findViewById<CalendarView>(R.id.calendar)
         calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
