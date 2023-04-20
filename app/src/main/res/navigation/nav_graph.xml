@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="it.polito.mad.buddybench.views.FirstFragment"
+        android:name="it.polito.mad.buddybench.views.CourtFragment"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        tools:layout="@layout/fragment_court">
 
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
@@ -17,9 +17,9 @@
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="it.polito.mad.buddybench.views.SecondFragment"
+        android:name="it.polito.mad.buddybench.views.CourtReservationFragment"
         android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
+        tools:layout="@layout/fragment_court_reservation">
 
         <action
             android:id="@+id/action_SecondFragment_to_FirstFragment"

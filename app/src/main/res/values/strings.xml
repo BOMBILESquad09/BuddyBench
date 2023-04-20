@@ -69,5 +69,5 @@
     <string name="via_roma_16_torino">Via Roma 16, Torino</string>
     <string name="opening_hours_default">8:00 - 23:00</string>
     <string name="book">Book</string>
-
+    <string name="court_fee">%1$s €/h</string>
 </resources>

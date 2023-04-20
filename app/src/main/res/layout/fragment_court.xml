@@ -56,6 +56,7 @@
                 android:gravity="center_vertical">
 
                 <TextView
+                    android:id="@+id/court_name_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/sport_tennis"
@@ -78,6 +79,7 @@
                     >
 
                     <TextView
+                        android:id="@+id/court_fee_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/price_text"
@@ -135,6 +137,7 @@
                 android:textSize="16sp" />
 
             <TextView
+                android:id="@+id/court_address_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
@@ -146,6 +149,7 @@
                 app:drawableStartCompat="@drawable/location" />
 
             <TextView
+                android:id="@+id/court_opening_hours_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
