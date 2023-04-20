@@ -4,6 +4,7 @@ package it.polito.mad.buddybench.activities.calendar
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.children
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
@@ -24,11 +27,14 @@ import it.polito.mad.buddybench.Database.CourtReservationDatabase
 import it.polito.mad.buddybench.Database.DatabaseModule
 import it.polito.mad.buddybench.Entities.User
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.classes.Print
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.repositories.ReservationRepository
 import it.polito.mad.buddybench.repositories.UserRepository
 import it.polito.mad.buddybench.utils.BottomBar
 import nl.joery.animatedbottombar.AnimatedBottomBar
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
@@ -38,12 +44,20 @@ import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 @AndroidEntryPoint
 class CalendarActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var print: Print
+
     var  selectedDate: LocalDate? = null
-    val reservations = ReservationDTO.mockReservationDTOs()
-    val bottomBar = BottomBar(this)
+    val reservations: MutableLiveData<HashMap<LocalDate,List<ReservationDTO>>> = MutableLiveData(
+        null
+    )
+
+    private val bottomBar = BottomBar(this)
     lateinit var recyclerViewReservations: RecyclerView
 
     @Inject
@@ -52,12 +66,15 @@ class CalendarActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Call the repo in this way
-        repoReservation.getAll()
+        Log.d("HiltApplication", application.javaClass.name)
+
+        reservations.value = repoReservation.getAll()
 
         setContentView(R.layout.custom_calendar)
         val calendarView = findViewById<CalendarView>(R.id.calendar)
         recyclerViewReservations = findViewById(R.id.reservations)
         recyclerViewReservations.layoutManager = LinearLayoutManager(this)
+        val dayTitle = findViewById<TextView>(R.id.dayTitle)
 
         calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
             // Called only when a new container is needed.
@@ -78,21 +95,21 @@ class CalendarActivity : AppCompatActivity() {
                             calendarView.notifyDateChanged(data.date)
                         }
                     }
+                    dayTitle.text = selectedDate?.format(DateTimeFormatter.ofPattern("EEEE, d MMMM Y"))
                 }
                 container.textView.text = data.date.dayOfMonth.toString()
-                container.setBackground(selectedDate, this@CalendarActivity )
+                container.setBackground(selectedDate )
                 container.setTextColor(selectedDate, this@CalendarActivity)
-                container.reservations = reservations[data.date]
+                container.reservations = reservations.value?.get(data.date)
                 container.setSportsIcon(this@CalendarActivity)
 
                 if(selectedDate == null) {
-                    recyclerViewReservations.adapter = ReservationAdapter(reservations[LocalDate.now()] ?: listOf())
+                    recyclerViewReservations.adapter = ReservationAdapter(
+                        reservations.value?.get(LocalDate.now()) ?: listOf())
                 } else {
-                    recyclerViewReservations.adapter = ReservationAdapter(reservations[selectedDate] ?: listOf())
+                    recyclerViewReservations.adapter = ReservationAdapter(
+                        reservations.value?.get(selectedDate) ?: listOf())
                 }
-
-
-
             }
         }
 

@@ -6,7 +6,7 @@ import it.polito.mad.buddybench.Entities.ReservationWithUserAndCourt
 @Dao
 interface ReservationDao {
 
-    @Query("SELECT * FROM Reservation")
+    @Query("SELECT * FROM reservation")
     fun getAll(): List<ReservationWithUserAndCourt>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

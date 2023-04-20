@@ -26,7 +26,6 @@
             android:gravity="center"
             android:textColor="@android:color/background_dark"
             android:textSize="12sp"
-
             app:layout_constraintBottom_toTopOf="@+id/reservationsContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
             android:orientation="horizontal"
-            android:padding="2dp"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

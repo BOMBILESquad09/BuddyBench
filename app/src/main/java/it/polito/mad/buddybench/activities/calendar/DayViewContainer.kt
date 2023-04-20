@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.view.ViewContainer
@@ -27,7 +28,7 @@ class DayViewContainer(view: View) : ViewContainer(view) {
         textViewContainer.setOnClickListener(callback)
     }
 
-    fun setBackground(selectedDate: LocalDate?, context: Context){
+    fun setBackground(selectedDate: LocalDate?){
         if(selectedDate == day.date ){
             textView.setBackgroundResource(R.drawable.circle_selected_day)
 
@@ -71,7 +72,6 @@ class DayViewContainer(view: View) : ViewContainer(view) {
                         R.layout.overflow_text,
                         reservationsContainer
                     )
-
                     val iv = overflowText.findViewById<TextView>(R.id.overflow_text)
                     iv.text = context.getString(R.string.overflowReservations)
                     return@setSportsIcon
@@ -88,9 +88,8 @@ class DayViewContainer(view: View) : ViewContainer(view) {
         }else {
             reservationsContainer.removeAllViews()
             val sportIcon = context.layoutInflater.inflate(
-            R.layout.sport_icon,
-            reservationsContainer
-            )
+                R.layout.sport_icon,
+                reservationsContainer)
             val iv = sportIcon.findViewById<ImageView>(R.id.sport_icon)
             iv.setImageResource(0)
     }}

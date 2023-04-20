@@ -4,16 +4,23 @@ import it.polito.mad.buddybench.DAO.CourtDao
 import it.polito.mad.buddybench.DAO.ReservationDao
 import it.polito.mad.buddybench.DAO.UserDao
 import it.polito.mad.buddybench.DTO.ReservationDTO
+import it.polito.mad.buddybench.Entities.Reservation
 import it.polito.mad.buddybench.Entities.toReservationDTO
+import java.time.LocalDate
 import javax.inject.Inject
+import javax.inject.Singleton
 
+
+@Singleton
 class ReservationRepository @Inject constructor(
     private val reservationDao: ReservationDao,
     private val userDao: UserDao,
     private val courtDao: CourtDao,
 ) {
 
-    fun getAll(): List<ReservationDTO> = reservationDao.getAll().map { it.toReservationDTO() }
+    fun getAll(): HashMap<LocalDate, List<ReservationDTO>> {
+        return ReservationDTO.toHashmap(reservationDao.getAll().map { it.toReservationDTO() })
+    }
 
     fun save(reservationDTO: ReservationDTO) {
         val user = userDao.getUserByEmail(reservationDTO.userOrganizer.email)!!
@@ -28,3 +35,4 @@ class ReservationRepository @Inject constructor(
     }
 
 }
+

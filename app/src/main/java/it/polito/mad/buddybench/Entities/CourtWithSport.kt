@@ -18,6 +18,7 @@ fun CourtWithSport.toCourtDTO(): CourtDTO {
     return CourtDTO(
         name = this.court.name,
         address = this.court.address,
+        location = this.court.location,
         feeHour = this.court.feeHour,
         sport = this.sport.name
     )

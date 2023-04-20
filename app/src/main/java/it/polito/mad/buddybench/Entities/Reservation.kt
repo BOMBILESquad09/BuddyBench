@@ -38,6 +38,8 @@ data class Reservation(
     @ColumnInfo(name = "start_time")
     val startTime: Int,
 
+
+
     )
 
 fun Reservation.toReservationDTO(user: User, court: Court): ReservationDTO {

@@ -8,7 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="10dp"
         android:orientation="vertical">
         <!-- menu bar -->
         <include layout="@layout/bottom_bar" />
@@ -52,12 +51,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="14dp">
+                        android:padding="10dp">
 
                         <ImageView
                             android:id="@+id/previousButton"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -71,7 +70,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-medium"
                             android:textColor="@color/md_theme_light_onPrimary"
-                            android:textSize="22sp"
+                            android:textSize="18sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/nextButton"
                             app:layout_constraintStart_toEndOf="@id/previousButton"
@@ -80,8 +79,8 @@
 
                         <ImageView
                             android:id="@+id/nextButton"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
 
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -93,6 +92,7 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <com.kizitonwose.calendar.view.CalendarView
+
                         android:id="@+id/calendar"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -105,14 +105,32 @@
 
             </androidx.cardview.widget.CardView>
         </androidx.cardview.widget.CardView>
-
-
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/reservations"
+        <LinearLayout
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/dayTitle"
+                android:layout_marginLeft="3dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:text="Domenica 30 Aprile 2023"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_marginTop="5dp"
+                android:id="@+id/reservations"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false" />
+        </LinearLayout>
+
+
+
 
 
     </LinearLayout>

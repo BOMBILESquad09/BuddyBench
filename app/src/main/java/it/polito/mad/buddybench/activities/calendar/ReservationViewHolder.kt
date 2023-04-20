@@ -23,6 +23,7 @@ class ReservationViewHolder(v: View): RecyclerView.ViewHolder(v) {
 
     fun bind(reservation: ReservationDTO){
         courtName.text = reservation.court.name
+
         val iconDrawable = ContextCompat.getDrawable(view.context,
             Sports.sportToIconDrawable(
                 Sports.fromJSON(
@@ -30,11 +31,14 @@ class ReservationViewHolder(v: View): RecyclerView.ViewHolder(v) {
                 )!!
             )
         )
+
         val wrappedDrawable = DrawableCompat.wrap(iconDrawable!!)
-        DrawableCompat.setTint(wrappedDrawable, Color.WHITE)
+        wrappedDrawable.mutate().setTint( Color.WHITE)
         iconSport.setImageDrawable(wrappedDrawable)
 
         slot.text = "${reservation.startTime.format(formatter)} - ${reservation.endTime.format(formatter)}"
+
+
     }
 
 }

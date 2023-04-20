@@ -46,10 +46,25 @@ class ReservationDTO(val userOrganizer: UserDTO,
                 name = "CourtSampleName",
                 address = "ExampleRoad",
                 feeHour = feeHour,
-                sport = sport
+                sport = sport,
+                location= "ExampleLocation"
             )
         }
 
+        fun toHashmap(list: List<ReservationDTO>): HashMap<LocalDate,List<ReservationDTO>>{
+
+            val hm = HashMap<LocalDate, MutableList<ReservationDTO>>()
+            val entries  = list.forEach{
+                println(it)
+                val l = hm[it.date]
+                if(l == null){
+                    hm[it.date] = mutableListOf(it)
+                } else {
+                    l.add(it)
+                }
+            }
+            return hm as HashMap<LocalDate, List<ReservationDTO>>
+        }
         fun mockReservationDTOs(): HashMap<LocalDate,List<ReservationDTO>>{
             val now = LocalDate.now()
             val later = now.plusDays(10)
@@ -65,16 +80,7 @@ class ReservationDTO(val userOrganizer: UserDTO,
                 ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd),
 
             )
-            val hm = HashMap<LocalDate, MutableList<ReservationDTO>>()
-            val entries  = list.forEach{
-                val l = hm[it.date]
-                if(l == null){
-                    hm[it.date] = mutableListOf(it)
-                } else {
-                    l.add(it)
-                }
-            }
-            return hm as HashMap<LocalDate, List<ReservationDTO>>
+            return toHashmap(list)
         }
     }
 

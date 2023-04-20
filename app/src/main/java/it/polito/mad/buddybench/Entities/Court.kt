@@ -13,7 +13,7 @@ import it.polito.mad.buddybench.DTO.CourtDTO
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.CASCADE
         ),
-    ), indices = [Index(value = ["name", "sport"], unique = true)]
+    )
 )
 data class Court(
 
@@ -26,6 +26,9 @@ data class Court(
     @ColumnInfo(name = "address")
     val address: String,
 
+    @ColumnInfo(name = "location")
+    val location: String,
+
     @ColumnInfo(name = "fee_hour")
     val feeHour: Int,
 
@@ -37,7 +40,9 @@ fun Court.toCourtDTO(): CourtDTO {
     return CourtDTO(
         name = this.name,
         address = this.address,
+        location = this.location,
         feeHour = this.feeHour,
         sport = this.sport
+
     )
 }
