@@ -40,16 +40,6 @@ data class Reservation(
 
     )
 
-fun ReservationWithUserAndCourt.toReservationDTO(): ReservationDTO {
-    return ReservationDTO(
-        userOrganizer = this.userOrganizer.toUserDTO(),
-        court = this.court.toCourtDTO(),
-        date = LocalDate.parse(this.reservation.date),
-        startTime = LocalTime.of(this.reservation.startTime,0),
-        endTime = LocalTime.of(this.reservation.startTime,0).plusHours(1)
-    )
-}
-
 fun Reservation.toReservationDTO(user: User, court: Court): ReservationDTO {
     return ReservationDTO (
         userOrganizer = user.toUserDTO(),
@@ -60,21 +50,3 @@ fun Reservation.toReservationDTO(user: User, court: Court): ReservationDTO {
     )
 }
 
-data class ReservationWithUserAndCourt(
-
-    @Embedded val reservation: Reservation,
-    @Relation(
-        parentColumn = "user",
-        entityColumn = "id"
-    )
-    val userOrganizer: User,
-
-    @Relation(
-        parentColumn = "court",
-        entityColumn = "id",
-    )
-    val court: Court,
-
-
-
-)

@@ -47,29 +47,3 @@ data class UserSport(
 
 )
 
-data class UserSportsWithUserAndSport(
-    @Embedded val userSport: UserSport,
-    @Relation(
-        parentColumn = "user",
-        entityColumn = "id"
-    )
-    val user: User,
-
-    @Relation(
-        parentColumn = "sport",
-        entityColumn = "name"
-    )
-    val sport: Sport,
-)
-
-fun UserSportsWithUserAndSport.toUserSportDTO(): UserSportDTO {
-    return UserSportDTO(
-        user = user,
-        skill = this.userSport.skill,
-        gamesOrganized = this.userSport.gamesOrganized,
-        gamesPlayed = this.userSport.gamesPlayed,
-        sport = this.sport.name,
-
-        )
-}
-
