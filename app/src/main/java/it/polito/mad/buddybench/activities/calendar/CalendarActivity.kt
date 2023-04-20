@@ -4,6 +4,7 @@ package it.polito.mad.buddybench.activities.calendar
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -22,6 +23,8 @@ import it.polito.mad.buddybench.Entities.User
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.repositories.UserRepository
+import it.polito.mad.buddybench.utils.BottomBar
+import nl.joery.animatedbottombar.AnimatedBottomBar
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.Month
@@ -35,7 +38,7 @@ import javax.inject.Inject
 class CalendarActivity : AppCompatActivity() {
     var  selectedDate: LocalDate? = null
     val reservations = ReservationDTO.mockReservationDTOs()
-
+    val bottomBar = BottomBar(this)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -109,6 +112,9 @@ class CalendarActivity : AppCompatActivity() {
 
             }
         }
+
+        bottomBar.setup()
+
 
 
     }
