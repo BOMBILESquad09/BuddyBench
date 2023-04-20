@@ -1,5 +1,7 @@
 package it.polito.mad.buddybench.repositories
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import it.polito.mad.buddybench.DAO.CourtDao
 import it.polito.mad.buddybench.DAO.SportDao
 import it.polito.mad.buddybench.DAO.UserDao

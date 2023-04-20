@@ -29,19 +29,4 @@ abstract class CourtReservationDatabase: RoomDatabase() {
     abstract fun sportDao(): SportDao
     abstract fun userSportDao(): UserSportDao
 
-    companion object {
-        @Volatile
-        private var INSTANCE: CourtReservationDatabase? = null
-        fun getDatabase(context: Context): CourtReservationDatabase =
-            (INSTANCE ?: synchronized(this) {
-                val i = INSTANCE ?: Room.databaseBuilder(
-                    context.applicationContext,
-                    CourtReservationDatabase::class.java,
-                    "CourtReservationDatabase"
-                ).createFromAsset("database/CourtReservationDB.db")
-                    .build()
-                INSTANCE = i
-                INSTANCE
-            })!!
-    }
 }
