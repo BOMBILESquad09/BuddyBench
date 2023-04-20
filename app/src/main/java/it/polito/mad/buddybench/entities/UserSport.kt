@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import it.polito.mad.buddybench.DTO.UserSportDTO
+import it.polito.mad.buddybench.dto.UserSportDTO
 
 @Entity(
     tableName = "UserSport", foreignKeys = arrayOf(

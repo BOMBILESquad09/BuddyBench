@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import it.polito.mad.buddybench.DTO.CourtDTO
+import it.polito.mad.buddybench.dto.CourtDTO
 
 @Entity(
     tableName = "Court", foreignKeys = arrayOf(

@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import it.polito.mad.buddybench.DTO.ReservationDTO
+import it.polito.mad.buddybench.dto.ReservationDTO
 import java.time.LocalDate
 import java.time.LocalTime
 

@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.core.view.children
 import com.kizitonwose.calendar.core.*
 import com.kizitonwose.calendar.view.*
-import it.polito.mad.buddybench.DTO.ReservationDTO
+import it.polito.mad.buddybench.dto.ReservationDTO
 import it.polito.mad.buddybench.R
 import java.time.DayOfWeek
 import java.time.LocalDate

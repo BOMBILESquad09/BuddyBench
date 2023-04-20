@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import it.polito.mad.buddybench.DTO.CourtTimeDTO
+import it.polito.mad.buddybench.dto.CourtTimeDTO
 import java.time.LocalTime
 
 @Entity(

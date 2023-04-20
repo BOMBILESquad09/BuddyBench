@@ -1,4 +1,4 @@
-package it.polito.mad.buddybench.DTO
+package it.polito.mad.buddybench.dto
 
 import it.polito.mad.buddybench.entities.User
 import java.time.LocalDate

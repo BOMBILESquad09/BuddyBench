@@ -11,7 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.view.ViewContainer
-import it.polito.mad.buddybench.DTO.ReservationDTO
+import it.polito.mad.buddybench.dto.ReservationDTO
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.enums.Sports
 import java.time.LocalDate
