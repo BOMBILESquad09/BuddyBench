@@ -11,6 +11,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.children
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.kizitonwose.calendar.core.*
 import com.kizitonwose.calendar.view.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,6 +31,7 @@ import it.polito.mad.buddybench.utils.BottomBar
 import nl.joery.animatedbottombar.AnimatedBottomBar
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.Month
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -40,6 +44,7 @@ class CalendarActivity : AppCompatActivity() {
     var  selectedDate: LocalDate? = null
     val reservations = ReservationDTO.mockReservationDTOs()
     val bottomBar = BottomBar(this)
+    lateinit var recyclerViewReservations: RecyclerView
 
     @Inject
     lateinit var repoReservation: ReservationRepository
@@ -51,6 +56,9 @@ class CalendarActivity : AppCompatActivity() {
 
         setContentView(R.layout.custom_calendar)
         val calendarView = findViewById<CalendarView>(R.id.calendar)
+        recyclerViewReservations = findViewById(R.id.reservations)
+        recyclerViewReservations.layoutManager = LinearLayoutManager(this)
+
         calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
             // Called only when a new container is needed.
             override fun create(view: View): DayViewContainer {
@@ -76,6 +84,15 @@ class CalendarActivity : AppCompatActivity() {
                 container.setTextColor(selectedDate, this@CalendarActivity)
                 container.reservations = reservations[data.date]
                 container.setSportsIcon(this@CalendarActivity)
+
+                if(selectedDate == null) {
+                    recyclerViewReservations.adapter = ReservationAdapter(reservations[LocalDate.now()] ?: listOf())
+                } else {
+                    recyclerViewReservations.adapter = ReservationAdapter(reservations[selectedDate] ?: listOf())
+                }
+
+
+
             }
         }
 
@@ -121,9 +138,6 @@ class CalendarActivity : AppCompatActivity() {
         }
 
         bottomBar.setup()
-
-
-
     }
 }
 
