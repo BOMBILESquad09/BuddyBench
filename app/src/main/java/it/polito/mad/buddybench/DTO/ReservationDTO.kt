@@ -57,9 +57,9 @@ class ReservationDTO(val userOrganizer: UserDTO,
             val endNow = timeNow.plusHours(1)
             val timeLaterEnd = timeNow.plusHours(3)
             val list =  listOf(ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), now,timeNow, endNow, ),
-                    ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd),
-                ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd),
-                ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd),
+                    ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.BASKETBALL)).toCourtDTO(), later, timeNow, timeLaterEnd),
+                ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.FOOTBALL)).toCourtDTO(), later, timeNow, timeLaterEnd),
+                ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.VOLLEYBALL)).toCourtDTO(), later, timeNow, timeLaterEnd),
                 ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd),
                 ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd),
                 ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd),
