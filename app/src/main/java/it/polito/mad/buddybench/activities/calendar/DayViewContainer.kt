@@ -52,7 +52,7 @@ class DayViewContainer(view: View) : ViewContainer(view) {
             textView.setTextColor(Color.WHITE)
         }
         else if(selectedDate == day.date ){
-            textView.setTextColor(Color.WHITE)
+            textView.setTextColor(context.getColor(R.color.md_theme_light_onPrimary))
         }
         else if (day.position == DayPosition.MonthDate) {
             textView.setTextColor(Color.BLACK)

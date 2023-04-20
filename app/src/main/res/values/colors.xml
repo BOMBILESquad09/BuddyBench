@@ -3,7 +3,7 @@
     <color name="error">#FF0000</color>
     <color name="seed">#1b1b6c</color>
     <color name="md_theme_light_primary">#1b1b6c</color>
-    <color name="md_theme_light_onPrimary">#FFFFFF</color>
+    <color name="md_theme_light_onPrimary">#D1D1FF</color>
     <color name="md_theme_light_primaryContainer">#E1E0FF</color>
     <color name="md_theme_light_onPrimaryContainer">#1b1b6c</color>
     <color name="md_theme_light_secondary">#755B00</color>
