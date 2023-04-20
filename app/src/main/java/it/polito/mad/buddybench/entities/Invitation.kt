@@ -1,12 +1,10 @@
-package it.polito.mad.buddybench.Entities
+package it.polito.mad.buddybench.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import it.polito.mad.buddybench.DTO.CourtTimeDTO
 import it.polito.mad.buddybench.DTO.InvitationDTO
-import java.time.LocalTime
 
 @Entity(
     tableName = "Invitation", foreignKeys = arrayOf(

@@ -1,14 +1,13 @@
 package it.polito.mad.buddybench.DTO
 
-import androidx.room.ColumnInfo
-import androidx.room.PrimaryKey
-import it.polito.mad.buddybench.Entities.Reservation
+import it.polito.mad.buddybench.entities.Reservation
 import java.time.LocalDate
 import java.time.LocalTime
 
-class ReservationDTO(val userOrganizer: Int,
-                     val court: Int, val date: LocalDate, val startTime: LocalTime,
-                     val endTime: LocalTime
+class ReservationDTO(
+    val userOrganizer: Int,
+    val court: Int, val date: LocalDate, val startTime: LocalTime,
+    val endTime: LocalTime
 ) {
 
 

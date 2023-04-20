@@ -1,7 +1,7 @@
 package it.polito.mad.buddybench.DTO
 
 
-import it.polito.mad.buddybench.Entities.CourtTime
+import it.polito.mad.buddybench.entities.CourtTime
 import java.time.LocalTime
 
 class CourtTimeDTO(court: Int, openingTime: LocalTime, closingTime: LocalTime, dayOfWeek: String) {

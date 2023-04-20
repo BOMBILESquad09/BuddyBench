@@ -1,6 +1,6 @@
-package it.polito.mad.buddybench.DAO
+package it.polito.mad.buddybench.dao
 import androidx.room.*
-import it.polito.mad.buddybench.Entities.Invitation
+import it.polito.mad.buddybench.entities.Invitation
 
 
 @Dao

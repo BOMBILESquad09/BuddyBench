@@ -1,9 +1,6 @@
 package it.polito.mad.buddybench.DTO
 
-import android.provider.ContactsContract.CommonDataKinds.Nickname
-import androidx.room.ColumnInfo
-import androidx.room.PrimaryKey
-import it.polito.mad.buddybench.Entities.User
+import it.polito.mad.buddybench.entities.User
 import java.time.LocalDate
 
 class UserDTO(name: String, surname: String, nickname: String, birthdate: LocalDate, location: String, email: String, reliability: Int) {

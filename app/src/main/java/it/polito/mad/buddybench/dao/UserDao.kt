@@ -1,8 +1,7 @@
-package it.polito.mad.buddybench.DAO
+package it.polito.mad.buddybench.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
-import it.polito.mad.buddybench.Entities.User
+import it.polito.mad.buddybench.entities.User
 
 @Dao
 interface UserDao {

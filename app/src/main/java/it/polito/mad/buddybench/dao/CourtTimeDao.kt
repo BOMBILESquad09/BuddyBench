@@ -1,6 +1,6 @@
-package it.polito.mad.buddybench.DAO
+package it.polito.mad.buddybench.dao
 import androidx.room.*
-import it.polito.mad.buddybench.Entities.CourtTime
+import it.polito.mad.buddybench.entities.CourtTime
 
 @Dao
 interface CourtTimeDao {

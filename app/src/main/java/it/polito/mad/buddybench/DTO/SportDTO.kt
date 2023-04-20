@@ -1,8 +1,6 @@
 package it.polito.mad.buddybench.DTO
 
-import androidx.room.ColumnInfo
-import androidx.room.PrimaryKey
-import it.polito.mad.buddybench.Entities.Sport
+import it.polito.mad.buddybench.entities.Sport
 
 class SportDTO(sportName: String) {
     val sportName = sportName

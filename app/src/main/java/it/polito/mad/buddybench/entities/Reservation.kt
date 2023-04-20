@@ -1,10 +1,9 @@
-package it.polito.mad.buddybench.Entities
+package it.polito.mad.buddybench.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import it.polito.mad.buddybench.DTO.InvitationDTO
 import it.polito.mad.buddybench.DTO.ReservationDTO
 import java.time.LocalDate
 import java.time.LocalTime

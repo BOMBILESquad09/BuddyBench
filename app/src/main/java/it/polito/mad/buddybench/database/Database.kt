@@ -1,11 +1,11 @@
-package it.polito.mad.buddybench.Database
+package it.polito.mad.buddybench.database
 
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.Database
-import it.polito.mad.buddybench.DAO.*
-import it.polito.mad.buddybench.Entities.*
+import it.polito.mad.buddybench.dao.*
+import it.polito.mad.buddybench.entities.*
 
 @Database(
     entities = [

@@ -1,9 +1,6 @@
 package it.polito.mad.buddybench.DTO
 
-import androidx.room.ColumnInfo
-import androidx.room.PrimaryKey
-import it.polito.mad.buddybench.Entities.Sport
-import it.polito.mad.buddybench.Entities.UserSport
+import it.polito.mad.buddybench.entities.UserSport
 
 class UserSportDTO(user: Int, skill: String, gamesPlayed: Int, gamesOrganized: Int, sport: Int) {
 

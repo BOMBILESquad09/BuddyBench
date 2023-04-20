@@ -1,11 +1,9 @@
-package it.polito.mad.buddybench.Entities
+package it.polito.mad.buddybench.entities
 
-import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import androidx.room.util.TableInfo
 import it.polito.mad.buddybench.DTO.UserDTO
 import java.time.LocalDate
 

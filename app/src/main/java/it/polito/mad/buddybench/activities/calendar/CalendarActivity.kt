@@ -1,25 +1,20 @@
 package it.polito.mad.buddybench.activities.calendar
 
 
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.children
 import com.kizitonwose.calendar.core.*
 import com.kizitonwose.calendar.view.*
 import it.polito.mad.buddybench.DTO.ReservationDTO
 import it.polito.mad.buddybench.R
-import it.polito.mad.buddybench.enums.Sports
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.Month
 import java.time.YearMonth
-import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.*
 

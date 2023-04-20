@@ -1,8 +1,6 @@
 package it.polito.mad.buddybench.DTO
 
-import androidx.room.ColumnInfo
-import androidx.room.PrimaryKey
-import it.polito.mad.buddybench.Entities.Invitation
+import it.polito.mad.buddybench.entities.Invitation
 
 class InvitationDTO(reservation: Int, confirmed: Boolean, presence: Boolean, user: Int) {
 
