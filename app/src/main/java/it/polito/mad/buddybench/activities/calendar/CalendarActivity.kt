@@ -22,6 +22,7 @@ import it.polito.mad.buddybench.Database.DatabaseModule
 import it.polito.mad.buddybench.Entities.User
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.repositories.ReservationRepository
 import it.polito.mad.buddybench.repositories.UserRepository
 import it.polito.mad.buddybench.utils.BottomBar
 import nl.joery.animatedbottombar.AnimatedBottomBar
@@ -39,8 +40,14 @@ class CalendarActivity : AppCompatActivity() {
     var  selectedDate: LocalDate? = null
     val reservations = ReservationDTO.mockReservationDTOs()
     val bottomBar = BottomBar(this)
+
+    @Inject
+    lateinit var repoReservation: ReservationRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Call the repo in this way
+        repoReservation.getAll()
 
         setContentView(R.layout.custom_calendar)
         val calendarView = findViewById<CalendarView>(R.id.calendar)

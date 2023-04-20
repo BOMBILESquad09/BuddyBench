@@ -5,7 +5,9 @@ import it.polito.mad.buddybench.DTO.UserDTO
 import it.polito.mad.buddybench.Entities.toUserDTO
 import javax.inject.Inject
 
-class UserRepository @Inject constructor(private val userDao: UserDao) {
+class UserRepository @Inject constructor(
+    private val userDao: UserDao,
+    ) {
 
     fun getAll(): List<UserDTO> = userDao.getAll().map { it.toUserDTO() }
 
