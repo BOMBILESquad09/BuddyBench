@@ -1,14 +1,18 @@
 package it.polito.mad.buddybench.views
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.capitalize
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.room.util.EMPTY_STRING_ARRAY
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.databinding.FragmentCourtBinding
 import it.polito.mad.buddybench.entities.Court
@@ -47,8 +51,10 @@ class CourtFragment : Fragment() {
         }
 
         // ** DateTime Pickers
-        binding.daysScrollView.removeAllViews()
-        viewModel.days.map { renderDayItem(it) }
+        viewModel.selectedDay.observe(viewLifecycleOwner) { selected ->
+            binding.daysScrollView.removeAllViews()
+            viewModel.days.map { renderDayItem(it, selected) }
+        }
 
         // ** Navigate to court reservation
         binding.buttonFirst.setOnClickListener {
@@ -68,8 +74,7 @@ class CourtFragment : Fragment() {
          */
     }
 
-    private fun renderDayItem(day: LocalDate) {
-
+    private fun renderDayItem(day: LocalDate, selected: LocalDate) {
         val dayScrollItem = layoutInflater.inflate(R.layout.datepicker_scroll_item, binding.daysScrollView, false)
         val dayTv: TextView = dayScrollItem.findViewById(R.id.day_tv)
         val dayOfMonthTv: TextView = dayScrollItem.findViewById(R.id.day_of_month_tv)
@@ -78,6 +83,18 @@ class CourtFragment : Fragment() {
         dayTv.text = Utils.capitalize(day.dayOfWeek.name.subSequence(0,3).toString())
         dayOfMonthTv.text = day.dayOfMonth.toString()
         monthTv.text = Utils.capitalize(day.month.name.subSequence(0, 3).toString())
+
+        // ** Selected day
+        if (day == selected) {
+            println("Changing background")
+            val primaryColor = ContextCompat.getColor(requireContext(), R.color.md_theme_light_primary)
+            val whiteColor = ContextCompat.getColor(requireContext(), R.color.md_theme_light_background)
+            dayOfMonthTv.background.setTint(primaryColor)
+            dayOfMonthTv.setTextColor(whiteColor)
+        }
+
+        // ** OnClick Listener
+        dayScrollItem.setOnClickListener { viewModel.selectDay(day) }
 
         binding.daysScrollView.addView(dayScrollItem)
     }

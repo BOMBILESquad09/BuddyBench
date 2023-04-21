@@ -20,14 +20,16 @@ class CourtViewModel: ViewModel() {
     // Range of days between 2 weeks
     // Range of hours between 8:00 to 23:00 TODO: Include opening hours, and exclude unavailable hours
     private val _days = Utils.generateDateRange(LocalDate.now(), LocalDate.now().plusDays(14))
+    private val _selectedDay: MutableLiveData<LocalDate> = MutableLiveData(LocalDate.now())
 
     // ** Expose to other classes (view)
     val court: LiveData<Court> get() = _court
     val days: List<LocalDate> get() = _days
+    val selectedDay: LiveData<LocalDate> get() = _selectedDay
 
     /**
-     * Make a reservation for a court
-     * Possible actions
+     * Get Court
+     * @return Court LiveData
      */
     fun getMockCourt(): LiveData<Court> {
         // ** Mock DB
@@ -41,4 +43,14 @@ class CourtViewModel: ViewModel() {
         _court.value = court
         return _court
     }
+
+    /**
+     * Select day from the list
+     * Update UI in the view
+     */
+    fun selectDay(date: LocalDate): LiveData<LocalDate> {
+        _selectedDay.value = date
+        return _selectedDay
+    }
+
 }
