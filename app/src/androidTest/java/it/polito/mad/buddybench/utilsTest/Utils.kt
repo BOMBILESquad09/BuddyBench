@@ -1,6 +1,6 @@
 package it.polito.mad.buddybench.utilsTest
 
-import it.polito.mad.buddybench.Entities.*
+import it.polito.mad.buddybench.entities.*
 import it.polito.mad.buddybench.enums.Sports
 import java.time.LocalDate
 import java.time.LocalTime
@@ -24,19 +24,19 @@ class Utils {
 
         fun createSport(): Sport {
             val sportRandom = Random().nextInt(4)
-            val sportNameRandom = Sports.fromIntToString(sportRandom)
+            val sportNameRandom = Sports.BASKETBALL.name
             return Sport(
-                sportName = sportNameRandom!!
+                id = sportNameRandom
             )
         }
 
-        fun createCourt(sportId: Int, feeHour: Int = 20): Court {
+        fun createCourt(sport: String, feeHour: Int = 20): Court {
 
             return Court(
                 courtName = "CourtSampleName",
                 address = "ExampleRoad",
                 feeHour = feeHour,
-                sport = sportId
+                sport = sport
             )
         }
 

@@ -6,5 +6,5 @@
     android:layout_weight="1"
     android:gravity="center"
     android:textColor="@color/md_theme_light_onPrimary"
-    android:textSize="14sp"
+    android:textSize="13sp"
     tools:text="SUN" />

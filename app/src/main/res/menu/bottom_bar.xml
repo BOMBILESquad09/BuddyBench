@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/tab_find_court"
+        android:icon="@drawable/magnifier"
+        android:title="Find Court"
+
+        />
+    <item
+        android:id="@+id/tab_my_reservations"
+        android:icon="@drawable/booking"
+        android:title="Reservations"
+
+        />
+    <item
+        android:id="@+id/tab_my_profile"
+        android:icon="@drawable/user"
+        android:title="Profile" />
+
+</menu>

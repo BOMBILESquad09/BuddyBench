@@ -1,4 +1,4 @@
-package it.polito.mad.buddybench. activities
+package it.polito.mad.buddybench.activities
 
 import android.Manifest
 import android.app.Activity
@@ -21,6 +21,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.MutableLiveData
+import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
@@ -38,6 +39,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 
+@AndroidEntryPoint
 class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogListener {
 
     enum class ActivityState{
