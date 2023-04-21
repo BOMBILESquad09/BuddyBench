@@ -6,10 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.capitalize
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginEnd
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.room.util.EMPTY_STRING_ARRAY
@@ -19,6 +23,8 @@ import it.polito.mad.buddybench.entities.Court
 import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.CourtViewModel
 import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -54,6 +60,11 @@ class CourtFragment : Fragment() {
         viewModel.selectedDay.observe(viewLifecycleOwner) { selected ->
             binding.daysScrollView.removeAllViews()
             viewModel.days.map { renderDayItem(it, selected) }
+        }
+
+        viewModel.selectedTime.observe(viewLifecycleOwner) { selected ->
+            binding.timeScrollView.removeAllViews()
+            viewModel.timeSlots.map { renderTimeItem(it, selected) }
         }
 
         // ** Navigate to court reservation
@@ -93,12 +104,51 @@ class CourtFragment : Fragment() {
             dayOfMonthTv.setTextColor(whiteColor)
         }
 
+        // ** Last item no margin at the end
+        if (day == viewModel.days.last()) {
+            val noMarginParams = MarginLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            noMarginParams.marginEnd = 0
+            dayScrollItem.layoutParams = noMarginParams
+        }
+
         // ** OnClick Listener
         dayScrollItem.setOnClickListener { viewModel.selectDay(day) }
 
         binding.daysScrollView.addView(dayScrollItem)
     }
 
+
+    private fun renderTimeItem(time: LocalTime, selected: LocalTime) {
+        val timeScrollItem = layoutInflater.inflate(R.layout.datepicker_time_scroll_item, binding.timeScrollView, false)
+        val timeSlotCard: CardView = timeScrollItem.findViewById(R.id.time_slot_card)
+        val timeSlotTv: TextView = timeScrollItem.findViewById(R.id.time_slot_tv)
+
+        // ** Text is (time --- time + 1)
+        val timeSlotText = time.format(DateTimeFormatter.ofPattern("HH:mm")) + " - " + time.plusHours(1).format(
+            DateTimeFormatter.ofPattern("HH:mm"))
+        timeSlotTv.text = timeSlotText
+
+        // ** Selected time
+        if (time == selected) {
+            println("Changing background")
+            val primaryColor = ContextCompat.getColor(requireContext(), R.color.md_theme_light_primary)
+            val whiteColor = ContextCompat.getColor(requireContext(), R.color.md_theme_light_background)
+            timeSlotCard.background.setTint(primaryColor)
+            timeSlotTv.setTextColor(whiteColor)
+        }
+
+        // ** Last item no margin at the end
+        if (time == viewModel.timeSlots.last()) {
+            val noMarginParams = MarginLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            noMarginParams.marginEnd = 0
+            timeScrollItem.layoutParams = noMarginParams
+        }
+
+        // ** OnClick Listener
+        timeSlotCard.setOnClickListener { viewModel.selectTime(time) }
+
+        binding.timeScrollView.addView(timeScrollItem)
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

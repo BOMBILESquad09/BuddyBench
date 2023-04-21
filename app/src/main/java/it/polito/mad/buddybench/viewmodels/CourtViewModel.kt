@@ -9,6 +9,7 @@ import it.polito.mad.buddybench.dto.toEntity
 import it.polito.mad.buddybench.entities.Court
 import it.polito.mad.buddybench.utils.Utils
 import java.time.LocalDate
+import java.time.LocalTime
 
 class CourtViewModel: ViewModel() {
 
@@ -20,12 +21,16 @@ class CourtViewModel: ViewModel() {
     // Range of days between 2 weeks
     // Range of hours between 8:00 to 23:00 TODO: Include opening hours, and exclude unavailable hours
     private val _days = Utils.generateDateRange(LocalDate.now(), LocalDate.now().plusDays(14))
+    private val _timeSlots = Utils.getTimeSlots(LocalTime.parse("06:00"), LocalTime.parse("23:00"))
     private val _selectedDay: MutableLiveData<LocalDate> = MutableLiveData(LocalDate.now())
+    private val _selectedTime: MutableLiveData<LocalTime> = MutableLiveData(LocalTime.now())
 
     // ** Expose to other classes (view)
     val court: LiveData<Court> get() = _court
     val days: List<LocalDate> get() = _days
+    val timeSlots: List<LocalTime> get() = _timeSlots
     val selectedDay: LiveData<LocalDate> get() = _selectedDay
+    val selectedTime: LiveData<LocalTime> get() = _selectedTime
 
     /**
      * Get Court
@@ -40,6 +45,8 @@ class CourtViewModel: ViewModel() {
             address = "Via Roma 19, Torino"
         ).toEntity()
 
+        // ** TODO: Filter here the right time slots from the opening hours and availability
+
         _court.value = court
         return _court
     }
@@ -51,6 +58,11 @@ class CourtViewModel: ViewModel() {
     fun selectDay(date: LocalDate): LiveData<LocalDate> {
         _selectedDay.value = date
         return _selectedDay
+    }
+
+    fun selectTime(time: LocalTime): LiveData<LocalTime> {
+        _selectedTime.value = time
+        return _selectedTime
     }
 
 }

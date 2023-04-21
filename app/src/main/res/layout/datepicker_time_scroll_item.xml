@@ -6,20 +6,25 @@
     >
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/time_slot_card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/cardview_light_background"
         android:layout_marginVertical="8dp"
+        android:layout_marginEnd="16dp"
         app:cardCornerRadius="99dp"
         android:layout_marginBottom="8dp"
+        android:clickable="true"
         >
 
         <TextView
+            android:id="@+id/time_slot_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/hour_range"
             android:paddingHorizontal="12dp"
             android:paddingVertical="6dp"
+            android:textColor="@color/md_theme_light_primary"
             />
 
     </androidx.cardview.widget.CardView>
