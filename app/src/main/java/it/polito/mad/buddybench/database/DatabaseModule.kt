@@ -20,8 +20,8 @@ object DatabaseModule {
     @Provides
     fun provide(@ApplicationContext context: Context): CourtReservationDatabase {
         return Room.databaseBuilder(context, CourtReservationDatabase::class.java,
-            "a.db")
-//            .createFromAsset("database/CourtReservationDB.db")
+            "CourtReservationDB.db")
+            .createFromAsset("database/CourtReservationDB.db")
             .allowMainThreadQueries()
             .build()
     }
