@@ -7,14 +7,14 @@ import androidx.room.PrimaryKey
 import it.polito.mad.buddybench.dto.CourtDTO
 
 @Entity(
-    tableName = "Court", foreignKeys = arrayOf(
+    tableName = "court", foreignKeys = arrayOf(
         ForeignKey(
             entity = Sport::class,
-            parentColumns = arrayOf("id"),
+            parentColumns = arrayOf("name"),
             childColumns = arrayOf("sport"),
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.CASCADE
-        )
+        ),
     )
 )
 data class Court(
@@ -22,25 +22,29 @@ data class Court(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
 
-    @ColumnInfo(name = "courtName")
-    val courtName: String,
+    @ColumnInfo(name = "name")
+    val name: String,
 
     @ColumnInfo(name = "address")
     val address: String,
 
-    @ColumnInfo(name = "feeHour")
+    @ColumnInfo(name = "location")
+    val location: String,
+
+    @ColumnInfo(name = "fee_hour")
     val feeHour: Int,
 
     @ColumnInfo(name = "sport")
-    val sport: Int,
+    val sport: String,
 
     )
-
 fun Court.toCourtDTO(): CourtDTO {
     return CourtDTO(
-        courtName = this.courtName,
+        name = this.name,
         address = this.address,
+        location = this.location,
         feeHour = this.feeHour,
         sport = this.sport
+
     )
 }

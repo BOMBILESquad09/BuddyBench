@@ -46,7 +46,7 @@ class EditSportsDialog(private val profile: Profile,var selectedItems: ArrayList
                 // Specify the list array, the items to be selected by default (null for none),
                 // and the listener through which to receive callbacks when items are selected
                 .setMultiChoiceItems(sportValues, alreadySelected
-                ) { dialog, which, isChecked ->
+                ) { _, which, isChecked ->
 
 
                     if (isChecked) {
@@ -59,12 +59,12 @@ class EditSportsDialog(private val profile: Profile,var selectedItems: ArrayList
 
                 }
                 // Set the action buttons
-                .setPositiveButton(R.string.save) { dialog, id ->
+                .setPositiveButton(R.string.save) { _, _ ->
                     // User clicked OK, so save the selectedItems results somewhere
                     // or return them to the component that opened the dialog
                     listener.onDialogPositiveClick(this, selectedItems)
                 }
-                .setNegativeButton("cancel") { dialog, id ->
+                .setNegativeButton("cancel") { _, _ ->
                     listener.onDialogNegativeClick(this)
 
 

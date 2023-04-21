@@ -10,7 +10,7 @@ import it.polito.mad.buddybench.entities.Sport
 @Dao
 interface SportDao {
 
-    @Query("SELECT * FROM Sport")
+    @Query("SELECT * FROM sport")
     fun getAll(): List<Sport>
 
     @Insert(onConflict = REPLACE)
@@ -19,7 +19,7 @@ interface SportDao {
     @Delete
     fun delete(sport: Sport)
 
-    @Query("SELECT * FROM Sport WHERE ID = :id")
-    fun getSportById(id: Int): Sport?
+    @Query("SELECT * FROM sport WHERE name = :name")
+    fun getSportByName(name: String): Sport?
 
 }

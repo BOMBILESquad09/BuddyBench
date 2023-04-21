@@ -43,12 +43,3 @@ data class Invitation(
 
 )
 
-fun Invitation.toInvitationDTO(): InvitationDTO {
-    return InvitationDTO(
-        reservation = this.reservation,
-        confirmed = this.confirmed,
-        presence = this.presence,
-        user = this.user,
-
-    )
-}

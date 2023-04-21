@@ -8,7 +8,7 @@ import it.polito.mad.buddybench.dto.UserDTO
 import java.time.LocalDate
 
 @Entity(
-    tableName = "User",
+    tableName = "user",
     indices = [Index(value = ["email"], unique = true)]
 )
 data class User(

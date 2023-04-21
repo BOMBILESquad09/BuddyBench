@@ -5,8 +5,8 @@ import it.polito.mad.buddybench.entities.Reservation
 @Dao
 interface ReservationDao {
 
-    @Query("SELECT * FROM Reservation")
-    fun getAll(): List<Reservation>
+    @Query("SELECT * FROM reservation")
+    fun getAll(): List<ReservationWithUserAndCourt>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun save(reservation: Reservation)
@@ -14,7 +14,7 @@ interface ReservationDao {
     @Delete
     fun delete(reservation: Reservation)
 
-    @Query("SELECT R.* FROM Reservation R, User U WHERE date > :currDate AND R.userOrganizer = U.id AND U.email = :email")
-    fun getFutureReservationByEmail(email: String, currDate: String): List<Reservation>
+
+
 
 }

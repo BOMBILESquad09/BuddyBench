@@ -2,13 +2,13 @@ package it.polito.mad.buddybench.dto
 
 import it.polito.mad.buddybench.entities.Sport
 
-class SportDTO(sportName: String) {
-    val sportName = sportName
+class SportDTO(val name: String) {
 
+
+    fun toEntity(): Sport {
+        return Sport (
+            name = this.name
+        )
+    }
 }
 
-fun SportDTO.toEntity(): Sport {
-    return Sport (
-        sportName = this.sportName
-    )
-}

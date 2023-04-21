@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 import it.polito.mad.buddybench.dto.UserSportDTO
 
 @Entity(
-    tableName = "UserSport", foreignKeys = arrayOf(
+    tableName = "user_sport", foreignKeys = arrayOf(
         ForeignKey(
             entity = User::class,
             parentColumns = arrayOf("id"),
@@ -17,7 +17,7 @@ import it.polito.mad.buddybench.dto.UserSportDTO
         ),
         ForeignKey(
             entity = Sport::class,
-            parentColumns = arrayOf("id"),
+            parentColumns = arrayOf("name"),
             childColumns = arrayOf("sport"),
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.CASCADE
@@ -36,24 +36,14 @@ data class UserSport(
     @ColumnInfo(name = "skill")
     val skill: String,
 
-    @ColumnInfo(name = "gamesPlayed")
+    @ColumnInfo(name = "games_played")
     val gamesPlayed: Int,
 
-    @ColumnInfo(name = "gamesOrganized")
+    @ColumnInfo(name = "games_organized")
     val gamesOrganized: Int,
 
     @ColumnInfo(name = "sport")
-    val sport: Int
+    val sport: String
 
-    )
+)
 
-fun UserSport.toUserSportDTO(): UserSportDTO {
-    return UserSportDTO(
-        user = this.user,
-        skill = this.skill,
-        gamesOrganized = this.gamesOrganized,
-        gamesPlayed = this.gamesPlayed,
-        sport = this.sport,
-
-    )
-}

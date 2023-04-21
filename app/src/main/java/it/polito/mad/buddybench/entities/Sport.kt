@@ -5,19 +5,17 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import it.polito.mad.buddybench.dto.SportDTO
 
-@Entity(tableName = "Sport")
+@Entity(tableName = "sport")
 data class Sport (
 
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
+    val name: String,
 
-    @ColumnInfo(name = "sportName")
-    val sportName: String
 
 )
 
 fun Sport.toSportDTO(): SportDTO {
     return SportDTO(
-        sportName = sportName
+        name = name
     )
 }

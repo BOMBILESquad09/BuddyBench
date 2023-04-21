@@ -8,7 +8,7 @@ import it.polito.mad.buddybench.dto.CourtTimeDTO
 import java.time.LocalTime
 
 @Entity(
-    tableName = "CourtTime", foreignKeys = arrayOf(
+    tableName = "court_time", foreignKeys = arrayOf(
         ForeignKey(
             entity = Court::class,
             parentColumns = arrayOf("id"),
@@ -26,14 +26,14 @@ data class CourtTime(
     @ColumnInfo(name = "court")
     val court: Int,
 
-    @ColumnInfo(name = "openingTime")
-    val openingTime: String,
+    @ColumnInfo(name = "opening_time")
+    val openingTime: Int,
 
-    @ColumnInfo(name = "closingTime")
-    val closingTime: String,
+    @ColumnInfo(name = "closing_time")
+    val closingTime: Int,
 
-    @ColumnInfo(name = "dayOfWeek")
-    val dayOfWeek: String,
+    @ColumnInfo(name = "day_of_week")
+    val dayOfWeek: Int,
 
     )
 

@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import it.polito.mad.buddybench.entities.User
 
@@ -14,5 +15,8 @@ interface UserDao {
 
     @Query("SELECT * FROM User")
     fun getAll(): List<User>
+
+    @Query("SELECT * FROM User WHERE email = :emailUser")
+    fun getUserByEmail(emailUser: String): User?
 
 }
