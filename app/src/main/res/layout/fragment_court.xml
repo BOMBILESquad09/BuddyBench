@@ -172,7 +172,8 @@
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
 
                 <LinearLayout
                     android:id="@+id/days_scroll_view"
@@ -190,6 +191,7 @@
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:scrollbars="none"
                 android:layout_marginTop="8dp">
 
                 <LinearLayout

@@ -1,8 +1,6 @@
 package it.polito.mad.buddybench.views
 
-import android.content.res.ColorStateList
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,13 +8,10 @@ import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.MarginLayoutParams
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.capitalize
 import androidx.core.content.ContextCompat
-import androidx.core.view.marginEnd
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import androidx.room.util.EMPTY_STRING_ARRAY
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.databinding.FragmentCourtBinding
 import it.polito.mad.buddybench.entities.Court
@@ -25,6 +20,7 @@ import it.polito.mad.buddybench.viewmodels.CourtViewModel
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -69,7 +65,8 @@ class CourtFragment : Fragment() {
 
         // ** Navigate to court reservation
         binding.buttonFirst.setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+            // findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+            showBottomSheetDialog()
         }
     }
 
@@ -77,12 +74,6 @@ class CourtFragment : Fragment() {
         binding.courtNameTv.text = court.courtName
         binding.courtAddressTv.text = court.address
         binding.courtFeeTv.text = getString(R.string.court_fee, court.feeHour.toString())
-
-        /**
-         * TODO:
-         * - Opening Hours
-         * - Days/Hours Availability
-         */
     }
 
     private fun renderDayItem(day: LocalDate, selected: LocalDate) {
@@ -97,7 +88,6 @@ class CourtFragment : Fragment() {
 
         // ** Selected day
         if (day == selected) {
-            println("Changing background")
             val primaryColor = ContextCompat.getColor(requireContext(), R.color.md_theme_light_primary)
             val whiteColor = ContextCompat.getColor(requireContext(), R.color.md_theme_light_background)
             dayOfMonthTv.background.setTint(primaryColor)
@@ -130,7 +120,6 @@ class CourtFragment : Fragment() {
 
         // ** Selected time
         if (time == selected) {
-            println("Changing background")
             val primaryColor = ContextCompat.getColor(requireContext(), R.color.md_theme_light_primary)
             val whiteColor = ContextCompat.getColor(requireContext(), R.color.md_theme_light_background)
             timeSlotCard.background.setTint(primaryColor)
@@ -148,6 +137,12 @@ class CourtFragment : Fragment() {
         timeSlotCard.setOnClickListener { viewModel.selectTime(time) }
 
         binding.timeScrollView.addView(timeScrollItem)
+    }
+
+    private fun showBottomSheetDialog() {
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_court_confirm)
+        bottomSheetDialog.show()
     }
 
     override fun onDestroyView() {
