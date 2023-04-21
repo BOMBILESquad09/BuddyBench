@@ -1,9 +1,9 @@
-package it.polito.mad.buddybench.Entities
+package it.polito.mad.buddybench.entities
 
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
-import it.polito.mad.buddybench.DTO.InvitationDTO
+import it.polito.mad.buddybench.dto.InvitationDTO
 
 fun InvitationWithReservationAndUser.toInvitationDTO(): InvitationDTO {
     return InvitationDTO(

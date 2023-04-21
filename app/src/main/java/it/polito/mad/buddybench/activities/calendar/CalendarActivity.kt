@@ -1,51 +1,32 @@
 package it.polito.mad.buddybench.activities.calendar
 
 
-import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.kizitonwose.calendar.core.*
 import com.kizitonwose.calendar.view.*
-import it.polito.mad.buddybench.dto.ReservationDTO
 import dagger.hilt.android.AndroidEntryPoint
-import it.polito.mad.buddybench.DAO.ReservationDao
-import it.polito.mad.buddybench.DAO.UserDao
-import it.polito.mad.buddybench.DTO.ReservationDTO
-import it.polito.mad.buddybench.Database.CourtReservationDatabase
-import it.polito.mad.buddybench.Database.DatabaseModule
-import it.polito.mad.buddybench.Entities.User
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Print
-import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.dto.ReservationDTO
 import it.polito.mad.buddybench.repositories.ReservationRepository
-import it.polito.mad.buddybench.repositories.UserRepository
 import it.polito.mad.buddybench.utils.BottomBar
-import nl.joery.animatedbottombar.AnimatedBottomBar
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.LocalTime
-import java.time.Month
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
 
 @AndroidEntryPoint
 class CalendarActivity : AppCompatActivity() {

@@ -8,6 +8,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import it.polito.mad.buddybench.entities.Court
+import it.polito.mad.buddybench.entities.CourtWithSport
 
 @Dao
 interface CourtDao {

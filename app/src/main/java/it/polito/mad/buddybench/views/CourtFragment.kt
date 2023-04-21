@@ -71,7 +71,7 @@ class CourtFragment : Fragment() {
     }
 
     private fun updateView(court: Court) {
-        binding.courtNameTv.text = court.courtName
+        binding.courtNameTv.text = court.name
         binding.courtAddressTv.text = court.address
         binding.courtFeeTv.text = getString(R.string.court_fee, court.feeHour.toString())
     }

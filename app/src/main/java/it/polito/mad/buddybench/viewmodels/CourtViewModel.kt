@@ -3,9 +3,7 @@ package it.polito.mad.buddybench.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import it.polito.mad.buddybench.dao.CourtDao
 import it.polito.mad.buddybench.dto.CourtDTO
-import it.polito.mad.buddybench.dto.toEntity
 import it.polito.mad.buddybench.entities.Court
 import it.polito.mad.buddybench.utils.Utils
 import java.time.LocalDate
@@ -13,7 +11,7 @@ import java.time.LocalTime
 
 class CourtViewModel: ViewModel() {
 
-    private val _initialValue = Court(address = "Via Roma 16, Torino", courtName = "Tennis Club", feeHour = 12, sport = 0)
+    private val _initialValue = Court(address = "Via Roma 16, Torino", name = "Tennis Club", feeHour = 12, sport = "Tennis", location = "Torino")
     private val _court: MutableLiveData<Court> = MutableLiveData(_initialValue)
 
     // ** DateTime pickers
@@ -39,10 +37,11 @@ class CourtViewModel: ViewModel() {
     fun getMockCourt(): LiveData<Court> {
         // ** Mock DB
         val court = CourtDTO(
-            sport = 0,
-            courtName = "Tennis Club #2",
+            sport = "Tennis",
+            name = "Tennis Club #2",
             feeHour = 15,
-            address = "Via Roma 19, Torino"
+            address = "Via Roma 19, Torino",
+            location = "Torino"
         ).toEntity()
 
         // ** TODO: Filter here the right time slots from the opening hours and availability

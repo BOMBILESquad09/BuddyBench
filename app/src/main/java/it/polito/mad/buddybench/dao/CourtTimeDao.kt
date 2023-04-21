@@ -1,6 +1,8 @@
 package it.polito.mad.buddybench.dao
 import androidx.room.*
 import it.polito.mad.buddybench.entities.CourtTime
+import it.polito.mad.buddybench.entities.CourtWithCourtTime
+import java.time.DayOfWeek
 
 @Dao
 interface CourtTimeDao {

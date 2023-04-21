@@ -1,6 +1,7 @@
 package it.polito.mad.buddybench.dto
 
-import it.polito.mad.buddybench.entities.Reservation
+import it.polito.mad.buddybench.entities.*
+import it.polito.mad.buddybench.enums.Sports
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -10,19 +11,6 @@ class ReservationDTO(val userOrganizer: UserDTO,
                      val startTime: LocalTime,
                      val endTime: LocalTime
 ) {
-
-
-//    fun toEntity(): Reservation {
-//        return Reservation(
-//            userOrganizer = this.userOrganizer,
-//            court = this.court,
-//            startTime = this.startTime.toString(),
-//            endTime = this.endTime.toString(),
-//            date = this.date.toString(),
-//        )
-//    }
-
-
     companion object{
 
         private fun createUser(): User {
@@ -67,7 +55,7 @@ class ReservationDTO(val userOrganizer: UserDTO,
             val timeNow = LocalTime.now()
             val endNow = timeNow.plusHours(1)
             val timeLaterEnd = timeNow.plusHours(3)
-            val list =  listOf(ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), now,timeNow, endNow, ),
+            val list =  listOf(ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), now,timeNow, endNow ),
                     ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.BASKETBALL)).toCourtDTO(), later, timeNow, timeLaterEnd),
                 ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.FOOTBALL)).toCourtDTO(), later, timeNow, timeLaterEnd),
                 ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.VOLLEYBALL)).toCourtDTO(), later, timeNow, timeLaterEnd),

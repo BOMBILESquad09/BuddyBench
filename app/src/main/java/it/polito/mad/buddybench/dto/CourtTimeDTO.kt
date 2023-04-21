@@ -2,6 +2,7 @@ package it.polito.mad.buddybench.dto
 
 
 import it.polito.mad.buddybench.entities.CourtTime
+import java.time.DayOfWeek
 import java.time.LocalTime
 
 class CourtTimeDTO(
@@ -11,7 +12,8 @@ class CourtTimeDTO(
     val sport: String,
     val openingTime: LocalTime,
     val closingTime: LocalTime,
-    val dayOfWeek: DayOfWeek ) {
+    val dayOfWeek: DayOfWeek
+) {
 
     fun toEntity(courtId: Int): CourtTime {
         return CourtTime(

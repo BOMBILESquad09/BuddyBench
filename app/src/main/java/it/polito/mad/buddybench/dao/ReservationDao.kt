@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.dao
 import androidx.room.*
+import it.polito.mad.buddybench.entities.ReservationWithUserAndCourt
 import it.polito.mad.buddybench.entities.Reservation
 
 @Dao

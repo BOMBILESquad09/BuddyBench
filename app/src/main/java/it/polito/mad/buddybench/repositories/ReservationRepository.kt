@@ -1,11 +1,11 @@
 package it.polito.mad.buddybench.repositories
 
-import it.polito.mad.buddybench.DAO.CourtDao
-import it.polito.mad.buddybench.DAO.ReservationDao
-import it.polito.mad.buddybench.DAO.UserDao
-import it.polito.mad.buddybench.DTO.ReservationDTO
-import it.polito.mad.buddybench.Entities.Reservation
-import it.polito.mad.buddybench.Entities.toReservationDTO
+import it.polito.mad.buddybench.dao.CourtDao
+import it.polito.mad.buddybench.dao.ReservationDao
+import it.polito.mad.buddybench.dao.UserDao
+import it.polito.mad.buddybench.dto.ReservationDTO
+import it.polito.mad.buddybench.entities.Reservation
+import it.polito.mad.buddybench.entities.toReservationDTO
 import java.time.LocalDate
 import javax.inject.Inject
 import javax.inject.Singleton

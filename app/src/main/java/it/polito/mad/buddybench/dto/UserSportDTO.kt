@@ -1,8 +1,7 @@
 package it.polito.mad.buddybench.dto
 
+import it.polito.mad.buddybench.entities.User
 import it.polito.mad.buddybench.entities.UserSport
-
-class UserSportDTO(user: Int, skill: String, gamesPlayed: Int, gamesOrganized: Int, sport: Int) {
 
 class UserSportDTO(
     val user: User,

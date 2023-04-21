@@ -1,8 +1,8 @@
-package it.polito.mad.buddybench.Entities
+package it.polito.mad.buddybench.entities
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import it.polito.mad.buddybench.DTO.CourtDTO
+import it.polito.mad.buddybench.dto.CourtDTO
 
 data class CourtWithSport (
 

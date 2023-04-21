@@ -1,9 +1,7 @@
 package it.polito.mad.buddybench.database
 
-import android.content.Context
-import androidx.room.Room
-import androidx.room.RoomDatabase
 import androidx.room.Database
+import androidx.room.RoomDatabase
 import it.polito.mad.buddybench.dao.*
 import it.polito.mad.buddybench.entities.*
 

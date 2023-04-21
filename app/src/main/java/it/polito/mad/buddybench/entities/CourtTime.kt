@@ -4,8 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import it.polito.mad.buddybench.dto.CourtTimeDTO
-import java.time.LocalTime
 
 @Entity(
     tableName = "court_time", foreignKeys = arrayOf(
@@ -36,12 +34,3 @@ data class CourtTime(
     val dayOfWeek: Int,
 
     )
-
-fun CourtTime.toCourtTimeDTO(): CourtTimeDTO {
-    return CourtTimeDTO(
-        court = this.court,
-        openingTime = LocalTime.parse(this.openingTime),
-        closingTime = LocalTime.parse(this.closingTime),
-        dayOfWeek = this.dayOfWeek
-    )
-}
