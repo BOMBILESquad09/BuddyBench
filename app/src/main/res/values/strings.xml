@@ -70,4 +70,9 @@
     <string name="opening_hours_default">8:00 - 23:00</string>
     <string name="book">Book</string>
     <string name="court_fee">%1$s €/h</string>
+    <string name="friday">Friday</string>
+    <string name="_21">21</string>
+    <string name="april">Apr</string>
+    <string name="reservation">Reservation</string>
+    <string name="hour_range">10:00 - 11:00</string>
 </resources>

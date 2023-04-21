@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:layout_marginEnd="32dp"
+    >
+
+    <TextView
+        android:id="@+id/day_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/friday"
+        android:fontFamily="@font/montserrat_medium_500"
+        android:textSize="14sp"
+        />
+
+    <TextView
+        android:id="@+id/day_of_month_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/_21"
+        android:layout_marginVertical="8dp"
+        android:fontFamily="@font/montserrat_medium_500"
+        />
+
+    <TextView
+        android:id="@+id/month_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/april"
+        android:textColor="@color/md_theme_light_outline"
+        />
+
+</LinearLayout>

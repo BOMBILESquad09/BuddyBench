@@ -7,14 +7,23 @@ import it.polito.mad.buddybench.dao.CourtDao
 import it.polito.mad.buddybench.dto.CourtDTO
 import it.polito.mad.buddybench.dto.toEntity
 import it.polito.mad.buddybench.entities.Court
+import it.polito.mad.buddybench.utils.Utils
+import java.time.LocalDate
 
 class CourtViewModel: ViewModel() {
 
     private val _initialValue = Court(address = "Via Roma 16, Torino", courtName = "Tennis Club", feeHour = 12, sport = 0)
     private val _court: MutableLiveData<Court> = MutableLiveData(_initialValue)
 
-    // ** Expose court to other classes (view)
+    // ** DateTime pickers
+
+    // Range of days between 2 weeks
+    // Range of hours between 8:00 to 23:00 TODO: Include opening hours, and exclude unavailable hours
+    private val _days = Utils.generateDateRange(LocalDate.now(), LocalDate.now().plusDays(14))
+
+    // ** Expose to other classes (view)
     val court: LiveData<Court> get() = _court
+    val days: List<LocalDate> get() = _days
 
     /**
      * Make a reservation for a court

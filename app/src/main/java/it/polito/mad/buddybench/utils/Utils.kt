@@ -3,6 +3,8 @@ package it.polito.mad.buddybench.utils
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.MutableLiveData
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 class Utils {
@@ -22,6 +24,11 @@ class Utils {
             }
 
             return formattedWords.joinToString(" ")
+        }
+
+        fun generateDateRange(startDate: LocalDate, endDate: LocalDate): List<LocalDate> {
+            val numOfDays = ChronoUnit.DAYS.between(startDate, endDate)
+            return (0..numOfDays).map { startDate.plusDays(it) }
         }
     }
 }

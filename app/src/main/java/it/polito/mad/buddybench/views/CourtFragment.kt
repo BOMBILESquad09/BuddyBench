@@ -5,13 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.ui.res.stringResource
+import android.widget.TextView
+import androidx.compose.ui.text.capitalize
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.databinding.FragmentCourtBinding
 import it.polito.mad.buddybench.entities.Court
+import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.CourtViewModel
+import java.time.LocalDate
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -43,6 +46,10 @@ class CourtFragment : Fragment() {
             updateView(it)
         }
 
+        // ** DateTime Pickers
+        binding.daysScrollView.removeAllViews()
+        viewModel.days.map { renderDayItem(it) }
+
         // ** Navigate to court reservation
         binding.buttonFirst.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
@@ -60,6 +67,21 @@ class CourtFragment : Fragment() {
          * - Days/Hours Availability
          */
     }
+
+    private fun renderDayItem(day: LocalDate) {
+
+        val dayScrollItem = layoutInflater.inflate(R.layout.datepicker_scroll_item, binding.daysScrollView, false)
+        val dayTv: TextView = dayScrollItem.findViewById(R.id.day_tv)
+        val dayOfMonthTv: TextView = dayScrollItem.findViewById(R.id.day_of_month_tv)
+        val monthTv: TextView = dayScrollItem.findViewById(R.id.month_tv)
+
+        dayTv.text = Utils.capitalize(day.dayOfWeek.name.subSequence(0,3).toString())
+        dayOfMonthTv.text = day.dayOfMonth.toString()
+        monthTv.text = Utils.capitalize(day.month.name.subSequence(0, 3).toString())
+
+        binding.daysScrollView.addView(dayScrollItem)
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
