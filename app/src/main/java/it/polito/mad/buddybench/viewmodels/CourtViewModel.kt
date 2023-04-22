@@ -26,7 +26,7 @@ class CourtViewModel @Inject constructor(): ViewModel() {
     private val _days = Utils.generateDateRange(LocalDate.now(), LocalDate.now().plusDays(14))
     private val _timeSlots = Utils.getTimeSlots(LocalTime.parse("06:00"), LocalTime.parse("23:00"))
     private val _selectedDay: MutableLiveData<LocalDate> = MutableLiveData(LocalDate.now())
-    private val _selectedTime: MutableLiveData<LocalTime> = MutableLiveData(LocalTime.now())
+    private val _selectedTime: MutableLiveData<LocalTime> = MutableLiveData(_timeSlots[0])
 
     // ** Expose to other classes (view)
     val court: LiveData<Court> get() = _court
@@ -48,8 +48,6 @@ class CourtViewModel @Inject constructor(): ViewModel() {
         // ** TODO: Filter here the right time slots from the opening hours and availability
 
         _court.value = courts[0].toEntity()
-        // Try to change the sport
-        _court.value!!.sport = "tennis"
 
         return _court
     }

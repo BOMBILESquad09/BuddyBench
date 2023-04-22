@@ -73,6 +73,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/dateSelected"
                     android:padding="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -83,6 +84,7 @@
                     app:drawableStartCompat="@drawable/calendar_primary" />
 
                 <TextView
+                    android:id="@+id/timeSelected"
                     android:padding="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
