@@ -1,6 +1,7 @@
 package it.polito.mad.buddybench.views
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -23,6 +24,7 @@ import it.polito.mad.buddybench.databinding.FragmentCourtBinding
 import it.polito.mad.buddybench.entities.Court
 import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.CourtViewModel
+import java.io.FileNotFoundException
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -87,7 +89,14 @@ class CourtFragment : Fragment() {
         binding.courtNameTv.text = court.name.replace("Courts", "")
         binding.courtAddressTv.text = court.address
         binding.courtFeeTv.text = getString(R.string.court_fee, court.feeHour.toString())
-        val bitmap = BitmapFactory.decodeStream(view?.context?.assets?.open("courtImages/" + court.path + ".jpg"))
+        var bitmap :Bitmap? = null
+        try {
+            bitmap = BitmapFactory.decodeStream(view?.context?.assets?.open("courtImages/" + court.path + ".jpg"))
+        } catch (_: FileNotFoundException) {
+            bitmap = BitmapFactory.decodeStream(view?.context?.assets?.open("courtImages/default_image.jpg"))
+        }
+
+
         binding.backgroundImage.setImageBitmap(bitmap)
     }
 
