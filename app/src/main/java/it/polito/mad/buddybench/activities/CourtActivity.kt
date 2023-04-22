@@ -1,4 +1,4 @@
-package it.polito.mad.buddybench.views
+package it.polito.mad.buddybench.activities
 
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -8,10 +8,12 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.databinding.ActivityCourtBinding
 import it.polito.mad.buddybench.viewmodels.CourtViewModel
 
+@AndroidEntryPoint
 class CourtActivity : AppCompatActivity() {
 
 

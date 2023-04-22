@@ -3,17 +3,22 @@ package it.polito.mad.buddybench.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.dto.CourtDTO
 import it.polito.mad.buddybench.entities.Court
+import it.polito.mad.buddybench.repositories.CourtRepository
 import it.polito.mad.buddybench.utils.Utils
 import java.time.LocalDate
 import java.time.LocalTime
+import javax.inject.Inject
 
-class CourtViewModel: ViewModel() {
+@HiltViewModel
+class CourtViewModel @Inject constructor(): ViewModel() {
 
-    private val _initialValue = Court(address = "Via Roma 16, Torino", name = "Tennis Club", feeHour = 12, sport = "Tennis", location = "Torino")
+    private var _initialValue: Court? = null
     private val _court: MutableLiveData<Court> = MutableLiveData(_initialValue)
-
+    @Inject
+    lateinit var courtRepository: CourtRepository
     // ** DateTime pickers
 
     // Range of days between 2 weeks
@@ -36,17 +41,13 @@ class CourtViewModel: ViewModel() {
      */
     fun getMockCourt(): LiveData<Court> {
         // ** Mock DB
-        val court = CourtDTO(
-            sport = "Tennis",
-            name = "Tennis Club #2",
-            feeHour = 15,
-            address = "Via Roma 19, Torino",
-            location = "Torino"
-        ).toEntity()
+
+        // Repository Call, All the repos return DTo s
+        val courts = courtRepository.getAll()
 
         // ** TODO: Filter here the right time slots from the opening hours and availability
 
-        _court.value = court
+        _court.value = courts[0].toEntity()
         return _court
     }
 

@@ -7,9 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.core.*
@@ -20,6 +25,8 @@ import it.polito.mad.buddybench.classes.Print
 import it.polito.mad.buddybench.dto.ReservationDTO
 import it.polito.mad.buddybench.repositories.ReservationRepository
 import it.polito.mad.buddybench.utils.BottomBar
+import it.polito.mad.buddybench.viewmodels.CourtViewModel
+import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -42,15 +49,17 @@ class CalendarActivity : AppCompatActivity() {
     private val bottomBar = BottomBar(this)
     lateinit var recyclerViewReservations: RecyclerView
 
-    @Inject
-    lateinit var repoReservation: ReservationRepository
+    private val viewModel by viewModels<ReservationViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Call the repo in this way
         Log.d("HiltApplication", application.javaClass.name)
 
-        reservations.value = repoReservation.getAll()
+        // Adding the ViewModel inside reservations with observer
+        viewModel.getAll().observe(this, androidx.lifecycle.Observer {
+            reservations.value = it
+        })
 
         setContentView(R.layout.custom_calendar)
         val calendarView = findViewById<CalendarView>(R.id.calendar)
