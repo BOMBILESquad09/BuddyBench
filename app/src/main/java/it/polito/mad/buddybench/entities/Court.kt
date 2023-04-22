@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import it.polito.mad.buddybench.entities.Sport
 import it.polito.mad.buddybench.dto.CourtDTO
 
 @Entity(
