@@ -1,5 +1,8 @@
 package it.polito.mad.buddybench.views
 
+import android.content.Context
+import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +12,7 @@ import android.view.ViewGroup.MarginLayoutParams
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -42,6 +46,7 @@ class CourtFragment : Fragment() {
     // ** Court LiveData by ViewModel
     private val viewModel by viewModels<CourtViewModel>()
 
+    private var context: Context? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -82,13 +87,8 @@ class CourtFragment : Fragment() {
         binding.courtNameTv.text = court.name.replace("Courts", "")
         binding.courtAddressTv.text = court.address
         binding.courtFeeTv.text = getString(R.string.court_fee, court.feeHour.toString())
-        when (court.sport.uppercase()) {
-            "TENNIS" -> binding.backgroundImage.setImageResource(R.drawable.court_sample)
-            "FOOTBALL" -> binding.backgroundImage.setImageResource(R.drawable.football_court_default)
-            "VOLLEYBALL" -> binding.backgroundImage.setImageResource(R.drawable.volleyball_court_default)
-            "BASKETBALL" -> binding.backgroundImage.setImageResource(R.drawable.basketball_court_default)
-            else -> throw Exception()
-        }
+        val bitmap = BitmapFactory.decodeStream(view?.context?.assets?.open("courtImages/" + court.path + ".jpg"))
+        binding.backgroundImage.setImageBitmap(bitmap)
     }
 
     private fun renderDayItem(day: LocalDate, selected: LocalDate) {

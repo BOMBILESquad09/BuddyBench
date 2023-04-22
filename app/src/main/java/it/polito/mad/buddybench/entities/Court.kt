@@ -6,6 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import it.polito.mad.buddybench.entities.Sport
 import it.polito.mad.buddybench.dto.CourtDTO
+import java.util.regex.Pattern
 
 @Entity(
     tableName = "court", foreignKeys = arrayOf(
@@ -38,6 +39,9 @@ data class Court(
     @ColumnInfo(name = "sport")
     var sport: String,
 
+    @ColumnInfo(name = "path")
+    var path: String,
+
     )
 fun Court.toCourtDTO(): CourtDTO {
     return CourtDTO(
@@ -45,7 +49,7 @@ fun Court.toCourtDTO(): CourtDTO {
         address = this.address,
         location = this.location,
         feeHour = this.feeHour,
-        sport = this.sport
-
+        sport = this.sport,
+        path = this.path
     )
 }

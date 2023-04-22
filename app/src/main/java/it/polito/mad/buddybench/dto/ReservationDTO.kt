@@ -31,7 +31,8 @@ class ReservationDTO(val userOrganizer: UserDTO,
                 address = "ExampleRoad",
                 feeHour = feeHour,
                 sport = sport,
-                location= "ExampleLocation"
+                location= "ExampleLocation",
+                path = "court1"
             )
         }
 

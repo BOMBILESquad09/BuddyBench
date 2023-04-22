@@ -7,7 +7,8 @@ class CourtDTO(
     val address: String,
     val location: String,
     val feeHour: Int,
-    val sport: String
+    val sport: String,
+    val path: String
 ) {
     fun toEntity(): Court {
         return Court(
@@ -16,7 +17,8 @@ class CourtDTO(
             address = this.address,
             location = this.location,
             feeHour = this.feeHour,
-            sport = this.sport
+            sport = this.sport,
+            path = this.path
         )
     }
 
