@@ -2,8 +2,7 @@ package it.polito.mad.buddybench.repositories
 
 import it.polito.mad.buddybench.dao.SportDao
 import it.polito.mad.buddybench.dto.SportDTO
-import it.polito.mad.buddybench.dto.UserSportDTO
-import it.polito.mad.buddybench.entities.Sport
+
 import it.polito.mad.buddybench.entities.toSportDTO
 import javax.inject.Inject
 

@@ -4,8 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import it.polito.mad.buddybench.dao.CourtDao
 import it.polito.mad.buddybench.dao.SportDao
-import it.polito.mad.buddybench.dao.UserDao
-import it.polito.mad.buddybench.dao.UserSportDao
+
 import it.polito.mad.buddybench.dto.CourtDTO
 import it.polito.mad.buddybench.entities.Sport
 import it.polito.mad.buddybench.entities.toCourtDTO

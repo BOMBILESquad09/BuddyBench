@@ -19,8 +19,8 @@ import java.time.LocalDate
 
 class DayViewContainer(view: View) : ViewContainer(view) {
     val textView: TextView = view.findViewById(R.id.dayText)
-    val textViewContainer: ConstraintLayout = view.findViewById(R.id.dayTextContainer)
-    val reservationsContainer = view.findViewById<LinearLayout>(R.id.reservationsContainer)
+    private val textViewContainer: ConstraintLayout = view.findViewById(R.id.dayTextContainer)
+    private val reservationsContainer: LinearLayout = view.findViewById(R.id.reservationsContainer)
     var reservations: List<ReservationDTO>? = null
     lateinit var day: CalendarDay
 
