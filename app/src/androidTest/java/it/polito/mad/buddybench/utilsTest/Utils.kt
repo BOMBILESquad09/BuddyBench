@@ -1,6 +1,6 @@
 package it.polito.mad.buddybench.utilsTest
 
-import it.polito.mad.buddybench.Entities.*
+import it.polito.mad.buddybench.entities.*
 import it.polito.mad.buddybench.enums.Sports
 import java.time.LocalDate
 import java.time.LocalTime

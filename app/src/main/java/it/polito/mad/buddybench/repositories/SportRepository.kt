@@ -1,10 +1,10 @@
 package it.polito.mad.buddybench.repositories
 
-import it.polito.mad.buddybench.DAO.SportDao
-import it.polito.mad.buddybench.DTO.SportDTO
-import it.polito.mad.buddybench.DTO.UserSportDTO
-import it.polito.mad.buddybench.Entities.Sport
-import it.polito.mad.buddybench.Entities.toSportDTO
+import it.polito.mad.buddybench.dao.SportDao
+import it.polito.mad.buddybench.dto.SportDTO
+import it.polito.mad.buddybench.dto.UserSportDTO
+import it.polito.mad.buddybench.entities.Sport
+import it.polito.mad.buddybench.entities.toSportDTO
 import javax.inject.Inject
 
 class SportRepository @Inject constructor(private val sportDao: SportDao) {

@@ -3,7 +3,7 @@ package it.polito.mad.buddybench.activities.calendar
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import it.polito.mad.buddybench.DTO.ReservationDTO
+import it.polito.mad.buddybench.dto.ReservationDTO
 import it.polito.mad.buddybench.R
 
 class ReservationAdapter(val data: List<ReservationDTO>): RecyclerView.Adapter<ReservationViewHolder>() {

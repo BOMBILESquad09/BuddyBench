@@ -2,13 +2,13 @@ package it.polito.mad.buddybench.repositories
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import it.polito.mad.buddybench.DAO.CourtDao
-import it.polito.mad.buddybench.DAO.SportDao
-import it.polito.mad.buddybench.DAO.UserDao
-import it.polito.mad.buddybench.DAO.UserSportDao
-import it.polito.mad.buddybench.DTO.CourtDTO
-import it.polito.mad.buddybench.Entities.Sport
-import it.polito.mad.buddybench.Entities.toCourtDTO
+import it.polito.mad.buddybench.dao.CourtDao
+import it.polito.mad.buddybench.dao.SportDao
+import it.polito.mad.buddybench.dao.UserDao
+import it.polito.mad.buddybench.dao.UserSportDao
+import it.polito.mad.buddybench.dto.CourtDTO
+import it.polito.mad.buddybench.entities.Sport
+import it.polito.mad.buddybench.entities.toCourtDTO
 import javax.inject.Inject
 
 class CourtRepository @Inject constructor(

@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "BuddyBench"
-include ':app'
+include ":app"

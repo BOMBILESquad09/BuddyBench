@@ -1,8 +1,8 @@
 package it.polito.mad.buddybench.repositories
 
-import it.polito.mad.buddybench.DAO.UserDao
-import it.polito.mad.buddybench.DTO.UserDTO
-import it.polito.mad.buddybench.Entities.toUserDTO
+import it.polito.mad.buddybench.dao.UserDao
+import it.polito.mad.buddybench.dto.UserDTO
+import it.polito.mad.buddybench.entities.toUserDTO
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(

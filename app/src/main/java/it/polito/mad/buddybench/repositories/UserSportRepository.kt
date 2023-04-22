@@ -1,11 +1,11 @@
 package it.polito.mad.buddybench.repositories
 
-import it.polito.mad.buddybench.DAO.SportDao
-import it.polito.mad.buddybench.DAO.UserDao
-import it.polito.mad.buddybench.DAO.UserSportDao
-import it.polito.mad.buddybench.DTO.UserSportDTO
-import it.polito.mad.buddybench.Entities.Sport
-import it.polito.mad.buddybench.Entities.toUserSportDTO
+import it.polito.mad.buddybench.dao.SportDao
+import it.polito.mad.buddybench.dao.UserDao
+import it.polito.mad.buddybench.dao.UserSportDao
+import it.polito.mad.buddybench.dto.UserSportDTO
+import it.polito.mad.buddybench.entities.Sport
+import it.polito.mad.buddybench.entities.toUserSportDTO
 import javax.inject.Inject
 
 class UserSportRepository @Inject constructor(
