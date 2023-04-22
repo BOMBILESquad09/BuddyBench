@@ -48,8 +48,6 @@ class CalendarActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Call the repo in this way
-        Log.d("HiltApplication", application.javaClass.name)
-
         reservations.value = repoReservation.getAll()
 
         setContentView(R.layout.custom_calendar)
@@ -57,7 +55,7 @@ class CalendarActivity : AppCompatActivity() {
         recyclerViewReservations = findViewById(R.id.reservations)
         recyclerViewReservations.layoutManager = LinearLayoutManager(this)
         val dayTitle = findViewById<TextView>(R.id.dayTitle)
-
+        dayTitle.text = LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, d MMMM y"))
         calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
             // Called only when a new container is needed.
             override fun create(view: View): DayViewContainer {
@@ -77,7 +75,7 @@ class CalendarActivity : AppCompatActivity() {
                             calendarView.notifyDateChanged(data.date)
                         }
                     }
-                    dayTitle.text = selectedDate?.format(DateTimeFormatter.ofPattern("EEEE, d MMMM Y"))
+                    dayTitle.text = selectedDate?.format(DateTimeFormatter.ofPattern("EEEE, d MMMM y"))
                 }
                 container.textView.text = data.date.dayOfMonth.toString()
                 container.setBackground(selectedDate )

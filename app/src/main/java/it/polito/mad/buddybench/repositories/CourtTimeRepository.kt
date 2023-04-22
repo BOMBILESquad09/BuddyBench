@@ -3,7 +3,6 @@ package it.polito.mad.buddybench.repositories
 import it.polito.mad.buddybench.dao.CourtDao
 import it.polito.mad.buddybench.dao.CourtTimeDao
 import it.polito.mad.buddybench.dao.SportDao
-import it.polito.mad.buddybench.dao.UserDao
 import it.polito.mad.buddybench.dto.CourtTimeDTO
 import it.polito.mad.buddybench.entities.toCourtTimeDTO
 import java.time.DayOfWeek
