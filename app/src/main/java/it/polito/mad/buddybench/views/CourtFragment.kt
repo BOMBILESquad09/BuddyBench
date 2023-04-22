@@ -9,6 +9,7 @@ import android.view.ViewGroup.MarginLayoutParams
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -42,7 +43,11 @@ class CourtFragment : Fragment() {
     private val viewModel by viewModels<CourtViewModel>()
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentCourtBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -74,32 +79,43 @@ class CourtFragment : Fragment() {
     }
 
     private fun updateView(court: Court) {
-        binding.courtNameTv.text = court.name
+        binding.courtNameTv.text = court.name.replace("Courts", "")
         binding.courtAddressTv.text = court.address
         binding.courtFeeTv.text = getString(R.string.court_fee, court.feeHour.toString())
+        when (court.sport.uppercase()) {
+            "TENNIS" -> binding.backgroundImage.setImageResource(R.drawable.court_sample)
+            "FOOTBALL" -> binding.backgroundImage.setImageResource(R.drawable.football_court_default)
+            "VOLLEYBALL" -> binding.backgroundImage.setImageResource(R.drawable.volleyball_court_default)
+            "BASKETBALL" -> binding.backgroundImage.setImageResource(R.drawable.basketball_court_default)
+            else -> throw Exception()
+        }
     }
 
     private fun renderDayItem(day: LocalDate, selected: LocalDate) {
-        val dayScrollItem = layoutInflater.inflate(R.layout.datepicker_scroll_item, binding.daysScrollView, false)
+        val dayScrollItem =
+            layoutInflater.inflate(R.layout.datepicker_scroll_item, binding.daysScrollView, false)
         val dayTv: TextView = dayScrollItem.findViewById(R.id.day_tv)
         val dayOfMonthTv: TextView = dayScrollItem.findViewById(R.id.day_of_month_tv)
         val monthTv: TextView = dayScrollItem.findViewById(R.id.month_tv)
 
-        dayTv.text = Utils.capitalize(day.dayOfWeek.name.subSequence(0,3).toString())
+        dayTv.text = Utils.capitalize(day.dayOfWeek.name.subSequence(0, 3).toString())
         dayOfMonthTv.text = day.dayOfMonth.toString()
         monthTv.text = Utils.capitalize(day.month.name.subSequence(0, 3).toString())
 
         // ** Selected day
         if (day == selected) {
-            val primaryColor = ContextCompat.getColor(requireContext(), R.color.md_theme_light_primary)
-            val whiteColor = ContextCompat.getColor(requireContext(), R.color.md_theme_light_background)
+            val primaryColor =
+                ContextCompat.getColor(requireContext(), R.color.md_theme_light_primary)
+            val whiteColor =
+                ContextCompat.getColor(requireContext(), R.color.md_theme_light_background)
             dayOfMonthTv.background.setTint(primaryColor)
             dayOfMonthTv.setTextColor(whiteColor)
         }
 
         // ** Last item no margin at the end
         if (day == viewModel.days.last()) {
-            val noMarginParams = MarginLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            val noMarginParams =
+                MarginLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             noMarginParams.marginEnd = 0
             dayScrollItem.layoutParams = noMarginParams
         }
@@ -112,26 +128,35 @@ class CourtFragment : Fragment() {
 
 
     private fun renderTimeItem(time: LocalTime, selected: LocalTime) {
-        val timeScrollItem = layoutInflater.inflate(R.layout.datepicker_time_scroll_item, binding.timeScrollView, false)
+        val timeScrollItem = layoutInflater.inflate(
+            R.layout.datepicker_time_scroll_item,
+            binding.timeScrollView,
+            false
+        )
         val timeSlotCard: CardView = timeScrollItem.findViewById(R.id.time_slot_card)
         val timeSlotTv: TextView = timeScrollItem.findViewById(R.id.time_slot_tv)
 
         // ** Text is (time --- time + 1)
-        val timeSlotText = time.format(DateTimeFormatter.ofPattern("HH:mm")) + " - " + time.plusHours(1).format(
-            DateTimeFormatter.ofPattern("HH:mm"))
+        val timeSlotText =
+            time.format(DateTimeFormatter.ofPattern("HH:mm")) + " - " + time.plusHours(1).format(
+                DateTimeFormatter.ofPattern("HH:mm")
+            )
         timeSlotTv.text = timeSlotText
 
         // ** Selected time
         if (time == selected) {
-            val primaryColor = ContextCompat.getColor(requireContext(), R.color.md_theme_light_primary)
-            val whiteColor = ContextCompat.getColor(requireContext(), R.color.md_theme_light_background)
+            val primaryColor =
+                ContextCompat.getColor(requireContext(), R.color.md_theme_light_primary)
+            val whiteColor =
+                ContextCompat.getColor(requireContext(), R.color.md_theme_light_background)
             timeSlotCard.background.setTint(primaryColor)
             timeSlotTv.setTextColor(whiteColor)
         }
 
         // ** Last item no margin at the end
         if (time == viewModel.timeSlots.last()) {
-            val noMarginParams = MarginLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            val noMarginParams =
+                MarginLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             noMarginParams.marginEnd = 0
             timeScrollItem.layoutParams = noMarginParams
         }

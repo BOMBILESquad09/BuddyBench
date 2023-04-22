@@ -16,7 +16,7 @@ import javax.inject.Inject
 class CourtViewModel @Inject constructor(): ViewModel() {
 
     private var _initialValue: Court? = null
-    private val _court: MutableLiveData<Court> = MutableLiveData(_initialValue)
+    private var _court: MutableLiveData<Court> = MutableLiveData(_initialValue)
     @Inject
     lateinit var courtRepository: CourtRepository
     // ** DateTime pickers
@@ -48,6 +48,9 @@ class CourtViewModel @Inject constructor(): ViewModel() {
         // ** TODO: Filter here the right time slots from the opening hours and availability
 
         _court.value = courts[0].toEntity()
+        // Try to change the sport
+        _court.value!!.sport = "tennis"
+
         return _court
     }
 
