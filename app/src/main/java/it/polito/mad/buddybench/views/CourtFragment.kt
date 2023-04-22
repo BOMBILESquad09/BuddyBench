@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.MarginLayoutParams
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -28,6 +29,7 @@ import java.io.FileNotFoundException
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import kotlin.time.Duration.Companion.days
 
 
 /**
@@ -48,7 +50,7 @@ class CourtFragment : Fragment() {
     // ** Court LiveData by ViewModel
     private val viewModel by viewModels<CourtViewModel>()
 
-    private var context: Context? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -178,7 +180,23 @@ class CourtFragment : Fragment() {
 
     private fun showBottomSheetDialog() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
+
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_court_confirm)
+
+        val courtName = bottomSheetDialog.findViewById<TextView>(R.id.court_name_confirm_tv)
+        courtName?.text = viewModel.court.value?.name
+        val courtAddress = bottomSheetDialog.findViewById<TextView>(R.id.court_address_confirm_tv)
+        courtAddress?.text = viewModel.court.value?.address
+        val dateSelected = bottomSheetDialog.findViewById<TextView>(R.id.dateSelected)
+        dateSelected?.text = viewModel.selectedDay.value!!.format(
+            DateTimeFormatter.ofPattern("EEEE, d MMMM y")
+        )
+
+        val timeSelected = bottomSheetDialog.findViewById<TextView>(R.id.timeSelected)
+        val hourSelected = viewModel.selectedTime.value!!
+        val formatter = DateTimeFormatter.ofPattern("HH:mm")
+        timeSelected?.text = hourSelected.format(formatter) + " - " + hourSelected.plusHours(1).format(formatter)
+
         bottomSheetDialog.show()
     }
 
