@@ -22,6 +22,7 @@ class ReservationViewModel @Inject constructor(): ViewModel() {
 
     @Inject
     lateinit var reservationRepository: ReservationRepository
+
     // ** Expose to other classes (view)
     val reservations: LiveData<HashMap<LocalDate, List<ReservationDTO>>> get() = _reservations
 
