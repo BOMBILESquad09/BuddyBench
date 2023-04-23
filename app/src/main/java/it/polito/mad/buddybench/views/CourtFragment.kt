@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.views
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
@@ -13,7 +14,9 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.MarginLayoutParams
 import android.widget.Button
+import android.widget.CompoundButton
 import android.widget.LinearLayout
+import android.widget.Switch
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -73,6 +76,8 @@ class CourtFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        println("InstanceSaved")
+
         _binding = FragmentCourtBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -95,6 +100,7 @@ class CourtFragment : Fragment() {
             )
             binding.buttonFirst.isEnabled = availableTimeSlots.isNotEmpty()
             availableTimeSlots.map { renderTimeItem(it, courtViewModel.selectedTime.value!!) }
+
             try {
                 courtViewModel.selectTime(availableTimeSlots[0])
             }catch (e: java.lang.Exception) {
@@ -228,6 +234,7 @@ class CourtFragment : Fragment() {
         binding.timeScrollView.addView(timeScrollItem)
     }
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun showBottomSheetDialog() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
 
@@ -247,6 +254,17 @@ class CourtFragment : Fragment() {
             courtViewModel.selectedDay.value!!
         )
 
+        val switch = bottomSheetDialog.findViewById<Switch>(R.id.switch_equipment)
+        val textEquipment = bottomSheetDialog.findViewById<TextView>(R.id.equipment_view)
+        switch?.setOnCheckedChangeListener { buttonView, isChecked ->
+            if(isChecked) {
+                textEquipment?.visibility = View.VISIBLE
+                textEquipment?.text = getString(R.string.equipment) + " ${courtToReserve.fee_equipment}$/h"
+            } else {
+                textEquipment?.visibility = View.GONE
+            }
+        }
+
         confirmButton?.setOnClickListener {
 
             val reservation = ReservationDTO(
@@ -254,13 +272,14 @@ class CourtFragment : Fragment() {
                 court = courtToReserve,
                 date = courtViewModel.selectedDay.value!!,
                 startTime = courtViewModel.selectedTime.value!!,
-                endTime = courtViewModel.selectedTime.value!!.plusHours(1)
+                endTime = courtViewModel.selectedTime.value!!.plusHours(1),
+                equipment = switch!!.isChecked
             )
             reservationViewModel.saveReservation(
                 reservation
             )
             _binding?.timeScrollView?.removeAllViews()
-            var availableTimeSlots = courtViewModel.getTimeSlotsAvailable(
+            val availableTimeSlots = courtViewModel.getTimeSlotsAvailable(
                 courtToReserve,
                 courtViewModel.selectedDay.value!!
             )

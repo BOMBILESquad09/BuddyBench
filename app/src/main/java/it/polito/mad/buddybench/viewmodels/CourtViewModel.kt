@@ -65,9 +65,6 @@ class CourtViewModel @Inject constructor() : ViewModel() {
 
         // Repository Call, All the repos return DTo s
         val courts = courtRepository.getAll()
-
-        // ** TODO: Filter here the right time slots from the opening hours and availability
-
         _court.value = courts[0].toEntity()
 
         return _court
@@ -94,11 +91,12 @@ class CourtViewModel @Inject constructor() : ViewModel() {
             date
         )
         openingAndClosingTimeForCourt(courtDTO, date.dayOfWeek)
-        var list = _initialValueTimeSlots.filter {
+        val list = _initialValueTimeSlots.filter {
             !timeSlotsOccupied.contains(it)
         } as MutableList
         if(list.isNotEmpty())
             list.removeLast()
+        _timeSlots.value = list
         return list
     }
 

@@ -28,15 +28,13 @@ class ReservationRepository @Inject constructor(
     fun save(reservationDTO: ReservationDTO) {
         val user = userDao.getUserByEmail(reservationDTO.userOrganizer.email)!!
         val courtWithSport = courtDao.getByNameAndSport(reservationDTO.court.name, reservationDTO.court.sport)
-        println("User id ${user.id}")
-        println("Court id ${courtWithSport.court.id}")
-        reservationDao.save(reservationDTO.toEntity(user.id, courtWithSport.court.id))
+        reservationDao.save(reservationDTO.toEntity(user.id, courtWithSport.court.id, reservationDTO.equipment))
     }
 
     fun delete(reservationDTO: ReservationDTO) {
         val user = userDao.getUserByEmail(reservationDTO.userOrganizer.email)!!
         val courtWithSport = courtDao.getByNameAndSport(reservationDTO.court.name, reservationDTO.court.sport)
-        reservationDao.delete(reservationDTO.toEntity(user.id, courtWithSport.court.id))
+        reservationDao.delete(reservationDTO.toEntity(user.id, courtWithSport.court.id, reservationDTO.equipment))
     }
 
     fun getTimeSlotsOccupiedForCourtAndDate(court: CourtDTO, date: LocalDate): List<LocalTime> {
