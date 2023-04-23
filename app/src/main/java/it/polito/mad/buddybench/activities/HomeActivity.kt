@@ -13,7 +13,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
-import it.polito.mad.buddybench.activities.calendar.MyReservationsFragment
+import it.polito.mad.buddybench.activities.profile.EditProfileActivity
+import it.polito.mad.buddybench.activities.profile.ShowProfileFragment
 import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.enums.Tabs

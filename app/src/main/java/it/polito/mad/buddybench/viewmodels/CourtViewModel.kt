@@ -94,9 +94,12 @@ class CourtViewModel @Inject constructor() : ViewModel() {
             date
         )
         openingAndClosingTimeForCourt(courtDTO, date.dayOfWeek)
-        return _initialValueTimeSlots.filter {
+        var list = _initialValueTimeSlots.filter {
             !timeSlotsOccupied.contains(it)
-        }
+        } as MutableList
+        if(list.isNotEmpty())
+            list.removeLast()
+        return list
     }
 
     fun openingAndClosingTimeForCourt(courtDTO: CourtDTO, dayOfWeek: DayOfWeek) {

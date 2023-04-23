@@ -1,7 +1,11 @@
 package it.polito.mad.buddybench.utils
 
+import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.widget.ImageView
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.toLowerCase
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.MutableLiveData
 import java.time.Duration
 import java.time.LocalDate
@@ -40,7 +44,15 @@ class Utils {
          */
         fun getTimeSlots(start: LocalTime, end: LocalTime): List<LocalTime> {
             val diff = Duration.between(start, end).toHours() // calculate the difference between start and end time in hours
+            val list  = (0..diff).map { start.plusHours(it) } as MutableList
+            list.removeLast()
             return (0..diff).map { start.plusHours(it) } // generate a list of hourly time slots using a range operator and the map() function
+        }
+
+        fun setColoredDrawable(drawable: Drawable, iv: ImageView, color: Int = Color.WHITE){
+            val wrappedDrawable = DrawableCompat.wrap(drawable)
+            wrappedDrawable.mutate().setTint(color)
+            iv.setImageDrawable(wrappedDrawable)
         }
     }
 }

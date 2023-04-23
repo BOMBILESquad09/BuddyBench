@@ -3,6 +3,7 @@ package it.polito.mad.buddybench.viewmodels
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SAVED_STATE_REGISTRY_OWNER_KEY
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.dto.CourtDTO
@@ -24,6 +25,8 @@ class ReservationViewModel @Inject constructor(): ViewModel() {
     private var _initialValue: HashMap<LocalDate, List<ReservationDTO>>? = null
     private val _reservations: MutableLiveData<HashMap<LocalDate, List<ReservationDTO>>> = MutableLiveData(_initialValue)
     private var _currentReservation: LiveData<ReservationDTO?> = MutableLiveData(null)
+    val reservation: LiveData<HashMap<LocalDate, List<ReservationDTO>>> = _reservations
+
 
     @Inject
     lateinit var reservationRepository: ReservationRepository

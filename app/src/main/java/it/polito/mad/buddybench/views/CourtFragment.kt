@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -92,6 +93,7 @@ class CourtFragment : Fragment() {
                 courtToReserve,
                 courtViewModel.selectedDay.value!!
             )
+            binding.buttonFirst.isEnabled = availableTimeSlots.isNotEmpty()
             availableTimeSlots.map { renderTimeItem(it, courtViewModel.selectedTime.value!!) }
             try {
                 courtViewModel.selectTime(availableTimeSlots[0])
@@ -258,7 +260,7 @@ class CourtFragment : Fragment() {
                 reservation
             )
             _binding?.timeScrollView?.removeAllViews()
-            val availableTimeSlots = courtViewModel.getTimeSlotsAvailable(
+            var availableTimeSlots = courtViewModel.getTimeSlotsAvailable(
                 courtToReserve,
                 courtViewModel.selectedDay.value!!
             )
