@@ -3,11 +3,13 @@ package it.polito.mad.buddybench.repositories
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import it.polito.mad.buddybench.dao.CourtDao
+import it.polito.mad.buddybench.dao.CourtTimeDao
 import it.polito.mad.buddybench.dao.SportDao
 
 import it.polito.mad.buddybench.dto.CourtDTO
 import it.polito.mad.buddybench.entities.Sport
 import it.polito.mad.buddybench.entities.toCourtDTO
+import java.time.DayOfWeek
 import javax.inject.Inject
 
 class CourtRepository @Inject constructor(
@@ -22,12 +24,13 @@ class CourtRepository @Inject constructor(
     }
 
     fun delete(court: CourtDTO) {
-
         courtDao.delete(court.toEntity())
     }
 
     fun getCourtsBySports(sport: String): List<CourtDTO> {
         return courtDao.getCourtsBySport(sport).map { it.toCourtDTO() }
     }
+
+
 
 }

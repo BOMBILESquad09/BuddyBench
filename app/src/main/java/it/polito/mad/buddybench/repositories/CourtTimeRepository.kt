@@ -3,7 +3,9 @@ package it.polito.mad.buddybench.repositories
 import it.polito.mad.buddybench.dao.CourtDao
 import it.polito.mad.buddybench.dao.CourtTimeDao
 import it.polito.mad.buddybench.dao.SportDao
+import it.polito.mad.buddybench.dto.CourtDTO
 import it.polito.mad.buddybench.dto.CourtTimeDTO
+import it.polito.mad.buddybench.entities.Court
 import it.polito.mad.buddybench.entities.toCourtTimeDTO
 import java.time.DayOfWeek
 import javax.inject.Inject
@@ -28,5 +30,13 @@ class CourtTimeRepository @Inject constructor(
 
     fun getCourtTimesByDay(dayOfWeek: DayOfWeek): List<CourtTimeDTO> {
         return courtTimeDao.getCourtTimesByDay(dayOfWeek).map { it.toCourtTimeDTO() }
+    }
+
+    fun getCourtTimesByCourt(court: CourtDTO, day: DayOfWeek): CourtTimeDTO? {
+        val courtWithSport = courtDao.getByNameAndSport(courtName = court.name, sportInCourt = court.sport)
+        return courtTimeDao.getDayTimeByCourt(
+            courtWithSport.court.id,
+            day.value
+        )?.toCourtTimeDTO()
     }
 }

@@ -11,6 +11,7 @@ import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getInt
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getJSONArray
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getString
+import it.polito.mad.buddybench.dto.UserDTO
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.Utils
@@ -82,6 +83,18 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
         }
         json.put("sports", JSONArray(sports.map { it.toJSON() }))
         return json
+    }
+
+    fun toUserDto(): UserDTO {
+        return UserDTO(
+            name = this.name!!,
+            surname = this.surname!!,
+            nickname = this.nickname!!,
+            birthdate = this.birthdate,
+            location = this.location!!,
+            email = this.email,
+            reliability = this.reliability
+        )
     }
 
 

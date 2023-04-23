@@ -77,7 +77,10 @@ CREATE  TABLE invitation(
 
 
 INSERT INTO user (id, name, surname, nickname, birthdate, location, email, reliability) VALUES (
-    0, 'Jacopo', 'De Cristofaro', 'Jeff', '1999-04-27', 'New York', 'jeff@buddybench.com', 80
+    1, 'Jacopo', 'De Cristofaro', 'Jeff', '1999-04-27', 'New York', 'jeff@buddybench.com', 80
+);
+INSERT INTO user (id, name, surname, nickname, birthdate, location, email, reliability) VALUES (
+    0, 'Vittorio', 'Arpino', 'TheNextLayer', '1999-09-30', 'Scafati', 'varpino@buddybench.it', 70
 );
 
 INSERT INTO sport VALUES ("TENNIS");
@@ -86,16 +89,14 @@ INSERT INTO sport VALUES ("FOOTBALL");
 INSERT INTO sport VALUES ("VOLLEYBALL");
 
 
-
-
 INSERT INTO court (id, name, address, location, fee_hour, sport)
 VALUES (1, 'Central Park Tennis Courts', '123 Main St', 'New York, NY', 50, "TENNIS");
-
-INSERT INTO court (id, name, address, location, fee_hour, sport) VALUES (2, 'Lincoln Park Court', '456 Elm St', 'Chicago, IL', 30, "TENNIS");
-
-INSERT INTO court (id, name, address, location, fee_hour, sport) VALUES (3, 'Golden Gate Park Field', '789 Oak St', 'San Francisco, CA', 40, "BASKETBALL");
-
-INSERT INTO court (id, name, address, location, fee_hour, sport) VALUES (4, 'Riverside Park Diamond', '321 Pine St', 'New York, NY', 20, "BASKETBALL");
+INSERT INTO court (id, name, address, location, fee_hour, sport)
+VALUES (2, 'Lincoln Park Court', '456 Elm St', 'Chicago, IL', 30, "TENNIS");
+INSERT INTO court (id, name, address, location, fee_hour, sport)
+VALUES (3, 'Golden Gate Park Field', '789 Oak St', 'San Francisco, CA', 40, "BASKETBALL");
+INSERT INTO court (id, name, address, location, fee_hour, sport)
+VALUES (4, 'Riverside Park Diamond', '321 Pine St', 'New York, NY', 20, "BASKETBALL");
 
 INSERT INTO court (id, name, address, location, fee_hour, sport) VALUES (5, 'Griffith Park Courts', '555 Maple St', 'Los Angeles, CA', 60, "FOOTBALL");
 
@@ -119,26 +120,31 @@ INSERT INTO court (id, name, address, location, fee_hour, sport) VALUES (14, 'Ce
 INSERT INTO court (id, name, address, location, fee_hour, sport) VALUES (15, 'Echo Park Courts', '1010 Glendale Blvd', 'Los Angeles, CA', 35, "TENNIS");
 
 INSERT INTO reservation (id, user, court, date, start_time) VALUES (
-    0, 0, 5, '2023-04-30', 18
+    0, 1, 5, '2023-04-30', 18
 );
 
 INSERT INTO reservation (id, user, court, date, start_time) VALUES (
-    1, 0, 6, '2023-04-27', 18
+    1, 1, 6, '2023-04-27', 18
 );
 
 INSERT INTO reservation (id, user, court, date, start_time) 
 VALUES 
     
-    (2, 0, 8, '2023-05-16', 14),
-    (3, 0, 11, '2023-05-17', 9),
-    (4, 0, 14, '2023-05-18', 16),
-    (5, 0, 3, '2023-05-19', 11),
-    (6, 0, 6, '2023-05-15', 10);
+    (2, 1, 8, '2023-05-16', 14),
+    (3, 1, 11, '2023-05-17', 9),
+    (4, 1, 14, '2023-05-18', 16),
+    (5, 1, 3, '2023-05-19', 11),
+    (6, 1, 6, '2023-05-15', 10);
 
-
-
-
-TableInfo{name='Invitation', columns={, , presence=Column{name='presence', type='INTEGER', affinity='3', notNull=true, primaryKeyPosition=0, defaultValue='undefined'}, confirmed=Column{name='confirmed', type='INTEGER', affinity='3', notNull=true, primaryKeyPosition=0, defaultValue='undefined'}, user=Column{name='user', type='INTEGER', affinity='3', notNull=true, primaryKeyPosition=0, defaultValue='undefined'}}, foreignKeys=[ForeignKey{referenceTable='reservation', onDelete='CASCADE +', onUpdate='CASCADE', columnNames=[reservation], referenceColumnNames=[id]}, ForeignKey{referenceTable='user', onDelete='CASCADE +', onUpdate='CASCADE', columnNames=[user], referenceColumnNames=[id]}], indices=[]}
-     Found:
-    TableInfo{name='Invitation', columns={id=Column{name='id', type='INTEGER', affinity='3', notNull=true, primaryKeyPosition=1, defaultValue='undefined'}, confirmed=Column{name='confirmed', type='BIT', affinity='1', notNull=true, primaryKeyPosition=0, defaultValue='undefined'}, presence=Column{name='presence', type='BIT', affinity='1', notNull=true, primaryKeyPosition=0, defaultValue='undefined'}, reservation=Column{name='reservation', type='INTEGER', affinity='3', notNull=true, primaryKeyPosition=0, defaultValue='undefined'}, user=Column{name='user', type='INTEGER', affinity='3', notNull=true, primaryKeyPosition=0, defaultValue='undefined'}}, foreignKeys=[ForeignKey{referenceTable='user', onDelete='CASCADE +', onUpdate='CASCADE', columnNames=[user], referenceColumnNames=[id]}, ForeignKey{referenceTable='reservation', onDelete='CASCADE +', onUpdate='CASCADE', columnNames=[reservation], referenceColumnNames=[id]}], indices=[]}
-        at androidx.room.RoomOpenHelper.onCreate(RoomOpenHelper.kt:74)
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time)
+VALUES (0, 1, 1, "6:00", "20:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time)
+VALUES (1, 1, 2, "6:00", "18:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time)
+VALUES (2, 1, 3, "6:00", "14:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time)
+VALUES (3, 1, 4, "10:00", "20:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time)
+VALUES (4, 1, 5, "8:00", "23:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time)
+VALUES (5, 1, 6, "10:00", "21:00");

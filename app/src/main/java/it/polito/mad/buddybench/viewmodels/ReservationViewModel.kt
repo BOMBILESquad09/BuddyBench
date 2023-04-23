@@ -1,12 +1,16 @@
 package it.polito.mad.buddybench.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import it.polito.mad.buddybench.dto.CourtDTO
 import it.polito.mad.buddybench.dto.ReservationDTO
+import it.polito.mad.buddybench.dto.UserDTO
 import it.polito.mad.buddybench.entities.Court
 import it.polito.mad.buddybench.entities.Reservation
+import it.polito.mad.buddybench.entities.toReservationDTO
 import it.polito.mad.buddybench.repositories.CourtRepository
 import it.polito.mad.buddybench.repositories.ReservationRepository
 import it.polito.mad.buddybench.utils.Utils
@@ -19,6 +23,7 @@ class ReservationViewModel @Inject constructor(): ViewModel() {
 
     private var _initialValue: HashMap<LocalDate, List<ReservationDTO>>? = null
     private val _reservations: MutableLiveData<HashMap<LocalDate, List<ReservationDTO>>> = MutableLiveData(_initialValue)
+    private var _currentReservation: LiveData<ReservationDTO?> = MutableLiveData(null)
 
     @Inject
     lateinit var reservationRepository: ReservationRepository
@@ -29,12 +34,18 @@ class ReservationViewModel @Inject constructor(): ViewModel() {
     fun getAll(): LiveData<HashMap<LocalDate, List<ReservationDTO>>> {
         // Repository Call, All the repos return DTO Obj
         val reservations = reservationRepository.getAll()
-
-        // ** TODO: Filter here the right time slots from the opening hours and availability
-
         _reservations.value = reservations
         return _reservations
     }
+
+    fun saveReservation(
+        reservation: ReservationDTO
+    ) {
+        reservationRepository.save(
+            reservation
+        )
+    }
+
 
 
 }

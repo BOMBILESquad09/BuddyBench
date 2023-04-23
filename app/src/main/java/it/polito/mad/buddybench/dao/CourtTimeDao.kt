@@ -19,5 +19,8 @@ interface CourtTimeDao {
     @Query("SELECT * FROM court_time WHERE day_of_week = :day")
     fun getCourtTimesByDay(day: DayOfWeek): List<CourtWithCourtTime>
 
+    @Query("SELECT * FROM court_time WHERE court = :courtId AND day_of_week =  :day")
+    fun getDayTimeByCourt(courtId: Int, day: Int): CourtWithCourtTime?
+
 
 }
