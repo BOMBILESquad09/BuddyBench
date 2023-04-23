@@ -28,7 +28,6 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideSportRepo(appDatabase: CourtReservationDatabase): SportRepository {
-
         return SportRepository(
             appDatabase.sportDao()
         )

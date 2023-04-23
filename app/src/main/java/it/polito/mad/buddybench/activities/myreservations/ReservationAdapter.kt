@@ -1,4 +1,4 @@
-package it.polito.mad.buddybench.activities.calendar
+package it.polito.mad.buddybench.activities.myreservations
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.buddybench.dto.ReservationDTO
 import it.polito.mad.buddybench.R
 
-class ReservationAdapter(val data: List<ReservationDTO>): RecyclerView.Adapter<ReservationViewHolder>() {
+class ReservationAdapter(private val reservations: List<ReservationDTO>): RecyclerView.Adapter<ReservationViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReservationViewHolder {
         val v = LayoutInflater.from(parent.context)
@@ -15,11 +15,11 @@ class ReservationAdapter(val data: List<ReservationDTO>): RecyclerView.Adapter<R
     }
 
     override fun getItemCount(): Int {
-        return data.size
+        return reservations.size
     }
 
     override fun onBindViewHolder(holder: ReservationViewHolder, position: Int) {
-        val reservation = data[position]
+        val reservation = reservations[position]
         holder.bind(reservation)
     }
 

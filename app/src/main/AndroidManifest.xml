@@ -27,9 +27,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.ShowProfileActivity">
+        <activity android:name=".activities.profile.ShowProfileActivity">
         </activity>
-        <activity android:name=".activities.EditProfileActivity">
+        <activity android:name=".activities.profile.EditProfileActivity">
         </activity>
     </application>
 
