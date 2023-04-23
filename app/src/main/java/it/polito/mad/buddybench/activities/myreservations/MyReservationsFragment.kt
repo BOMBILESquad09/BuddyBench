@@ -46,12 +46,20 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         super.onViewCreated(view, savedInstanceState)
         viewModel.getAll().observe(viewLifecycleOwner) {
             reservations.value = it
+            recyclerViewReservations.adapter = ReservationAdapter(reservations.value?.get(
+                selectedDate?: LocalDate.now()
+            ) ?: listOf())
+
         }
+
+
         val calendarView = view.findViewById<CalendarView>(R.id.calendar)
         recyclerViewReservations = view.findViewById(R.id.reservations)
         recyclerViewReservations.layoutManager = LinearLayoutManager(context)
         val dayTitle = view.findViewById<TextView>(R.id.dayTitle)
         dayTitle.text = LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, d MMMM y"))
+
+
         calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
             // Called only when a new container is needed.
             override fun create(view: View): DayViewContainer {
@@ -71,21 +79,20 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
                         }
                     }
                     dayTitle.text = selectedDate?.format(DateTimeFormatter.ofPattern("EEEE, d MMMM y"))
+
+                    recyclerViewReservations.adapter = ReservationAdapter(reservations.value?.get(selectedDate) ?: listOf())
+
                 }
                 container.textView.text = data.date.dayOfMonth.toString()
                 container.setBackground(selectedDate )
                 container.setTextColor(selectedDate, this@MyReservationsFragment.context)
                 container.reservations = reservations.value?.get(data.date)
                 container.setSportsIcon(this@MyReservationsFragment.context)
-                if(selectedDate == null) {
-                    recyclerViewReservations.adapter = ReservationAdapter(
-                        reservations.value?.get(LocalDate.now()) ?: listOf())
-                } else {
-                    recyclerViewReservations.adapter = ReservationAdapter(
-                        reservations.value?.get(selectedDate) ?: listOf())
-                }
+
             }
         }
+
+
         val currentMonth = YearMonth.now()
         val startMonth = currentMonth.minusMonths(100)  // Adjust as needed
         val endMonth = currentMonth.plusMonths(100)  // Adjust as needed

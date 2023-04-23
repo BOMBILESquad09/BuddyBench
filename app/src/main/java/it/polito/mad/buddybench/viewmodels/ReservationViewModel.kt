@@ -18,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ReservationViewModel @Inject constructor(): ViewModel() {
 
-    private val _reservations: MutableLiveData<HashMap<LocalDate, List<ReservationDTO>>> = MutableLiveData(null)
+    private val _reservations: MutableLiveData<HashMap<LocalDate, List<ReservationDTO>>> = MutableLiveData(HashMap())
     val reservation: LiveData<HashMap<LocalDate, List<ReservationDTO>>> = _reservations
 
 
