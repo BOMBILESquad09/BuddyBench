@@ -7,7 +7,7 @@ class SportDTO(val name: String) {
 
     fun toEntity(): Sport {
         return Sport (
-            name = this.name
+            sport_name = this.name
         )
     }
 }

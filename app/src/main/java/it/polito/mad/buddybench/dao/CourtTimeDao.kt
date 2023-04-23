@@ -10,6 +10,10 @@ interface CourtTimeDao {
     @Query("SELECT * FROM court_time")
     fun getAll(): List<CourtWithCourtTime>
 
+
+    @Query("SELECT * FROM court_time WHERE court = :courtId")
+    fun getCourtTimeTable(courtId: Int): List<CourtWithCourtTime>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun save(courtTime: CourtTime)
 

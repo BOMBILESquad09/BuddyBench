@@ -4,12 +4,14 @@
 
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false" />
+        android:required="false"
+        />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
+
         android:name=".BuddyBenchApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -28,16 +30,22 @@
 <!--                    </intent-filter>-->
 <!--                </activity>-->
         <activity
-            android:name=".activities.CourtActivity"
-            android:exported="true">
+            android:name=".activities.court.CourtActivity"
+            android:exported="true"
+            android:screenOrientation="sensorPortrait"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.profile.ShowProfileActivity">
+        <activity android:name=".activities.profile.ShowProfileActivity"
+            android:screenOrientation="sensorPortrait"
+            >
         </activity>
-        <activity android:name=".activities.profile.EditProfileActivity">
+        <activity android:name=".activities.profile.EditProfileActivity"
+            android:screenOrientation="sensorPortrait"
+            >
         </activity>
     </application>
 

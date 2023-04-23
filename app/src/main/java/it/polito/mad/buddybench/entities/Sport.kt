@@ -9,13 +9,13 @@ import it.polito.mad.buddybench.dto.SportDTO
 data class Sport (
 
     @PrimaryKey
-    val name: String,
+    val sport_name: String,
 
 
 )
 
 fun Sport.toSportDTO(): SportDTO {
     return SportDTO(
-        name = name
+        name = sport_name
     )
 }

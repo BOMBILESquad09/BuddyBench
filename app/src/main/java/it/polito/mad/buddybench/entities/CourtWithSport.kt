@@ -9,7 +9,7 @@ data class CourtWithSport (
     @Embedded val court: Court,
     @Relation(
         parentColumn = "sport",
-        entityColumn = "name"
+        entityColumn = "sport_name"
     )
     val sport: Sport
 )
@@ -20,8 +20,11 @@ fun CourtWithSport.toCourtDTO(): CourtDTO {
         address = this.court.address,
         location = this.court.location,
         feeHour = this.court.feeHour,
-        sport = this.sport.name,
+        sport = this.sport.sport_name,
         path = this.court.path,
-        fee_equipment = this.court.fee_equipment
+        feeEquipment = this.court.feeEquipment,
+        rating = this.court.rating,
+        nReviews = this.court.nReviews
+
     )
 }

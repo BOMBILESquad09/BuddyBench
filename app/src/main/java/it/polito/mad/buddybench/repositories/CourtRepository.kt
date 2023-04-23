@@ -9,6 +9,7 @@ import it.polito.mad.buddybench.dao.SportDao
 import it.polito.mad.buddybench.dto.CourtDTO
 import it.polito.mad.buddybench.entities.Sport
 import it.polito.mad.buddybench.entities.toCourtDTO
+import it.polito.mad.buddybench.enums.Sports
 import java.time.DayOfWeek
 import javax.inject.Inject
 
@@ -18,6 +19,13 @@ class CourtRepository @Inject constructor(
 ) {
 
     fun getAll(): List<CourtDTO> = courtDao.getAll().map { it.toCourtDTO() }
+
+    fun getByNameAndSports(name: String, sport: Sports): CourtDTO {
+        courtDao.getByNameAndSport(name, sport.name.uppercase()).let {
+            println(it.toString())
+            return it.toCourtDTO()
+        }
+    }
 
     fun save(court: CourtDTO) {
         courtDao.save(court.toEntity())

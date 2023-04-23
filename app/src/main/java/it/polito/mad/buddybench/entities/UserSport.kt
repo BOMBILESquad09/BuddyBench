@@ -17,7 +17,7 @@ import it.polito.mad.buddybench.dto.UserSportDTO
         ),
         ForeignKey(
             entity = Sport::class,
-            parentColumns = arrayOf("name"),
+            parentColumns = arrayOf("sport_name"),
             childColumns = arrayOf("sport"),
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.CASCADE

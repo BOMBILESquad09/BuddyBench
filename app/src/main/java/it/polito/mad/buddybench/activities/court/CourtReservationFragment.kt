@@ -1,4 +1,4 @@
-package it.polito.mad.buddybench.views
+package it.polito.mad.buddybench.activities.court
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

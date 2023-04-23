@@ -5,8 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.dto.CourtDTO
+import it.polito.mad.buddybench.dto.CourtTimeDTO
+import it.polito.mad.buddybench.dto.CourtTimeTableDTO
 import it.polito.mad.buddybench.entities.Court
 import it.polito.mad.buddybench.entities.toCourtDTO
+import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.repositories.CourtRepository
 import it.polito.mad.buddybench.repositories.CourtTimeRepository
 import it.polito.mad.buddybench.repositories.ReservationRepository
@@ -20,11 +23,12 @@ import javax.inject.Inject
 @HiltViewModel
 class CourtViewModel @Inject constructor() : ViewModel() {
 
-    private var _initialValue: Court? = null
+    private var _initialValue: CourtDTO? = null
     private var _initialOpeningTime = LocalTime.of(6,0)
     private var _initialClosingTime = LocalTime.of(23,0)
     private var _initialValueTimeSlots = Utils.getTimeSlots(_initialOpeningTime, _initialClosingTime)
-    private var _court: MutableLiveData<Court> = MutableLiveData(_initialValue)
+    private var _court: MutableLiveData<CourtDTO> = MutableLiveData(_initialValue)
+    private var _timetable: MutableLiveData<CourtTimeTableDTO> = MutableLiveData(null)
 
     @Inject
     lateinit var courtRepository: CourtRepository
@@ -48,7 +52,7 @@ class CourtViewModel @Inject constructor() : ViewModel() {
         _timeSlots.value?.get(0) ?: LocalTime.now())
 
     // ** Expose to other classes (view)
-    val court: LiveData<Court> get() = _court
+    val court: LiveData<CourtDTO> get() = _court
     val days: List<LocalDate> get() = _days
     val timeSlots: LiveData<List<LocalTime>> get() = _timeSlots
     val selectedDay: LiveData<LocalDate> get() = _selectedDay
@@ -56,19 +60,8 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     val openingTime: LiveData<LocalTime> get() = _openingTime
     val closingTime: LiveData<LocalTime> get() = _closingTime
 
-    /**
-     * Get Court
-     * @return Court LiveData
-     */
-    fun getMockCourt(): LiveData<Court> {
-        // ** Mock DB
 
-        // Repository Call, All the repos return DTo s
-        val courts = courtRepository.getAll()
-        _court.value = courts[0].toEntity()
 
-        return _court
-    }
 
     /**
      * Select day from the list
@@ -84,13 +77,23 @@ class CourtViewModel @Inject constructor() : ViewModel() {
         return _selectedTime
     }
 
+    fun getTimeTables(name: String, sport: Sports): LiveData<CourtTimeTableDTO>{
+        _timetable.value = courtTimeRepository.getCourtTimeTable(name,sport)
+        _court.value = _timetable.value!!.court
+        return _timetable
+    }
+
+    fun getTimeTable(): LiveData<CourtTimeTableDTO>{
+        return _timetable
+    }
+
 
     fun getTimeSlotsAvailable(courtDTO: CourtDTO, date: LocalDate): List<LocalTime> {
         val timeSlotsOccupied = reservationRepository.getTimeSlotsOccupiedForCourtAndDate(
             courtDTO,
             date
         )
-        openingAndClosingTimeForCourt(courtDTO, date.dayOfWeek)
+        openingAndClosingTimeForCourt(date.dayOfWeek)
         val list = _initialValueTimeSlots.filter {
             !timeSlotsOccupied.contains(it)
         } as MutableList
@@ -100,14 +103,17 @@ class CourtViewModel @Inject constructor() : ViewModel() {
         return list
     }
 
-    fun openingAndClosingTimeForCourt(courtDTO: CourtDTO, dayOfWeek: DayOfWeek) {
-        val courtTime = courtTimeRepository.getCourtTimesByCourt(courtDTO, dayOfWeek)
-        _openingTime.value = courtTime?.openingTime
-        _closingTime.value = courtTime?.closingTime
-        if(courtTime != null)
-            _initialValueTimeSlots = Utils.getTimeSlots(courtTime.openingTime, courtTime.closingTime)
+    fun openingAndClosingTimeForCourt( dayOfWeek: DayOfWeek) {
+
+        val courtTime = _timetable.value?.timeTable?.get(dayOfWeek)
+        _openingTime.value = courtTime?.first ?: LocalTime.of(0,0)
+        _closingTime.value = courtTime?.second ?: LocalTime.of(0,0)
+        _initialValueTimeSlots = if(courtTime != null)
+            Utils.getTimeSlots(courtTime.first, courtTime.second)
         else
-            _initialValueTimeSlots = listOf()
+            listOf()
     }
+
+
 
 }

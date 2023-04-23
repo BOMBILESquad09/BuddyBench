@@ -14,7 +14,7 @@ data class UserSportsWithUserAndSport(
 
     @Relation(
         parentColumn = "sport",
-        entityColumn = "name"
+        entityColumn = "sport_name"
     )
     val sport: Sport,
 )
@@ -25,7 +25,7 @@ fun UserSportsWithUserAndSport.toUserSportDTO(): UserSportDTO {
         skill = this.userSport.skill,
         gamesOrganized = this.userSport.gamesOrganized,
         gamesPlayed = this.userSport.gamesPlayed,
-        sport = this.sport.name,
+        sport = this.sport.sport_name,
 
         )
 }

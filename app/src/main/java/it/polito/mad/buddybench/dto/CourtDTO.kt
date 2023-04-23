@@ -9,7 +9,9 @@ class CourtDTO(
     val feeHour: Int,
     val sport: String,
     val path: String,
-    val fee_equipment: Int
+    val feeEquipment: Int,
+    val rating: Double,
+    val nReviews: Int
 ) {
     fun toEntity(): Court {
         return Court(
@@ -20,7 +22,9 @@ class CourtDTO(
             feeHour = this.feeHour,
             sport = this.sport,
             path = this.path,
-            fee_equipment = fee_equipment
+            feeEquipment = this.feeEquipment,
+            rating = this.rating,
+            nReviews = this.nReviews
         )
     }
 

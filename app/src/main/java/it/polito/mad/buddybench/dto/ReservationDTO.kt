@@ -26,7 +26,7 @@ class ReservationDTO(val userOrganizer: UserDTO,
             )
         }
 
-        private fun createCourt(sport: String, feeHour: Int = 20, fee_equipment: Int = 10): Court {
+        private fun createCourt(sport: String, feeHour: Int = 20, feeEquipment: Int = 10): Court {
             return Court(
                 name = "CourtSampleName",
                 address = "ExampleRoad",
@@ -34,7 +34,9 @@ class ReservationDTO(val userOrganizer: UserDTO,
                 sport = sport,
                 location= "ExampleLocation",
                 path = "court1",
-                fee_equipment = fee_equipment
+                feeEquipment = feeEquipment,
+                rating = 4.2,
+                nReviews = 15
             )
         }
 
