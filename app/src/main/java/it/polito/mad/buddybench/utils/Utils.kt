@@ -44,6 +44,8 @@ class Utils {
          */
         fun getTimeSlots(start: LocalTime, end: LocalTime): List<LocalTime> {
             val diff = Duration.between(start, end).toHours() // calculate the difference between start and end time in hours
+            val list  = (0..diff).map { start.plusHours(it) } as MutableList
+            list.removeLast()
             return (0..diff).map { start.plusHours(it) } // generate a list of hourly time slots using a range operator and the map() function
         }
 

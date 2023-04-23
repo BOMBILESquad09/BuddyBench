@@ -1,16 +1,22 @@
 package it.polito.mad.buddybench.views
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.MarginLayoutParams
+import android.widget.Button
+import android.widget.CompoundButton
 import android.widget.LinearLayout
+import android.widget.Switch
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -21,11 +27,19 @@ import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.databinding.FragmentCourtBinding
+import it.polito.mad.buddybench.dto.CourtDTO
+import it.polito.mad.buddybench.dto.ReservationDTO
+import it.polito.mad.buddybench.dto.UserDTO
 import it.polito.mad.buddybench.entities.Court
+import it.polito.mad.buddybench.entities.toCourtDTO
 import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.CourtViewModel
+import it.polito.mad.buddybench.viewmodels.ReservationViewModel
+import org.json.JSONObject
 import java.io.FileNotFoundException
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -46,10 +60,15 @@ class CourtFragment : Fragment() {
     // ** This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private lateinit var user: UserDTO
+    private lateinit var courtToReserve: CourtDTO
 
     // ** Court LiveData by ViewModel
-    private val viewModel by viewModels<CourtViewModel>()
+    private val courtViewModel by viewModels<CourtViewModel>()
+    private val reservationViewModel by viewModels<ReservationViewModel>()
 
+    private lateinit var profile: Profile
+    private lateinit var sharedPref: SharedPreferences
 
 
     override fun onCreateView(
@@ -57,6 +76,8 @@ class CourtFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        println("InstanceSaved")
+
         _binding = FragmentCourtBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -65,19 +86,46 @@ class CourtFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // ** View Model
-        viewModel.getMockCourt().observe(viewLifecycleOwner) {
+        courtViewModel.getMockCourt().observe(viewLifecycleOwner) {
             updateView(it)
         }
 
         // ** DateTime Pickers
-        viewModel.selectedDay.observe(viewLifecycleOwner) { selected ->
+        courtViewModel.selectedDay.observe(viewLifecycleOwner) { selected ->
             binding.daysScrollView.removeAllViews()
-            viewModel.days.map { renderDayItem(it, selected) }
+            binding.timeScrollView.removeAllViews()
+            val availableTimeSlots = courtViewModel.getTimeSlotsAvailable(
+                courtToReserve,
+                courtViewModel.selectedDay.value!!
+            )
+            binding.buttonFirst.isEnabled = availableTimeSlots.isNotEmpty()
+            availableTimeSlots.map { renderTimeItem(it, courtViewModel.selectedTime.value!!) }
+
+            try {
+                courtViewModel.selectTime(availableTimeSlots[0])
+            }catch (e: java.lang.Exception) {
+                courtViewModel.selectTime(LocalTime.now())
+            }
+
+            courtViewModel.days.map { renderDayItem(it, selected) }
+            courtViewModel.openingAndClosingTimeForCourt(courtToReserve, selected.dayOfWeek)
+
+            if(courtViewModel.openingTime.value == null && courtViewModel.closingTime.value == null) {
+                binding.courtOpeningHoursTv.text = "Closed"
+            } else {
+                binding.courtOpeningHoursTv.text =
+                    courtViewModel.openingTime.value.toString() + " - " + courtViewModel.closingTime.value.toString()
+            }
+
         }
 
-        viewModel.selectedTime.observe(viewLifecycleOwner) { selected ->
+        courtViewModel.selectedTime.observe(viewLifecycleOwner) { selected ->
             binding.timeScrollView.removeAllViews()
-            viewModel.timeSlots.map { renderTimeItem(it, selected) }
+            courtViewModel.getTimeSlotsAvailable(
+                courtToReserve,
+                courtViewModel.selectedDay.value!!
+            ).map { renderTimeItem(it, selected) }
+
         }
 
         // ** Navigate to court reservation
@@ -85,20 +133,28 @@ class CourtFragment : Fragment() {
             // findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
             showBottomSheetDialog()
         }
+        sharedPref = activity?.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)!!
+        profile = Profile.fromJSON(JSONObject(sharedPref.getString("profile", Profile.mockJSON())!!))
+        user = profile.toUserDto()
     }
 
     private fun updateView(court: Court) {
         binding.courtNameTv.text = court.name.replace("Courts", "")
         binding.courtAddressTv.text = court.address
         binding.courtFeeTv.text = getString(R.string.court_fee, court.feeHour.toString())
+        if(courtViewModel.openingTime.value == null && courtViewModel.closingTime.value == null) {
+            binding.courtOpeningHoursTv.text = "Closed"
+        } else {
+            binding.courtOpeningHoursTv.text =
+                courtViewModel.openingTime.value.toString() + " - " + courtViewModel.closingTime.value.toString()
+        }
         var bitmap :Bitmap? = null
         try {
             bitmap = BitmapFactory.decodeStream(view?.context?.assets?.open("courtImages/" + court.path + ".jpg"))
         } catch (_: FileNotFoundException) {
             bitmap = BitmapFactory.decodeStream(view?.context?.assets?.open("courtImages/default_image.jpg"))
         }
-
-
+        courtToReserve = court.toCourtDTO()
         binding.backgroundImage.setImageBitmap(bitmap)
     }
 
@@ -124,7 +180,7 @@ class CourtFragment : Fragment() {
         }
 
         // ** Last item no margin at the end
-        if (day == viewModel.days.last()) {
+        if (day == courtViewModel.days.last()) {
             val noMarginParams =
                 MarginLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             noMarginParams.marginEnd = 0
@@ -132,7 +188,7 @@ class CourtFragment : Fragment() {
         }
 
         // ** OnClick Listener
-        dayScrollItem.setOnClickListener { viewModel.selectDay(day) }
+        dayScrollItem.setOnClickListener { courtViewModel.selectDay(day) }
 
         binding.daysScrollView.addView(dayScrollItem)
     }
@@ -165,7 +221,7 @@ class CourtFragment : Fragment() {
         }
 
         // ** Last item no margin at the end
-        if (time == viewModel.timeSlots.last()) {
+        if (time == courtViewModel.timeSlots.value?.last()) {
             val noMarginParams =
                 MarginLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             noMarginParams.marginEnd = 0
@@ -173,27 +229,68 @@ class CourtFragment : Fragment() {
         }
 
         // ** OnClick Listener
-        timeSlotCard.setOnClickListener { viewModel.selectTime(time) }
+        timeSlotCard.setOnClickListener { courtViewModel.selectTime(time) }
 
         binding.timeScrollView.addView(timeScrollItem)
     }
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun showBottomSheetDialog() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
 
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_court_confirm)
 
         val courtName = bottomSheetDialog.findViewById<TextView>(R.id.court_name_confirm_tv)
-        courtName?.text = viewModel.court.value?.name
+        courtName?.text = courtViewModel.court.value?.name
         val courtAddress = bottomSheetDialog.findViewById<TextView>(R.id.court_address_confirm_tv)
-        courtAddress?.text = viewModel.court.value?.address
+        courtAddress?.text = courtViewModel.court.value?.address
         val dateSelected = bottomSheetDialog.findViewById<TextView>(R.id.dateSelected)
-        dateSelected?.text = viewModel.selectedDay.value!!.format(
+        dateSelected?.text = courtViewModel.selectedDay.value!!.format(
             DateTimeFormatter.ofPattern("EEEE, d MMMM y")
         )
+        val confirmButton = bottomSheetDialog.findViewById<Button>(R.id.confirmPrenotation)
+        courtViewModel.getTimeSlotsAvailable(
+            courtToReserve,
+            courtViewModel.selectedDay.value!!
+        )
+
+        val switch = bottomSheetDialog.findViewById<Switch>(R.id.switch_equipment)
+        val textEquipment = bottomSheetDialog.findViewById<TextView>(R.id.equipment_view)
+        switch?.setOnCheckedChangeListener { buttonView, isChecked ->
+            if(isChecked) {
+                textEquipment?.visibility = View.VISIBLE
+                textEquipment?.text = getString(R.string.equipment) + " ${courtToReserve.fee_equipment}$/h"
+            } else {
+                textEquipment?.visibility = View.GONE
+            }
+        }
+
+        confirmButton?.setOnClickListener {
+
+            val reservation = ReservationDTO(
+                userOrganizer = user,
+                court = courtToReserve,
+                date = courtViewModel.selectedDay.value!!,
+                startTime = courtViewModel.selectedTime.value!!,
+                endTime = courtViewModel.selectedTime.value!!.plusHours(1),
+                equipment = switch!!.isChecked
+            )
+            reservationViewModel.saveReservation(
+                reservation
+            )
+            _binding?.timeScrollView?.removeAllViews()
+            val availableTimeSlots = courtViewModel.getTimeSlotsAvailable(
+                courtToReserve,
+                courtViewModel.selectedDay.value!!
+            )
+            availableTimeSlots.map { renderTimeItem(it, courtViewModel.selectedTime.value!!)}
+
+            bottomSheetDialog.dismiss()
+
+        }
 
         val timeSelected = bottomSheetDialog.findViewById<TextView>(R.id.timeSelected)
-        val hourSelected = viewModel.selectedTime.value!!
+        val hourSelected = courtViewModel.selectedTime.value!!
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
         timeSelected?.text = hourSelected.format(formatter) + " - " + hourSelected.plusHours(1).format(formatter)
 

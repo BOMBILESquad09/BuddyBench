@@ -1,3 +1,4 @@
+
 DROP TABLE IF EXISTS sport;
 DROP TABLE IF EXISTS court;
 DROP TABLE IF EXISTS court_time;
@@ -30,9 +31,8 @@ CREATE  TABLE court(
     location TEXT NOT NULL,
     fee_hour INTEGER NOT NULL,
     sport TEXT NOT NULL,
+    fee_equipment INTEGER NOT NULL,
     path TEXT NOT NULL,
-    fee_equipment NOT NULL,
-    --image TEXT  NULL,
     FOREIGN KEY (sport) REFERENCES sport(name) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -63,7 +63,7 @@ CREATE  TABLE reservation(
     date TEXT NOT NULL,
     start_time INTEGER  NOT NULL,
     equipment INTEGER NOT NULL,
-    FOREIGN KEY (user) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (user) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
     FOREIGN KEY (court) REFERENCES court(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
