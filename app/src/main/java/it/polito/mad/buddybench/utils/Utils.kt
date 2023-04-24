@@ -48,21 +48,21 @@ class Utils {
          * @return array of time ranges [8:00, 9:00, 10:00, 11:00]
          */
         fun getTimeSlots(start: LocalTime, end: LocalTime): List<LocalTime> {
-            val diff = Duration.between(start, end).toHours() // calculate the difference between start and end time in hours
-            val list  = (0..diff).map { start.plusHours(it) } as MutableList
+            val diff = Duration.between(start, end)
+                .toHours() // calculate the difference between start and end time in hours
+            val list = (0..diff).map { start.plusHours(it) } as MutableList
             list.removeLast()
             return (0..diff).map { start.plusHours(it) } // generate a list of hourly time slots using a range operator and the map() function
         }
 
-        fun getStringifyTimeTable(timeTable: HashMap<DayOfWeek, Pair<LocalTime, LocalTime>>): String{
-
+        fun getStringifyTimeTable(timeTable: HashMap<DayOfWeek, Pair<LocalTime, LocalTime>>): String {
             val hm: HashMap<Pair<LocalTime, LocalTime>, MutableList<DayOfWeek>> = HashMap()
             for (day in timeTable) {
                 hm.get(Pair(day.value.first, day.value.second)).let {
-                    if(it != null){
+                    if (it != null) {
                         it.add(day.key)
                     } else {
-                        hm[Pair(day.value.first, day.value.second)] = mutableListOf(day.key )
+                        hm[Pair(day.value.first, day.value.second)] = mutableListOf(day.key)
                     }
                 }
             }
@@ -71,7 +71,7 @@ class Utils {
 
             for (entry in hm.entries) {
                 entry.value.sort()
-                for( x in getConsecutiveNumbers(entry.value)) {
+                for (x in getConsecutiveNumbers(entry.value)) {
                     val prefix = if (x.first() == x.last()) {
                         "${capitalize(x.first().displayText())}"
                     } else {
@@ -88,7 +88,7 @@ class Utils {
                 it.key
             }.joinToString("\n") {
                 it.value
-            }.let{
+            }.let {
 
                 return it
             }
@@ -105,7 +105,7 @@ class Utils {
         }
 
 
-        fun setColoredDrawable(drawable: Drawable, iv: ImageView, color: Int = Color.WHITE){
+        fun setColoredDrawable(drawable: Drawable, iv: ImageView, color: Int = Color.WHITE) {
             val wrappedDrawable = DrawableCompat.wrap(drawable)
             wrappedDrawable.mutate().setTint(color)
             iv.setImageDrawable(wrappedDrawable)

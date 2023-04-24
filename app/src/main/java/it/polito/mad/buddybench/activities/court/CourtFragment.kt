@@ -1,6 +1,7 @@
 package it.polito.mad.buddybench.activities.court
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -14,12 +15,14 @@ import android.widget.Button
 import android.widget.Switch
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.compose.ui.res.integerArrayResource
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.databinding.FragmentCourtBinding
 import it.polito.mad.buddybench.dto.CourtDTO
@@ -79,6 +82,9 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         val courtName = activity?.intent?.getStringExtra("courtName") ?: "Central Park Tennis"
         val sport = Sports.valueOf(activity?.intent?.getStringExtra("sport")?.uppercase() ?: Sports.TENNIS.name)
 
+        binding.backButton.setOnClickListener {
+            activity?.finish()
+        }
 
         courtViewModel.getTimeTables(courtName, sport)
             .observe(viewLifecycleOwner) {
@@ -95,28 +101,30 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                 courtViewModel.selectedDay.value!!
             )
 
+
+            courtViewModel.clearSelectedTime()
+            availableTimeSlots.map { renderTimeItem(it, courtViewModel.selectedTimes.value!!)}
+
             if(availableTimeSlots.isEmpty()) {
                 binding.timeScrollView.removeAllViews()
                 val timeSlotsNotAvailable = layoutInflater.inflate(R.layout.time_slots_not_available, binding.timeScrollView, false)
                 binding.timeScrollView.addView(timeSlotsNotAvailable)
             }
 
-            binding.buttonFirst.isEnabled = availableTimeSlots.isNotEmpty()
-                    && courtViewModel.timeSlots.value!!.contains(courtViewModel.selectedTime.value!!)
-
-            courtViewModel.selectedTime.observe(viewLifecycleOwner) {
+            courtViewModel.selectedTimes.observe(viewLifecycleOwner) {
                 binding.buttonFirst.isEnabled = availableTimeSlots.isNotEmpty()
-                        && courtViewModel.timeSlots.value!!.contains(courtViewModel.selectedTime.value!!)
+                        && courtViewModel.timeSlots.value!!.any { time -> it.contains(time) }
             }
 
             courtViewModel.days.map { renderDayItem(it, selected) }
             courtViewModel.openingAndClosingTimeForCourt(selected.dayOfWeek)
 
-
         }
 
-        courtViewModel.selectedTime.observe(viewLifecycleOwner) { selected ->
+
+        courtViewModel.selectedTimes.observe(viewLifecycleOwner) { selected ->
             binding.timeScrollView.removeAllViews()
+            println(selected.size)
             courtViewModel.getTimeSlotsAvailable(
                 courtToReserve,
                 courtViewModel.selectedDay.value!!
@@ -124,15 +132,16 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         }
 
         courtViewModel.timeSlots.observe(viewLifecycleOwner) {
+
             if(it.isEmpty()) {
                 binding.timeScrollView.removeAllViews()
-                layoutInflater.inflate(R.layout.time_slots_not_available, binding.timeScrollView, false)
+                val noTimeSlotsAvailable = layoutInflater.inflate(R.layout.time_slots_not_available, binding.timeScrollView, false)
+                binding.timeScrollView.addView(noTimeSlotsAvailable)
             }
         }
 
         // ** Navigate to court reservation
         binding.buttonFirst.setOnClickListener {
-            // findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
             showBottomSheetDialog()
         }
         sharedPref = activity?.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)!!
@@ -191,7 +200,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             dayScrollItem.layoutParams = noMarginParams
         }
 
-        courtViewModel.selectTime(LocalTime.MAX)
+        courtViewModel.clearSelectedTime()
 
         // ** OnClick Listener
         dayScrollItem.setOnClickListener { courtViewModel.selectDay(day) }
@@ -200,7 +209,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
     }
 
 
-    private fun renderTimeItem(time: LocalTime, selected: LocalTime) {
+    private fun renderTimeItem(time: LocalTime, selected: MutableList<LocalTime>) {
         val timeScrollItem = layoutInflater.inflate(
             R.layout.datepicker_time_scroll_item,
             binding.timeScrollView,
@@ -217,7 +226,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         timeSlotTv.text = timeSlotText
 
         // ** Selected time
-        if (time == selected && selected.isBefore(LocalTime.MAX)) {
+        if (selected.contains(time)) {
             val primaryColor =
                 ContextCompat.getColor(requireContext(), R.color.md_theme_light_primary)
             val whiteColor =
@@ -234,8 +243,12 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             timeScrollItem.layoutParams = noMarginParams
         }
 
-        // ** OnClick Listener
-        timeSlotCard.setOnClickListener { courtViewModel.selectTime(time) }
+        timeSlotCard.setOnClickListener {
+            if(!selected.contains(time))
+                courtViewModel.addSelectedTime(time)
+            else
+                courtViewModel.removeSelectedTime(time)
+        }
 
         binding.timeScrollView.addView(timeScrollItem)
     }
@@ -270,30 +283,35 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
         confirmButton?.setOnClickListener {
 
-            val reservation = ReservationDTO(
-                userOrganizer = user,
-                court = courtToReserve,
-                date = courtViewModel.selectedDay.value!!,
-                startTime = courtViewModel.selectedTime.value!!,
-                endTime = courtViewModel.selectedTime.value!!.plusHours(1),
-                equipment = switch!!.isChecked
-            )
-            reservationViewModel.saveReservation(
-                reservation
-            )
+            for(time in courtViewModel.selectedTimes.value!!) {
+                val reservation = ReservationDTO(
+                    userOrganizer = user,
+                    court = courtToReserve,
+                    date = courtViewModel.selectedDay.value!!,
+                    startTime = time,
+                    endTime = time.plusHours(1),
+                    equipment = switch!!.isChecked
+                )
+                reservationViewModel.saveReservation(
+                    reservation
+                )
+            }
+
             _binding?.timeScrollView?.removeAllViews()
             val availableTimeSlots = courtViewModel.getTimeSlotsAvailable(
                 courtToReserve,
                 courtViewModel.selectedDay.value!!
             )
-            availableTimeSlots.map { renderTimeItem(it, courtViewModel.selectedTime.value!!)}
+
+            availableTimeSlots.map { renderTimeItem(it, courtViewModel.selectedTimes.value!!)}
 
             bottomSheetDialog.dismiss()
 
         }
 
         val timeSelected = bottomSheetDialog.findViewById<TextView>(R.id.timeSelected)
-        val hourSelected = courtViewModel.selectedTime.value!!
+        // TODO: Visualize all the prenotation inside the dialog (for the moment just the first)
+        val hourSelected = courtViewModel.selectedTimes.value!![0]
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
         timeSelected?.text = hourSelected.format(formatter) + " - " + hourSelected.plusHours(1).format(formatter)
 
