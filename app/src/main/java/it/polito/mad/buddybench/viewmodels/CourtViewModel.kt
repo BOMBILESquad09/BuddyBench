@@ -29,6 +29,7 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     private var _initialValueTimeSlots = Utils.getTimeSlots(_initialOpeningTime, _initialClosingTime)
     private var _court: MutableLiveData<CourtDTO> = MutableLiveData(_initialValue)
     private var _timetable: MutableLiveData<CourtTimeTableDTO> = MutableLiveData(null)
+    private var _courtSportsInitial: List<CourtDTO> = listOf()
 
     @Inject
     lateinit var courtRepository: CourtRepository
@@ -42,13 +43,14 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     // ** DateTime pickers
 
     // Range of days between 2 weeks
-    // Range of hours between 8:00 to 23:00 TODO: Include opening hours
+    // Range of hours between 8:00 to 23:00
     private val _openingTime: MutableLiveData<LocalTime> = MutableLiveData(_initialOpeningTime)
     private val _closingTime: MutableLiveData<LocalTime> = MutableLiveData(_initialClosingTime)
     private val _days = Utils.generateDateRange(LocalDate.now(), LocalDate.now().plusDays(14))
     private val _timeSlots :MutableLiveData<List<LocalTime>> = MutableLiveData(_initialValueTimeSlots)
     private val _selectedDay: MutableLiveData<LocalDate> = MutableLiveData(LocalDate.now())
     private val _selectedTime: MutableLiveData<LocalTime> = MutableLiveData(LocalTime.now())
+    private val _courtsSports: LiveData<List<CourtDTO>> =   MutableLiveData(_courtSportsInitial)
 
     // ** Expose to other classes (view)
     val court: LiveData<CourtDTO> get() = _court
@@ -56,9 +58,7 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     val timeSlots: LiveData<List<LocalTime>> get() = _timeSlots
     val selectedDay: LiveData<LocalDate> get() = _selectedDay
     val selectedTime: LiveData<LocalTime> get() = _selectedTime
-    val openingTime: LiveData<LocalTime> get() = _openingTime
-    val closingTime: LiveData<LocalTime> get() = _closingTime
-
+    val courtSports: LiveData<List<CourtDTO>> get() = _courtsSports
 
 
 
@@ -112,6 +112,10 @@ class CourtViewModel @Inject constructor() : ViewModel() {
             Utils.getTimeSlots(courtTime.first, courtTime.second)
         else
             listOf()
+    }
+
+    fun getCourtsBySport(sport: Sports): List<CourtDTO> {
+        return courtRepository.getCourtsBySports(Sports.toJSON(sport).uppercase())
     }
 
 
