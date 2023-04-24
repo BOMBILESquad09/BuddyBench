@@ -49,17 +49,14 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     private val _days = Utils.generateDateRange(LocalDate.now(), LocalDate.now().plusDays(14))
     private val _timeSlots :MutableLiveData<List<LocalTime>> = MutableLiveData(_initialValueTimeSlots)
     private val _selectedDay: MutableLiveData<LocalDate> = MutableLiveData(LocalDate.now())
-    private val _selectedTime: MutableLiveData<LocalTime> = MutableLiveData(LocalTime.now())
-    private val _courtsSports: LiveData<List<CourtDTO>> =   MutableLiveData(_courtSportsInitial)
+    private val _selectedTimes: MutableLiveData<MutableList<LocalTime>> = MutableLiveData(mutableListOf())
 
     // ** Expose to other classes (view)
     val court: LiveData<CourtDTO> get() = _court
     val days: List<LocalDate> get() = _days
     val timeSlots: LiveData<List<LocalTime>> get() = _timeSlots
     val selectedDay: LiveData<LocalDate> get() = _selectedDay
-    val selectedTime: LiveData<LocalTime> get() = _selectedTime
-    val courtSports: LiveData<List<CourtDTO>> get() = _courtsSports
-
+    val selectedTimes: LiveData<MutableList<LocalTime>> get() = _selectedTimes
 
 
     /**
@@ -71,9 +68,22 @@ class CourtViewModel @Inject constructor() : ViewModel() {
         return _selectedDay
     }
 
-    fun selectTime(time: LocalTime): LiveData<LocalTime> {
-        _selectedTime.value = time
-        return _selectedTime
+    fun addSelectedTime(time: LocalTime): LiveData<MutableList<LocalTime>> {
+        _selectedTimes.value!!.add(time)
+        val l = _selectedTimes.value!!
+        _selectedTimes.value = l
+        return _selectedTimes
+    }
+
+    fun removeSelectedTime(time: LocalTime): LiveData<MutableList<LocalTime>> {
+        _selectedTimes.value!!.remove(time)
+        val l = _selectedTimes.value!!
+        _selectedTimes.value = l
+        return _selectedTimes
+    }
+
+    fun clearSelectedTime() {
+        _selectedTimes.value!!.clear()
     }
 
     fun getTimeTables(name: String, sport: Sports): LiveData<CourtTimeTableDTO>{
@@ -98,6 +108,7 @@ class CourtViewModel @Inject constructor() : ViewModel() {
         } as MutableList
         if(list.isNotEmpty())
             list.removeLast()
+
         _timeSlots.value = list
 
         return list

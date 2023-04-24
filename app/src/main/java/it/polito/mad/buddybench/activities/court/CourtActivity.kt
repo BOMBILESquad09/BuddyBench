@@ -28,14 +28,6 @@ class CourtActivity : AppCompatActivity() {
             .replace(R.id.fragmentContainerCourt, fragment)
             .commit()
 
-
-
-
-
-
-        //val navController = findNavController(R.id.nav_host_fragment_content_court)
-        //appBarConfiguration = AppBarConfiguration(navController.graph)
-        //setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
 
