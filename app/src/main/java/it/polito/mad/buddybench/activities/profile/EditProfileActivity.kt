@@ -482,7 +482,9 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             val sportCard = LayoutInflater.from(context).inflate(R.layout.card_sport_edit, null, false);
 
             // TODO: Add listener to delete button
-            val deleteButton = sportCard.findViewById<FrameLayout>(R.id.button_close)
+            val deleteButton = sportCard.findViewById<LinearLayout>(R.id.close_button)
+            deleteButton.setBackgroundColor(resources.getColor(android.R.color.transparent));
+
             deleteButton.setOnClickListener {
                 val newSports = profile.sports.filter { sportInList -> sportInList.name != sport.name}
                 profile.sports = newSports
@@ -513,7 +515,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             }
 
             sportName.text = Utils.capitalize(sport.name.toString())
-            sportIcon.setImageResource(Sports.sportToIconDrawable(sport.name))
+            //sportIcon.setImageResource(Sports.sportToIconDrawable(sport.name))
             // TODO: Non funziona
             // sportSkillLevel.setBackgroundColor(Skills.skillToColor(sport.skill))
             sportSkillLevelText.text = Utils.formatString(sport.skill.toString())
@@ -534,11 +536,12 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             cardViewImage.showContextMenu()
         }*/
         if (dialogOpenPreviously == ActivityState.DatePickerOpened) {
-
             tempCalendarDate = tempCalendarDate ?: LocalDate.parse(savedInstanceState?.getString("tempCalendarDate"), DateTimeFormatter.ofPattern("dd/MM/yyyy"))
             showDatePickerDialog(null)
+
         }
         if (dialogOpenPreviously == ActivityState.EditSportsOpened) {
+
             tempSelectedSport = tempSelectedSport?:savedInstanceState?.getStringArrayList("tempSelectedSport")?.map { s -> Sports.fromJSON(s) } as ArrayList<Sports>
             if (tempSelectedSport != null)
                 editSportDialog?.selectedItems = tempSelectedSport!!

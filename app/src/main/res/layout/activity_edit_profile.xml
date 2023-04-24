@@ -322,7 +322,8 @@
                                 android:orientation="horizontal"
                                 >
 
-                                <include layout="@layout/card_sport_edit" />
+                               
+
                             </LinearLayout>
                         </HorizontalScrollView>
 

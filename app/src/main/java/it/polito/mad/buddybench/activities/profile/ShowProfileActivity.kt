@@ -74,7 +74,7 @@ class ShowProfileActivity : AppCompatActivity() {
         sportContainer.removeAllViews()
 
         // ** Populate sport cards
-        profile.populateSportCards(this, sportContainer)
+        //profile.populateSportCards(this, sportContainer)
     }
 
 

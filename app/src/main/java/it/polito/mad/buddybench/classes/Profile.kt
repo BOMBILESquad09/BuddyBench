@@ -121,7 +121,8 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
      * @param sportContainer The container layout in which to add the cards
      */
     fun populateSportCards(context: AppCompatActivity, sportContainer: LinearLayout) {
-        sportContainer.removeAllViews()
+
+        //sportContainer.removeAllViews()
         if (this.sports.isEmpty()) {
             val emptySportsText = TextView(context)
             emptySportsText.text = context.getString(R.string.no_sports)
@@ -129,25 +130,25 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
             emptySportsText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
             return
         }
-
         for (sport in this.sports) {
-            val sportCard = LayoutInflater.from(context).inflate(R.layout.card_sport, null, false)
+            val sportCard = LayoutInflater.from(context).inflate(R.layout.card_sport, sportContainer)
 
             // ** Sport card dynamic values
+
             val sportName = sportCard.findViewById<TextView>(R.id.sport_card_name)
             val sportIcon = sportCard.findViewById<ImageView>(R.id.sport_card_icon)
             val sportSkillLevelText = sportCard.findViewById<TextView>(R.id.skill_level_card_text)
             val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
 
             sportName.text = Utils.formatString(sport.name.toString())
-            sportIcon.setImageResource(Sports.sportToIconDrawable(sport.name))
+            //sportIcon.setImageResource(Sports.sportToIconDrawable(sport.name))
             // TODO: Doesn't work
             // sportSkillLevel.setBackgroundColor(Skills.skillToColor(sport.skill))
             sportSkillLevelText.text = Utils.formatString(sport.skill.toString())
             sportGamesPlayed.text = String.format(context.resources.getString(R.string.games_played), sport.matchesPlayed)
 
             // ** Add card to container
-            sportContainer.addView(sportCard)
+            //sportContainer.addView(sportCard)
         }
     }
 

@@ -4,11 +4,9 @@ import android.graphics.Color
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.activities.findcourt.FindCourtFragment
-import it.polito.mad.buddybench.activities.findcourt.SportSelection.SportsSelectionFragment
 import it.polito.mad.buddybench.activities.profile.ShowProfileFragment
 import it.polito.mad.buddybench.activities.myreservations.MyReservationsFragment
 import it.polito.mad.buddybench.enums.Tabs

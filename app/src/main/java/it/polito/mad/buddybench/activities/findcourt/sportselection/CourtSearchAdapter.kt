@@ -1,4 +1,4 @@
-package it.polito.mad.buddybench.activities.findcourt.SportSelection
+package it.polito.mad.buddybench.activities.findcourt.sportselection
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

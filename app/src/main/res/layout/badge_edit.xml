@@ -5,16 +5,14 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
     <androidx.cardview.widget.CardView
         android:id="@+id/skill_level_card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:shape="oval"
-        android:clickable="true"
+        android:padding="10dp"
         android:backgroundTint="@color/md_theme_light_primaryContainer"
         app:cardElevation="0dp"
-        android:paddingVertical="8dp"
         app:cardCornerRadius="99dp"
         tools:ignore="MissingConstraints">
 
@@ -24,8 +22,8 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat_medium_500"
             android:gravity="start|center"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="5dp"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
             android:text="@string/newbie"
             android:elevation="0dp"
             android:textAlignment="center"

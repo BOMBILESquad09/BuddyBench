@@ -1,6 +1,5 @@
-package it.polito.mad.buddybench.activities.findcourt.SportSelection
+package it.polito.mad.buddybench.activities.findcourt.sportselection
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.view.View
 import android.widget.ImageView
