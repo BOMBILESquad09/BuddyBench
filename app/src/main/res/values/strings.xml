@@ -50,7 +50,7 @@
     <string name="manage">Manage</string>
     <string name="price">12 €/h</string>
     <string name="court_name">Tennis Club</string>
-    <string name="court_address">Via Roma 16</string>
+    <string name="court_address">Torino, Via Roma 16</string>
     <string name="overflowReservations">+</string>
     <string name="title_activity_court">CourtActivity</string>
     <!-- Strings used for fragments for navigation -->
