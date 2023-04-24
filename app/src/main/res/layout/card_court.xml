@@ -48,7 +48,6 @@
                 android:background="@color/cardview_light_background">
 
 
-
                 <ImageView
                     android:id="@+id/court_image"
                     android:layout_width="match_parent"

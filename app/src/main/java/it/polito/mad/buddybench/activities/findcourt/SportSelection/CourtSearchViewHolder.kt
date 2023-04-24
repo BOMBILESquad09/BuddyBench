@@ -1,0 +1,35 @@
+package it.polito.mad.buddybench.activities.findcourt.SportSelection
+
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.dto.CourtDTO
+import java.io.FileNotFoundException
+
+class CourtSearchViewHolder(v: View): RecyclerView.ViewHolder(v){
+    private val name: TextView = v.findViewById(R.id.court_name)
+    private val courtImage: ImageView = v.findViewById(R.id.court_image)
+    private val address: TextView = v.findViewById(R.id.court_address)
+    private val feeHour: TextView = v.findViewById(R.id.court_fee_hour)
+    private val courtRating: TextView = v.findViewById(R.id.court_rating)
+
+    fun bind(court: CourtDTO){
+
+        name.text = court.name
+        address.text = court.address
+        feeHour.text = court.feeHour.toString() + "€/h"
+        courtRating.text = court.rating.toString()
+
+        val bitmap = try {
+            BitmapFactory.decodeStream(courtImage.context?.assets?.open("courtImages/" + court.path + ".jpg"))
+        } catch (_: FileNotFoundException) {
+            println(court.path)
+            BitmapFactory.decodeStream(courtImage.context?.assets?.open("courtImages/default_image.jpg"))
+        }
+        courtImage.setImageBitmap(bitmap)
+    }
+}
