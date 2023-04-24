@@ -65,7 +65,8 @@ object DatabaseModule {
             appDatabase.reservationDao(),
             appDatabase.userDao(),
             appDatabase.courtDao(),
-            appDatabase.courtTimeDao()
+            appDatabase.courtTimeDao(),
+            appDatabase.unavailableDayCourtDao()
         )
         println(x.getAll())
         return x

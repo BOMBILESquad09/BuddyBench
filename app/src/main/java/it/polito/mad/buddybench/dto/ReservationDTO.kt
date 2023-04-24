@@ -77,8 +77,10 @@ class ReservationDTO(val userOrganizer: UserDTO,
             userOrganizer = userOrganizer,
             court = court,
             startTime = this.startTime.hour,
+            endTime = this.endTime.hour,
             date = this.date.toString(),
             equipment = equipment
+
         )
     }
 }

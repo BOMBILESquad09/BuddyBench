@@ -55,6 +55,7 @@ CREATE TABLE reservation(
     court INTEGER NOT NULL,
     date TEXT NOT NULL,
     start_time INTEGER NOT NULL,
+    end_time INTEGER NOT NULL,
     equipment INTEGER NOT NULL,
     FOREIGN KEY (user) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE FOREIGN KEY (court) REFERENCES court(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -69,36 +70,7 @@ CREATE TABLE invitation(
 );
 CREATE TABLE unavailable_court_date(
     id INTEGER NOT NULL,
-    date DATE NOT NULL,
-    PRIMARY KEY(id, date)
+    date TEXT NOT NULL,
+    PRIMARY KEY(id, date),
+    FOREIGN KEY (id) REFERENCES court(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-
-
-CREATE TRIGGER check_court_availability
-AFTER INSERT INTO reservation
-BEGIN
-
-SET day_of_week = SELECT  CASE DATEPART(NEW.date,GETDATE())  
-    WHEN 1 THEN 'SUNDAY' 
-    WHEN 2 THEN 'MONDAY' 
-    WHEN 3 THEN 'TUESDAY' 
-    WHEN 4 THEN 'WEDNESDAY' 
-    WHEN 5 THEN 'THURSDAY' 
-    WHEN 6 THEN 'FRIDAY' 
-    WHEN 7 THEN 'SATURDAY' 
-END;
-
-    IF (SELECT C.closing_time - C.opening_time FROM
-        court C, court_time CT 
-        WHERE NEW.court = C.id AND
-        CT.court = C.id AND day_of_week 
-        AND day_of_week = CT.day_of_week
-        NEW.date = R.date) = (SELECT COUNT(*) FROM reservation R
-        WHERE R.id = NEW.court AND NEW.date = R.date ) THEN
-        INSERT INTO unavailable_court_date (id, date)
-        VALUES (NEW.id, NEW.date);
-    END IF;
-END;
-
-
-
