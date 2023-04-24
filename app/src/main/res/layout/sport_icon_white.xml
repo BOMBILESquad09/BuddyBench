@@ -1,0 +1,6 @@
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sport_icon_white"
+    android:layout_width="24sp"
+    android:layout_height="24sp"
+    android:contentDescription="TODO"
+    android:src="@drawable/tennis_white" />
