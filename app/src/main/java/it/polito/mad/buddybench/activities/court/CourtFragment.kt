@@ -84,10 +84,8 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
         // TODO: Turn Back on the activity HomeActivity
         binding.backButton.setOnClickListener {
-            val intent = Intent(context, HomeActivity::class.java)
-            startActivity(intent)
+            activity?.finish()
         }
-
 
         courtViewModel.getTimeTables(courtName, sport)
             .observe(viewLifecycleOwner) {

@@ -11,6 +11,7 @@ class CourtSearchAdapterAdapter(private val l:List<CourtDTO>): RecyclerView.Adap
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourtSearchViewHolder {
         val v = LayoutInflater.from(parent.context)
             .inflate(R.layout.card_court,parent,false)
+
         return CourtSearchViewHolder(v)
     }
 

@@ -21,7 +21,6 @@ class CourtActivity : AppCompatActivity() {
 
         binding = ActivityCourtBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //setSupportActionBar(binding.toolbar)
 
         val fragment = CourtFragment()
         supportFragmentManager.beginTransaction()
@@ -30,13 +29,4 @@ class CourtActivity : AppCompatActivity() {
 
     }
 
-
-
-
-    override fun onSupportNavigateUp(): Boolean {
-        return true
-       /* val navController = findNavController(R.id.nav_host_fragment_content_court)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()*/
-    }
 }
