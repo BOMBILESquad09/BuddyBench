@@ -1,9 +1,11 @@
 package it.polito.mad.buddybench.activities.findcourt
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
+import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
@@ -14,6 +16,7 @@ import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.activities.findcourt.SportSelection.CourtSearchAdapterAdapter
 import it.polito.mad.buddybench.dto.CourtDTO
+import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.viewmodels.CourtViewModel
 
 @AndroidEntryPoint
@@ -25,6 +28,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.searchRecyclerView)
         val b = view.findViewById<ImageButton>(R.id.change_sport_button)
+
         b.setOnClickListener{
             parent.fragmentManager.switchFragment(States.SPORTS_SELECTION)
         }
