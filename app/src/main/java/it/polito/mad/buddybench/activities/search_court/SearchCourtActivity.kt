@@ -9,18 +9,18 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import it.polito.mad.buddybench.DTO.CourtDTO
+import it.polito.mad.buddybench.dto.CourtDTO
 import it.polito.mad.buddybench.R
 
 class SearchCourtActivity : AppCompatActivity() {
 
-    private val l = listOf<CourtDTO>(
-        CourtDTO("Prova1","Via Alto",10,3),
-        CourtDTO("Prova2","Via basso",12,2),
-        CourtDTO("CAMPETTO DA TENNIS!!1!","Assurdo",14,2),
-        CourtDTO("Goku","SSJ2",1,2),
-        CourtDTO("Justin","xk no napoli? :(",100,2),
-        CourtDTO("Vai","Via!!!",1212,2)
+    private val l = listOf(
+        CourtDTO("Prova1","Via Alto","Scafati", 10, "TENNIS", "court1",3, 4.0, 2),
+        CourtDTO("Prova2","Via Alto","Scafati", 10, "TENNIS", "court1",3, 4.0, 2),
+        CourtDTO("Prova3","Via Alto","Scafati", 10, "TENNIS", "court1",3, 4.0, 2),
+        CourtDTO("Prova4","Via Alto","Scafati", 10, "TENNIS", "court1",3, 4.0, 2),
+        CourtDTO("Prova5","Via Alto","Scafati", 10, "TENNIS", "court1",3, 4.0, 2),
+        CourtDTO("Prova6","Via Alto","Scafati", 10, "TENNIS", "court1",3, 4.0, 2),
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +39,7 @@ class ViewHolder(v: View): RecyclerView.ViewHolder(v){
     private val feeHour: TextView = v.findViewById(R.id.court_fee_hour)
 
     fun bind(court: CourtDTO){
-        name.text = court.courtName
+        name.text = court.name
         address.text = court.address
         feeHour.text = court.feeHour.toString() + "€/h"
     }

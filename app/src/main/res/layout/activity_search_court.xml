@@ -27,10 +27,9 @@
           android:id="@+id/change_sport_button"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:background="@drawable/circle"
           android:contentDescription="@string/sport_choice"
           android:padding="16dp"
-          android:src="@drawable/tennis_white_64" />
+          android:src="@drawable/tennis_white" />
 
 
     </androidx.cardview.widget.CardView>
