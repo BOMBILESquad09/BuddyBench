@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.activities.myreservations
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import com.kizitonwose.calendar.view.MonthHeaderFooterBinder
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
+import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.dto.ReservationDTO
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import java.time.DayOfWeek
@@ -44,7 +46,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getAll().observe(viewLifecycleOwner) {
+        viewModel.getAllByUser(context.profile.email).observe(viewLifecycleOwner) {
             reservations.value = it
             recyclerViewReservations.adapter = ReservationAdapter(reservations.value?.get(
                 selectedDate?: LocalDate.now()

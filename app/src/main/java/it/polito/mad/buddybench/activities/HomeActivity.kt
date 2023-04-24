@@ -10,7 +10,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.profile.EditProfileActivity
@@ -19,14 +21,18 @@ import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.enums.Tabs
 import it.polito.mad.buddybench.utils.BottomBar
+import it.polito.mad.buddybench.viewmodels.ReservationViewModel
+import it.polito.mad.buddybench.viewmodels.UserViewModel
 import org.json.JSONObject
 
 @AndroidEntryPoint
 class HomeActivity: AppCompatActivity() {
+
     private val bottomBar = BottomBar(this)
     private val launcherEdit = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onEditReturn(it)}
     lateinit var profile: Profile
     private lateinit var sharedPref: SharedPreferences
+    private val userViewModel by viewModels<UserViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +84,8 @@ class HomeActivity: AppCompatActivity() {
 
                 putString("profile", profile.toJSON().toString())
                 apply()
+                userViewModel.updateUserInfo(profile)
+
                 supportFragmentManager.findFragmentByTag(Tabs.PROFILE.name).let {
                     if (it != null){
                         (it as ShowProfileFragment).let {

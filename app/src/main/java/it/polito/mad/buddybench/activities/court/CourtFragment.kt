@@ -66,8 +66,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        println("InstanceSaved")
-
         _binding = FragmentCourtBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -96,18 +94,23 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                 courtToReserve,
                 courtViewModel.selectedDay.value!!
             )
-            binding.buttonFirst.isEnabled = availableTimeSlots.isNotEmpty()
-            availableTimeSlots.map { renderTimeItem(it, courtViewModel.selectedTime.value!!) }
 
-            try {
-                courtViewModel.selectTime(availableTimeSlots[0])
-            }catch (e: java.lang.Exception) {
-                courtViewModel.selectTime(LocalTime.now())
+            if(availableTimeSlots.isEmpty()) {
+                binding.timeScrollView.removeAllViews()
+                val timeSlotsNotAvailable = layoutInflater.inflate(R.layout.time_slots_not_available, binding.timeScrollView, false)
+                binding.timeScrollView.addView(timeSlotsNotAvailable)
+            }
+
+            binding.buttonFirst.isEnabled = availableTimeSlots.isNotEmpty()
+                    && courtViewModel.timeSlots.value!!.contains(courtViewModel.selectedTime.value!!)
+
+            courtViewModel.selectedTime.observe(viewLifecycleOwner) {
+                binding.buttonFirst.isEnabled = availableTimeSlots.isNotEmpty()
+                        && courtViewModel.timeSlots.value!!.contains(courtViewModel.selectedTime.value!!)
             }
 
             courtViewModel.days.map { renderDayItem(it, selected) }
             courtViewModel.openingAndClosingTimeForCourt(selected.dayOfWeek)
-
 
 
         }
@@ -118,7 +121,13 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                 courtToReserve,
                 courtViewModel.selectedDay.value!!
             ).map { renderTimeItem(it, selected) }
+        }
 
+        courtViewModel.timeSlots.observe(viewLifecycleOwner) {
+            if(it.isEmpty()) {
+                binding.timeScrollView.removeAllViews()
+                layoutInflater.inflate(R.layout.time_slots_not_available, binding.timeScrollView, false)
+            }
         }
 
         // ** Navigate to court reservation
@@ -133,11 +142,10 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
     private fun updateView(court: CourtDTO) {
         binding.courtNameTv.text = court.name.replace("Courts", "")
-        binding.courtAddressTv.text = court.address
+        binding.courtAddressTv.text = court.address + ", " + court.location
         binding.courtFeeTv.text = getString(R.string.court_fee, court.feeHour.toString())
         courtViewModel.getTimeTable().value?.timeTable.let{
             if (it!=null) {
-                println("okkkk")
                 binding.courtOpeningHoursTv.text = Utils.getStringifyTimeTable(it)
             }
         }
@@ -184,6 +192,8 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             dayScrollItem.layoutParams = noMarginParams
         }
 
+        courtViewModel.selectTime(LocalTime.MAX)
+
         // ** OnClick Listener
         dayScrollItem.setOnClickListener { courtViewModel.selectDay(day) }
 
@@ -208,7 +218,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         timeSlotTv.text = timeSlotText
 
         // ** Selected time
-        if (time == selected) {
+        if (time == selected && selected.isBefore(LocalTime.MAX)) {
             val primaryColor =
                 ContextCompat.getColor(requireContext(), R.color.md_theme_light_primary)
             val whiteColor =
@@ -237,7 +247,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         val courtName = bottomSheetDialog.findViewById<TextView>(R.id.court_name_confirm_tv)
         courtName?.text = courtViewModel.court.value?.name
         val courtAddress = bottomSheetDialog.findViewById<TextView>(R.id.court_address_confirm_tv)
-        courtAddress?.text = courtViewModel.court.value?.address
+        courtAddress?.text = courtViewModel.court.value?.address +  ", " + courtViewModel.court.value?.location
         val dateSelected = bottomSheetDialog.findViewById<TextView>(R.id.dateSelected)
         dateSelected?.text = courtViewModel.selectedDay.value!!.format(
             DateTimeFormatter.ofPattern("EEEE, d MMMM y")

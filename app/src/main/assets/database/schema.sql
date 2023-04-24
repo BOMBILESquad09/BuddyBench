@@ -4,8 +4,8 @@ DROP TABLE IF EXISTS court;
 DROP TABLE IF EXISTS court_time;
 DROP TABLE IF EXISTS invitation;
 DROP TABLE IF EXISTS reservation;
-DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS user_sport;
+DROP TABLE IF EXISTS user;
 
 
 CREATE  TABLE sport(
@@ -125,21 +125,16 @@ INSERT INTO court (id, name, address, location, fee_hour, sport, path, fee_equip
 
 INSERT INTO court (id, name, address, location, fee_hour, sport, path, fee_equipment, rating, n_reviews) VALUES (15, 'Echo Park Courts', '1010 Glendale Blvd', 'Los Angeles, CA', 35, "TENNIS", "court15", 3, 3.6, 68);
 
-INSERT INTO reservation (id, user, court, date, start_time, equipment) 
-VALUES ( 0, 1, 5, '2023-04-30', 18, false);
-
-INSERT INTO reservation (id, user, court, date, start_time, equipment) VALUES (
-    1, 1, 6, '2023-04-27', 18, false
-);
-
 INSERT INTO reservation (id, user, court, date, start_time, equipment)
 VALUES 
-    
-    (2, 1, 8, '2023-05-16', 14, false),
+
+    (2, 0, 8, '2023-05-16', 14, false),
     (3, 1, 11, '2023-05-17', 9, false),
-    (4, 1, 14, '2023-05-18', 16, false),
-    (5, 1, 3, '2023-05-19', 11, false),
-    (6, 1, 6, '2023-05-15', 10, false);
+    (4, 0, 14, '2023-05-18', 16, false),
+    (5, 0, 3, '2023-05-19', 11, false),
+    (6, 1, 6, '2023-05-15', 10, false),
+    (0, 0, 5, '2023-04-30', 18, false),
+    (1, 1, 6, '2023-04-27', 18, false);
 
 INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time)
 VALUES (0, 1, 1, "6:00", "20:00");
@@ -153,21 +148,3 @@ INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time)
 VALUES (4, 1, 5, "6:00", "20:00");
 INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time)
 VALUES (5, 1, 6, "10:00", "20:00");
-
-
-
-                                                                                                    TableInfo{name='court', columns={, , , rating=Column{name='rating', type='REAL', affinity='4', notNull=true, primaryKeyPosition=0, defaultValue='undefined'}, , , , , , fee_hour=Column{name='fee_hour', type='INTEGER', affinity='3', notNull=true, primaryKeyPosition=0, defaultValue='undefined'}}, foreignKeys=[ForeignKey{referenceTable='sport', onDelete='CASCADE +', onUpdate='CASCADE', columnNames=[sport], referenceColumnNames=[sport_name]}], indices=[]}
-                                                                                                     Found:
-                                                                                                    TableInfo{name='court', columns={, , , , fee_hour=Column{name='fee_hour', type='INTEGER', affinity='3', notNull=true, primaryKeyPosition=0, defaultValue='undefined'}, , , , rating=Column{name='rating', type='NUMBER', affinity='1', notNull=true, primaryKeyPosition=0, defaultValue='undefined'}, }, foreignKeys=[ForeignKey{referenceTable='sport', onDelete='CASCADE +', onUpdate='CASCADE', columnNames=[sport], referenceColumnNames=[sport_name]}], indices=[]}
-
-
-
-
-Lun-Ven 8:00 / 18:00 - Sat 8:00 16:00
-
-Mercoledi 8 17
-Lun
-
-
-1,2,3,5,6,7,9
-[1,2,3] [5,6,7] [9]

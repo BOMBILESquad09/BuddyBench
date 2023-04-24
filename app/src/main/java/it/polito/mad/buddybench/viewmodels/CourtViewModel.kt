@@ -48,8 +48,7 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     private val _days = Utils.generateDateRange(LocalDate.now(), LocalDate.now().plusDays(14))
     private val _timeSlots :MutableLiveData<List<LocalTime>> = MutableLiveData(_initialValueTimeSlots)
     private val _selectedDay: MutableLiveData<LocalDate> = MutableLiveData(LocalDate.now())
-    private val _selectedTime: MutableLiveData<LocalTime> = MutableLiveData(
-        _timeSlots.value?.get(0) ?: LocalTime.now())
+    private val _selectedTime: MutableLiveData<LocalTime> = MutableLiveData(LocalTime.now())
 
     // ** Expose to other classes (view)
     val court: LiveData<CourtDTO> get() = _court
@@ -100,6 +99,7 @@ class CourtViewModel @Inject constructor() : ViewModel() {
         if(list.isNotEmpty())
             list.removeLast()
         _timeSlots.value = list
+
         return list
     }
 

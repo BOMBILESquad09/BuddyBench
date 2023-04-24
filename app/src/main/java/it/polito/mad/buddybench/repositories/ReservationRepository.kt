@@ -25,6 +25,10 @@ class ReservationRepository @Inject constructor(
         return ReservationDTO.toHashmap(reservationDao.getAll().map { it.toReservationDTO() })
     }
 
+    fun getAllByUser(email: String): HashMap<LocalDate, List<ReservationDTO>> {
+        return ReservationDTO.toHashmap(reservationDao.getAllByUser(email).map { it.toReservationDTO() })
+    }
+
     fun save(reservationDTO: ReservationDTO) {
         val user = userDao.getUserByEmail(reservationDTO.userOrganizer.email)!!
         val courtWithSport = courtDao.getByNameAndSport(reservationDTO.court.name, reservationDTO.court.sport)

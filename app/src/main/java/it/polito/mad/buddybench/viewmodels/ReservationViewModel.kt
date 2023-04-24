@@ -39,6 +39,15 @@ class ReservationViewModel @Inject constructor(): ViewModel() {
         return _reservations
     }
 
+    fun getAllByUser(email: String): LiveData<HashMap<LocalDate, List<ReservationDTO>>> {
+        // Repository Call, All the repos return DTO Obj
+        val reservations = reservationRepository.getAllByUser(email)
+        println("Reservation For: $email")
+        println(reservations)
+        _reservations.value = reservations
+        return _reservations
+    }
+
     fun saveReservation(
         reservation: ReservationDTO
     ) {
