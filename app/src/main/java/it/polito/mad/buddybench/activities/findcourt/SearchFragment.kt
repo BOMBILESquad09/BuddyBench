@@ -5,8 +5,11 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.compose.ui.text.capitalize
@@ -39,6 +42,8 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         val b = view.findViewById<ImageButton>(R.id.change_sport_button)
         val textNearButton = view.findViewById<TextView>(R.id.textView12)
         val textUser = view.findViewById<TextView>(R.id.textView11)
+        val searchEditText = view.findViewById<EditText>(R.id.searchEditText)
+
         textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
 
         b.setOnClickListener{
@@ -63,6 +68,19 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             recyclerView?.adapter = CourtSearchAdapterAdapter(l)
             recyclerView?.layoutManager = LinearLayoutManager(view.context)
             textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
+
+            searchEditText.addTextChangedListener(object: TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    val filteredData = l.filter {
+                        it.location.contains(s.toString(), ignoreCase = true) || it.name.contains(s.toString(), ignoreCase = true)
+                    }
+                    recyclerView.adapter = CourtSearchAdapterAdapter(filteredData)
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            })
         }
 
         super.onViewCreated(view, savedInstanceState)

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_semibold_600"
+            android:text="@string/filters"
+            android:textSize="24sp" />
+
+        <!-- Rating Filter -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:layout_marginHorizontal="2dp"
+            android:backgroundTint="@color/cardview_light_background"
+            app:cardCornerRadius="30dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="16dp"
+                    android:fontFamily="@font/montserrat_medium_500"
+                    android:paddingTop="8dp"
+                    android:paddingHorizontal="8dp"
+                    android:text="Rating"
+                    android:textSize="16sp"
+                    android:drawableStart="@drawable/star_filled" />
+
+                <org.florescu.android.rangeseekbar.RangeSeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Rating Filter -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:layout_marginHorizontal="2dp"
+            android:backgroundTint="@color/cardview_light_background"
+            app:cardCornerRadius="30dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="16dp"
+                    android:fontFamily="@font/montserrat_medium_500"
+                    android:paddingTop="8dp"
+                    android:paddingHorizontal="8dp"
+                    android:text="Price"
+                    android:textSize="16sp"
+                    android:drawableStart="@drawable/money_symbol" />
+
+                <org.florescu.android.rangeseekbar.RangeSeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Confirm/Clear -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/confirmFilter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/rounded_shape"
+                android:backgroundTint="@color/md_theme_light_error"
+                android:text="@string/clear"
+                android:textAllCaps="false"
+                android:textColor="@color/md_theme_light_background" />
+
+            <Button
+                android:id="@+id/clearFilter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="16dp"
+                android:background="@drawable/rounded_shape"
+                android:backgroundTint="@color/md_theme_light_primary"
+                android:text="@string/show_filter_results"
+                android:textAllCaps="false"
+                android:textColor="@color/md_theme_light_background" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

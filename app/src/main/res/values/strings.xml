@@ -83,4 +83,7 @@
     <string name="court_search_phrase">You are currently look for %1$s court</string>
     <string name="user_hello">Hi, %1$s !</string>
     <string name="equipment">All the equipment will be available at the price of</string>
+    <string name="filters">Filters</string>
+    <string name="show_filter_results">Show Results</string>
+    <string name="clear">Clear</string>
 </resources>

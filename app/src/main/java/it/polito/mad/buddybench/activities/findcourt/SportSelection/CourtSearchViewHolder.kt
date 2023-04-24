@@ -20,7 +20,7 @@ class CourtSearchViewHolder(v: View): RecyclerView.ViewHolder(v){
     fun bind(court: CourtDTO){
 
         name.text = court.name
-        address.text = court.address
+        address.text = court.location + ", " + court.address
         feeHour.text = court.feeHour.toString() + "€/h"
         courtRating.text = court.rating.toString()
 
