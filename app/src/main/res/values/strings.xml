@@ -80,5 +80,7 @@
     <string name="wednesday_19_april">Wednesday, 19 April</string>
     <string name="confirm">Confirm</string>
     <string name="which_sport_do_you_want_to_play">Which sport do you want to play?</string>
+    <string name="court_search_phrase">You are currently look for %1$s court</string>
+    <string name="user_hello">Hi, %1$s !</string>
     <string name="equipment">All the equipment will be available at the price of</string>
 </resources>
