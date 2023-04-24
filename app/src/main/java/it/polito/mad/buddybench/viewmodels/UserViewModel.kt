@@ -1,5 +1,7 @@
 package it.polito.mad.buddybench.viewmodels
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.classes.Profile
@@ -12,7 +14,11 @@ class UserViewModel @Inject constructor() : ViewModel() {
 
     @Inject
     lateinit var userRepository: UserRepository
+    private val _initName: String = ""
 
+    private val _userName: MutableLiveData<String> = MutableLiveData(_initName)
+
+    val username: LiveData<String> get() = _userName
 
     fun updateUserInfo(profile: Profile) {
         userRepository.update(
@@ -26,7 +32,10 @@ class UserViewModel @Inject constructor() : ViewModel() {
                 profile.reliability
             )
         )
+    }
 
+    fun setUserName(name: String) {
+        _userName.value = name
     }
 
 }
