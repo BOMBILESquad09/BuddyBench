@@ -82,7 +82,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         val courtName = activity?.intent?.getStringExtra("courtName") ?: "Central Park Tennis"
         val sport = Sports.valueOf(activity?.intent?.getStringExtra("sport")?.uppercase() ?: Sports.TENNIS.name)
 
-        // TODO: Turn Back on the activity HomeActivity
         binding.backButton.setOnClickListener {
             activity?.finish()
         }
