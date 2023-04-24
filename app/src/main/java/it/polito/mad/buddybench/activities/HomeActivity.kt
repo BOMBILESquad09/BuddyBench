@@ -43,6 +43,7 @@ class HomeActivity: AppCompatActivity() {
         } else{
             Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
         }
+        userViewModel.setUserName(profile.name!!)
         bottomBar.setup()
     }
 
@@ -85,7 +86,7 @@ class HomeActivity: AppCompatActivity() {
                 putString("profile", profile.toJSON().toString())
                 apply()
                 userViewModel.updateUserInfo(profile)
-
+                userViewModel.setUserName(profile.name!!)
                 supportFragmentManager.findFragmentByTag(Tabs.PROFILE.name).let {
                     if (it != null){
                         (it as ShowProfileFragment).let {

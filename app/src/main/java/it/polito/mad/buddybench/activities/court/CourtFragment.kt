@@ -150,11 +150,10 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             }
         }
 
-        var bitmap :Bitmap? = null
-        try {
-            bitmap = BitmapFactory.decodeStream(view?.context?.assets?.open("courtImages/" + court.path + ".jpg"))
+        val bitmap = try {
+            BitmapFactory.decodeStream(view?.context?.assets?.open("courtImages/" + court.path + ".jpg"))
         } catch (_: FileNotFoundException) {
-            bitmap = BitmapFactory.decodeStream(view?.context?.assets?.open("courtImages/default_image.jpg"))
+            BitmapFactory.decodeStream(view?.context?.assets?.open("courtImages/default_image.jpg"))
         }
         courtToReserve = court
         binding.backgroundImage.setImageBitmap(bitmap)
