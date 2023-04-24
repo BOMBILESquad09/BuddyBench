@@ -28,7 +28,6 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideSportRepo(appDatabase: CourtReservationDatabase): SportRepository {
-
         return SportRepository(
             appDatabase.sportDao()
         )
@@ -60,15 +59,13 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideReservationRepo(appDatabase: CourtReservationDatabase): ReservationRepository {
-        println(appDatabase.userDao().getAll())
-        println(appDatabase.courtDao().getAll())
 
-        println(appDatabase.sportDao().getAll())
         println(appDatabase.reservationDao().getAll())
         val x =  ReservationRepository(
             appDatabase.reservationDao(),
             appDatabase.userDao(),
-            appDatabase.courtDao()
+            appDatabase.courtDao(),
+            appDatabase.courtTimeDao()
         )
         println(x.getAll())
         return x

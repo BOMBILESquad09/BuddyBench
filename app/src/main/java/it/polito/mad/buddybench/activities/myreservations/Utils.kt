@@ -1,6 +1,5 @@
-package it.polito.mad.buddybench.activities.calendar
+package it.polito.mad.buddybench.activities.myreservations
 
-import it.polito.mad.buddybench.classes.Sport
 import java.time.DayOfWeek
 import java.time.Month
 import java.time.YearMonth

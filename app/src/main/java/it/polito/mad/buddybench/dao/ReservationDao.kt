@@ -15,6 +15,11 @@ interface ReservationDao {
     @Delete
     fun delete(reservation: Reservation)
 
+    @Query("SELECT * FROM reservation WHERE court = :courtId AND date = :date")
+    fun getAllByCourtAndDate(courtId: Int, date: String): List<ReservationWithUserAndCourt>
+
+    @Query("SELECT * FROM reservation R, user U WHERE U.email = :email and R.user = U.id")
+    fun getAllByUser(email: String): List<ReservationWithUserAndCourt>
 
 
 

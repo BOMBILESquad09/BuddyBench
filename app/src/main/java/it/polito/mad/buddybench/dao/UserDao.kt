@@ -6,14 +6,20 @@ import it.polito.mad.buddybench.entities.User
 @Dao
 interface UserDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun save(user: User)
+    @Insert
+    fun save(user: User): Long
+
+    @Update(entity = User::class, onConflict = OnConflictStrategy.REPLACE)
+    fun update(user: User)
 
     @Delete
     fun delete(user: User)
 
     @Query("SELECT * FROM User")
     fun getAll(): List<User>
+
+    @Query("SELECT MAX(ID) FROM user")
+    fun getMaxId(): Long
 
     @Query("SELECT * FROM User WHERE email = :emailUser")
     fun getUserByEmail(emailUser: String): User?

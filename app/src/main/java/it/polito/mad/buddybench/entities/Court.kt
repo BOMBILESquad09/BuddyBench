@@ -12,7 +12,7 @@ import java.util.regex.Pattern
     tableName = "court", foreignKeys = arrayOf(
         ForeignKey(
             entity = Sport::class,
-            parentColumns = arrayOf("name"),
+            parentColumns = arrayOf("sport_name"),
             childColumns = arrayOf("sport"),
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.CASCADE
@@ -42,6 +42,15 @@ data class Court(
     @ColumnInfo(name = "path")
     var path: String,
 
+    @ColumnInfo(name = "fee_equipment")
+    var feeEquipment: Int,
+
+    @ColumnInfo(name = "rating")
+    var rating: Double,
+
+    @ColumnInfo(name = "n_reviews")
+    var nReviews: Int
+
     )
 fun Court.toCourtDTO(): CourtDTO {
     return CourtDTO(
@@ -50,6 +59,9 @@ fun Court.toCourtDTO(): CourtDTO {
         location = this.location,
         feeHour = this.feeHour,
         sport = this.sport,
-        path = this.path
+        path = this.path,
+        feeEquipment = this.feeEquipment,
+        rating = this.rating,
+        nReviews = this.nReviews
     )
 }

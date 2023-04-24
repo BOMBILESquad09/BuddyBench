@@ -19,7 +19,7 @@ interface SportDao {
     @Delete
     fun delete(sport: Sport)
 
-    @Query("SELECT * FROM sport WHERE name = :name")
+    @Query("SELECT * FROM sport WHERE sport_name = :name")
     fun getSportByName(name: String): Sport?
 
 }

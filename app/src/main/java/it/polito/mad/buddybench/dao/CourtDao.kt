@@ -22,7 +22,7 @@ interface CourtDao {
     @Delete
     fun delete(court: Court)
 
-    @Query("SELECT * FROM Court C, Sport S WHERE C.sport = S.name AND C.name = :courtName AND S.name = :sportInCourt")
+    @Query("SELECT * FROM Court C, Sport S WHERE C.sport = S.sport_name AND C.name = :courtName AND S.sport_name = :sportInCourt")
     fun getByNameAndSport(courtName: String, sportInCourt: String): CourtWithSport
 
     @Query("SELECT * FROM Court WHERE sport = :sport")

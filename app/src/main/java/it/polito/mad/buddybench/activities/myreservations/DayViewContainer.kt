@@ -1,4 +1,4 @@
-package it.polito.mad.buddybench.activities.calendar
+package it.polito.mad.buddybench.activities.myreservations
 
 import android.app.Activity
 import android.content.Context
@@ -8,7 +8,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.view.ViewContainer

@@ -1,4 +1,4 @@
-package it.polito.mad.buddybench.activities
+package it.polito.mad.buddybench.activities.profile
 
 import android.Manifest
 import android.app.Activity

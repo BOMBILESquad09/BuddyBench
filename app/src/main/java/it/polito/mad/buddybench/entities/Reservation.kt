@@ -40,6 +40,8 @@ data class Reservation(
     @ColumnInfo(name = "start_time")
     val startTime: Int,
 
+    @ColumnInfo(name = "equipment")
+    val equipment: Boolean,
 
 
     )
@@ -50,6 +52,7 @@ fun Reservation.toReservationDTO(user: User, court: Court): ReservationDTO {
         court = court.toCourtDTO(),
         date = LocalDate.parse(this.date),
         startTime = LocalTime.of(this.startTime,0),
-        endTime = LocalTime.of(this.startTime,0).plusHours(1)
+        endTime = LocalTime.of(this.startTime,0).plusHours(1),
+        equipment = this.equipment
     )
 }

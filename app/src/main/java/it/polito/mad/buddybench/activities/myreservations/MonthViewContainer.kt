@@ -1,4 +1,4 @@
-package it.polito.mad.buddybench.activities.calendar
+package it.polito.mad.buddybench.activities.myreservations
 
 import android.view.View
 import android.view.ViewGroup

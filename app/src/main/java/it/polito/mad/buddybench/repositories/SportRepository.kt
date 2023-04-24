@@ -5,7 +5,9 @@ import it.polito.mad.buddybench.dto.SportDTO
 
 import it.polito.mad.buddybench.entities.toSportDTO
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class SportRepository @Inject constructor(private val sportDao: SportDao) {
 
     fun getAll(): List<SportDTO> = sportDao.getAll().map { it.toSportDTO() }

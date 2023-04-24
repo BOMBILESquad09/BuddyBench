@@ -4,86 +4,47 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.activities.profile.EditProfileActivity
+import it.polito.mad.buddybench.activities.profile.ShowProfileFragment
 import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
+import it.polito.mad.buddybench.enums.Tabs
+import it.polito.mad.buddybench.utils.BottomBar
+import it.polito.mad.buddybench.viewmodels.ReservationViewModel
+import it.polito.mad.buddybench.viewmodels.UserViewModel
 import org.json.JSONObject
 
 @AndroidEntryPoint
-class ShowProfileActivity : AppCompatActivity() {
-    private lateinit var profile: Profile
+class HomeActivity: AppCompatActivity() {
+
+    private val bottomBar = BottomBar(this)
     private val launcherEdit = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onEditReturn(it)}
+    lateinit var profile: Profile
     private lateinit var sharedPref: SharedPreferences
+    private val userViewModel by viewModels<UserViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_show_profile)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        toolbar.title = "Profile"
-        toolbar.setTitleTextColor(Color.WHITE)
-        setSupportActionBar(toolbar)
+        setContentView(R.layout.home)
         sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-
-        profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
-        setGUI()
-    }
-
-    private fun setGUI(){
-        val fullNameTv = findViewById<TextView>(R.id.fullNameView)
-        fullNameTv.text = profile.fullName
-
-        val nicknameTv = findViewById<TextView>(R.id.nickNameView)
-        nicknameTv.text = profile.nickname
-
-        val ageTv = findViewById<TextView>(R.id.ageView)
-        ageTv.text = getString(R.string.age).format(profile.age)
-
-        /*
-        val emailTv = findViewById<TextView>(R.id.emailView)
-        emailTv.text = profile.email*/
-
-        val locationTv = findViewById<TextView>(R.id.locationView)
-        locationTv.text = profile.location
-
-        val matchesPlayedTv = findViewById<TextView>(R.id.matchesPlayedView)
-        matchesPlayedTv.text = profile.matchesPlayed.toString()
-
-        val matchesOrganizedTv = findViewById<TextView>(R.id.matchesOrganizedView)
-        matchesOrganizedTv.text = profile.matchesOrganized.toString()
-
-        val reliabilityTv = findViewById<TextView>(R.id.reliabilityView)
-        reliabilityTv.text = getString(R.string.reliabilityValue).format(profile.reliability)
-
-        val iv = findViewById<ImageView>(R.id.imageEdit)
-        resizeImageView(iv)
-        try{
-            iv.setImageURI(profile.imageUri)
-        } catch (_: Exception){
-            iv.setImageResource(R.drawable.person)
+        profile = if (::profile.isInitialized) {
+             profile
+        } else{
+            Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
         }
-
-
-
-        val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
-        sportContainer.removeAllViews()
-
-        // ** Populate sport cards
-        profile.populateSportCards(this, sportContainer)
+        bottomBar.setup()
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
@@ -107,11 +68,9 @@ class ShowProfileActivity : AppCompatActivity() {
     private fun onEditReturn(response: androidx.activity.result.ActivityResult){
         if(response.resultCode == Activity.RESULT_OK){
             with(sharedPref.edit()) {
-
                 val newProfile = Profile.fromJSON(JSONObject(response.data?.getStringExtra("newProfile").toString()))
                 val newImageUri =  if(newProfile.imageUri != null &&  newProfile.imageUri.toString() != profile.imageUri.toString())
                     BitmapUtils.saveToInternalStorage(applicationContext, BitmapUtils.uriToBitmap(contentResolver, newProfile.imageUri!!)!!, profile.imageUri) else profile.imageUri
-                println(newImageUri)
                 if(newImageUri == null){
                     val toast = Toast.makeText(
                         applicationContext,
@@ -121,30 +80,20 @@ class ShowProfileActivity : AppCompatActivity() {
                     toast.show()
                 }
                 profile = newProfile
-                profile.imageUri = newImageUri?:profile.imageUri
+                profile.imageUri = newImageUri?: profile.imageUri
 
                 putString("profile", profile.toJSON().toString())
                 apply()
+                userViewModel.updateUserInfo(profile)
 
-                setGUI()
+                supportFragmentManager.findFragmentByTag(Tabs.PROFILE.name).let {
+                    if (it != null){
+                        (it as ShowProfileFragment).let {
+                            it.profile = profile
+                        }
+                    }
+                }
             }
         }
     }
-
-    private  fun resizeImageView(iv: ImageView){
-
-        val ll = findViewById<LinearLayout>(R.id.imageContainer)
-        ll.post {
-            val width = ll.width
-            val height = ll.height
-            if (width == height) return@post
-            val diameter = width.coerceAtMost(height)
-
-            iv.layoutParams = FrameLayout.LayoutParams(diameter, diameter)
-            iv.requestLayout()
-        }
-
-    }
-
-
 }

@@ -103,29 +103,31 @@
                 android:gravity="center_vertical">
 
                 <TextView
+                    android:id="@+id/rating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/rating_default_value"
                     android:fontFamily="@font/montserrat_semibold_600"
-                    android:textSize="14sp"
-                    />
+                    android:text="@string/rating_default_value"
+                    android:textSize="14sp" />
 
                 <RatingBar
+                    android:id="@+id/rating_bar"
+                    style="@style/Widget.AppCompat.RatingBar.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
                     android:indeterminate="false"
                     android:isIndicator="false"
-                    android:layout_marginHorizontal="8dp"
                     android:numStars="5"
-                    style="@style/Widget.AppCompat.RatingBar.Small"
                     android:rating="4.5" />
 
                 <TextView
+                    android:id="@+id/n_reviews"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
+                    android:fontFamily="@font/montserrat_medium_500"
                     android:text="@string/reviews_number"
-                    android:fontFamily="@font/montserrat_medium_500"/>
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <!-- Court Information -->
