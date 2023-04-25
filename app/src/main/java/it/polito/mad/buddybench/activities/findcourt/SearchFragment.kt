@@ -55,6 +55,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
         }
 
+
         super.onViewCreated(view, savedInstanceState)
     }
 

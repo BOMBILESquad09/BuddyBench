@@ -35,7 +35,7 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideUserRepo(appDatabase: CourtReservationDatabase): UserRepository {
-        return UserRepository(appDatabase.userDao())
+        return UserRepository(appDatabase.userDao(), appDatabase.userSportDao())
     }
 
     @Singleton

@@ -15,7 +15,7 @@ import it.polito.mad.buddybench.entities.*
         UserSport::class,
         User::class,
         UnavailableDayCourt::class
-    ], version = 1, exportSchema = true
+    ], version = 2, exportSchema = true
 )
 abstract class CourtReservationDatabase: RoomDatabase() {
 

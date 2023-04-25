@@ -14,7 +14,7 @@ import nl.joery.animatedbottombar.AnimatedBottomBar
 
 class BottomBar(val context: HomeActivity) {
 
-    var currentTab = Tabs.RESERVATIONS
+    var currentTab = Tabs.PROFILE
 
     fun setup(){
         val bottomBar = context.findViewById<AnimatedBottomBar>(R.id.bottom_bar)

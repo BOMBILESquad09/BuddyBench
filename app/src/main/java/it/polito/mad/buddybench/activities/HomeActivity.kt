@@ -43,7 +43,12 @@ class HomeActivity: AppCompatActivity() {
         } else{
             Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
         }
-        userViewModel.setUserName(profile.name!!)
+        profile = userViewModel.getUser(profile.email).let {
+            if (it == null){
+                profile
+            }
+            it
+        }
         bottomBar.setup()
     }
 

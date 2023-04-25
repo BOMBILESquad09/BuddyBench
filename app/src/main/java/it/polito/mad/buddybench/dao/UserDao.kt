@@ -2,6 +2,7 @@ package it.polito.mad.buddybench.dao
 
 import androidx.room.*
 import it.polito.mad.buddybench.entities.User
+import it.polito.mad.buddybench.entities.UserWithSports
 
 @Dao
 interface UserDao {
@@ -22,6 +23,6 @@ interface UserDao {
     fun getMaxId(): Long
 
     @Query("SELECT * FROM User WHERE email = :emailUser")
-    fun getUserByEmail(emailUser: String): User?
+    fun getUserByEmail(emailUser: String): UserWithSports?
 
 }

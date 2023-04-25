@@ -2,12 +2,10 @@
 
 
 <androidx.cardview.widget.CardView xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/sport_card"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_margin="3dp"
-    android:layout_marginEnd="15dp"
     app:cardBackgroundColor="@android:color/transparent"
     app:cardCornerRadius="25dp"
     app:cardElevation="3dp"
