@@ -53,7 +53,6 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     private val _selectedDay: MutableLiveData<LocalDate> = MutableLiveData(LocalDate.now())
     private val _selectedTimes: MutableLiveData<MutableList<LocalTime>> =
         MutableLiveData(mutableListOf())
-
     // ** Expose to other classes (view)
     val court: LiveData<CourtDTO> get() = _court
     val days: List<LocalDate> get() = _days
@@ -115,8 +114,12 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     }
 
     fun getTimeTables(name: String, sport: Sports): LiveData<CourtTimeTableDTO> {
-        _timetable.value = courtTimeRepository.getCourtTimeTable(name, sport)
-        _court.value = _timetable.value!!.court
+        Thread{
+            val tt = courtTimeRepository.getCourtTimeTable(name, sport)
+            _timetable.postValue(tt)
+            _court.postValue( tt.court)
+        }.start()
+
         return _timetable
     }
 
@@ -125,28 +128,29 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     }
 
 
-    fun getTimeSlotsAvailable(courtDTO: CourtDTO, date: LocalDate): List<LocalTime> {
-        val timeSlotsOccupied = reservationRepository.getTimeSlotsOccupiedForCourtAndDate(
-            courtDTO,
-            date
-        )
-        openingAndClosingTimeForCourt(date.dayOfWeek)
-        val list = _initialValueTimeSlots.filter {
-            !timeSlotsOccupied.contains(it)
-        } as MutableList
-        if (list.isNotEmpty())
-            list.removeLast()
+    fun getTimeSlotsAvailable(courtDTO: CourtDTO, date: LocalDate): LiveData<List<LocalTime>> {
+        Thread {
+            val timeSlotsOccupied = reservationRepository.getTimeSlotsOccupiedForCourtAndDate(
+                courtDTO,
+                date
+            )
+            openingAndClosingTimeForCourt(date.dayOfWeek)
+            val list = _initialValueTimeSlots.filter {
+                !timeSlotsOccupied.contains(it)
+            } as MutableList
 
-        _timeSlots.value = list
+            _timeSlots.postValue(list)
 
-        return list
+        }.start()
+
+        return timeSlots
     }
 
     fun openingAndClosingTimeForCourt(dayOfWeek: DayOfWeek) {
 
         val courtTime = _timetable.value?.timeTable?.get(dayOfWeek)
-        _openingTime.value = courtTime?.first ?: LocalTime.of(0, 0)
-        _closingTime.value = courtTime?.second ?: LocalTime.of(0, 0)
+        _openingTime.postValue( courtTime?.first ?: LocalTime.of(0, 0))
+        _closingTime.postValue(  courtTime?.second ?: LocalTime.of(0, 0))
         _initialValueTimeSlots = if (courtTime != null)
             Utils.getTimeSlots(courtTime.first, courtTime.second)
         else

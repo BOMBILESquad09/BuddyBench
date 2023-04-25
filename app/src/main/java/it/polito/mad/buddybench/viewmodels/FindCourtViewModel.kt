@@ -14,14 +14,17 @@ import javax.inject.Inject
 class SportsSelectionViewModel @Inject constructor(): ViewModel() {
     private var _sports: MutableLiveData<List<Sports>> = MutableLiveData(listOf())
     var sports: LiveData<List<Sports>> = _sports
-    var selectedSport: MutableLiveData<Sports> = MutableLiveData(Sports.FOOTBALL)
+    var selectedSport: MutableLiveData<Sports> = MutableLiveData(null)
 
 
     @Inject
     lateinit var sportRepository: SportRepository
 
     fun getAll(): LiveData<List<Sports>>{
-        _sports.value = sportRepository.getAll().map { Sports.valueOf(it.name) }
+        Thread{
+            _sports.postValue(  sportRepository.getAll().map { Sports.valueOf(it.name) })
+        }.start()
+
         return sports
     }
 }

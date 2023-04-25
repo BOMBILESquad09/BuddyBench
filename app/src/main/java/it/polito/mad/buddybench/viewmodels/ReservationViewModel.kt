@@ -23,7 +23,6 @@ import javax.inject.Inject
 class ReservationViewModel @Inject constructor(): ViewModel() {
 
     private val _reservations: MutableLiveData<HashMap<LocalDate, List<ReservationDTO>>> = MutableLiveData(null)
-    val reservation: LiveData<HashMap<LocalDate, List<ReservationDTO>>> = _reservations
     private val _selectedDate: MutableLiveData<LocalDate> = MutableLiveData(null)
     val selectedDate: LiveData<LocalDate> = _selectedDate
 
@@ -36,33 +35,40 @@ class ReservationViewModel @Inject constructor(): ViewModel() {
 
     fun getAll(): LiveData<HashMap<LocalDate, List<ReservationDTO>>> {
         // Repository Call, All the repos return DTO Obj
-        val reservations = reservationRepository.getAll()
-        _reservations.value = reservations
+        Thread{
+            val reservations = reservationRepository.getAll()
+            _reservations.postValue(reservations)
+        }.start()
+
         return _reservations
     }
 
     fun getAllByUser(email: String): LiveData<HashMap<LocalDate, List<ReservationDTO>>> {
         // Repository Call, All the repos return DTO Obj
-        val reservations = reservationRepository.getAllByUser(email)
-        println("Reservation For: $email")
-        println(reservations)
-        _reservations.value = reservations
+        Thread{
+            val reservations = reservationRepository.getAllByUser(email)
+            println("Reservation For: $email")
+            println(reservations)
+            _reservations.postValue(reservations)
+        }.start()
+
         return _reservations
     }
 
     fun saveReservation(
         reservation: ReservationDTO
     ) {
-        reservationRepository.save(
-            reservation
-        )
+        /*In a thread or not?*/
+            reservationRepository.save(
+                reservation
+            )
+
+
     }
 
 
     fun updateSelectedDay(date: LocalDate){
         _selectedDate.value = date
-
-
     }
 
     fun getSelectedReservations(): List<ReservationDTO>?{

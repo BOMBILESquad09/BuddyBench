@@ -106,8 +106,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
         // Setting the Manager Layout for the RecyclerView
         binding.timeGridParent.removeAllViews()
-        val gridRecyclerView =
-            layoutInflater.inflate(R.layout.grid_times_slots, binding.timeGridParent, false)
+        val gridRecyclerView = layoutInflater.inflate(R.layout.grid_times_slots, binding.timeGridParent, false)
         binding.timeGridParent.addView(gridRecyclerView)
         val recyclerView = binding.timeGridParent.findViewById<RecyclerView>(R.id.time_slot_grid)
         recyclerView.layoutManager = GridLayoutManager(context, 4)
@@ -117,94 +116,72 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             mutableListOf()
         )
 
+
         // Return to the previous activity
         binding.backButton.setOnClickListener {
             activity?.finish()
         }
 
         // Retrieve the time tables associated to a Court
-        courtViewModel.getTimeTables(courtName, sport)
-            .observe(viewLifecycleOwner) {
-                updateView(it.court)
+        courtViewModel.getTimeTables(courtName, sport).observe(viewLifecycleOwner) {
+            if (it == null) return@observe
+            updateView(it.court)
+            courtToReserve = it.court
+            courtViewModel.timeSlots.observe(viewLifecycleOwner) {
+                if (it == null) return@observe
+                courtViewModel.clearSelectedTime()
+                // Not Available Sports
+                if (it.isEmpty()) {
+                    binding.timeGridParent.removeAllViews()
+                    val timeSlotsNotAvailable = layoutInflater.inflate(R.layout.time_slots_not_available, binding.timeGridParent, false)
+                    binding.timeGridParent.addView(timeSlotsNotAvailable)
+                } else {
+                    binding.timeGridParent.removeAllViews()
+                    val gridRecyclerView = layoutInflater.inflate(R.layout.grid_times_slots, binding.timeGridParent, false)
+                    binding.timeGridParent.addView(gridRecyclerView)
+                    val recyclerView = binding.timeGridParent.findViewById<RecyclerView>(R.id.time_slot_grid)
+                    recyclerView.layoutManager = GridLayoutManager(context, 4)
+                    recyclerView.adapter = TimeSlotGripAdapter(it, callback, courtViewModel.selectedTimes.value!!)
+                }
+
+            }
+            courtViewModel.selectedDay.observe(viewLifecycleOwner) { selected ->
+                binding.daysScrollView.removeAllViews()
+                courtViewModel.getTimeSlotsAvailable(
+                    courtToReserve,
+                    courtViewModel.selectedDay.value!!
+                )
+                courtViewModel.days.map { renderDayItem(it, selected) }
+                courtViewModel.openingAndClosingTimeForCourt(selected.dayOfWeek)
             }
 
-        // ** DateTime Pickers
-        courtViewModel.selectedDay.observe(viewLifecycleOwner) { selected ->
-            binding.daysScrollView.removeAllViews()
 
-            val availableTimeSlots = courtViewModel.getTimeSlotsAvailable(
-                courtToReserve,
-                courtViewModel.selectedDay.value!!
-            )
-            courtViewModel.clearSelectedTime()
-
-
-            // Not Available Sports
-            if (availableTimeSlots.isEmpty()) {
+            // ** DateTime Pickers
+            courtViewModel.selectedTimes.observe(viewLifecycleOwner) { selected ->
+                binding.buttonFirst.isEnabled = selected.isNotEmpty()
+                        && courtViewModel.timeSlots.value!!.any { time -> selected.contains(time) }
+                val timeSlots = courtViewModel.timeSlots
                 binding.timeGridParent.removeAllViews()
-                val timeSlotsNotAvailable = layoutInflater.inflate(
-                    R.layout.time_slots_not_available,
-                    binding.timeGridParent,
-                    false
-                )
-                binding.timeGridParent.addView(timeSlotsNotAvailable)
-            } else {
-
-                binding.timeGridParent.removeAllViews()
-                val gridRecyclerView =
-                    layoutInflater.inflate(R.layout.grid_times_slots, binding.timeGridParent, false)
+                val gridRecyclerView = layoutInflater.inflate(R.layout.grid_times_slots, binding.timeGridParent, false)
                 binding.timeGridParent.addView(gridRecyclerView)
-                val recyclerView =
-                    binding.timeGridParent.findViewById<RecyclerView>(R.id.time_slot_grid)
+                val recyclerView = binding.timeGridParent.findViewById<RecyclerView>(R.id.time_slot_grid)
                 recyclerView.layoutManager = GridLayoutManager(context, 4)
-                recyclerView.adapter = TimeSlotGripAdapter(
-                    availableTimeSlots,
-                    callback,
-                    courtViewModel.selectedTimes.value!!
-                )
+                recyclerView.adapter = TimeSlotGripAdapter(timeSlots.value ?: listOf(), callback, courtViewModel.selectedTimes.value!!)
             }
 
-            courtViewModel.selectedTimes.observe(viewLifecycleOwner) {
-                binding.buttonFirst.isEnabled = availableTimeSlots.isNotEmpty()
-                        && courtViewModel.timeSlots.value!!.any { time -> it.contains(time) }
+            courtViewModel.timeSlots.observe(viewLifecycleOwner) {
+                if (it.isEmpty()) {
+                    binding.timeGridParent.removeAllViews()
+                    val timeSlotsNotAvailable = layoutInflater.inflate(R.layout.time_slots_not_available, binding.timeGridParent, false)
+                    binding.timeGridParent.addView(timeSlotsNotAvailable)
+                }
             }
-
-            courtViewModel.days.map { renderDayItem(it, selected) }
-            courtViewModel.openingAndClosingTimeForCourt(selected.dayOfWeek)
 
         }
+
 
         // Observer for SelectedTimes
-        courtViewModel.selectedTimes.observe(viewLifecycleOwner) { selected ->
-            val timeSlots = courtViewModel.getTimeSlotsAvailable(
-                courtToReserve,
-                courtViewModel.selectedDay.value!!
-            )
-            binding.timeGridParent.removeAllViews()
-            val gridRecyclerView =
-                layoutInflater.inflate(R.layout.grid_times_slots, binding.timeGridParent, false)
-            binding.timeGridParent.addView(gridRecyclerView)
-            val recyclerView =
-                binding.timeGridParent.findViewById<RecyclerView>(R.id.time_slot_grid)
-            recyclerView.layoutManager = GridLayoutManager(context, 4)
-            recyclerView.adapter = TimeSlotGripAdapter(
-                timeSlots,
-                callback,
-                courtViewModel.selectedTimes.value!!
-            )
-        }
 
-        courtViewModel.timeSlots.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) {
-                binding.timeGridParent.removeAllViews()
-                val timeSlotsNotAvailable = layoutInflater.inflate(
-                    R.layout.time_slots_not_available,
-                    binding.timeGridParent,
-                    false
-                )
-                binding.timeGridParent.addView(timeSlotsNotAvailable)
-            }
-        }
 
         // ** Navigate to court reservation
         binding.buttonFirst.setOnClickListener {
@@ -351,7 +328,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                 courtToReserve,
                 courtViewModel.selectedDay.value!!
             )
-            if (timeSlots.isEmpty()) {
+            if (timeSlots.value?.isEmpty() == true) {
                 binding.timeGridParent.removeAllViews()
                 val timeSlotsNotAvailable = layoutInflater.inflate(
                     R.layout.time_slots_not_available,
@@ -368,7 +345,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                     binding.timeGridParent.findViewById<RecyclerView>(R.id.time_slot_grid)
                 recyclerView.layoutManager = GridLayoutManager(context, 4)
                 recyclerView.adapter = TimeSlotGripAdapter(
-                    timeSlots,
+                    timeSlots.value?: listOf(),
                     callback,
                     courtViewModel.selectedTimes.value!!
                 )

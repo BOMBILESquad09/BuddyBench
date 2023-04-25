@@ -29,39 +29,48 @@ class UserViewModel @Inject constructor() : ViewModel() {
 
     val username: LiveData<String> get() = _userName
 
-    fun getUser(email: String): Profile{
-        val u = userRepository.getUser(email);
-        println("imagePath")
-        println(u.user.imagePath == "null")
-        val uri = if (u.user.imagePath == null || u.user.imagePath=="null"||u.user.imagePath=="" )
-            Uri.parse("null") else
-            Uri.parse(u.user.imagePath)
+    fun getUser(email: String): LiveData<Profile>{
+        Thread{
+            val u = userRepository.getUser(email);
+            val uri = if (u.user.imagePath == null || u.user.imagePath=="null"||u.user.imagePath=="" )
+                Uri.parse("null") else
+                Uri.parse(u.user.imagePath)
+            _user.postValue(  Profile(
+                u.user.name,
+                u.user.surname,
+                u.user.nickname,
+                u.user.email,
+                u.user.location,
+                u.user.birthdate,
+                u.user.reliability,
+                uri,
+                u.sports
+            ))
+        }.start()
 
-        return Profile(
-            u.user.name,
-            u.user.surname,
-            u.user.nickname,
-            u.user.email,
-            u.user.location,
-            u.user.birthdate,
-            u.user.reliability,
-            uri,
-            u.sports
-        )
+
+        return user
 
     }
 
     fun updateUserInfo(profile: Profile) {
-        userRepository.update(
-            UserWithSportsDTO(
-                profile.toUserDto(),
-                profile.sports
+        _user.value = profile
+        Thread{
+            userRepository.update(
+                UserWithSportsDTO(
+                    profile.toUserDto(),
+                    profile.sports
+                )
             )
-        )
+        }.start()
+
     }
 
     fun setUserName(name: String) {
-        _userName.value = name
+        Thread{
+            _userName.value = name
+        }.start()
+
     }
 
 }
