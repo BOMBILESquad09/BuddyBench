@@ -31,10 +31,11 @@ class UserViewModel @Inject constructor() : ViewModel() {
 
     fun getUser(email: String): Profile{
         val u = userRepository.getUser(email);
-
-        val uri = if (u.user.imagePath!=null)
-            Uri.parse(u.user.imagePath) else
-                null
+        println("imagePath")
+        println(u.user.imagePath == "null")
+        val uri = if (u.user.imagePath == null || u.user.imagePath=="null"||u.user.imagePath=="" )
+            Uri.parse("null") else
+            Uri.parse(u.user.imagePath)
 
         return Profile(
             u.user.name,

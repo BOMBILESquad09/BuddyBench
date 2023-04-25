@@ -41,9 +41,8 @@ class UserRepository @Inject constructor(
         val hashMap: HashMap<Sports, Sport> = HashMap()
         user.sports.forEach{
             hashMap[it.name] = it
-            println("nuovo")
-            println(it)
-            println("----")
+
+
         }
 
         for (dbS in dbSports){
@@ -58,10 +57,11 @@ class UserRepository @Inject constructor(
                     gamesOrganized = entry.matchesOrganized,
                     gamesPlayed = entry.matchesPlayed
                 )
-                println("salvando")
-                println(convertedSport)
-                userSportDao.save(convertedSport)
+
+                userSportDao.update(convertedSport)
             }
+
+
         }
 
 

@@ -75,8 +75,10 @@ class HomeActivity: AppCompatActivity() {
         if(response.resultCode == Activity.RESULT_OK){
             with(sharedPref.edit()) {
                 val newProfile = Profile.fromJSON(JSONObject(response.data?.getStringExtra("newProfile").toString()))
-                val newImageUri =  if(newProfile.imageUri != null &&  newProfile.imageUri.toString() != profile.imageUri.toString())
+                val newImageUri =  if(newProfile.imageUri != null &&  newProfile.imageUri.toString() != profile.imageUri.toString() )
                     BitmapUtils.saveToInternalStorage(applicationContext, BitmapUtils.uriToBitmap(contentResolver, newProfile.imageUri!!)!!, profile.imageUri) else profile.imageUri
+
+
                 if(newImageUri == null){
                     val toast = Toast.makeText(
                         applicationContext,

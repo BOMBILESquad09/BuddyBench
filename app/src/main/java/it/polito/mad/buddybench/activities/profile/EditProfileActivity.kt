@@ -154,7 +154,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             popup.menuInflater.inflate(R.menu.skill_level_edit, popup.menu)
             popup.setOnMenuItemClickListener {
                 profile.updateSkillLevel(sport, Skills.fromJSON(it.title.toString().uppercase())!!)
-                profile.populateSportCards(this, sportContainer)
                 true
             }
             popupOpened = popup
@@ -382,18 +381,31 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     override fun onDialogPositiveClick(dialog: DialogFragment, selectedItems: ArrayList<Sports>) {
         // ** Add new selected sports to user profile (and save to shared preferences)
         val newSports = mutableListOf<Sport>()
-        val alreadySelectedSports = profile.sports
+        val alreadySelectedSports = profile.sports.filter { it.skill != Skills.NULL }
         for (selectedSport in selectedItems) {
             try {
                 checkNotNull(selectedSport)
-                val newSport = Sport(selectedSport, Skills.NEWBIE, 0)
+                val newSport = profile.sports.find { it.name == selectedSport } ?:Sport(selectedSport, Skills.NEWBIE, 0)
+                newSport.skill = Skills.NEWBIE
                 newSports.add(newSport)
             } catch (e: java.lang.IllegalStateException) {
                 continue
             }
         }
         profile.sports = newSports.plus(alreadySelectedSports)
-        profile.populateSportCards(this, sportContainer)
+        profile.populateSportCards(this, sportContainer,
+            edit = true,
+            onSkillSelected = { sportSkillLevel, sport ->
+
+                val popup = PopupMenu(this, sportSkillLevel)
+                popup.menuInflater.inflate(R.menu.skill_level_edit, popup.menu)
+                popup.setOnMenuItemClickListener {
+                    profile.updateSkillLevel(sport, Skills.fromJSON(it.title.toString().uppercase())!!)
+                    true
+                }
+                popupOpened = popup
+                popup.show()
+            })
         dialog.dismiss()
         editSportDialog = null
     }

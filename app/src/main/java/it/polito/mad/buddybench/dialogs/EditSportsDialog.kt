@@ -49,7 +49,7 @@ class EditSportsDialog(private val profile: Profile,var selectedItems: ArrayList
                 ) { _, which, isChecked ->
 
 
-                    if (isChecked) {
+                    if (isChecked ) {
                         // If the user checked the item, add it to the selected items
                         selectedItems.add(Sports.fromJSON(sportValues[which] as String)!!)
                     } else if (selectedItems.contains(Sports.fromJSON(sportValues[which] as String))) {

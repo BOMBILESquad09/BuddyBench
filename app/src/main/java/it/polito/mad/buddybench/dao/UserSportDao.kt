@@ -14,6 +14,8 @@ interface UserSportDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun save(userSport: UserSport)
 
+    @Update
+    fun update(userSport: UserSport)
     @Delete
     fun delete(userSport: UserSport)
 
