@@ -46,10 +46,12 @@
                     android:textSize="16sp"
                     android:drawableStart="@drawable/star_filled" />
 
-                <org.florescu.android.rangeseekbar.RangeSeekBar
+                <com.google.android.material.slider.RangeSlider
+                    android:id="@+id/range_slider_rating"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    />
+                    android:layout_height="wrap_content"
+                    android:valueFrom="0"
+                    android:valueTo="10" />
 
             </LinearLayout>
 
@@ -82,10 +84,14 @@
                     android:textSize="16sp"
                     android:drawableStart="@drawable/money_symbol" />
 
-                <org.florescu.android.rangeseekbar.RangeSeekBar
+                <com.google.android.material.slider.RangeSlider
+                    android:id="@+id/range_slider_price"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    />
+                    android:layout_height="wrap_content"
+                    android:valueFrom="0"
+                    android:valueTo="10"
+                    app:values="@array/range_price"/>
+
 
             </LinearLayout>
 

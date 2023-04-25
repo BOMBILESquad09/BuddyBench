@@ -12,6 +12,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.compose.ui.text.capitalize
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -22,6 +23,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.slider.RangeSlider
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
@@ -43,6 +46,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         val textNearButton = view.findViewById<TextView>(R.id.textView12)
         val textUser = view.findViewById<TextView>(R.id.textView11)
         val searchEditText = view.findViewById<EditText>(R.id.searchEditText)
+        val filterButton = view.findViewById<CardView>(R.id.filterButton)
 
         textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
 
@@ -83,7 +87,17 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             })
         }
 
+        filterButton.setOnClickListener{showBottomSheetDialog()}
+
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun showBottomSheetDialog(){
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        val rangeSliderPrice = bottomSheetDialog.findViewById<RangeSlider>(R.id.range_slider_price)
+        rangeSliderPrice?.setValues(2.0f,7.0f)
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_filter)
+        bottomSheetDialog.show()
     }
 
 

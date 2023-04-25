@@ -86,4 +86,8 @@
     <string name="filters">Filters</string>
     <string name="show_filter_results">Show Results</string>
     <string name="clear">Clear</string>
+    <string-array name="range_price">
+        <item>2</item>
+        <item>7</item>
+    </string-array>
 </resources>
