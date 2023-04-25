@@ -42,7 +42,6 @@ class ReservationRepository @Inject constructor(
     }
 
 
-
     private fun updateUnavailableDayCourt(reservationDTO: ReservationDTO, courtWithSport: CourtWithSport){
         val reservations = reservationDao.getAllByCourtAndDate(courtWithSport.court.id, reservationDTO.date.format(
             DateTimeFormatter.ISO_LOCAL_DATE))
@@ -80,6 +79,21 @@ class ReservationRepository @Inject constructor(
         }
         return timeSlots
     }
+
+    fun getReservationByUserAndCourtNameAndSport(courtName: String, sportInCourt: String, email: String, date: LocalDate): List<ReservationDTO> {
+        val court = courtDao.getByNameAndSport(courtName, sportInCourt.uppercase())
+        val user = userDao.getUserByEmail(email)
+
+        val reservations = reservationDao.getReservationByUserAndCourtNameAndSport(
+            user!!.user.email,
+            court.court.id,
+            date.toString()
+        )
+        return reservations.map { it.toReservationDTO() }
+
+    }
+
+
 
 
 }
