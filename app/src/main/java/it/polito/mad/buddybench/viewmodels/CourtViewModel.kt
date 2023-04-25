@@ -99,6 +99,10 @@ class CourtViewModel @Inject constructor() : ViewModel() {
             val l = _selectedTimes.value!!
             _selectedTimes.value = l
             return _selectedTimes
+        } else if (_selectedTimes.value!!.contains(time)) {
+            _selectedTimes.value = mutableListOf()
+            _selectedTimes.value!!.add(time)
+            return _selectedTimes
         } else {
             _selectedTimes.value = mutableListOf()
             return _selectedTimes
