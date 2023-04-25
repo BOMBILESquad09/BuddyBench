@@ -4,7 +4,8 @@ import it.polito.mad.buddybench.entities.User
 import java.time.LocalDate
 
 class UserDTO(val name: String, val surname: String, val nickname: String, val birthdate: LocalDate, val location: String,
-              val email: String, val reliability: Int) {
+              val email: String, val reliability: Int, val imagePath: String?
+) {
 
     fun toEntity(): User {
         return User(
@@ -15,6 +16,7 @@ class UserDTO(val name: String, val surname: String, val nickname: String, val b
             location = this.location,
             email = this.email,
             reliability = this.reliability,
+            imagePath = this.imagePath
         )
     }
 

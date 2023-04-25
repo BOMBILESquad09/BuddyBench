@@ -33,11 +33,19 @@
                     >
 
                     <androidx.cardview.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="3dp"
+                        app:cardBackgroundColor="@android:color/transparent"
+                        app:cardCornerRadius="255dp"
+                        app:cardElevation="3dp">
+                    <androidx.cardview.widget.CardView
+                        android:padding="1dp"
                         android:id="@+id/cardView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        app:cardCornerRadius="250dp"
                         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
@@ -54,7 +62,7 @@
                             android:background="@drawable/person"/>
 
                     </androidx.cardview.widget.CardView>
-
+                    </androidx.cardview.widget.CardView>
                 </LinearLayout>
 
                 <LinearLayout
@@ -302,6 +310,7 @@
                             android:id="@+id/sports_horizontal_scroll"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView">
@@ -313,7 +322,8 @@
                                 android:baselineAligned="false"
                                 android:orientation="horizontal">
 
-                                <include layout="@layout/card_sport" />
+
+
 
                             </LinearLayout>
 

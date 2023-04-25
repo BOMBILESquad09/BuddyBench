@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="16dp"
+    android:gravity="center_horizontal"
+
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
@@ -12,7 +13,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/cardview_light_background"
         android:layout_marginVertical="8dp"
-        app:cardCornerRadius="99dp"
+        android:layout_gravity="center_horizontal"
         android:layout_marginBottom="8dp"
         android:clickable="true"
         >
@@ -23,7 +24,7 @@
             android:layout_height="wrap_content"
             android:text="@string/hour_range"
             android:paddingHorizontal="12dp"
-            android:paddingVertical="6dp"
+            android:paddingVertical="12dp"
             android:textColor="@color/md_theme_light_primary"
             />
 

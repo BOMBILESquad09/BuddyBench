@@ -14,7 +14,7 @@
     <string name="played">Played</string>
     <string name="organized">Organized</string>
     <string name="sport_tennis">Tennis</string>
-    <string name="games_played_default">20 games played</string>
+    <string name="games_played_default">1000 games played</string>
     <string name="profile_photo_cd">profile_photo_cd</string>
     <string name="games_played">%1$s games played</string>
     <string name="turin">Turin</string>
@@ -81,6 +81,8 @@
     <string name="confirm">Confirm</string>
     <string name="which_sport_do_you_want_to_play">Which sport do you want to play?</string>
     <string name="court_search_phrase">You are currently look for %1$s court</string>
-    <string name="user_hello">Hi, %1$s !</string>
+    <string name="user_hello">Hi, %1$s!</string>
     <string name="equipment">All the equipment will be available at the price of</string>
+    <string name="total_price">Total Price: %1$s</string>
+    <string name="equipment_phrase">Equipment: %1$d €/h</string>
 </resources>

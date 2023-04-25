@@ -2,6 +2,7 @@ package it.polito.mad.buddybench.activities.profile
 
 import android.os.Bundle
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -58,15 +59,16 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.activity
 
         val sportContainer = thisView.findViewById<LinearLayout>(R.id.sportsContainerEdit)
         sportContainer.removeAllViews()
-
+        println("-----------------profilee")
+        println(profile.imageUri.toString() == "null")
         // ** Populate sport cards
         profile.populateSportCards(context, sportContainer)
     }
 
 
     private  fun resizeImageView(iv: ImageView){
-        return
-        /*val ll = requireView().findViewById<LinearLayout>(R.id.imageContainer)
+
+        val ll = requireView().findViewById<LinearLayout>(R.id.imageContainer)
         ll.post {
             val width = ll.width
             val height = ll.height
@@ -74,7 +76,7 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.activity
             val diameter = width.coerceAtMost(height)
             iv.layoutParams = FrameLayout.LayoutParams(diameter, diameter)
             iv.requestLayout()
-        }*/
+        }
 
     }
 }

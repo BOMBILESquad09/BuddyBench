@@ -24,14 +24,16 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingVertical="10dp">
 
                 <ImageView
                     android:id="@+id/sport_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:scaleX="0.7"
-                    android:scaleY="0.7"
+                    android:layout_marginEnd="20dp"
+                    android:scaleX="0.9"
+                    android:scaleY="0.9"
                     android:src="@drawable/right_arrow"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -45,7 +47,7 @@
                     android:fontFamily="@font/montserrat_semibold_600"
                     android:text="@string/sport_tennis"
                     android:textColor="@color/md_theme_light_onPrimary"
-                    android:textSize="18sp"
+                    android:textSize="20dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_chainStyle="spread"
@@ -54,8 +56,9 @@
 
                 <ImageView
                     android:id="@+id/sport_image"
-                    android:layout_width="70dp"
+                    android:layout_width="50dp"
                     android:layout_height="70dp"
+                    android:layout_marginStart="25dp"
                     android:contentDescription="@string/sport_tennis"
                     android:scaleX="1"
                     android:scaleY="1"

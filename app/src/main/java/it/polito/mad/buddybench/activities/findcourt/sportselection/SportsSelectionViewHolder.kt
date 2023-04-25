@@ -1,18 +1,14 @@
-package it.polito.mad.buddybench.activities.findcourt.SportSelection
+package it.polito.mad.buddybench.activities.findcourt.sportselection
 
-import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.compose.ui.text.capitalize
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.buddybench.R
-import it.polito.mad.buddybench.classes.Sport
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.Utils
-import java.util.Locale
 
 class SportsSelectionViewHolder(private val v: View, private val callback: (Sports) -> Unit): RecyclerView.ViewHolder(v) {
 

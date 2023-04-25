@@ -1,30 +1,21 @@
-package it.polito.mad.buddybench.activities.findcourt.SportSelection
+package it.polito.mad.buddybench.activities.findcourt.sportselection
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.HiltAndroidApp
 import it.polito.mad.buddybench.R
-import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.activities.findcourt.FindCourtFragment
 import it.polito.mad.buddybench.activities.findcourt.States
-import it.polito.mad.buddybench.enums.Sports
-import it.polito.mad.buddybench.viewmodels.ReservationViewModel
-import it.polito.mad.buddybench.viewmodels.SportsSelectionViewModel
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class SportsSelectionFragment(val parent: FindCourtFragment): Fragment(R.layout.sports_selection){
 
     private val context = parent.context
     lateinit var sportsRecyclerView: RecyclerView
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
