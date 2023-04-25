@@ -137,13 +137,16 @@ class CourtViewModel @Inject constructor() : ViewModel() {
             date
         )
         openingAndClosingTimeForCourt(date.dayOfWeek)
-        val list = _initialValueTimeSlots.filter {
+        var list = _initialValueTimeSlots.filter {
             !timeSlotsOccupied.contains(it)
         } as MutableList
         if (list.isNotEmpty())
             list.removeLast()
 
-        _timeSlots.value = list
+        list.sort()
+        if(list.isNotEmpty())
+            list = Utils.getTimeSlots(list.first(), list.last()) as MutableList<LocalTime>
+            _timeSlots.value = list
 
         return list
     }

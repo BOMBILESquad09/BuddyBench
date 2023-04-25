@@ -119,7 +119,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                 courtViewModel.removeSelectedTime(selected)
         }
 
-        if(editMode) {
+        if (editMode) {
             courtViewModel.selectDay(LocalDate.parse(reservationDate))
             val currentDateSelected = reservationViewModel.setReservationByCourtNameAndSport(
                 courtName,
@@ -251,7 +251,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             Profile.fromJSON(JSONObject(sharedPref.getString("profile", Profile.mockJSON())!!))
         user = profile.toUserDto()
 
-        if(editMode) {
+        if (editMode) {
             val b = view.findViewById<Button>(R.id.button_first)
             b.text = "Edit Book"
         }
@@ -370,19 +370,18 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
             }
 
-            for (time in courtViewModel.selectedTimes.value!!) {
-                val reservation = ReservationDTO(
-                    userOrganizer = user,
-                    court = courtToReserve,
-                    date = courtViewModel.selectedDay.value!!,
-                    startTime = time,
-                    endTime = time.plusHours(1),
-                    equipment = switch!!.isChecked
-                )
-                reservationViewModel.saveReservation(
-                    reservation
-                )
-            }
+            val reservation = ReservationDTO(
+                userOrganizer = user,
+                court = courtToReserve,
+                date = courtViewModel.selectedDay.value!!,
+                startTime = courtViewModel.selectedTimes.value!!.first(),
+                endTime = courtViewModel.selectedTimes.value!!.last(),
+                equipment = switch!!.isChecked
+            )
+            reservationViewModel.saveReservation(
+                reservation
+            )
+
 
             val timeSlots = courtViewModel.getTimeSlotsAvailable(
                 courtToReserve,
