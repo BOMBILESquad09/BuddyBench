@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_marginHorizontal="16dp"
+    android:layout_marginTop="16dp"
     card_view:cardBackgroundColor="@android:color/transparent"
     card_view:cardCornerRadius="20dp"
     card_view:cardElevation="3dp">
@@ -93,7 +93,7 @@
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintHorizontal_bias="0.5"
                 card_view:layout_constraintStart_toEndOf="@+id/textView5"
-                card_view:layout_constraintTop_toBottomOf="@+id/sport_icon">
+                card_view:layout_constraintTop_toBottomOf="@+id/imageView">
 
             </TextView>
 

@@ -24,6 +24,8 @@ class ReservationViewModel @Inject constructor(): ViewModel() {
 
     private val _reservations: MutableLiveData<HashMap<LocalDate, List<ReservationDTO>>> = MutableLiveData(null)
     val reservation: LiveData<HashMap<LocalDate, List<ReservationDTO>>> = _reservations
+    private val _selectedDate: MutableLiveData<LocalDate> = MutableLiveData(null)
+    val selectedDate: LiveData<LocalDate> = _selectedDate
 
 
     @Inject
@@ -54,6 +56,17 @@ class ReservationViewModel @Inject constructor(): ViewModel() {
         reservationRepository.save(
             reservation
         )
+    }
+
+
+    fun updateSelectedDay(date: LocalDate){
+        _selectedDate.value = date
+
+
+    }
+
+    fun getSelectedReservations(): List<ReservationDTO>?{
+        return reservations.value?.get(selectedDate.value?: LocalDate.now())
     }
 
 
