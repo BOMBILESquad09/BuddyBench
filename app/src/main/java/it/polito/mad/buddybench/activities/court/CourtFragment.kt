@@ -42,6 +42,7 @@ import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.CourtViewModel
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
+import it.polito.mad.buddybench.viewmodels.UserViewModel
 import org.json.JSONObject
 import java.io.FileNotFoundException
 import java.time.LocalDate
@@ -69,9 +70,15 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
     // ** Court LiveData by ViewModel
     private val courtViewModel by viewModels<CourtViewModel>()
     private val reservationViewModel by viewModels<ReservationViewModel>()
+    val userViewModel by viewModels<UserViewModel>()
 
     private lateinit var profile: Profile
     private lateinit var sharedPref: SharedPreferences
+
+    // ** Edit mode (default to false)
+    private var editMode = false
+    private var reservationDate: String = LocalDate.now().toString()
+    private var emailReservation: String = ""
 
 
     override fun onCreateView(
@@ -79,6 +86,16 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        val edit = arguments?.getBoolean("edit", false)
+        val date = arguments?.getString("date", LocalDate.now().toString()).toString()
+        val email = arguments?.getString("email", "")
+        if (edit == true) {
+            editMode = true
+            reservationDate = date
+            emailReservation = email!!
+        }
+
         _binding = FragmentCourtBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -88,20 +105,34 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // ** View Model
+        val courtName = activity?.intent?.getStringExtra("courtName") ?: "Central Park Tennis"
+        val sport = Sports.valueOf(
+            activity?.intent?.getStringExtra("sport")?.uppercase() ?: Sports.TENNIS.name
+        )
+
         // Callback used inside the ViewHolder Item of the Recycler View
         val callback: (MutableList<LocalTime>, LocalTime) -> Unit = { listSelected, selected ->
             if (!listSelected.contains(selected))
                 courtViewModel.addSelectedTime(selected)
             else
                 courtViewModel.removeSelectedTime(selected)
-
         }
 
-        // ** View Model
-        val courtName = activity?.intent?.getStringExtra("courtName") ?: "Central Park Tennis"
-        val sport = Sports.valueOf(
-            activity?.intent?.getStringExtra("sport")?.uppercase() ?: Sports.TENNIS.name
-        )
+        if (editMode) {
+            courtViewModel.selectDay(LocalDate.parse(reservationDate))
+            val currentDateSelected = reservationViewModel.setReservationByCourtNameAndSport(
+                courtName,
+                sport,
+                emailReservation,
+                LocalDate.parse(reservationDate)
+            )
+
+            courtViewModel.selectTimesForEdit(
+                currentDateSelected.value!!.startTime,
+                currentDateSelected.value!!.endTime
+            )
+        }
 
 
         // Setting the Manager Layout for the RecyclerView
@@ -177,12 +208,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                 }
             }
 
-        }
-
-
-        // Observer for SelectedTimes
-
-
         // ** Navigate to court reservation
         binding.buttonFirst.setOnClickListener {
             showBottomSheetDialog()
@@ -195,6 +220,11 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         profile =
             Profile.fromJSON(JSONObject(sharedPref.getString("profile", Profile.mockJSON())!!))
         user = profile.toUserDto()
+
+        if (editMode) {
+            val b = view.findViewById<Button>(R.id.button_first)
+            b.text = "Edit Book"
+        }
 
     }
 
@@ -310,19 +340,18 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
             }
 
-            for (time in courtViewModel.selectedTimes.value!!) {
-                val reservation = ReservationDTO(
-                    userOrganizer = user,
-                    court = courtToReserve,
-                    date = courtViewModel.selectedDay.value!!,
-                    startTime = time,
-                    endTime = time.plusHours(1),
-                    equipment = switch!!.isChecked
-                )
-                reservationViewModel.saveReservation(
-                    reservation
-                )
-            }
+            val reservation = ReservationDTO(
+                userOrganizer = user,
+                court = courtToReserve,
+                date = courtViewModel.selectedDay.value!!,
+                startTime = courtViewModel.selectedTimes.value!!.first(),
+                endTime = courtViewModel.selectedTimes.value!!.last(),
+                equipment = switch!!.isChecked
+            )
+            reservationViewModel.saveReservation(
+                reservation
+            )
+
 
             val timeSlots = courtViewModel.getTimeSlotsAvailable(
                 courtToReserve,

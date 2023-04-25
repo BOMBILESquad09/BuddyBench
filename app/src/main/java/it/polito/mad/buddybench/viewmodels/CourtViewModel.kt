@@ -91,6 +91,12 @@ class CourtViewModel @Inject constructor() : ViewModel() {
         return _selectedTimes
     }
 
+    fun selectTimesForEdit(first: LocalTime, last: LocalTime): List<LocalTime> {
+        val l = Utils.getTimeSlots(first, last) as MutableList
+        _selectedTimes.value = l
+        return l
+    }
+
     fun removeSelectedTime(time: LocalTime): LiveData<MutableList<LocalTime>> {
         if (_selectedTimes.value!!.last() == time || _selectedTimes.value!!.first() == time
         ) {
@@ -139,7 +145,11 @@ class CourtViewModel @Inject constructor() : ViewModel() {
                 !timeSlotsOccupied.contains(it)
             } as MutableList
 
-            _timeSlots.postValue(list)
+
+        list.sort()
+        if(list.isNotEmpty())
+            list = Utils.getTimeSlots(list.first(), list.last()) as MutableList<LocalTime>
+              _timeSlots.postValue(list)
 
         }.start()
 
@@ -159,6 +169,12 @@ class CourtViewModel @Inject constructor() : ViewModel() {
 
     fun getCourtsBySport(sport: Sports): List<CourtDTO> {
         return courtRepository.getCourtsBySports(Sports.toJSON(sport).uppercase())
+    }
+
+    fun getCourtBySportAndName(name: String, sport: Sports): LiveData<CourtDTO> {
+        val court = courtRepository.getByNameAndSports(name, sport)
+        _court.value = court
+        return _court
     }
 
 
