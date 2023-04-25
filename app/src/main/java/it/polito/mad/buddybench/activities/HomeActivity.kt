@@ -26,24 +26,32 @@ import it.polito.mad.buddybench.viewmodels.UserViewModel
 import org.json.JSONObject
 
 @AndroidEntryPoint
-class HomeActivity: AppCompatActivity() {
+class HomeActivity : AppCompatActivity() {
 
     private val bottomBar = BottomBar(this)
-    private val launcherEdit = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onEditReturn(it)}
+    private val launcherEdit =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            onEditReturn(it)
+        }
     lateinit var profile: Profile
     private lateinit var sharedPref: SharedPreferences
-    private val userViewModel by viewModels<UserViewModel>()
+    val userViewModel by viewModels<UserViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home)
-        sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        profile = if (::profile.isInitialized) {
-             profile
-        } else{
-            Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
-        }
-        userViewModel.setUserName(profile.name!!)
+        sharedPref =
+            getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+
+        profile =
+            if (::profile.isInitialized) {
+                profile
+            } else {
+                Profile.fromJSON(JSONObject(sharedPref.getString("profile", Profile.mockJSON())!!))
+            }
+
+        userViewModel.updateProfile(profile)
+
         bottomBar.setup()
     }
 
@@ -66,13 +74,22 @@ class HomeActivity: AppCompatActivity() {
         }
     }
 
-    private fun onEditReturn(response: androidx.activity.result.ActivityResult){
-        if(response.resultCode == Activity.RESULT_OK){
+    private fun onEditReturn(response: androidx.activity.result.ActivityResult) {
+        if (response.resultCode == Activity.RESULT_OK) {
             with(sharedPref.edit()) {
-                val newProfile = Profile.fromJSON(JSONObject(response.data?.getStringExtra("newProfile").toString()))
-                val newImageUri =  if(newProfile.imageUri != null &&  newProfile.imageUri.toString() != profile.imageUri.toString())
-                    BitmapUtils.saveToInternalStorage(applicationContext, BitmapUtils.uriToBitmap(contentResolver, newProfile.imageUri!!)!!, profile.imageUri) else profile.imageUri
-                if(newImageUri == null){
+                val newProfile = Profile.fromJSON(
+                    JSONObject(
+                        response.data?.getStringExtra("newProfile").toString()
+                    )
+                )
+                val newImageUri =
+                    if (newProfile.imageUri != null && newProfile.imageUri.toString() != profile.imageUri.toString())
+                        BitmapUtils.saveToInternalStorage(
+                            applicationContext,
+                            BitmapUtils.uriToBitmap(contentResolver, newProfile.imageUri!!)!!,
+                            profile.imageUri
+                        ) else profile.imageUri
+                if (newImageUri == null) {
                     val toast = Toast.makeText(
                         applicationContext,
                         "Something went wrong while saving the profile image...",
@@ -81,14 +98,14 @@ class HomeActivity: AppCompatActivity() {
                     toast.show()
                 }
                 profile = newProfile
-                profile.imageUri = newImageUri?: profile.imageUri
+                profile.imageUri = newImageUri ?: profile.imageUri
 
                 putString("profile", profile.toJSON().toString())
                 apply()
                 userViewModel.updateUserInfo(profile)
-                userViewModel.setUserName(profile.name!!)
+                userViewModel.updateProfile(profile)
                 supportFragmentManager.findFragmentByTag(Tabs.PROFILE.name).let {
-                    if (it != null){
+                    if (it != null) {
                         (it as ShowProfileFragment).let {
                             it.profile = profile
                         }

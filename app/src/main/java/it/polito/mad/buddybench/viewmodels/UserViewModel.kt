@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.viewmodels
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.dto.UserDTO
 import it.polito.mad.buddybench.repositories.UserRepository
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -14,11 +16,15 @@ class UserViewModel @Inject constructor() : ViewModel() {
 
     @Inject
     lateinit var userRepository: UserRepository
-    private val _initName: String = ""
 
-    private val _userName: MutableLiveData<String> = MutableLiveData(_initName)
+    private val _profile: MutableLiveData<Profile> = MutableLiveData(
+        Profile(
+            "", "", "", "", "", LocalDate.now(), 0,
+            Uri.parse(""), listOf()
+        )
+    )
 
-    val username: LiveData<String> get() = _userName
+    val profile: LiveData<Profile> get() = _profile
 
     fun updateUserInfo(profile: Profile) {
         userRepository.update(
@@ -34,8 +40,9 @@ class UserViewModel @Inject constructor() : ViewModel() {
         )
     }
 
-    fun setUserName(name: String) {
-        _userName.value = name
+    fun updateProfile(profile: Profile) {
+        _profile.value = profile
     }
+
 
 }

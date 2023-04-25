@@ -3,6 +3,7 @@ package it.polito.mad.buddybench.activities.findcourt.sportselection
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,7 +16,6 @@ class SportsSelectionFragment(val parent: FindCourtFragment): Fragment(R.layout.
 
     private val context = parent.context
     lateinit var sportsRecyclerView: RecyclerView
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
