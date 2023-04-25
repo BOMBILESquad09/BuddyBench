@@ -27,7 +27,7 @@ class BottomBar(val context: HomeActivity) {
             ) {
 
                 if(lastTab == newTab) return
-                val newTag =Tabs.valueOf( newTab.title.replace(" ","").uppercase())
+                val newTag = Tabs.valueOf( newTab.title.replace(" ","").uppercase())
                 val lastTag = Tabs.valueOf(lastTab?.title?.replace(" ","")?.uppercase() ?: newTab.title.replace(" ","").uppercase())
                 currentTab = newTag
                 replaceFragment(lastTag,newTag)

@@ -467,3 +467,9 @@ VALUES (2, 0, 8, '2023-05-16', 14, 15, false),
     (6, 1, 6, '2023-05-15', 10, 11,false),
     (0, 0, 5, '2023-04-30', 18, 19,false);
 
+INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized) VALUES
+(0,0,"VOLLEYBALL","NEWBIE",9,10);
+INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized) VALUES
+(1,0,"BASKETBALL","NEWBIE",10,10);
+INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized) VALUES
+(2,0,"FOOTBALL","NEWBIE",11,10);

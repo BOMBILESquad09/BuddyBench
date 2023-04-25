@@ -22,7 +22,8 @@ class ReservationDTO(val userOrganizer: UserDTO,
                 birthdate = LocalDate.now().toString(),
                 location = "Scafati",
                 email = "vittorio@polito.it",
-                reliability = 10
+                reliability = 10,
+                imagePath = null
             )
         }
 

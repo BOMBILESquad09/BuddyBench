@@ -1,12 +1,14 @@
 package it.polito.mad.buddybench.activities.myreservations
 
 import android.content.Context
+import android.graphics.Color
 import android.opengl.Visibility
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -127,12 +129,25 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         previousButton.setOnClickListener {
             calendarView.findFirstVisibleMonth()?.let {
                 calendarView.smoothScrollToMonth(it.yearMonth.previousMonth)
+                if (it.yearMonth.previousMonth == startMonth){
+                    previousButton.setColorFilter(ContextCompat.getColor(context,R.color.md_theme_dark_primary))
+                } else {
+                    previousButton.setColorFilter(Color.WHITE)
+                }
+                nextButton.setColorFilter(Color.WHITE)
+
             }
         }
 
         nextButton.setOnClickListener {
             calendarView.findFirstVisibleMonth()?.let {
                 calendarView.smoothScrollToMonth(it.yearMonth.nextMonth)
+                if (it.yearMonth.nextMonth == endMonth){
+                    nextButton.setColorFilter(ContextCompat.getColor(context,R.color.md_theme_dark_primary))
+                } else {
+                    nextButton.setColorFilter(Color.WHITE)
+                }
+                previousButton.setColorFilter(Color.WHITE)
             }
         }
     }

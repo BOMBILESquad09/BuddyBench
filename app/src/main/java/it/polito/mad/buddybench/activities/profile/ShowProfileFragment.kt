@@ -59,7 +59,8 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.activity
 
         val sportContainer = thisView.findViewById<LinearLayout>(R.id.sportsContainerEdit)
         sportContainer.removeAllViews()
-
+        println("-----------------profilee")
+        println(profile.imageUri.toString() == "null")
         // ** Populate sport cards
         profile.populateSportCards(context, sportContainer)
     }

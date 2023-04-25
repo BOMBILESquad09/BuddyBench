@@ -16,6 +16,7 @@ CREATE TABLE user(
     birthdate TEXT NOT NULL,
     location TEXT NOT NULL,
     email TEXT NOT NULL,
+    image_path TEXT  NULL,
     reliability INTEGER NOT NULL
 );
 CREATE TABLE court(

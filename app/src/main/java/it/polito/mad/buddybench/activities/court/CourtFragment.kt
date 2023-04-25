@@ -241,6 +241,10 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         binding.rating.text = court.rating.toString()
         binding.ratingBar.rating = court.rating.toFloat()
         binding.nReviews.text = "(${court.nReviews})"
+        binding.equipmentCost.text = String.format(
+            getString(R.string.equipment_phrase),
+            courtViewModel.court.value?.feeEquipment
+        );
     }
 
     private fun renderDayItem(day: LocalDate, selected: LocalDate) {
@@ -312,7 +316,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
             if (isChecked) {
                 val sEquip =
-                    " $nHours h x ($feeHour €/h + $feeEquipment €/h) = ${feeHour * nHours} €/h"
+                    " $nHours h x ($feeHour €/h + $feeEquipment €/h) = ${(feeHour + feeEquipment) * nHours} €/h"
                 totalCost?.text = String.format(getString(R.string.total_price), sEquip);
             } else {
                 totalCost?.text = String.format(getString(R.string.total_price), s);
@@ -392,10 +396,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
 //val drawable =
 //    Sports.sportToIconDrawable(Sports.fromJSON(courtViewModel.court.value!!.sport)!!)
-//binding.equipmentCost.text = String.format(
-//getString(R.string.equipment_phrase),
-//courtViewModel.court.value?.feeEquipment
-//);
+
 
 //        val sportDrawable = ContextCompat.getDrawable(requireContext(), drawable)
 //        sportDrawable!!.mutate().setBounds(10, 10, 10, 10)

@@ -146,7 +146,27 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         sportContainer.removeAllViews()
 
         // ** Populate sport cards
-        populateSportCardsEdit(this, sportContainer)
+        profile.populateSportCards(this, sportContainer,
+            edit = true,
+            onSkillSelected = { sportSkillLevel, sport ->
+
+                val popup = PopupMenu(this, sportSkillLevel)
+                popup.menuInflater.inflate(R.menu.skill_level_edit, popup.menu)
+                popup.setOnMenuItemClickListener {
+                    profile.updateSkillLevel(sport, Skills.fromJSON(it.title.toString().uppercase())!!)
+                    true
+                }
+                popupOpened = popup
+                popup.show()
+            })
+
+
+
+        //Creating the instance of PopupMenu
+
+
+
+
 
         // ** Add Sports Button
         addSportButton = findViewById(R.id.add_sport_button)
@@ -361,18 +381,31 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     override fun onDialogPositiveClick(dialog: DialogFragment, selectedItems: ArrayList<Sports>) {
         // ** Add new selected sports to user profile (and save to shared preferences)
         val newSports = mutableListOf<Sport>()
-        val alreadySelectedSports = profile.sports
+        val alreadySelectedSports = profile.sports.filter { it.skill != Skills.NULL }
         for (selectedSport in selectedItems) {
             try {
                 checkNotNull(selectedSport)
-                val newSport = Sport(selectedSport, Skills.NEWBIE, 0)
+                val newSport = profile.sports.find { it.name == selectedSport } ?:Sport(selectedSport, Skills.NEWBIE, 0)
+                newSport.skill = Skills.NEWBIE
                 newSports.add(newSport)
             } catch (e: java.lang.IllegalStateException) {
                 continue
             }
         }
         profile.sports = newSports.plus(alreadySelectedSports)
-        populateSportCardsEdit(this, sportContainer)
+        profile.populateSportCards(this, sportContainer,
+            edit = true,
+            onSkillSelected = { sportSkillLevel, sport ->
+
+                val popup = PopupMenu(this, sportSkillLevel)
+                popup.menuInflater.inflate(R.menu.skill_level_edit, popup.menu)
+                popup.setOnMenuItemClickListener {
+                    profile.updateSkillLevel(sport, Skills.fromJSON(it.title.toString().uppercase())!!)
+                    true
+                }
+                popupOpened = popup
+                popup.show()
+            })
         dialog.dismiss()
         editSportDialog = null
     }
@@ -460,72 +493,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
 
 
-    private fun populateSportCardsEdit(
-        context: AppCompatActivity,
-        sportContainer: LinearLayout,
-        onDeleteSport: () -> Unit = {},
-        onSkillSelected: () -> Unit = {},
-    ) {
-
-        sportContainer.removeAllViews()
-        if (profile.sports.isEmpty()) {
-            val emptySportsText = TextView(context)
-            emptySportsText.text = context.getString(R.string.no_sports)
-            emptySportsText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
-            sportContainer.addView(emptySportsText)
-            resizeImageView()
-            return
-        }
 
 
-        for (sport in profile.sports) {
-            val sportCard = LayoutInflater.from(context).inflate(R.layout.card_sport_edit, null, false);
-
-            // TODO: Add listener to delete button
-            val deleteButton = sportCard.findViewById<LinearLayout>(R.id.close_button)
-            deleteButton.setBackgroundColor(resources.getColor(android.R.color.transparent));
-
-            deleteButton.setOnClickListener {
-                val newSports = profile.sports.filter { sportInList -> sportInList.name != sport.name}
-                profile.sports = newSports
-                onDeleteSport()
-                this.populateSportCardsEdit(context, sportContainer)
-            }
-
-            // ** Sport card dynamic values
-            val sportName = sportCard.findViewById<TextView>(R.id.sport_card_name);
-            val sportIcon = sportCard.findViewById<ImageView>(R.id.sport_card_icon);
-            val sportSkillLevel = sportCard.findViewById<CardView>(R.id.skill_level_card)
-            val sportSkillLevelText = sportCard.findViewById<TextView>(R.id.skill_level_card_text)
-            val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
-
-            // ** Sport skill level edit
-            sportSkillLevel.setOnClickListener() {
-                //Creating the instance of PopupMenu
-                val popup = PopupMenu(context, sportSkillLevel)
-                popup.menuInflater.inflate(R.menu.skill_level_edit, popup.menu)
-                popup.setOnMenuItemClickListener {
-                    profile.updateSkillLevel(sport, Skills.fromJSON(it.title.toString().uppercase())!!)
-                    onSkillSelected()
-                    populateSportCardsEdit(context, sportContainer)
-                    true
-                }
-                popupOpened = popup
-                popup.show()
-            }
-
-            sportName.text = Utils.capitalize(sport.name.toString())
-            //sportIcon.setImageResource(Sports.sportToIconDrawable(sport.name))
-            // TODO: Non funziona
-            // sportSkillLevel.setBackgroundColor(Skills.skillToColor(sport.skill))
-            sportSkillLevelText.text = Utils.formatString(sport.skill.toString())
-            sportGamesPlayed.text = String.format(context.resources.getString(R.string.games_played), sport.matchesPlayed)
-
-            // ** Add card to container
-            sportContainer.addView(sportCard)
-
-        }
-    }
 
 
     private fun restoreDialog(savedInstanceState: Bundle?){

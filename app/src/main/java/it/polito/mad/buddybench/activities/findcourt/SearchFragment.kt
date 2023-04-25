@@ -10,7 +10,6 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,18 +22,14 @@ import it.polito.mad.buddybench.viewmodels.CourtViewModel
 class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_search_court) {
 
     private val courtViewModel by viewModels<CourtViewModel>()
-    private val context = parent.context
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.searchRecyclerView)
         val b = view.findViewById<ImageButton>(R.id.change_sport_button)
         val textNearButton = view.findViewById<TextView>(R.id.textView12)
         val textUser = view.findViewById<TextView>(R.id.textView11)
-
-        textUser.text = parent.context.getString(R.string.user_hello, context.userViewModel.profile.value!!.name)
-        context.userViewModel.profile.observe(viewLifecycleOwner) {
-            textUser.text = it.name
-        }
+        textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
 
         b.setOnClickListener{
             parent.fragmentManager.switchFragment(States.SPORTS_SELECTION)
@@ -59,6 +54,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             recyclerView?.layoutManager = LinearLayoutManager(view.context)
             textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
         }
+
 
         super.onViewCreated(view, savedInstanceState)
     }

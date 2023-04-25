@@ -37,7 +37,7 @@ class ReservationRepository @Inject constructor(
     fun save(reservationDTO: ReservationDTO) {
         val user = userDao.getUserByEmail(reservationDTO.userOrganizer.email)!!
         val courtWithSport = courtDao.getByNameAndSport(reservationDTO.court.name, reservationDTO.court.sport)
-        reservationDao.save(reservationDTO.toEntity(user.id, courtWithSport.court.id, reservationDTO.equipment))
+        reservationDao.save(reservationDTO.toEntity(user.user.id, courtWithSport.court.id, reservationDTO.equipment))
         updateUnavailableDayCourt(reservationDTO, courtWithSport)
     }
 
@@ -60,7 +60,7 @@ class ReservationRepository @Inject constructor(
     fun delete(reservationDTO: ReservationDTO) {
         val user = userDao.getUserByEmail(reservationDTO.userOrganizer.email)!!
         val courtWithSport = courtDao.getByNameAndSport(reservationDTO.court.name, reservationDTO.court.sport)
-        reservationDao.delete(reservationDTO.toEntity(user.id, courtWithSport.court.id, reservationDTO.equipment))
+        reservationDao.delete(reservationDTO.toEntity(user.user.id, courtWithSport.court.id, reservationDTO.equipment))
         unavailableDayCourtDao.delete(UnavailableDayCourt(courtWithSport.court.id, reservationDTO.date.format(
             DateTimeFormatter.ISO_LOCAL_DATE)))
     }
