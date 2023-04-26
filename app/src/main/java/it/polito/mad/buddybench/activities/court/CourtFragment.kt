@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.graphics.BitmapFactory
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -24,6 +25,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -92,6 +94,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
     private lateinit var recyclerWeeklyCalendarView: RecyclerView
     private lateinit var weeklyDays: MutableList<Pair<LocalDate, Boolean>>
+    private lateinit var switch: Switch
 
 
     override fun onCreateView(
@@ -227,14 +230,13 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         // ** Navigate to court reservation
         binding.buttonFirst.setOnClickListener {
             if (courtViewModel.selectedTimes.isEmpty()) {
-                val textError = String.format(getString(R.string.error_info), courtToReserve.name)
-                buildAlertDialog(textError, requireContext()).show()
+                val textError = getString(R.string.error_book)
+                buildAlertDialog("Book Error", textError, requireContext()).show()
             } else {
                 showBottomSheetDialog()
             }
 
         }
-
         sharedPref = activity?.getSharedPreferences(
             getString(R.string.preference_file_key),
             Context.MODE_PRIVATE
@@ -245,7 +247,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
 
     }
-
 
     private fun updateView(court: CourtDTO) {
         binding.courtNameTv.text = court.name.replace("Courts", "")
@@ -268,96 +269,66 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         binding.nReviews.text = "(${court.nReviews})"
         binding.equipmentCost.text = String.format(
             getString(R.string.equipment_phrase),
-            courtViewModel.court.value?.feeEquipment
+            court.feeEquipment
         );
-    }
-
-    private fun renderDayItem(day: LocalDate, selected: LocalDate) {
-        /*
-        val dayScrollItem =
-            layoutInflater.inflate(
-                R.layout.datepicker_scroll_item,
-                binding.daysScrollView,
-                false
+        binding.sportIconEquipment.setImageDrawable(
+            ResourcesCompat.getDrawable(
+                resources,
+                Sports.sportToIconDrawable(
+                    Sports.fromJSON(
+                        court.sport
+                    )!!
+                ),
+                null
             )
-        val dayTv: TextView = dayScrollItem.findViewById(R.id.day_tv)
-        val dayOfMonthTv: TextView = dayScrollItem.findViewById(R.id.day_of_month_tv)
-        val monthTv: TextView = dayScrollItem.findViewById(R.id.month_tv)
-
-        dayTv.text = Utils.capitalize(day.dayOfWeek.name.subSequence(0, 3).toString())
-        dayOfMonthTv.text = day.dayOfMonth.toString()
-        monthTv.text = Utils.capitalize(day.month.name.subSequence(0, 3).toString())
-
-        // ** Selected day
-        if (day == selected) {
-            val primaryColor =
-                ContextCompat.getColor(requireContext(), R.color.md_theme_light_primary)
-            val whiteColor =
-                ContextCompat.getColor(requireContext(), R.color.md_theme_light_background)
-            dayOfMonthTv.background.setTint(primaryColor)
-            dayOfMonthTv.setTextColor(whiteColor)
+        )
+        if(!editMode) {
+            val b : Button? = view?.findViewById(R.id.cancel_button)
+            b?.visibility = View.GONE
+        } else {
+            reservationViewModel.getReservation(
+                courtToReserve.name,
+                Sports.fromJSON(courtToReserve.sport)!!,
+                profile.email,
+                selectedDate,
+                startTime
+            )
+            val b : Button? = view?.findViewById(R.id.cancel_button)
+            b?.setOnClickListener {
+                val textConfirm = String.format(
+                    getString(R.string.confirm_delete),
+                    courtToReserve.name,
+                    courtToReserve.sport,
+                    reservationViewModel.currentReservation.value!!.startTime,
+                    reservationViewModel.currentReservation.value!!.endTime)
+                val alertDialog = buildAlertDialogDelete("Confirm Delete", textConfirm, requireContext())
+                alertDialog.show()
+            }
         }
-
-        // ** Last item no margin at the end
-        if (day == courtViewModel.days.last()) {
-            val noMarginParams =
-                MarginLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-            noMarginParams.marginEnd = 0
-            dayScrollItem.layoutParams = noMarginParams
-        }
-
-        // ** OnClick Listener
-        dayScrollItem.setOnClickListener {
-            courtViewModel.selectDay(courtToReserve, day, reservationDate)
-            renderWeeklyCalendar()
-        }
-        binding.daysScrollView.addView(dayScrollItem)
-
-         */
     }
 
-//    private fun showBottomSheetDialog() {
-//        val bottomSheetDialog = BottomSheetDialog(requireContext())
-//        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_court_confirm)
-//        val courtName = bottomSheetDialog.findViewById<TextView>(R.id.court_name_confirm_tv)
-//        courtName?.text = courtViewModel.court.value?.name
-//        val courtAddress = bottomSheetDialog.findViewById<TextView>(R.id.court_address_confirm_tv)
-//        courtAddress?.text = courtViewModel.court.value?.address + ", " + courtViewModel.court.value?.location
-//        val dateSelected = bottomSheetDialog.findViewById<TextView>(R.id.dateSelected)
-//        dateSelected?.text = courtViewModel.selectedDay.value!!.format(DateTimeFormatter.ofPattern("EEEE, d MMMM y"))
-//        val confirmButton = bottomSheetDialog.findViewById<Button>(R.id.confirmPrenotation)
-//
-//        val totalCost = bottomSheetDialog.findViewById<TextView>(R.id.total_cost)
-//        val feeHour = courtViewModel.court.value!!.feeHour
-//        val feeEquipment = courtViewModel.court.value!!.feeEquipment
-//        val nHours = courtViewModel.selectedTimes.size
-//        var totalCost = feeHour * nHours
-//        val totalCostField = bottomSheetDialog.findViewById<TextView>(R.id.total_euros)
-//        totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
-//
-//        // Take the reference for the switch of equipment
-//        val switch = bottomSheetDialog.findViewById<Switch>(R.id.switch_equipment)
-//        switch?.setOnCheckedChangeListener { buttonView, isChecked ->
-//            // If the equipment is not selected the linear layout will go out
-//            // Else it's visible
-//            if (isChecked) {
-//                val feeEquipment = courtToReserve.feeEquipment
-//                equipmentField?.text = String.format(getString(R.string.cost_example, feeEquipment))
-//                totalCost = (feeHour + feeEquipment) * nHours
-//                totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
-//            } else {
-//                equipmentField?.text = String.format(getString(R.string.cost_example, 0))
-//                totalCost = feeHour * nHours
-//                totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
-//            }
-//        }
-//    }
-
-    private fun buildAlertDialog(text: String, context: Context): AlertDialog {
+    private fun buildAlertDialog(title: String, text: String, context: Context): AlertDialog {
         return AlertDialog.Builder(context)
-            .setTitle("Additional Information")
+            .setTitle(title)
             .setMessage(text)
             .setPositiveButton("Ok") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+    }
+
+    private fun buildAlertDialogDelete(title: String, text: String, context: Context): AlertDialog {
+        return AlertDialog.Builder(context)
+            .setTitle(title)
+            .setMessage(text)
+            .setPositiveButton("Yes") { dialog, _ ->
+                reservationViewModel.deleteReservation(
+                    reservationViewModel.currentReservation.value!!
+                )
+                dialog.dismiss()
+                requireActivity().finish()
+            }
+            .setNegativeButton("No") { dialog, _ ->
                 dialog.dismiss()
             }
             .create()
@@ -369,6 +340,9 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         // Set the constructor of bottom dialog with the content
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_court_confirm)
+
+        // Take the reference for the switch of equipment
+        switch = bottomSheetDialog.findViewById(R.id.switch_equipment)!!
 
         // Setting up the three card
         // Setting the values for the first Card in dialog
@@ -385,7 +359,11 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         confirmButton?.setOnClickListener {
             if (!checkboxAccept!!.isChecked) {
                 val textError = String.format(getString(R.string.error_info), courtToReserve.name)
-                buildAlertDialog(textError, bottomSheetDialog.context).show()
+                buildAlertDialog(
+                    "Additional Information",
+                    textError,
+                    bottomSheetDialog.context
+                ).show()
             } else {
                 val reservation = ReservationDTO(
                     userOrganizer = user,
@@ -393,11 +371,10 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                     date = selectedDate,
                     startTime = courtViewModel.selectedTimes.first(),
                     endTime = courtViewModel.selectedTimes.last().plusHours(1),
-                    equipment = true
+                    equipment = switch.isChecked
                 )
-
-
                 reservationViewModel.saveReservation(reservation, editMode)
+
                 requireActivity().finish()
                 bottomSheetDialog.dismiss()
             }
@@ -414,22 +391,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
     private fun editMode() {
         selectedDate = reservationDate!!
         courtViewModel.reservationSlots = Pair(LocalTime.of(startTime, 0), LocalTime.of(endTime, 0))
-
-        /*
-        reservationViewModel.getReservation(
-            courtName,
-            sport,
-            emailReservation,
-            reservationDate,
-            startTime
-        ).observe(viewLifecycleOwner){
-            if (it == null) return@observe
-
-            courtViewModel.selectTimesForEdit(
-                it.startTime,
-                it.endTime
-            )
-        }*/
     }
 
     private fun setFirstCard(bottomSheetDialog: BottomSheetDialog) {
@@ -446,6 +407,11 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         val dateSelected = bottomSheetDialog.findViewById<TextView>(R.id.dateSelected)
         val formatter = DateTimeFormatter.ofPattern("EEEE, d MMMM y")
 
+        val timeSelected: TextView? = bottomSheetDialog.findViewById(R.id.timeSelected)
+        val firstTime = courtViewModel.selectedTimes.first().toString()
+        val secondTime = courtViewModel.selectedTimes.last().plusHours(1).toString()
+        timeSelected?.text = String.format(getString(R.string.time_selected), firstTime, secondTime)
+
         dateSelected?.text =
             courtViewModel.selectedDay.value?.format(formatter) ?: LocalDate.now().format(formatter)
         val iconSport = bottomSheetDialog.findViewById<ImageView>(R.id.icon_sport)
@@ -456,18 +422,28 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                 null
             )
         )
+        if(editMode) {
+            switch.isChecked = reservationViewModel.currentReservation.value!!.equipment
+        }
     }
 
     private fun setAdditionalInformationCard(bottomSheetDialog: BottomSheetDialog) {
         // ADDITIONAL INFORMATION CARD
         val additionalInfo = bottomSheetDialog.findViewById<TextView>(R.id.additional_body)
-        additionalInfo?.text = String.format(
-            getString(R.string.informations_body),
-            courtToReserve.name,
-            courtToReserve.sport.lowercase().replaceFirstChar { it.uppercase() })
+        if (!editMode)
+            additionalInfo?.text = String.format(
+                getString(R.string.informations_body),
+                courtToReserve.name,
+                courtToReserve.sport.lowercase().replaceFirstChar { it.uppercase() })
+        else
+            additionalInfo?.text = String.format(
+                getString(R.string.informations_body_edit),
+                courtToReserve.name,
+                courtToReserve.sport.lowercase().replaceFirstChar { it.uppercase() })
 
     }
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun setPriceDetailCard(bottomSheetDialog: BottomSheetDialog) {
         val equipmentField = bottomSheetDialog.findViewById<TextView>(R.id.equipment_field)
         equipmentField?.text = String.format(getString(R.string.cost_example, 0))
@@ -481,9 +457,16 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         val totalCostField = bottomSheetDialog.findViewById<TextView>(R.id.total_euros)
         totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
 
-        // Take the reference for the switch of equipment
-        val switch = bottomSheetDialog.findViewById<Switch>(R.id.switch_equipment)
-        switch?.setOnCheckedChangeListener { buttonView, isChecked ->
+        // In Edit Mode if the switch is enabled means that the reservation
+        // has equipment selected previously
+        if(editMode && switch.isChecked) {
+            val feeEquipment = courtToReserve.feeEquipment
+            equipmentField?.text = String.format(getString(R.string.cost_example, feeEquipment))
+            totalCost = (feeHour + feeEquipment) * nHours
+            totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
+        }
+
+        switch.setOnCheckedChangeListener { _, isChecked ->
             // If the equipment is not selected the linear layout will go out
             // Else it's visible
             if (isChecked) {

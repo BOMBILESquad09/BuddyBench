@@ -21,9 +21,10 @@ import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
-class ReservationViewModel @Inject constructor(): ViewModel() {
+class ReservationViewModel @Inject constructor() : ViewModel() {
 
-    private val _reservations: MutableLiveData<HashMap<LocalDate, List<ReservationDTO>>> = MutableLiveData(null)
+    private val _reservations: MutableLiveData<HashMap<LocalDate, List<ReservationDTO>>> =
+        MutableLiveData(null)
     private val _selectedDate: MutableLiveData<LocalDate> = MutableLiveData(null)
     val selectedDate: LiveData<LocalDate> = _selectedDate
     val _currentReservation: MutableLiveData<ReservationDTO?> = MutableLiveData(null)
@@ -37,7 +38,7 @@ class ReservationViewModel @Inject constructor(): ViewModel() {
 
     fun getAll(): LiveData<HashMap<LocalDate, List<ReservationDTO>>> {
         // Repository Call, All the repos return DTO Obj
-        Thread{
+        Thread {
             val reservations = reservationRepository.getAll()
             _reservations.postValue(reservations)
         }.start()
@@ -47,7 +48,7 @@ class ReservationViewModel @Inject constructor(): ViewModel() {
 
     fun getAllByUser(email: String): LiveData<HashMap<LocalDate, List<ReservationDTO>>> {
         // Repository Call, All the repos return DTO Obj
-        Thread{
+        Thread {
             val reservations = reservationRepository.getAllByUser(email)
             println("Reservation For: $email")
             println(reservations)
@@ -71,15 +72,21 @@ class ReservationViewModel @Inject constructor(): ViewModel() {
     }
 
 
-    fun updateSelectedDay(date: LocalDate){
+    fun updateSelectedDay(date: LocalDate) {
         _selectedDate.value = date
     }
 
-    fun getSelectedReservations(): List<ReservationDTO>?{
-        return reservations.value?.get(selectedDate.value?: LocalDate.now())
+    fun getSelectedReservations(): List<ReservationDTO>? {
+        return reservations.value?.get(selectedDate.value ?: LocalDate.now())
     }
 
-    fun getReservation(courtName: String, sport: Sports, email: String, date: LocalDate, startTime: Int): MutableLiveData<ReservationDTO?> {
+    fun getReservation(
+        courtName: String,
+        sport: Sports,
+        email: String,
+        date: LocalDate,
+        startTime: Int
+    ): MutableLiveData<ReservationDTO?> {
         Thread {
             val sportName = Sports.toJSON(sport)
             val reservationDTO =
@@ -90,10 +97,13 @@ class ReservationViewModel @Inject constructor(): ViewModel() {
                     date,
                     startTime
                 )
-            _currentReservation.postValue( reservationDTO)
+            _currentReservation.postValue(reservationDTO)
         }.start()
         return _currentReservation
     }
 
+    fun deleteReservation(reservation: ReservationDTO) {
+        reservationRepository.delete(reservation)
+    }
 
 }
