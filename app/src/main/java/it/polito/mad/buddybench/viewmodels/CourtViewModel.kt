@@ -24,9 +24,10 @@ import javax.inject.Inject
 class CourtViewModel @Inject constructor() : ViewModel() {
 
     private var _initialValue: CourtDTO? = null
-    private var _initialOpeningTime = LocalTime.of(6,0)
-    private var _initialClosingTime = LocalTime.of(23,0)
-    private var _initialValueTimeSlots = Utils.getTimeSlots(_initialOpeningTime, _initialClosingTime)
+    private var _initialOpeningTime = LocalTime.of(6, 0)
+    private var _initialClosingTime = LocalTime.of(23, 0)
+    private var _initialValueTimeSlots =
+        Utils.getTimeSlots(_initialOpeningTime, _initialClosingTime)
     private var _court: MutableLiveData<CourtDTO> = MutableLiveData(_initialValue)
     private var _timetable: MutableLiveData<CourtTimeTableDTO> = MutableLiveData(null)
     private var _courtSportsInitial: List<CourtDTO> = listOf()
@@ -47,19 +48,18 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     private val _openingTime: MutableLiveData<LocalTime> = MutableLiveData(_initialOpeningTime)
     private val _closingTime: MutableLiveData<LocalTime> = MutableLiveData(_initialClosingTime)
     private val _days = Utils.generateDateRange(LocalDate.now(), LocalDate.now().plusDays(14))
-    private val _timeSlots :MutableLiveData<List<LocalTime>> = MutableLiveData(_initialValueTimeSlots)
+    private val _timeSlots: MutableLiveData<List<LocalTime>> =
+        MutableLiveData(_initialValueTimeSlots)
     private val _selectedDay: MutableLiveData<LocalDate> = MutableLiveData(LocalDate.now())
-    private val _selectedTime: MutableLiveData<LocalTime> = MutableLiveData(LocalTime.now())
-    private val _courtsSports: LiveData<List<CourtDTO>> =   MutableLiveData(_courtSportsInitial)
+    private val _selectedTimes: MutableLiveData<MutableList<LocalTime>> =
+        MutableLiveData(mutableListOf())
 
     // ** Expose to other classes (view)
     val court: LiveData<CourtDTO> get() = _court
     val days: List<LocalDate> get() = _days
     val timeSlots: LiveData<List<LocalTime>> get() = _timeSlots
     val selectedDay: LiveData<LocalDate> get() = _selectedDay
-    val selectedTime: LiveData<LocalTime> get() = _selectedTime
-    val courtSports: LiveData<List<CourtDTO>> get() = _courtsSports
-
+    val selectedTimes: LiveData<MutableList<LocalTime>> get() = _selectedTimes
 
 
     /**
@@ -71,18 +71,62 @@ class CourtViewModel @Inject constructor() : ViewModel() {
         return _selectedDay
     }
 
-    fun selectTime(time: LocalTime): LiveData<LocalTime> {
-        _selectedTime.value = time
-        return _selectedTime
+    fun addSelectedTime(time: LocalTime): LiveData<MutableList<LocalTime>> {
+
+        if (
+            _selectedTimes.value!!.isEmpty()
+            || _selectedTimes.value!!.last() == time.minusHours(1)
+            || _selectedTimes.value!!.first() == time.plusHours(1)
+        ) {
+            _selectedTimes.value!!.add(time)
+            _selectedTimes.value!!.sort()
+            val l = _selectedTimes.value!!
+            _selectedTimes.value = l
+            return _selectedTimes
+        } else {
+            _selectedTimes.value = mutableListOf()
+            _selectedTimes.value!!.add(time)
+        }
+
+
+        return _selectedTimes
     }
 
-    fun getTimeTables(name: String, sport: Sports): LiveData<CourtTimeTableDTO>{
-        _timetable.value = courtTimeRepository.getCourtTimeTable(name,sport)
+    fun selectTimesForEdit(first: LocalTime, last: LocalTime): List<LocalTime> {
+        val l = Utils.getTimeSlots(first, last) as MutableList
+        _selectedTimes.value = l
+        return l
+    }
+
+    fun removeSelectedTime(time: LocalTime): LiveData<MutableList<LocalTime>> {
+        if (_selectedTimes.value!!.last() == time || _selectedTimes.value!!.first() == time
+        ) {
+            _selectedTimes.value!!.remove(time)
+            val l = _selectedTimes.value!!
+            _selectedTimes.value = l
+            return _selectedTimes
+        } else if (_selectedTimes.value!!.contains(time)) {
+            _selectedTimes.value = mutableListOf()
+            _selectedTimes.value!!.add(time)
+            return _selectedTimes
+        } else {
+            _selectedTimes.value = mutableListOf()
+            return _selectedTimes
+        }
+
+    }
+
+    fun clearSelectedTime() {
+        _selectedTimes.value!!.clear()
+    }
+
+    fun getTimeTables(name: String, sport: Sports): LiveData<CourtTimeTableDTO> {
+        _timetable.value = courtTimeRepository.getCourtTimeTable(name, sport)
         _court.value = _timetable.value!!.court
         return _timetable
     }
 
-    fun getTimeTable(): LiveData<CourtTimeTableDTO>{
+    fun getTimeTable(): LiveData<CourtTimeTableDTO> {
         return _timetable
     }
 
@@ -96,19 +140,20 @@ class CourtViewModel @Inject constructor() : ViewModel() {
         val list = _initialValueTimeSlots.filter {
             !timeSlotsOccupied.contains(it)
         } as MutableList
-        if(list.isNotEmpty())
+        if (list.isNotEmpty())
             list.removeLast()
+
         _timeSlots.value = list
 
         return list
     }
 
-    fun openingAndClosingTimeForCourt( dayOfWeek: DayOfWeek) {
+    fun openingAndClosingTimeForCourt(dayOfWeek: DayOfWeek) {
 
         val courtTime = _timetable.value?.timeTable?.get(dayOfWeek)
-        _openingTime.value = courtTime?.first ?: LocalTime.of(0,0)
-        _closingTime.value = courtTime?.second ?: LocalTime.of(0,0)
-        _initialValueTimeSlots = if(courtTime != null)
+        _openingTime.value = courtTime?.first ?: LocalTime.of(0, 0)
+        _closingTime.value = courtTime?.second ?: LocalTime.of(0, 0)
+        _initialValueTimeSlots = if (courtTime != null)
             Utils.getTimeSlots(courtTime.first, courtTime.second)
         else
             listOf()
@@ -118,6 +163,11 @@ class CourtViewModel @Inject constructor() : ViewModel() {
         return courtRepository.getCourtsBySports(Sports.toJSON(sport).uppercase())
     }
 
+    fun getCourtBySportAndName(name: String, sport: Sports): LiveData<CourtDTO> {
+        val court = courtRepository.getByNameAndSports(name, sport)
+        _court.value = court
+        return _court
+    }
 
 
 }

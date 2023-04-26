@@ -7,6 +7,8 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
+import androidx.core.view.size
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getInt
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getJSONArray
@@ -24,9 +26,9 @@ import java.time.temporal.ChronoUnit
 
 
 class Profile(var name: String?, var surname: String?, var nickname: String?, var email: String, var location: String?, var birthdate: LocalDate, var reliability: Int, var imageUri: Uri?, var sports: List<Sport> ) {
-    var matchesPlayed:Int = sports.fold(0){a: Int, b: Sport -> a + b.matchesPlayed }
+    var matchesPlayed:Int = sports.filter { it.skill != Skills.NULL  }.fold(0){a: Int, b: Sport -> a + b.matchesPlayed }
     var age:Int = ChronoUnit.YEARS.between(birthdate, LocalDate.now()).toInt()
-    var matchesOrganized: Int = sports.fold(0){a:Int, b: Sport -> a + b.matchesOrganized}
+    var matchesOrganized: Int = sports.filter { it.skill != Skills.NULL }.fold(0){ a:Int, b: Sport -> a + b.matchesOrganized}
     var fullName = "$name $surname"
     companion object {
 
@@ -77,7 +79,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
         json.put("birthdate", birthdate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
         json.put("reliability", reliability)
         if (imageUri == null){
-           json.put("imageUri", JSONObject.NULL)
+            json.put("imageUri", JSONObject.NULL)
         } else {
             json.put("imageUri", imageUri.toString())
         }
@@ -93,7 +95,8 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
             birthdate = this.birthdate,
             location = this.location!!,
             email = this.email,
-            reliability = this.reliability
+            imagePath = this.imageUri.toString(),
+            reliability = this.reliability,
         )
     }
 
@@ -102,7 +105,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
 
     fun getSportsEnum(): List<Sports> {
         val sportsList = mutableListOf<Sports>()
-        for (sport in this.sports) {
+        for (sport in this.sports.filter { it.skill != Skills.NULL }) {
             sportsList.add(sport.name)
         }
         return sportsList
@@ -120,37 +123,76 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
      * @param context The Activity or context in which the function is called
      * @param sportContainer The container layout in which to add the cards
      */
-    fun populateSportCards(context: AppCompatActivity, sportContainer: LinearLayout) {
+    fun populateSportCards(context: AppCompatActivity,
+                           sportContainer: LinearLayout,
+                           onDeleteSport: () -> Unit = {},
+                           onSkillSelected: (CardView, Sport) -> Unit = {_,_ -> },
+                           edit: Boolean = false,
+                           popupOpened:PopupMenu?  = null
+    ) {
+
         sportContainer.removeAllViews()
-        if (this.sports.isEmpty()) {
+        if (this.sports.filter { it.skill != Skills.NULL }.isEmpty()) {
             val emptySportsText = TextView(context)
             emptySportsText.text = context.getString(R.string.no_sports)
             sportContainer.addView(emptySportsText)
             emptySportsText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
             return
         }
+        this.sports.sortedBy {
+            it.name
+        }
+        for (sport in this.sports.filter { it.skill != Skills.NULL }) {
+            val layout = if (!edit) R.layout.card_sport else R.layout.card_sport_edit
 
-        for (sport in this.sports) {
-            val sportCard = LayoutInflater.from(context).inflate(R.layout.card_sport, null, false)
+            val sportCard =
+                LayoutInflater.from(context).inflate(layout, sportContainer, false)
 
             // ** Sport card dynamic values
+
             val sportName = sportCard.findViewById<TextView>(R.id.sport_card_name)
             val sportIcon = sportCard.findViewById<ImageView>(R.id.sport_card_icon)
             val sportSkillLevelText = sportCard.findViewById<TextView>(R.id.skill_level_card_text)
             val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
 
             sportName.text = Utils.formatString(sport.name.toString())
-            sportIcon.setImageResource(Sports.sportToIconDrawable(sport.name))
+            println(sportName.text)
+            sportIcon?.setImageResource(Sports.sportToIconDrawable(sport.name))
             // TODO: Doesn't work
-            // sportSkillLevel.setBackgroundColor(Skills.skillToColor(sport.skill))
+            //sportSkillLevelText.setBackgroundColor(Skills.skillToColor(sport.skill))
             sportSkillLevelText.text = Utils.formatString(sport.skill.toString())
-            sportGamesPlayed.text = String.format(context.resources.getString(R.string.games_played), sport.matchesPlayed)
+            sportGamesPlayed.text = String.format(
+                context.resources.getString(R.string.games_played),
+                sport.matchesPlayed
+            )
 
             // ** Add card to container
+
+            val deleteButton = sportCard.findViewById<LinearLayout>(R.id.close_button)
+
+            deleteButton?.setOnClickListener {
+                val newSports = this.sports.map {
+                    if (it.name == sport.name)
+                        it.skill = Skills.NULL
+                    it
+                }
+                this.sports = newSports
+                onDeleteSport()
+                this.populateSportCards(context, sportContainer, edit = true, onSkillSelected = onSkillSelected)
+            }
+            val sportSkillLevel = sportCard.findViewById<CardView>(R.id.skill_level_card)
+            if (edit) {
+                sportSkillLevel.setOnClickListener(){
+                    onSkillSelected(sportSkillLevel, sport)
+                    this.populateSportCards(context, sportContainer, edit = true, onSkillSelected = onSkillSelected)
+
+                }
+            }
             sportContainer.addView(sportCard)
         }
+
+        print("------------size-----------------")
+        println(sportContainer.size)
+
     }
-
-
-
 }

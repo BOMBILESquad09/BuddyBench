@@ -52,11 +52,11 @@
                     android:id="@+id/court_image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleX="2"
-                    android:scaleY="2"
-                    android:src="@drawable/court_sample"
-                    android:contentDescription="court">
-                </ImageView>
+                    android:adjustViewBounds="true"
+                    android:contentDescription="court"
+                    android:scaleType="centerCrop"
+
+                    android:src="@drawable/court14"></ImageView>
 
             </LinearLayout>
 

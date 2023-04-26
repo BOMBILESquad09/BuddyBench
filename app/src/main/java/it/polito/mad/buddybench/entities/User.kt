@@ -32,7 +32,10 @@ data class User(
     val email: String,
 
     @ColumnInfo(name = "reliability")
-    val reliability: Int
+    val reliability: Int,
+
+    @ColumnInfo(name = "image_path")
+    val imagePath: String?
 
 )
 
@@ -44,6 +47,7 @@ fun User.toUserDTO(): UserDTO {
         birthdate = LocalDate.parse(this.birthdate),
         location = this.location,
         email = this.email,
-        reliability = this.reliability
+        reliability = this.reliability,
+        imagePath = this.imagePath
     )
 }

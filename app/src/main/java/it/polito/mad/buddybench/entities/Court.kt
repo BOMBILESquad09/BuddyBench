@@ -51,6 +51,7 @@ data class Court(
     @ColumnInfo(name = "n_reviews")
     var nReviews: Int
 
+
     )
 fun Court.toCourtDTO(): CourtDTO {
     return CourtDTO(

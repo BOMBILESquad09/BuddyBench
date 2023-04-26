@@ -21,6 +21,9 @@ interface ReservationDao {
     @Query("SELECT * FROM reservation R, user U WHERE U.email = :email and R.user = U.id")
     fun getAllByUser(email: String): List<ReservationWithUserAndCourt>
 
+    @Query("SELECT * FROM reservation R, user U WHERE U.email = :email and R.user = U.id AND court = :courtId AND date = :date")
+    fun getReservationByUserAndCourtNameAndSport(email: String, courtId: Int, date: String): List<ReservationWithUserAndCourt>
+
 
 
 }

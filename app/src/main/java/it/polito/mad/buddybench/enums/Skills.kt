@@ -3,6 +3,7 @@ package it.polito.mad.buddybench.enums
 import it.polito.mad.buddybench.R
 
 enum class Skills {
+    NULL,
     NEWBIE,
     AMATEUR,
     SKILLED,
@@ -24,6 +25,7 @@ enum class Skills {
                 SKILLED -> R.color.md_theme_dark_background
                 PRO -> R.color.md_theme_dark_error
                 WORLD_CLASS -> R.color.md_theme_dark_background
+                NULL -> R.color.md_theme_dark_error
             }
         }
 
@@ -34,6 +36,7 @@ enum class Skills {
                 SKILLED -> "SKILLED"
                 PRO -> "PRO"
                 WORLD_CLASS -> "WORLD_CLASS"
+                NULL -> "NULL"
             }
         }
 
@@ -45,6 +48,7 @@ enum class Skills {
                 "PRO" -> PRO
                 "WORLD_CLASS" -> WORLD_CLASS
                 "WORLD CLASS" -> WORLD_CLASS
+                "NULL" -> NULL
                 else -> null
             }
         }
