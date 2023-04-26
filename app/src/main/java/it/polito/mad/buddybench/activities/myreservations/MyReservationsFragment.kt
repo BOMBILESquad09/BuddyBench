@@ -68,7 +68,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
 
         val currentMonth = YearMonth.now()
         val startMonth = currentMonth.minusMonths(0)  // Adjust as needed
-        val endMonth = currentMonth.plusMonths(2)  // Adjust as needed
+        val endMonth = currentMonth.plusMonths(1)  // Adjust as needed
         val daysOfWeek = daysOfWeek(DayOfWeek.MONDAY)
         calendarView.setup(startMonth, endMonth, daysOfWeek.first()) // Available from the library
         calendarView.scrollToMonth(currentMonth)

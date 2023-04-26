@@ -22,6 +22,8 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     private val _currentCourts: MutableLiveData<List<CourtDTO>> = MutableLiveData(listOf())
     val currentCourts: LiveData<List<CourtDTO>> = _currentCourts
 
+    private var selectedDate: LocalDate = LocalDate.now()
+
 
 
     //filters
@@ -69,6 +71,15 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
         _currentCourts.value = _courts.filter{
             it.location.contains(name, ignoreCase = true) || it.name.contains(name, ignoreCase = true)
         }
+    }
+
+    fun setSelectedDate(date: LocalDate){
+        selectedDate = date
+        getCourtsBySport(selectedSport.value!!)
+    }
+
+    fun getSelectedDate(): LocalDate {
+        return selectedDate
     }
 
 

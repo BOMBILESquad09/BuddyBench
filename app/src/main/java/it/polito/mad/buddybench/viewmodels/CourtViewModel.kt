@@ -51,7 +51,7 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     private val _openingTime: MutableLiveData<LocalTime> = MutableLiveData(LocalTime.of(0, 0))
     private val _closingTime: MutableLiveData<LocalTime> = MutableLiveData(LocalTime.of(0, 0))
     //Weekly time table
-    private val _days = Utils.generateDateRange(LocalDate.now(), LocalDate.now().plusDays(14))
+    private val _days = Utils.generateDateRange(Utils.getDateRanges().first, Utils.getDateRanges().second)
 
     //Time slots with a boolean that describes the selected timeslots
     private val _timeSlots: MutableLiveData<List<Pair<LocalTime, Boolean>>> = MutableLiveData(listOf())

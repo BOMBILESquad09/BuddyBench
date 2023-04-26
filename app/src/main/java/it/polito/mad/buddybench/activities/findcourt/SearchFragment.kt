@@ -20,18 +20,26 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.slider.RangeSlider
+import com.kizitonwose.calendar.core.WeekDay
+import com.kizitonwose.calendar.core.WeekDayPosition
+import com.kizitonwose.calendar.view.WeekCalendarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.activities.court.WeeklyCalendarDayBinder
 import it.polito.mad.buddybench.activities.findcourt.sportselection.CourtSearchAdapter
 import it.polito.mad.buddybench.dto.CourtDTO
 import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.FindCourtViewModel
+import java.time.DayOfWeek
+import java.time.LocalDate
 
 @AndroidEntryPoint
 class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_search_court) {
 
     lateinit var recyclerView: RecyclerView
     private var lastCourts: List<CourtDTO> = listOf()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         recyclerView = view.findViewById(R.id.searchRecyclerView)
@@ -47,6 +55,29 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
         recyclerView.adapter = CourtSearchAdapter(parent.viewModel.currentCourts)
         recyclerView.layoutManager = LinearLayoutManager(view.context)
+
+
+        val calendarView = view.findViewById<WeekCalendarView>(R.id.calendar)
+
+
+
+
+        val calendarCallback: (LocalDate, LocalDate) -> Unit = { last, new ->
+            if(last == new){
+                calendarView.notifyDayChanged(WeekDay(last, WeekDayPosition.InDate))
+
+            } else {
+                calendarView.notifyDayChanged(WeekDay(new, WeekDayPosition.InDate))
+                calendarView.notifyDayChanged(WeekDay(last, WeekDayPosition.InDate))
+            }
+        }
+
+
+
+        calendarView.dayBinder = WeeklyCalendarDayBinder( parent.viewModel.getSelectedDate(), calendarCallback)
+        val ranges = Utils.getDateRanges()
+        calendarView.setup(ranges.first, ranges.second, DayOfWeek.MONDAY)
+        calendarView.scrollToDate(parent.viewModel.getSelectedDate())
 
 
 
