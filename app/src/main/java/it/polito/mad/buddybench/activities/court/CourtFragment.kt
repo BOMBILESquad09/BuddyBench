@@ -209,7 +209,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             updateView(it.court)
             courtViewModel.getTimeSlotsAvailable(it.court, selectedDate, reservationDate)
                 .observe(viewLifecycleOwner) { timeSlots ->
-                    println(timeSlots)
                     if (timeSlots == null) return@observe
                     if (timeSlots.isEmpty()) {
                         binding.root.findViewById<ConstraintLayout>(R.id.empty_timeslots).visibility =
