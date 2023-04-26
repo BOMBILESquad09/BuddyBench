@@ -9,6 +9,9 @@ interface ReservationDao {
     @Query("SELECT * FROM reservation")
     fun getAll(): List<ReservationWithUserAndCourt>
 
+    @Query("SELECT * FROM reservation WHERE id = :id")
+    fun get(id: Int): Reservation
+
     @Insert
     fun save(reservation: Reservation)
 

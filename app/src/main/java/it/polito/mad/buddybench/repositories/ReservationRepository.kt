@@ -47,18 +47,19 @@ class ReservationRepository @Inject constructor(
     fun update(reservationDTO: ReservationDTO, oldDate: LocalDate, oldStartTime: Int){
         val user = userDao.getUserByEmail(reservationDTO.userOrganizer.email)!!
         val courtWithSport = courtDao.getByNameAndSport(reservationDTO.court.name, reservationDTO.court.sport)
-        var oldReservation = reservationDao.getReservation(reservationDTO.userOrganizer.email, courtWithSport.court.id,
+        var oldReservation_ = reservationDao.getReservation(reservationDTO.userOrganizer.email, courtWithSport.court.id,
             oldDate.format(DateTimeFormatter.ISO_LOCAL_DATE), oldStartTime)
 
-        println("-------------------")
+        val oldReservation = reservationDao.get(oldReservation_.reservation.id)
 
         println(oldDate)
         println(oldStartTime)
         println(reservationDTO.date.format(DateTimeFormatter.ISO_LOCAL_DATE))
+        println(oldReservation)
         println("-------------------")
 
         val newReservation = Reservation(
-            id = oldReservation.reservation.id,
+            id = oldReservation.id,
             startTime = reservationDTO.startTime.hour,
             endTime = reservationDTO.endTime.hour,
             date = reservationDTO.date.format(DateTimeFormatter.ISO_LOCAL_DATE),
@@ -67,8 +68,22 @@ class ReservationRepository @Inject constructor(
             court = courtWithSport.court.id
         )
 
-        reservationDao.update(newReservation)
+        println("-------------reservation-----------")
+        println(
+            newReservation.startTime
+        )
+        println(
+            newReservation.endTime
+        )
+        println(
+            newReservation.date
+        )
 
+
+
+        reservationDao.update(newReservation)
+        println(reservationDao.get(newReservation.id).toString())
+        println("--------------------- ")
         updateUnavailableDayCourt(reservationDTO, courtWithSport)
     }
 
