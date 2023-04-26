@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.activities.court
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -59,5 +60,6 @@ class CourtActivity : AppCompatActivity() {
             .commit()
 
     }
+
 
 }

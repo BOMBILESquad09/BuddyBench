@@ -94,13 +94,19 @@
     
     <string name="additional_information">Additional Informations</string>
     <string name="informations_body">\nTo access the court %1$s, the following rules must be respected:\n\n- Maintain appropriate behavior\n- Respect the practical rules of the %2$s\n- Respect others, especially regarding noise pollution\n\n\n</string>
+    <string name="informations_body_edit">\nTo access the court %1$s, the following rules must be respected:\n\n- Maintain appropriate behavior\n- Respect the practical rules of the %2$s\n- Respect others, especially regarding noise pollution\n- The refund will be given to the court before the start of the reservation\n\n\n </string>
     <string name="accept_informations">Accept</string>
     <string name="price_details_title">Price Details</string>
     <string name="field_cost">Field</string>
     <string name="equipment_cost">Equipment</string>
-    <string name="cost_example">%1$d $</string>
+    <string name="cost_example">%1$d €</string>
     <string name="total_cost">Total (EUR)</string>
     <string name="court_address_card">%1$s, %2$s</string>
 
     <string name="error_info">Make sure to accept the additional information of %1$s</string>
+    <string name="error_book">Before to book, please select at least one time slot</string>
+
+    <string name="time_selected"> %1$s - %2$s</string>
+    <string name="delete"> Delete </string>
+    <string name="confirm_delete">Are you sure to delete the reservation for %1$s (%2$s) at %3$s - %4$s ?</string>
 </resources>
