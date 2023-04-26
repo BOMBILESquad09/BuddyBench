@@ -13,8 +13,9 @@ import it.polito.mad.buddybench.entities.*
         Invitation::class,
         Reservation::class,
         UserSport::class,
-        User::class
-    ], version = 1, exportSchema = true
+        User::class,
+        UnavailableDayCourt::class
+    ], version = 2, exportSchema = true
 )
 abstract class CourtReservationDatabase: RoomDatabase() {
 
@@ -25,5 +26,6 @@ abstract class CourtReservationDatabase: RoomDatabase() {
     abstract fun sportDao(): SportDao
     abstract fun userSportDao(): UserSportDao
     abstract fun reservationDao(): ReservationDao
+    abstract fun unavailableDayCourtDao(): UnavailableDayCourtDao
 
 }

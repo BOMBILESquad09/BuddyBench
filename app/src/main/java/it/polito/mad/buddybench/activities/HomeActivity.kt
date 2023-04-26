@@ -39,11 +39,16 @@ class HomeActivity: AppCompatActivity() {
         setContentView(R.layout.home)
         sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         profile = if (::profile.isInitialized) {
-             profile
+            profile
         } else{
             Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
         }
-        userViewModel.setUserName(profile.name!!)
+        profile = userViewModel.getUser(profile.email).let {
+            if (it == null){
+                profile
+            }
+            it
+        }
         bottomBar.setup()
     }
 
@@ -70,8 +75,10 @@ class HomeActivity: AppCompatActivity() {
         if(response.resultCode == Activity.RESULT_OK){
             with(sharedPref.edit()) {
                 val newProfile = Profile.fromJSON(JSONObject(response.data?.getStringExtra("newProfile").toString()))
-                val newImageUri =  if(newProfile.imageUri != null &&  newProfile.imageUri.toString() != profile.imageUri.toString())
+                val newImageUri =  if(newProfile.imageUri != null &&  newProfile.imageUri.toString() != profile.imageUri.toString() )
                     BitmapUtils.saveToInternalStorage(applicationContext, BitmapUtils.uriToBitmap(contentResolver, newProfile.imageUri!!)!!, profile.imageUri) else profile.imageUri
+
+
                 if(newImageUri == null){
                     val toast = Toast.makeText(
                         applicationContext,

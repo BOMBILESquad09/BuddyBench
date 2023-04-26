@@ -1,8 +1,7 @@
 package it.polito.mad.buddybench.activities.findcourt
 
-import androidx.fragment.app.Fragment
 import it.polito.mad.buddybench.R
-import it.polito.mad.buddybench.activities.findcourt.SportSelection.SportsSelectionFragment
+import it.polito.mad.buddybench.activities.findcourt.sportselection.SportsSelectionFragment
 
 class FindCourtFragmentManager(private val root: FindCourtFragment) {
     private var currentState = States.SPORTS_SELECTION

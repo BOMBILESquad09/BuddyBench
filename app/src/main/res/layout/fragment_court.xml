@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,16 +29,17 @@
 
 
             <ImageButton
+                android:id="@+id/back_button"
                 android:layout_width="wrap_content"
-                android:padding="16dp"
-                android:layout_margin="16dp"
                 android:layout_height="wrap_content"
+                android:layout_margin="16dp"
                 android:background="@drawable/rounded_shape"
                 android:backgroundTint="@color/md_theme_light_background"
+                android:contentDescription="@string/close"
+                android:padding="16dp"
                 android:src="@drawable/round_arrow_back_24_primary"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="@string/close" />
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -46,24 +48,23 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dp">
 
             <!-- Name and price -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/court_name_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/sport_tennis"
                     android:fontFamily="@font/montserrat_bold_700"
-                    android:textSize="20sp"
-                    />
+                    android:text="@string/sport_tennis"
+                    android:textSize="20sp" />
 
 
                 <View
@@ -71,36 +72,16 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:shape="oval"
-                    app:cardCornerRadius="99dp"
-                    android:backgroundTint="@color/md_theme_light_primary"
-                    >
-
-                    <TextView
-                        android:id="@+id/court_fee_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/price_text"
-                        android:layout_marginVertical="8dp"
-                        android:layout_marginHorizontal="16dp"
-                        android:textSize="18sp"
-                        android:fontFamily="@font/montserrat_semibold_600"
-                        android:textColor="@color/md_theme_light_background" />
-
-                </androidx.cardview.widget.CardView>
 
             </LinearLayout>
 
             <!-- Rating -->
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingVertical="16dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:paddingVertical="16dp">
 
                 <TextView
                     android:id="@+id/rating"
@@ -108,7 +89,12 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_semibold_600"
                     android:text="@string/rating_default_value"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/rating_bar"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <RatingBar
                     android:id="@+id/rating_bar"
@@ -119,59 +105,112 @@
                     android:indeterminate="false"
                     android:isIndicator="false"
                     android:numStars="5"
-                    android:rating="4.5" />
+                    android:rating="4.5"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/n_reviews"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/rating"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/n_reviews"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:fontFamily="@font/montserrat_medium_500"
                     android:text="@string/reviews_number"
-                    android:textSize="12sp" />
-            </LinearLayout>
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/rating_bar"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/md_theme_light_primary"
+                    android:shape="oval"
+                    app:cardCornerRadius="99dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/court_fee_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginVertical="8dp"
+                        android:fontFamily="@font/montserrat_semibold_600"
+                        android:text="@string/price_text"
+                        android:textColor="@color/md_theme_light_background"
+                        android:textSize="18sp" />
+
+                </androidx.cardview.widget.CardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!-- Court Information -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/court_information"
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/montserrat_semibold_600"
+                android:text="@string/court_information"
                 android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/court_address_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:gravity="center_vertical"
-                android:drawablePadding="8dp"
-                android:layout_marginVertical="8dp"
-                android:text="@string/via_roma_16_torino"
-                android:fontFamily="@font/montserrat_medium_500"
-                app:drawableStartCompat="@drawable/location" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/court_address_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    android:drawablePadding="8dp"
+                    android:fontFamily="@font/montserrat_medium_500"
+                    android:gravity="center_vertical"
+                    android:text="@string/via_roma_16_torino"
+                    android:textSize="12sp"
+                    app:drawableStartCompat="@drawable/location" />
+
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/court_opening_hours_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:gravity="center_vertical"
                 android:drawablePadding="8dp"
-                android:text="@string/opening_hours_default"
                 android:fontFamily="@font/montserrat_medium_500"
+                android:gravity="center_vertical"
+                android:text="@string/opening_hours_default"
+                android:textSize="12sp"
                 app:drawableStartCompat="@drawable/round_access_time_24" />
+
+            <TextView
+                android:id="@+id/equipment_cost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="8dp"
+                android:drawablePadding="8dp"
+                android:fontFamily="@font/montserrat_medium_500"
+                android:gravity="center_vertical"
+                android:text="@string/equipment_phrase"
+                android:textSize="12sp"
+                app:drawableStartCompat="@drawable/tennis" />
 
             <!-- Date and Time Selection -->
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/reservation"
-                android:paddingVertical="16dp"
                 android:fontFamily="@font/montserrat_semibold_600"
-                android:textSize="16sp"
-                />
+                android:paddingVertical="16dp"
+                android:text="@string/reservation"
+                android:textSize="16sp" />
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
@@ -191,40 +230,43 @@
 
             </HorizontalScrollView>
 
-            <HorizontalScrollView
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="none"
-                android:layout_marginTop="8dp">
-
-                <LinearLayout
-                    android:id="@+id/time_scroll_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <include layout="@layout/datepicker_time_scroll_item" />
-
-                </LinearLayout>
+                android:paddingTop="10dp"
+                android:paddingBottom="30dp"
+                android:text="Available Timeslots (1h each)"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
 
-            </HorizontalScrollView>
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/time_grid_parent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <include layout="@layout/grid_times_slots" />
+
+
+            </androidx.core.widget.NestedScrollView>
+
 
             <Button
                 android:id="@+id/button_first"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginVertical="16dp"
-                android:text="@string/book"
-                android:backgroundTint="@color/md_theme_light_primary"
-                android:textColor="@color/md_theme_light_background"
-                android:fontFamily="@font/montserrat_semibold_600"
-                android:textAllCaps="false"
                 android:background="@drawable/rounded_shape"
-                />
+                android:backgroundTint="@color/md_theme_light_primary"
+                android:fontFamily="@font/montserrat_semibold_600"
+                android:text="@string/book"
+                android:textAllCaps="false"
+                android:textColor="@color/md_theme_light_background" />
         </LinearLayout>
 
 
     </LinearLayout>
+
 
 </ScrollView>

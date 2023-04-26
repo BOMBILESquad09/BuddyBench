@@ -1,10 +1,9 @@
-package it.polito.mad.buddybench.activities.findcourt.SportSelection
+package it.polito.mad.buddybench.activities.findcourt.sportselection
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.buddybench.R
-import it.polito.mad.buddybench.activities.myreservations.ReservationViewHolder
 import it.polito.mad.buddybench.enums.Sports
 
 class SportsSelectionAdapter(val sports: List<Sports>, private val callback: (Sports) -> Unit): RecyclerView.Adapter<SportsSelectionViewHolder>()  {
@@ -13,7 +12,7 @@ class SportsSelectionAdapter(val sports: List<Sports>, private val callback: (Sp
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SportsSelectionViewHolder {
         val v = LayoutInflater.from(parent.context)
             .inflate(R.layout.sport_selector, parent, false)
-
+        v.setPadding(0, 40, 0, 0)
         return SportsSelectionViewHolder(v, callback)
     }
 

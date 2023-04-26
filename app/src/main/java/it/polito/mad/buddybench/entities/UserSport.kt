@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import it.polito.mad.buddybench.dto.CourtDTO
 import it.polito.mad.buddybench.dto.UserSportDTO
 
 @Entity(
@@ -31,7 +32,7 @@ data class UserSport(
     val id: Int = 0,
 
     @ColumnInfo(name = "user")
-    val user: Int,
+    val user: Int = 0,
 
     @ColumnInfo(name = "skill")
     val skill: String,
@@ -46,4 +47,6 @@ data class UserSport(
     val sport: String
 
 )
+
+
 

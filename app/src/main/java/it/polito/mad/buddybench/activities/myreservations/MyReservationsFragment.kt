@@ -1,11 +1,14 @@
 package it.polito.mad.buddybench.activities.myreservations
 
 import android.content.Context
+import android.graphics.Color
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -38,20 +41,19 @@ import java.util.Locale
 
 @AndroidEntryPoint
 class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_reservations) {
-    var  selectedDate: LocalDate? = null
-    val reservations: MutableLiveData<HashMap<LocalDate, List<ReservationDTO>>> = MutableLiveData(null)
     lateinit var recyclerViewReservations: RecyclerView
     private val viewModel by viewModels<ReservationViewModel>()
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getAllByUser(context.profile.email).observe(viewLifecycleOwner) {
-            reservations.value = it
-            recyclerViewReservations.adapter = ReservationAdapter(reservations.value?.get(
-                selectedDate?: LocalDate.now()
-            ) ?: listOf())
 
+        viewModel.getAllByUser(context.profile.email).observe(viewLifecycleOwner) {
+            refresh()
+        }
+
+        viewModel.selectedDate.observe(viewLifecycleOwner){
+            refresh()
         }
 
 
@@ -72,23 +74,24 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
                 container.day = data
                 container.setOnClickCallback{
                     if (container.day.position == DayPosition.MonthDate) {
-                        if (selectedDate != container.day.date) {
-                            val oldDate = selectedDate
-                            selectedDate = container.day.date
+                        if (viewModel.selectedDate.value != container.day.date) {
+                            val oldDate = viewModel.selectedDate.value
+                            viewModel.updateSelectedDay(container.day.date)
                             if(oldDate != null)
                                 calendarView.notifyDateChanged(oldDate)
                             calendarView.notifyDateChanged(data.date)
                         }
-                    }
-                    dayTitle.text = selectedDate?.format(DateTimeFormatter.ofPattern("EEEE, d MMMM y"))
+                        dayTitle.text = viewModel.selectedDate.value?.format(DateTimeFormatter.ofPattern("EEEE, d MMMM y"))
+                        println(viewModel.selectedDate.value)
+                        recyclerViewReservations.adapter = ReservationAdapter(viewModel.getSelectedReservations() ?: listOf())
 
-                    recyclerViewReservations.adapter = ReservationAdapter(reservations.value?.get(selectedDate) ?: listOf())
+                    }
 
                 }
                 container.textView.text = data.date.dayOfMonth.toString()
-                container.setBackground(selectedDate )
-                container.setTextColor(selectedDate, this@MyReservationsFragment.context)
-                container.reservations = reservations.value?.get(data.date)
+                container.setBackground(viewModel.selectedDate.value )
+                container.setTextColor(viewModel.selectedDate.value, this@MyReservationsFragment.context)
+                container.reservations = viewModel.reservations.value?.get(data.date)
                 container.setSportsIcon(this@MyReservationsFragment.context)
 
             }
@@ -96,8 +99,8 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
 
 
         val currentMonth = YearMonth.now()
-        val startMonth = currentMonth.minusMonths(100)  // Adjust as needed
-        val endMonth = currentMonth.plusMonths(100)  // Adjust as needed
+        val startMonth = currentMonth.minusMonths(0)  // Adjust as needed
+        val endMonth = currentMonth.plusMonths(2)  // Adjust as needed
         val daysOfWeek = daysOfWeek(DayOfWeek.MONDAY)
         calendarView.setup(startMonth, endMonth, daysOfWeek.first()) // Available from the library
         calendarView.scrollToMonth(currentMonth)
@@ -126,14 +129,42 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         previousButton.setOnClickListener {
             calendarView.findFirstVisibleMonth()?.let {
                 calendarView.smoothScrollToMonth(it.yearMonth.previousMonth)
+                if (it.yearMonth.previousMonth == startMonth){
+                    previousButton.setColorFilter(ContextCompat.getColor(context,R.color.md_theme_dark_primary))
+                } else {
+                    previousButton.setColorFilter(Color.WHITE)
+                }
+                nextButton.setColorFilter(Color.WHITE)
+
             }
         }
 
         nextButton.setOnClickListener {
             calendarView.findFirstVisibleMonth()?.let {
                 calendarView.smoothScrollToMonth(it.yearMonth.nextMonth)
+                if (it.yearMonth.nextMonth == endMonth){
+                    nextButton.setColorFilter(ContextCompat.getColor(context,R.color.md_theme_dark_primary))
+                } else {
+                    nextButton.setColorFilter(Color.WHITE)
+                }
+                previousButton.setColorFilter(Color.WHITE)
             }
         }
+    }
+
+    private fun refresh(){
+        val selectedReservations = viewModel.getSelectedReservations()
+        context.findViewById<View>(R.id.emptyReservations).let {
+            println("------------------------")
+            println(selectedReservations.isNullOrEmpty())
+            it.visibility = if (selectedReservations.isNullOrEmpty()){
+                View.VISIBLE
+
+            } else {
+                View.GONE}
+        }
+        recyclerViewReservations.adapter = ReservationAdapter(
+            selectedReservations ?: listOf())
     }
 
 

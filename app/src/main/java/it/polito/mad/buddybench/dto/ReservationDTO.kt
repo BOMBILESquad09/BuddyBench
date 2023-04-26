@@ -22,7 +22,8 @@ class ReservationDTO(val userOrganizer: UserDTO,
                 birthdate = LocalDate.now().toString(),
                 location = "Scafati",
                 email = "vittorio@polito.it",
-                reliability = 10
+                reliability = 10,
+                imagePath = null
             )
         }
 
@@ -77,8 +78,10 @@ class ReservationDTO(val userOrganizer: UserDTO,
             userOrganizer = userOrganizer,
             court = court,
             startTime = this.startTime.hour,
+            endTime = this.endTime.hour,
             date = this.date.toString(),
             equipment = equipment
+
         )
     }
 }
