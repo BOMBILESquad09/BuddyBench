@@ -230,9 +230,8 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         // ** Navigate to court reservation
         binding.buttonFirst.setOnClickListener {
             if (courtViewModel.selectedTimes.isEmpty()) {
-                "ok"
-                /*val textError = getString(R.string.error_book)
-                buildAlertDialog("Book Error", requireContext()textError, ).show()*/
+                val textError = getString(R.string.error_book)
+                buildAlertDialog("Book Error", textError, requireContext()).show()
             } else {
                 showBottomSheetDialog()
             }
@@ -251,7 +250,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
     private fun updateView(court: CourtDTO) {
         binding.courtNameTv.text = court.name.replace("Courts", "")
-        binding.courtAddressTv.text = court.address + ", " + court.location
+        binding.courtAddressTv.text = String.format(getString(R.string.court_address_card), court.address, court.location)
         binding.courtFeeTv.text = getString(R.string.court_fee, court.feeHour.toString())
         courtViewModel.getTimeTable().value?.timeTable.let {
             if (it != null) {
@@ -308,14 +307,10 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         }
     }
 
-
-
-
-
-    private fun buildAlertDialog(text: String, context: Context): AlertDialog {
+    private fun buildAlertDialog(title: String, text: String, context: Context): AlertDialog {
 
         return AlertDialog.Builder(context)
-            .setTitle(text)
+            .setTitle(title)
             .setMessage(text)
             .setPositiveButton("Ok") { dialog, _ ->
                 dialog.dismiss()
@@ -364,13 +359,12 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         val confirmButton = bottomSheetDialog.findViewById<Button>(R.id.confirmPrenotation)
         confirmButton?.setOnClickListener {
             if (!checkboxAccept!!.isChecked) {
-                ""
-                /*val textError = String.format(getString(R.string.error_info), courtToReserve.name)
+                val textError = String.format(getString(R.string.error_info), courtToReserve.name)
                 buildAlertDialog(
                     "Additional Information",
                     textError,
                     bottomSheetDialog.context
-                ).show()*/
+                ).show()
             } else {
                 val reservation = ReservationDTO(
                     userOrganizer = user,
@@ -404,6 +398,8 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         courtViewModel.endTime = LocalTime.of(endTime,0)
         oldStartTime =  LocalTime.of(startTime,0)
         oldDate = selectedDate
+
+
     }
 
     private fun setFirstCard(bottomSheetDialog: BottomSheetDialog) {
