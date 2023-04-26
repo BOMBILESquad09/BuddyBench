@@ -50,7 +50,6 @@ class CourtActivity : AppCompatActivity() {
 
             val endTime = intent.getIntExtra("endTime",-1)
             args.putInt("endTime", endTime)
-            println(args.toString())
             fragment.arguments = args
         }
 

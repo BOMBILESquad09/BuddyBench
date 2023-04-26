@@ -40,7 +40,7 @@ class Utils {
 
         /**
          * Given two LocalTime values (8:00, 11:00)
-         * @return array of time ranges [8:00, 9:00, 10:00, 11:00]
+         * @return array of time ranges [8:00, 9:00, 10:00]
          */
         fun getTimeSlots(start: LocalTime, end: LocalTime): List<LocalTime> {
             val diff = Duration.between(start, end)

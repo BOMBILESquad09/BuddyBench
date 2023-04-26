@@ -107,4 +107,9 @@ class HomeActivity: AppCompatActivity() {
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        reservationViewModel.getAllByUser(profile.email)
+    }
 }

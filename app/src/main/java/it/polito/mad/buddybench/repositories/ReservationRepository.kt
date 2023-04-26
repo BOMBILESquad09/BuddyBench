@@ -8,6 +8,7 @@ import it.polito.mad.buddybench.dto.ReservationDTO
 import it.polito.mad.buddybench.dao.UserDao
 import it.polito.mad.buddybench.dto.CourtDTO
 import it.polito.mad.buddybench.entities.CourtWithSport
+import it.polito.mad.buddybench.entities.Reservation
 import it.polito.mad.buddybench.entities.UnavailableDayCourt
 import it.polito.mad.buddybench.entities.toReservationDTO
 import java.time.LocalDate
@@ -42,11 +43,23 @@ class ReservationRepository @Inject constructor(
         updateUnavailableDayCourt(reservationDTO, courtWithSport)
     }
 
-    fun update(reservationDTO: ReservationDTO){
+    fun update(reservationDTO: ReservationDTO, oldDate: LocalDate, oldStartTime: Int){
         val user = userDao.getUserByEmail(reservationDTO.userOrganizer.email)!!
         val courtWithSport = courtDao.getByNameAndSport(reservationDTO.court.name, reservationDTO.court.sport)
+        var oldReservation = reservationDao.getReservation(reservationDTO.userOrganizer.email, courtWithSport.court.id,
+            oldDate.format(DateTimeFormatter.ISO_LOCAL_DATE), oldStartTime)
 
-        reservationDao.update(reservationDTO.toEntity(user.user.id, courtWithSport.court.id, reservationDTO.equipment))
+        val newReservation = Reservation(
+            id = oldReservation.reservation.id,
+            startTime = reservationDTO.startTime.hour,
+            endTime = reservationDTO.endTime.hour,
+            date = reservationDTO.date.format(DateTimeFormatter.ISO_LOCAL_DATE),
+            userOrganizer = user.user.id,
+            equipment = reservationDTO.equipment,
+            court = courtWithSport.court.id
+        )
+
+        reservationDao.update(newReservation)
         updateUnavailableDayCourt(reservationDTO, courtWithSport)
     }
 
@@ -81,12 +94,9 @@ class ReservationRepository @Inject constructor(
             date = date.toString()
         )
         val timeSlots = reservations.map {
-            if(it.reservation.startTime < 10) {
-                LocalTime.parse( "0" + it.reservation.startTime.toString() + ":00" )
-            } else {
-                LocalTime.parse( it.reservation.startTime.toString() + ":00" )
-            }
+            LocalTime.of(it.reservation.startTime,0)
         }
+        println(timeSlots.toString() )
         return timeSlots
     }
 

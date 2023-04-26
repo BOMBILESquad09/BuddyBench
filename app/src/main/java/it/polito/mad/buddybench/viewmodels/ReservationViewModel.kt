@@ -59,13 +59,13 @@ class ReservationViewModel @Inject constructor(): ViewModel() {
 
     fun saveReservation(
         reservation: ReservationDTO,
-        edit: Boolean
+        edit: Boolean,
+        oldDate: LocalDate?,
+        oldStartTime: LocalTime?
     ) {
         /*In a thread or not?*/
         if (edit)
-            reservationRepository.update(
-                reservation
-            )
+            reservationRepository.update(reservation,oldDate!!, oldStartTime!!.hour)
         else
             reservationRepository.save(reservation)
     }

@@ -410,12 +410,14 @@ VALUES (
 
 
 INSERT INTO reservation (id, user, court, date, start_time, end_time, equipment)
-VALUES (2, 0, 8, '2023-05-16', 14, 15, false),
+VALUES 
+    (2, 0, 8, '2023-05-16', 14, 15, false),
     (3, 1, 11, '2023-05-17', 9, 10, false),
     (4, 0, 14, '2023-05-18', 16, 17, false),
     (5, 0, 3, '2023-05-19', 11, 12,false),
     (6, 1, 6, '2023-05-15', 10, 11,false),
-    (0, 0, 5, '2023-04-30', 18, 19,false);
+    (0, 0, 5, '2023-04-30', 18, 19,false),
+    (7, 0, 5, '2023-05-01', 18, 19,false);
 
 INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized) VALUES
 (0,0,"VOLLEYBALL","NEWBIE",9,10);
@@ -426,7 +428,7 @@ INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized) VALUES
 
 
 --- Inserted Court Time Table
-INSERT INTO court_time (id,court,day_of_week,opening_time,closing_time)
+INSERT INTO court_time (id,court,day_of_week,opening_time,closing_time) VALUES
 (0, 1, 1, "6:00", "20:00"),
 (1, 1, 2, "6:00", "20:00"),
 (2, 1, 3, "6:00", "20:00"),

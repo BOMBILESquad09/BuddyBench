@@ -44,7 +44,6 @@ class TimeSlotViewHolder(private val v: View,
             timeSlotCard.background.setTint(whiteColor)
             timeSlotTv.setTextColor(primaryColor)
         }
-        println(timeSlots.value.toString())
 
         timeSlotCard.setOnClickListener {
 

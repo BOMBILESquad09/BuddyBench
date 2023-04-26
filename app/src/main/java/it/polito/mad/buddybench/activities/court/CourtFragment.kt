@@ -82,6 +82,9 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
     private lateinit var profile: Profile
     private lateinit var sharedPref: SharedPreferences
 
+    private lateinit var courtName: String
+    private lateinit var sport: Sports
+
     // ** Edit mode (default to false)
     private var editMode = false
     private var reservationDate: LocalDate? = null
@@ -93,6 +96,8 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
     private lateinit var recyclerWeeklyCalendarView: RecyclerView
     private lateinit var weeklyDays: MutableList<Pair<LocalDate, Boolean>>
 
+     private var oldDate: LocalDate? = null
+     private var oldStartTime: LocalTime? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -109,7 +114,8 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         emailReservation = arguments?.getString("email", "") ?: ""
         startTime = arguments?.getInt("startTime", -1) ?: -1
         endTime = arguments?.getInt("endTime", -1) ?: -1
-
+        val s = arguments?.getString("date", LocalDate.now().format(DateTimeFormatter.ISO_DATE)) ?: LocalDate.now().toString()
+        selectedDate = LocalDate.parse(s, DateTimeFormatter.ISO_DATE)
         _binding = FragmentCourtBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -120,17 +126,12 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         super.onViewCreated(view, savedInstanceState)
 
         // ** View Model
-        val courtName = activity?.intent?.getStringExtra("courtName") ?: "Central Park Tennis"
-        val sport = Sports.valueOf(
+        courtName = activity?.intent?.getStringExtra("courtName") ?: "Central Park Tennis"
+        sport = Sports.valueOf(
             activity?.intent?.getStringExtra("sport")?.uppercase() ?: Sports.TENNIS.name
         )
-        selectedDate = LocalDate.now()
         if (editMode) {
-            courtViewModel.setReservationDate(reservationDate!!)
             editMode()
-            val b = view.findViewById<Button>(R.id.button_first)
-            b.text = "Edit Book"
-
         }
 
 
@@ -157,11 +158,11 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         val calendarCallback: (LocalDate, LocalDate) -> Unit = { last, new ->
             if (last == new) {
                 calendarView.notifyDayChanged(WeekDay(last, WeekDayPosition.InDate))
-
             } else {
                 calendarView.notifyDayChanged(WeekDay(new, WeekDayPosition.InDate))
                 calendarView.notifyDayChanged(WeekDay(last, WeekDayPosition.InDate))
                 courtViewModel.selectDay(courtToReserve, new, reservationDate)
+                selectedDate = new
             }
         }
 
@@ -218,7 +219,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                             View.GONE
                     }
                     recyclerView.adapter?.notifyDataSetChanged()
-
                 }
 
         }
@@ -272,86 +272,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         );
     }
 
-    private fun renderDayItem(day: LocalDate, selected: LocalDate) {
-        /*
-        val dayScrollItem =
-            layoutInflater.inflate(
-                R.layout.datepicker_scroll_item,
-                binding.daysScrollView,
-                false
-            )
-        val dayTv: TextView = dayScrollItem.findViewById(R.id.day_tv)
-        val dayOfMonthTv: TextView = dayScrollItem.findViewById(R.id.day_of_month_tv)
-        val monthTv: TextView = dayScrollItem.findViewById(R.id.month_tv)
 
-        dayTv.text = Utils.capitalize(day.dayOfWeek.name.subSequence(0, 3).toString())
-        dayOfMonthTv.text = day.dayOfMonth.toString()
-        monthTv.text = Utils.capitalize(day.month.name.subSequence(0, 3).toString())
-
-        // ** Selected day
-        if (day == selected) {
-            val primaryColor =
-                ContextCompat.getColor(requireContext(), R.color.md_theme_light_primary)
-            val whiteColor =
-                ContextCompat.getColor(requireContext(), R.color.md_theme_light_background)
-            dayOfMonthTv.background.setTint(primaryColor)
-            dayOfMonthTv.setTextColor(whiteColor)
-        }
-
-        // ** Last item no margin at the end
-        if (day == courtViewModel.days.last()) {
-            val noMarginParams =
-                MarginLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-            noMarginParams.marginEnd = 0
-            dayScrollItem.layoutParams = noMarginParams
-        }
-
-        // ** OnClick Listener
-        dayScrollItem.setOnClickListener {
-            courtViewModel.selectDay(courtToReserve, day, reservationDate)
-            renderWeeklyCalendar()
-        }
-        binding.daysScrollView.addView(dayScrollItem)
-
-         */
-    }
-
-//    private fun showBottomSheetDialog() {
-//        val bottomSheetDialog = BottomSheetDialog(requireContext())
-//        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_court_confirm)
-//        val courtName = bottomSheetDialog.findViewById<TextView>(R.id.court_name_confirm_tv)
-//        courtName?.text = courtViewModel.court.value?.name
-//        val courtAddress = bottomSheetDialog.findViewById<TextView>(R.id.court_address_confirm_tv)
-//        courtAddress?.text = courtViewModel.court.value?.address + ", " + courtViewModel.court.value?.location
-//        val dateSelected = bottomSheetDialog.findViewById<TextView>(R.id.dateSelected)
-//        dateSelected?.text = courtViewModel.selectedDay.value!!.format(DateTimeFormatter.ofPattern("EEEE, d MMMM y"))
-//        val confirmButton = bottomSheetDialog.findViewById<Button>(R.id.confirmPrenotation)
-//
-//        val totalCost = bottomSheetDialog.findViewById<TextView>(R.id.total_cost)
-//        val feeHour = courtViewModel.court.value!!.feeHour
-//        val feeEquipment = courtViewModel.court.value!!.feeEquipment
-//        val nHours = courtViewModel.selectedTimes.size
-//        var totalCost = feeHour * nHours
-//        val totalCostField = bottomSheetDialog.findViewById<TextView>(R.id.total_euros)
-//        totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
-//
-//        // Take the reference for the switch of equipment
-//        val switch = bottomSheetDialog.findViewById<Switch>(R.id.switch_equipment)
-//        switch?.setOnCheckedChangeListener { buttonView, isChecked ->
-//            // If the equipment is not selected the linear layout will go out
-//            // Else it's visible
-//            if (isChecked) {
-//                val feeEquipment = courtToReserve.feeEquipment
-//                equipmentField?.text = String.format(getString(R.string.cost_example, feeEquipment))
-//                totalCost = (feeHour + feeEquipment) * nHours
-//                totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
-//            } else {
-//                equipmentField?.text = String.format(getString(R.string.cost_example, 0))
-//                totalCost = feeHour * nHours
-//                totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
-//            }
-//        }
-//    }
 
     private fun buildAlertDialog(text: String, context: Context): AlertDialog {
         return AlertDialog.Builder(context)
@@ -395,9 +316,11 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                     endTime = courtViewModel.selectedTimes.last().plusHours(1),
                     equipment = true
                 )
+                println(reservation.date)
+                println(reservation.startTime)
+                println(reservation.endTime)
 
-
-                reservationViewModel.saveReservation(reservation, editMode)
+                reservationViewModel.saveReservation(reservation, editMode, oldDate, oldStartTime)
                 requireActivity().finish()
                 bottomSheetDialog.dismiss()
             }
@@ -412,24 +335,17 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
 
     private fun editMode() {
-        selectedDate = reservationDate!!
-        courtViewModel.reservationSlots = Pair(LocalTime.of(startTime, 0), LocalTime.of(endTime, 0))
+        courtViewModel.setReservationDate(reservationDate!!)
+        val b = view?.findViewById<Button>(R.id.button_first)
+        b?.text = "Edit Book"
+        courtViewModel.startTime = LocalTime.of(startTime,0)
+        courtViewModel.endTime = LocalTime.of(endTime,0)
+        oldStartTime =  LocalTime.of(startTime,0)
+        oldDate = selectedDate
 
-        /*
-        reservationViewModel.getReservation(
-            courtName,
-            sport,
-            emailReservation,
-            reservationDate,
-            startTime
-        ).observe(viewLifecycleOwner){
-            if (it == null) return@observe
 
-            courtViewModel.selectTimesForEdit(
-                it.startTime,
-                it.endTime
-            )
-        }*/
+
+
     }
 
     private fun setFirstCard(bottomSheetDialog: BottomSheetDialog) {

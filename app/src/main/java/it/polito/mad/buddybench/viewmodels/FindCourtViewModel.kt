@@ -46,16 +46,9 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     }
     fun getCourtsBySport(sport: Sports): LiveData<List<CourtDTO>> {
         Thread{
-            println(sport)
             _courts = courtRepository.getCourtsBySports(Sports.toJSON(sport).uppercase())
             _currentCourts.postValue(_courts)
-            println("-- size----------")
-            println(_courts.size)
-            println("-----sports---------------")
-            _courts.forEach{println(it.sport)}
-            println("-------------------")
         }.start()
-        _currentCourts.value  = listOf()
         return currentCourts
     }
 

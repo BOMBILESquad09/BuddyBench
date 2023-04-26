@@ -90,6 +90,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
                     previousButton.setColorFilter(Color.WHITE)
                 }
                 nextButton.setColorFilter(Color.WHITE)
+                refreshCalendar()
 
             }
 
@@ -104,6 +105,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
                     nextButton.setColorFilter(Color.WHITE)
                 }
                 previousButton.setColorFilter(Color.WHITE)
+                refreshCalendar()
             }
         }
 
@@ -144,5 +146,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
 
         }
     }
+
+
 
 }
