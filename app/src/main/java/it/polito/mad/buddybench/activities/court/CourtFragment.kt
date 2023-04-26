@@ -31,6 +31,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.kizitonwose.calendar.core.WeekDay
+import com.kizitonwose.calendar.core.WeekDayPosition
 import com.kizitonwose.calendar.view.WeekCalendarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
@@ -71,7 +73,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
     private lateinit var user: UserDTO
     private lateinit var courtToReserve: CourtDTO
     private lateinit var selectedDate: LocalDate
-
     // ** Court LiveData by ViewModel
     private val courtViewModel by viewModels<CourtViewModel>()
     private val reservationViewModel by viewModels<ReservationViewModel>()
@@ -145,47 +146,48 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         recyclerView = view.findViewById(R.id.time_slot_grid)
         recyclerWeeklyCalendarView = view.findViewById(R.id.weekly_calendar_adapter)
 
+        val calendarView = view.findViewById<WeekCalendarView>(R.id.calendar)
 
-        val calendarCallback: (Int, Int) -> Unit = { last, new ->
+
+
+        val calendarCallback: (LocalDate, LocalDate) -> Unit = { last, new ->
             if(last == new){
-                weeklyDays[last] = Pair(weeklyDays[last].first, !weeklyDays[last].second)
-                recyclerWeeklyCalendarView.adapter!!.notifyItemChanged(last)
+                calendarView.notifyDayChanged(WeekDay(last, WeekDayPosition.InDate))
 
             } else {
-                weeklyDays[last] = Pair(weeklyDays[last].first, false)
-                weeklyDays[new] =  Pair(weeklyDays[new].first, true)
-                recyclerWeeklyCalendarView.adapter!!.notifyItemChanged(last)
-                recyclerWeeklyCalendarView.adapter!!.notifyItemChanged(new)
-                courtViewModel.selectDay(courtToReserve, weeklyDays[new].first, reservationDate)
+                calendarView.notifyDayChanged(WeekDay(new, WeekDayPosition.InDate))
+                calendarView.notifyDayChanged(WeekDay(last, WeekDayPosition.InDate))
+                courtViewModel.selectDay(courtToReserve, new, reservationDate)
             }
-
-
         }
 
+        calendarView.dayBinder = WeeklyCalendarDayBinder( selectedDate, calendarCallback)
+        calendarView.setup(weeklyDays.first().first, weeklyDays.last().first, DayOfWeek.MONDAY)
+        calendarView.scrollToDate(selectedDate)
+
+
         val selectedPosition = (Period.between(LocalDate.now(),selectedDate )).days
-        recyclerWeeklyCalendarView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        /*recyclerWeeklyCalendarView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recyclerWeeklyCalendarView.adapter = WeeklyCalendarAdapter(weeklyDays, selectedPosition, calendarCallback)
         LinearSnapHelper().attachToRecyclerView(recyclerWeeklyCalendarView)
-        recyclerWeeklyCalendarView.scrollToPosition(selectedPosition)
-
-        val calendarView = view.findViewById<WeekCalendarView>(R.id.calendar)
-        calendarView.dayBinder = WeeklyCalendarDayBinder()
-        calendarView.setup(weeklyDays.first().first, weeklyDays.last().first, DayOfWeek.MONDAY)
+        recyclerWeeklyCalendarView.scrollToPosition(selectedPosition)*/
 
 
-        val callback: (Pair<LocalTime, Boolean>) -> Unit = { selected ->
+
+
+        val callback: (  Pair<LocalTime, Boolean>) -> Unit = { selected ->
             courtViewModel.timeSlots.value?.find {
                 it.first == selected.first
             }.let {
                 it!!
-                if (!it.second) {
+                if (!it.second){
                     val diff = courtViewModel.addSelectedTime(it.first)
                     for (i in diff)
                         recyclerView.adapter?.notifyItemChanged(i)
-                } else {
+                } else{
                     val changedItem = courtViewModel.removeSelectedTime(it)
                     if (changedItem != null)
-                        recyclerView.adapter?.notifyItemChanged(changedItem)
+                     recyclerView.adapter?.notifyItemChanged(changedItem)
                 }
             }
         }
@@ -204,20 +206,18 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             if (it == null) return@observe
             updateView(it.court)
             courtViewModel.getTimeSlotsAvailable(it.court, selectedDate, reservationDate)
-                .observe(viewLifecycleOwner) { timeSlots ->
+                .observe(viewLifecycleOwner){
+                    timeSlots ->
                     println(timeSlots)
                     if (timeSlots == null) return@observe
-                    if (timeSlots.isEmpty()) {
-                        println("oooooooooooooooooooooooooooo")
-                        binding.root.findViewById<ConstraintLayout>(R.id.empty_timeslots).visibility =
-                            View.VISIBLE
-                    } else {
-                        binding.root.findViewById<ConstraintLayout>(R.id.empty_timeslots).visibility =
-                            View.GONE
+                    if (timeSlots.isEmpty()){
+                        binding.root.findViewById<ConstraintLayout>(R.id.empty_timeslots).visibility = View.VISIBLE
+                    } else{
+                        binding.root.findViewById<ConstraintLayout>(R.id.empty_timeslots).visibility = View.GONE
                     }
-                    recyclerView.adapter?.notifyDataSetChanged()
+                   recyclerView.adapter?.notifyDataSetChanged()
 
-                }
+            }
 
         }
 
@@ -311,50 +311,21 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
          */
     }
 
-    private fun setFirstCard(bottomSheetDialog: BottomSheetDialog) {
-
-        // RESUMED CARD
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private fun showBottomSheetDialog() {
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_court_confirm)
         val courtName = bottomSheetDialog.findViewById<TextView>(R.id.court_name_confirm_tv)
         courtName?.text = courtViewModel.court.value?.name
         val courtAddress = bottomSheetDialog.findViewById<TextView>(R.id.court_address_confirm_tv)
-        courtAddress?.text = String.format(
-            getString(R.string.court_address_card),
-            courtViewModel.court.value?.address,
-            courtViewModel.court.value?.location
-        )
+        courtAddress?.text = courtViewModel.court.value?.address + ", " + courtViewModel.court.value?.location
         val dateSelected = bottomSheetDialog.findViewById<TextView>(R.id.dateSelected)
-        val formatter = DateTimeFormatter.ofPattern("EEEE, d MMMM y")
+        dateSelected?.text = courtViewModel.selectedDay.value!!.format(DateTimeFormatter.ofPattern("EEEE, d MMMM y"))
+        val confirmButton = bottomSheetDialog.findViewById<Button>(R.id.confirmPrenotation)
 
-        dateSelected?.text =
-            courtViewModel.selectedDay.value?.format(formatter) ?: LocalDate.now().format(formatter)
-        val iconSport = bottomSheetDialog.findViewById<ImageView>(R.id.icon_sport)
-        iconSport?.setImageDrawable(
-            ResourcesCompat.getDrawable(
-                resources,
-                Sports.sportToIconDrawable(Sports.fromJSON(courtToReserve.sport)!!),
-                null
-            )
-        )
-    }
-
-    private fun setAdditionalInformationCard(bottomSheetDialog: BottomSheetDialog) {
-        // ADDITIONAL INFORMATION CARD
-        val additionalInfo = bottomSheetDialog.findViewById<TextView>(R.id.additional_body)
-        additionalInfo?.text = String.format(
-            getString(R.string.informations_body),
-            courtToReserve.name,
-            courtToReserve.sport.lowercase().replaceFirstChar { it.uppercase() })
-
-    }
-
-    private fun setPriceDetailCard(bottomSheetDialog: BottomSheetDialog) {
-        val equipmentField = bottomSheetDialog.findViewById<TextView>(R.id.equipment_field)
-        equipmentField?.text = String.format(getString(R.string.cost_example, 0))
-
-        val costField = bottomSheetDialog.findViewById<TextView>(R.id.cost_field)
-        val feeHour = courtToReserve.feeHour
-        costField?.text = String.format(getString(R.string.cost_example), feeHour)
-        //Evaluate Total Cost
+        val totalCost = bottomSheetDialog.findViewById<TextView>(R.id.total_cost)
+        val feeHour = courtViewModel.court.value!!.feeHour
+        val feeEquipment = courtViewModel.court.value!!.feeEquipment
         val nHours = courtViewModel.selectedTimes.size
         var totalCost = feeHour * nHours
         val totalCostField = bottomSheetDialog.findViewById<TextView>(R.id.total_euros)
@@ -433,9 +404,11 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         _binding = null
     }
 
-    private fun editMode() {
+
+    private fun editMode(){
         selectedDate = reservationDate!!
-        courtViewModel.reservationSlots = Pair(LocalTime.of(startTime, 0), LocalTime.of(endTime, 0))
+        courtViewModel.reservationSlots = Pair(LocalTime.of(startTime,0), LocalTime.of(endTime,0))
+
         /*
         reservationViewModel.getReservation(
             courtName,
