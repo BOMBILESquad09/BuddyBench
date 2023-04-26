@@ -230,9 +230,8 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         // ** Navigate to court reservation
         binding.buttonFirst.setOnClickListener {
             if (courtViewModel.selectedTimes.isEmpty()) {
-                "ok"
-                /*val textError = getString(R.string.error_book)
-                buildAlertDialog("Book Error", requireContext()textError, ).show()*/
+                val textError = getString(R.string.error_book)
+                buildAlertDialog("Book Error", textError, requireContext()).show()
             } else {
                 showBottomSheetDialog()
             }
