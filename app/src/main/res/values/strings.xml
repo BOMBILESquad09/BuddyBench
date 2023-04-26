@@ -77,11 +77,12 @@
     <string name="reservation">Reservation</string>
     <string name="hour_range">10:00 - 11:00</string>
     <string name="recap_and_confirm">Recap and confirm</string>
-    <string name="wednesday_19_april">Wednesday, 19 April</string>
+    <string name="wednesday_19_april">%1$s</string>
     <string name="confirm">Confirm</string>
     <string name="which_sport_do_you_want_to_play">Which sport do you want to play?</string>
     <string name="court_search_phrase">You are currently looking for %1$s court</string>
     <string name="user_hello">Hi, %1$s!</string>
+    
     <string name="equipment">All the equipment will be available at the price of</string>
     <string name="filters">Filters</string>
     <string name="show_filter_results">Show Results</string>
@@ -90,4 +91,16 @@
     <string name="price">Price</string>
     <string name="total_price">Total Price: %1$s</string>
     <string name="equipment_phrase">Equipment: %1$d €/h</string>
+    
+    <string name="additional_information">Additional Informations</string>
+    <string name="informations_body">\nTo access the court %1$s, the following rules must be respected:\n\n- Maintain appropriate behavior\n- Respect the practical rules of the %2$s\n- Respect others, especially regarding noise pollution\n\n\n</string>
+    <string name="accept_informations">Accept</string>
+    <string name="price_details_title">Price Details</string>
+    <string name="field_cost">Field</string>
+    <string name="equipment_cost">Equipment</string>
+    <string name="cost_example">%1$d $</string>
+    <string name="total_cost">Total (EUR)</string>
+    <string name="court_address_card">%1$s, %2$s</string>
+
+    <string name="error_info">Make sure to accept the additional information of %1$s</string>
 </resources>

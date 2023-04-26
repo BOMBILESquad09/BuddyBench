@@ -408,56 +408,6 @@ VALUES (
     );
 
 
-INSERT INTO court_time (
-        id,
-        court,
-        day_of_week,
-        opening_time,
-        closing_time
-    )
-VALUES (0, 1, 1, "6:00", "20:00");
-INSERT INTO court_time (
-        id,
-        court,
-        day_of_week,
-        opening_time,
-        closing_time
-    )
-VALUES (1, 1, 2, "6:00", "20:00");
-INSERT INTO court_time (
-        id,
-        court,
-        day_of_week,
-        opening_time,
-        closing_time
-    )
-VALUES (2, 1, 3, "6:00", "20:00");
-INSERT INTO court_time (
-        id,
-        court,
-        day_of_week,
-        opening_time,
-        closing_time
-    )
-VALUES (3, 1, 4, "6:00", "20:00");
-INSERT INTO court_time (
-        id,
-        court,
-        day_of_week,
-        opening_time,
-        closing_time
-    )
-VALUES (4, 1, 5, "6:00", "20:00");
-INSERT INTO court_time (
-        id,
-        court,
-        day_of_week,
-        opening_time,
-        closing_time
-    )
-VALUES (5, 1, 6, "10:00", "20:00");
-
-
 
 INSERT INTO reservation (id, user, court, date, start_time, end_time, equipment)
 VALUES (2, 0, 8, '2023-05-16', 14, 15, false),
@@ -473,3 +423,110 @@ INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized) VALUES
 (1,0,"BASKETBALL","NEWBIE",10,10);
 INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized) VALUES
 (2,0,"FOOTBALL","NEWBIE",11,10);
+
+
+--- Inserted Court Time Table
+INSERT INTO court_time (id,court,day_of_week,opening_time,closing_time)
+(0, 1, 1, "6:00", "20:00"),
+(1, 1, 2, "6:00", "20:00"),
+(2, 1, 3, "6:00", "20:00"),
+(3, 1, 4, "6:00", "20:00"),
+(4, 1, 5, "6:00", "20:00"),
+(5, 1, 6, "10:00", "20:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALUES
+(6, 2, 1, "6:00", "20:00"),
+(7, 2, 2, "6:00", "20:00"),
+(8, 2, 3, "6:00", "20:00"),
+(9, 2, 4, "6:00", "20:00"),
+(10, 2, 5, "6:00", "20:00"),
+(11, 2, 6, "10:00", "20:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALUES
+(12, 3, 1, "6:00", "20:00"),
+(13, 3, 2, "6:00", "20:00"),
+(14, 3, 3, "6:00", "20:00"),
+(15, 3, 4, "6:00", "20:00"),
+(16, 3, 5, "6:00", "20:00"),
+(17, 3, 6, "10:00", "20:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALUES
+(18, 4, 1, "6:00", "20:00"),
+(19, 4, 2, "6:00", "20:00"),
+(20, 4, 3, "6:00", "20:00"),
+(21, 4, 4, "6:00", "20:00"),
+(22, 4, 5, "6:00", "20:00"),
+(23, 4, 6, "10:00", "20:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALUES
+(24, 5, 1, "6:00", "20:00"),
+(25, 5, 2, "6:00", "20:00"),
+(26, 5, 3, "6:00", "20:00"),
+(27, 5, 4, "6:00", "20:00"),
+(28, 5, 5, "6:00", "20:00"),
+(29, 5, 6, "10:00", "20:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALUES
+(30, 6, 1, "10:00", "13:00"),
+(31, 6, 2, "8:00", "20:00"),
+(32, 6, 3, "8:00", "18:00"),
+(33, 6, 4, "8:00", "20:00"),
+(34, 6, 5, "8:00", "23:00"),
+(35, 6, 6, "10:00", "20:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALUES
+(36, 7, 1, "6:00", "20:00"),
+(37, 7, 2, "10:00", "13:00"),
+(38, 7, 3, "8:00", "20:00"),
+(39, 7, 4, "6:00", "18:00"),
+(40, 7, 5, "6:00", "20:00"),
+(41, 7, 6, "10:00", "20:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALUES
+(42, 8, 1, "8:00", "18:00"),
+(43, 8, 2, "8:00", "18:00"),
+(44, 8, 3, "10:00", "13:00"),
+(45, 8, 4, "8:00", "23:00"),
+(46, 8, 5, "6:00", "20:00"),
+(47, 8, 6, "10:00", "23:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALUES
+(48, 9, 1, "8:00", "13:00"),
+(49, 9, 2, "8:00", "20:00"),
+(50, 9, 3, "10:00", "18:00"),
+(51, 9, 4, "6:00", "23:00"),
+(52, 9, 5, "8:00", "18:00"),
+(53, 9, 6, "10:00", "20:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALUES
+(54, 10, 1, "8:00", "18:00"),
+(55, 10, 2, "6:00", "20:00"),
+(56, 10, 3, "8:00", "18:00"),
+(57, 10, 4, "10:00", "23:00"),
+(58, 10, 5, "6:00", "20:00"),
+(59, 10, 6, "10:00", "13:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALUES
+(60, 11, 1, "6:00", "23:00"),
+(61, 11, 2, "8:00", "20:00"),
+(62, 11, 3, "6:00", "18:00"),
+(63, 11, 4, "10:00", "23:00"),
+(64, 11, 5, "6:00", "20:00"),
+(65, 11, 6, "10:00", "13:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALUES
+(66, 12, 1, "6:00", "20:00"),
+(67, 12, 2, "10:00", "23:00"),
+(68, 12, 3, "8:00", "18:00"),
+(69, 12, 4, "8:00", "13:00"),
+(70, 12, 5, "6:00", "20:00"),
+(71, 12, 6, "10:00", "23:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALUES
+(72, 13, 1, "6:00", "23:00"),
+(73, 13, 2, "8:00", "18:00"),
+(74, 13, 3, "10:00", "20:00"),
+(75, 13, 4, "6:00", "13:00"),
+(76, 13, 5, "8:00", "18:00"),
+(77, 13, 6, "10:00", "20:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALUES
+(78, 14, 1, "10:00", "18:00"),
+(79, 14, 2, "6:00", "13:00"),
+(80, 14, 3, "6:00", "20:00"),
+(81, 14, 4, "6:00", "18:00"),
+(82, 14, 5, "8:00", "13:00"),
+(83, 14, 6, "10:00", "20:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALUES
+(84, 15, 1, "6:00", "13:00"),
+(85, 15, 2, "10:00", "20:00"),
+(86, 15, 3, "8:00", "18:00"),
+(87, 15, 4, "6:00", "18:00"),
+(88, 15, 5, "8:00", "23:00");
