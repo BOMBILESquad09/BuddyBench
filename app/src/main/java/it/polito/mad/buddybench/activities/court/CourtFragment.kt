@@ -327,8 +327,8 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                 reservationViewModel.deleteReservation(
                     courtName,
                     sport,
-                    LocalTime.of(startTime, 0),
-                    selectedDate,
+                    oldStartTime!!,
+                    oldDate!!,
                     profile.email
                 )
                 dialog.dismiss()

@@ -110,10 +110,20 @@ class ReservationRepository @Inject constructor(
     fun delete(courtName: String, sport: Sports, startTime: LocalTime, email: String, date: LocalDate) {
 
         val user = userDao.getUserByEmail(email)!!
-        val courtWithSport = courtDao.getByNameAndSport(courtName, Sports.toJSON(sport))
+        println("==========================")
+        println(courtName)
+        println(sport)
+        println(startTime)
+        println(email)
+        println(date)
 
-        val reservation = reservationDao.getReservationPlain(user.user.id, courtWithSport.court.id,
+        val court = courtDao.getByNameAndSport(courtName, Sports.toJSON(sport))
+        println(courtWithSport)
+
+        val reservation = reservationDao.getReservationPlain(user.user.id, court.id,
             date.format(DateTimeFormatter.ISO_LOCAL_DATE), startTime.hour)
+
+
         reservationDao.delete(reservation)
         unavailableDayCourtDao.delete(UnavailableDayCourt(courtWithSport.court.id, reservation.date.format(
             DateTimeFormatter.ISO_LOCAL_DATE)))
