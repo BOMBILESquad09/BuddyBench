@@ -229,8 +229,16 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         binding.nReviews.text = "(${court.nReviews})"
         binding.equipmentCost.text = String.format(
             getString(R.string.equipment_phrase),
-            courtViewModel.court.value?.feeEquipment
+            court.feeEquipment
         );
+        binding.sportIconEquipment.setImageDrawable(
+            ResourcesCompat.getDrawable(
+                resources,
+                Sports.sportToIconDrawable(Sports.fromJSON(courtToReserve.sport)!!),
+                null
+            )
+        )
+
     }
 
     private fun renderDayItem(day: LocalDate, selected: LocalDate) {
@@ -397,11 +405,9 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         _binding = null
     }
 
-
     private fun editMode() {
         selectedDate = reservationDate!!
         courtViewModel.reservationSlots = Pair(LocalTime.of(startTime, 0), LocalTime.of(endTime, 0))
-
         /*
         reservationViewModel.getReservation(
             courtName,
@@ -416,9 +422,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                 it.startTime,
                 it.endTime
             )
-
         }*/
-
     }
 }
 
