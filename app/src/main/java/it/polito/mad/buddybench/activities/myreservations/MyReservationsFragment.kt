@@ -43,7 +43,7 @@ import java.util.Locale
 class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_reservations) {
     lateinit var recyclerViewReservations: RecyclerView
     lateinit var calendarView: CalendarView
-    val viewModel by viewModels<ReservationViewModel>()
+    val viewModel = context.reservationViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
