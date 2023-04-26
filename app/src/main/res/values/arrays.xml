@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="range_price">
+        <item>0</item>
+        <item>100</item>
+    </string-array>
+    <string-array name="range_rating">
+        <item>0</item>
+        <item>5</item>
+    </string-array>
+</resources>

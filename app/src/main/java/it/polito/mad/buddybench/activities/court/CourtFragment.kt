@@ -12,8 +12,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams
-import android.view.ViewGroup.MarginLayoutParams
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageView
@@ -29,8 +27,11 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.kizitonwose.calendar.view.WeekCalendarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Profile
@@ -39,14 +40,17 @@ import it.polito.mad.buddybench.dto.CourtDTO
 import it.polito.mad.buddybench.dto.ReservationDTO
 import it.polito.mad.buddybench.dto.UserDTO
 import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.utils.WeeklyCalendarAdapter
 import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.CourtViewModel
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
 import org.json.JSONObject
 import java.io.FileNotFoundException
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.Period
 import java.time.format.DateTimeFormatter
 
 
@@ -84,17 +88,16 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
     private var endTime: Int = -1
     private lateinit var recyclerView: RecyclerView
 
+    private lateinit var recyclerWeeklyCalendarView: RecyclerView
+    private lateinit var  weeklyDays: MutableList<Pair<LocalDate, Boolean>>
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         editMode = arguments?.getBoolean("edit", false) ?: false
         arguments?.getString("date").let {
             if (it != null)
-                reservationDate = LocalDate.parse(it, DateTimeFormatter.ISO_LOCAL_DATE)
+                reservationDate = LocalDate.parse( it, DateTimeFormatter.ISO_LOCAL_DATE)
         }
 
         emailReservation = arguments?.getString("email", "") ?: ""
@@ -124,11 +127,51 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
         }
 
+
+
+        weeklyDays = (0..30).map {
+            val day = LocalDate.now().plusDays(it.toLong())
+            if(day == selectedDate){
+                Pair(selectedDate, true)
+            } else {
+                Pair(day, false)
+            }
+        } as MutableList<Pair<LocalDate, Boolean>>
+
         // Callback used inside the ViewHolder Item of the Recycler View
 
 
         // Setting the Manager Layout for the RecyclerView
         recyclerView = view.findViewById(R.id.time_slot_grid)
+        recyclerWeeklyCalendarView = view.findViewById(R.id.weekly_calendar_adapter)
+
+
+        val calendarCallback: (Int, Int) -> Unit = { last, new ->
+            if(last == new){
+                weeklyDays[last] = Pair(weeklyDays[last].first, !weeklyDays[last].second)
+                recyclerWeeklyCalendarView.adapter!!.notifyItemChanged(last)
+
+            } else {
+                weeklyDays[last] = Pair(weeklyDays[last].first, false)
+                weeklyDays[new] =  Pair(weeklyDays[new].first, true)
+                recyclerWeeklyCalendarView.adapter!!.notifyItemChanged(last)
+                recyclerWeeklyCalendarView.adapter!!.notifyItemChanged(new)
+                courtViewModel.selectDay(courtToReserve, weeklyDays[new].first, reservationDate)
+            }
+
+
+        }
+
+        val selectedPosition = (Period.between(LocalDate.now(),selectedDate )).days
+        recyclerWeeklyCalendarView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        recyclerWeeklyCalendarView.adapter = WeeklyCalendarAdapter(weeklyDays, selectedPosition, calendarCallback)
+        LinearSnapHelper().attachToRecyclerView(recyclerWeeklyCalendarView)
+        recyclerWeeklyCalendarView.scrollToPosition(selectedPosition)
+
+        val calendarView = view.findViewById<WeekCalendarView>(R.id.calendar)
+        calendarView.dayBinder = WeeklyCalendarDayBinder()
+        calendarView.setup(weeklyDays.first().first, weeklyDays.last().first, DayOfWeek.MONDAY)
+
 
         val callback: (Pair<LocalTime, Boolean>) -> Unit = { selected ->
             courtViewModel.timeSlots.value?.find {
@@ -192,20 +235,11 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             Profile.fromJSON(JSONObject(sharedPref.getString("profile", Profile.mockJSON())!!))
         user = profile.toUserDto()
 
-        renderWeeklyCalendar()
 
 
     }
 
-    fun renderWeeklyCalendar() {
-        val now = LocalDate.now()
-        binding.daysScrollView.removeAllViews()
 
-
-        for (i in 0..13) {
-            renderDayItem(now.plusDays(i.toLong()), courtViewModel.selectedDay.value ?: now)
-        }
-    }
 
 
     private fun updateView(court: CourtDTO) {
@@ -229,19 +263,12 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         binding.nReviews.text = "(${court.nReviews})"
         binding.equipmentCost.text = String.format(
             getString(R.string.equipment_phrase),
-            court.feeEquipment
+            courtViewModel.court.value?.feeEquipment
         );
-        binding.sportIconEquipment.setImageDrawable(
-            ResourcesCompat.getDrawable(
-                resources,
-                Sports.sportToIconDrawable(Sports.fromJSON(courtToReserve.sport)!!),
-                null
-            )
-        )
-
     }
 
     private fun renderDayItem(day: LocalDate, selected: LocalDate) {
+        /*
         val dayScrollItem =
             layoutInflater.inflate(
                 R.layout.datepicker_scroll_item,
@@ -274,13 +301,14 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             dayScrollItem.layoutParams = noMarginParams
         }
 
-        courtViewModel.clearSelectedTime()
         // ** OnClick Listener
         dayScrollItem.setOnClickListener {
             courtViewModel.selectDay(courtToReserve, day, reservationDate)
             renderWeeklyCalendar()
         }
         binding.daysScrollView.addView(dayScrollItem)
+
+         */
     }
 
     private fun setFirstCard(bottomSheetDialog: BottomSheetDialog) {
@@ -318,6 +346,11 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             courtToReserve.sport.lowercase().replaceFirstChar { it.uppercase() })
 
     }
+
+        val totalCost = bottomSheetDialog.findViewById<TextView>(R.id.total_cost)
+        val feeHour = courtViewModel.court.value!!.feeHour
+        val feeEquipment = courtViewModel.court.value!!.feeEquipment
+        val nHours = courtViewModel.selectedTimes.size
 
     private fun setPriceDetailCard(bottomSheetDialog: BottomSheetDialog) {
         val equipmentField = bottomSheetDialog.findViewById<TextView>(R.id.equipment_field)

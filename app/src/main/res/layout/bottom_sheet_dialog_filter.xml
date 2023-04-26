@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@android:style/Widget.Material.Light.ScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_semibold_600"
+            android:text="@string/filters"
+            android:textSize="24sp" />
+
+        <!-- Rating Filter -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="2dp"
+            android:layout_marginVertical="8dp"
+            android:backgroundTint="@color/cardview_light_background"
+            app:cardCornerRadius="30dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/star_filled"
+                    android:drawablePadding="16dp"
+                    android:fontFamily="@font/montserrat_medium_500"
+                    android:paddingHorizontal="8dp"
+                    android:paddingTop="8dp"
+                    android:text="@string/rating"
+                    android:textSize="16sp" />
+
+                <com.google.android.material.slider.RangeSlider
+                    android:id="@+id/range_slider_rating"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:contentDescription="@string/rating"
+                    android:valueFrom="0"
+                    android:valueTo="5"
+                    app:values="@array/range_rating" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Price Filter -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="2dp"
+            android:layout_marginVertical="8dp"
+            android:backgroundTint="@color/cardview_light_background"
+            app:cardCornerRadius="30dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/money_symbol"
+                    android:drawablePadding="16dp"
+                    android:fontFamily="@font/montserrat_medium_500"
+                    android:paddingHorizontal="8dp"
+                    android:paddingTop="8dp"
+                    android:text="@string/price"
+                    android:textSize="16sp" />
+
+                <com.google.android.material.slider.RangeSlider
+                    android:id="@+id/range_slider_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/price"
+                    android:valueFrom="0"
+                    android:valueTo="100"
+                    app:values="@array/range_price" />
+
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Confirm/Clear -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/confirmFilter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/rounded_shape"
+                android:backgroundTint="@color/md_theme_light_error"
+                android:text="@string/clear"
+                android:textAllCaps="false"
+                android:textColor="@color/md_theme_light_background" />
+
+            <Button
+                android:id="@+id/clearFilter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="16dp"
+                android:background="@drawable/rounded_shape"
+                android:backgroundTint="@color/md_theme_light_primary"
+                android:text="@string/show_filter_results"
+                android:textAllCaps="false"
+                android:textColor="@color/md_theme_light_background" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

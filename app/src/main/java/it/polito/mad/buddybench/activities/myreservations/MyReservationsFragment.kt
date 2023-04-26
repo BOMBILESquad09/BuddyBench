@@ -57,7 +57,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         }
 
 
-        calendarView = view.findViewById<CalendarView>(R.id.calendar)
+        calendarView = view.findViewById(R.id.calendar)
         recyclerViewReservations = view.findViewById(R.id.reservations)
         recyclerViewReservations.layoutManager = LinearLayoutManager(context)
         val dayTitle = view.findViewById<TextView>(R.id.dayTitle)
