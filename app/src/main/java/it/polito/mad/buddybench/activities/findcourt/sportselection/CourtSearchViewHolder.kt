@@ -33,7 +33,7 @@ class CourtSearchViewHolder(val v: View): RecyclerView.ViewHolder(v){
         }
 
         name.text = court.name
-        address.text = court.address
+        address.text = court.location + ", " + court.address
         feeHour.text = court.feeHour.toString() + "€/h"
         courtRating.text = court.rating.toString()
 

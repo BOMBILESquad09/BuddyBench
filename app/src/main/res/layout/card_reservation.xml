@@ -68,10 +68,10 @@
             <ImageView
 
                 android:id="@+id/imageView"
-                android:layout_width="20sp"
-                android:layout_height="20sp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_gravity="end"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="8dp"
                 android:src="@drawable/tennis_white"
                 card_view:layout_constraintBottom_toTopOf="@+id/manage_btn"
                 card_view:layout_constraintEnd_toEndOf="parent"
