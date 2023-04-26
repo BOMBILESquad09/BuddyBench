@@ -26,10 +26,11 @@ import kotlin.math.max
 class CourtViewModel @Inject constructor() : ViewModel() {
 
     private var _initialValue: CourtDTO? = null
-    private var _initialOpeningTime = LocalTime.of(0, 0)
-    private var _initialClosingTime = LocalTime.of(0, 0)
-    private var _initialValueTimeSlots = Utils.getTimeSlots(_initialOpeningTime, _initialClosingTime)
-    private var _court: MutableLiveData<CourtDTO> = MutableLiveData(_initialValue)
+
+
+
+    private var _initialValueTimeSlots = Utils.getTimeSlots(LocalTime.of(0, 0), LocalTime.of(0, 0))
+    private var _court: MutableLiveData<CourtDTO> = MutableLiveData(null)
     private var _timetable: MutableLiveData<CourtTimeTableDTO> = MutableLiveData(null)
     private var _courtSportsInitial: List<CourtDTO> = listOf()
 
@@ -46,23 +47,26 @@ class CourtViewModel @Inject constructor() : ViewModel() {
 
     // Range of days between 2 weeks
     // Range of hours between 8:00 to 23:00
-    private val _openingTime: MutableLiveData<LocalTime> = MutableLiveData(_initialOpeningTime)
-    private val _closingTime: MutableLiveData<LocalTime> = MutableLiveData(_initialClosingTime)
+    //Time Tables of the current selected day
+    private val _openingTime: MutableLiveData<LocalTime> = MutableLiveData(LocalTime.of(0, 0))
+    private val _closingTime: MutableLiveData<LocalTime> = MutableLiveData(LocalTime.of(0, 0))
+    //Weekly time table
     private val _days = Utils.generateDateRange(LocalDate.now(), LocalDate.now().plusDays(14))
-    private val _timeSlots: MutableLiveData<List<Pair<LocalTime, Boolean>>> =
-        MutableLiveData(listOf())
-    private var _plainTimeSlots: MutableLiveData<List<LocalTime>> =
-        MutableLiveData(listOf())
+
+    //Time slots with a boolean that describes the selected timeslots
+    private val _timeSlots: MutableLiveData<List<Pair<LocalTime, Boolean>>> = MutableLiveData(listOf())
+    //time slots available with eventually with the one already booked by the user if we are in edit mode
+    private var _plainTimeSlots: MutableLiveData<List<LocalTime>> = MutableLiveData(listOf())
     private val plainTimeSlots: LiveData<List<LocalTime>> = _plainTimeSlots
+
     private val _selectedDay: MutableLiveData<LocalDate> = MutableLiveData(null)
-    private val _selectedTimes: MutableLiveData<MutableList<LocalTime>> =
-        MutableLiveData(mutableListOf())
     // ** Expose to other classes (view)
+
+    val selectedTimes: List<LocalTime> get() = _timeSlots.value!!.filter { it.second }.map { it.first }
     val court: LiveData<CourtDTO> get() = _court
     val days: List<LocalDate> get() = _days
     val timeSlots: LiveData<List<Pair<LocalTime, Boolean>>> get() = _timeSlots
     val selectedDay: LiveData<LocalDate> get() = _selectedDay
-    val selectedTimes: LiveData<MutableList<LocalTime>> get() = _selectedTimes
 
     private val _currentReservation: MutableLiveData<ReservationDTO?> = MutableLiveData(null)
     val currentReservation: LiveData<ReservationDTO?> get() = _currentReservation
@@ -125,12 +129,7 @@ class CourtViewModel @Inject constructor() : ViewModel() {
         return differenceList
     }
 
-    fun selectTimesForEdit(first: LocalTime, last: LocalTime): List<LocalTime> {
-        val l = Utils.getTimeSlots(first, last) as MutableList
 
-        //_timeSlots.value = _timeSlots.value?.plus(_selectedTimes.value!!)
-        return l
-    }
 
     fun removeSelectedTime(time: Pair<LocalTime, Boolean>): Int? {
 
@@ -151,9 +150,7 @@ class CourtViewModel @Inject constructor() : ViewModel() {
         return changed
     }
 
-    fun clearSelectedTime() {
-        _selectedTimes.value!!.clear()
-    }
+
 
     fun getTimeTables(name: String, sport: Sports): LiveData<CourtTimeTableDTO> {
         Thread{
@@ -170,17 +167,13 @@ class CourtViewModel @Inject constructor() : ViewModel() {
 
 
     fun getTimeSlotsAvailable(courtDTO: CourtDTO, date: LocalDate, reservationDate: LocalDate?): LiveData<List<LocalTime>> {
-        println(date)
-        println(reservationDate)
-        println("------------")
-        Thread {
 
+        Thread {
             val timeSlotsOccupied = reservationRepository.getTimeSlotsOccupiedForCourtAndDate(courtDTO, date)
             openingAndClosingTimeForCourt(date.dayOfWeek)
             var list = _initialValueTimeSlots.filter { !timeSlotsOccupied.contains(it) } as MutableList
             list.sort()
             if(list.isNotEmpty()) list = Utils.getTimeSlots(list.first(), list.last().plusHours(1)) as MutableList<LocalTime>
-            println(list)
             _timeSlots.postValue(list.map{
                 Pair(it, false)
             })
@@ -195,27 +188,20 @@ class CourtViewModel @Inject constructor() : ViewModel() {
         val courtTime = _timetable.value?.timeTable?.get(dayOfWeek)
         _openingTime.postValue( courtTime?.first ?: LocalTime.of(0, 0))
         _closingTime.postValue(  courtTime?.second ?: LocalTime.of(0, 0))
-        _initialValueTimeSlots = if (courtTime != null) Utils.getTimeSlots(courtTime.first, courtTime.second)
+        _initialValueTimeSlots =
+            if (courtTime != null) Utils.getTimeSlots(courtTime.first, courtTime.second)
         else
             listOf()
         println(_initialValueTimeSlots)
 
     }
 
-    fun getCourtsBySport(sport: Sports): List<CourtDTO> {
-        return courtRepository.getCourtsBySports(Sports.toJSON(sport).uppercase())
-    }
-
-    fun getCourtBySportAndName(name: String, sport: Sports): LiveData<CourtDTO> {
-        val court = courtRepository.getByNameAndSports(name, sport)
-        _court.value = court
-        return _court
-    }
 
 
-    fun getReservation(): LiveData<ReservationDTO?> {
 
 
+
+    private fun getReservation(): LiveData<ReservationDTO?> {
         val ts = Utils.getTimeSlots(reservationSlots!!.first, reservationSlots!!.second ).map {
             Pair(it, true)
         }

@@ -5,13 +5,11 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.compose.ui.text.capitalize
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.toBitmap
@@ -23,29 +21,42 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.slider.RangeSlider
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
-import it.polito.mad.buddybench.activities.findcourt.sportselection.CourtSearchAdapterAdapter
+import it.polito.mad.buddybench.activities.findcourt.sportselection.CourtSearchAdapter
 import it.polito.mad.buddybench.enums.Sports
-import it.polito.mad.buddybench.viewmodels.CourtViewModel
+import it.polito.mad.buddybench.viewmodels.FindCourtViewModel
 
 @AndroidEntryPoint
 class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_search_court) {
 
-    private val courtViewModel by viewModels<CourtViewModel>()
+    lateinit var recyclerView: RecyclerView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val recyclerView = view.findViewById<RecyclerView>(R.id.searchRecyclerView)
+        recyclerView = view.findViewById(R.id.searchRecyclerView)
         val b = view.findViewById<ImageButton>(R.id.change_sport_button)
         val textNearButton = view.findViewById<TextView>(R.id.textView12)
         val textUser = view.findViewById<TextView>(R.id.textView11)
         val searchEditText = view.findViewById<EditText>(R.id.searchEditText)
         val filterButton = view.findViewById<CardView>(R.id.filterButton)
 
+
+
         textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
+
+        recyclerView.adapter = CourtSearchAdapter(parent.viewModel.currentCourts)
+        recyclerView.layoutManager = LinearLayoutManager(view.context)
+
+
 
         b.setOnClickListener{
             parent.fragmentManager.switchFragment(States.SPORTS_SELECTION)
             textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
+        }
+
+        parent.viewModel.currentCourts.observe(viewLifecycleOwner){
+            println("aggiornatoooooooooooo")
+            println(it.size)
+            recyclerView.adapter?.notifyDataSetChanged()
         }
 
         parent.viewModel.selectedSport.observe(viewLifecycleOwner){
@@ -60,21 +71,16 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             b.setImageBitmap(bitmap)
 
             textNearButton.text = getString(R.string.court_search_phrase, it.toString().lowercase().replaceFirstChar { c -> c.uppercase() })
+            parent.viewModel.getCourtsBySport(it)
 
-            val l = courtViewModel.getCourtsBySport(it)
-            recyclerView?.adapter = CourtSearchAdapterAdapter(l)
-            recyclerView?.layoutManager = LinearLayoutManager(view.context)
             textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
+            parent.context.findViewById<ImageView>(R.id.close_selection).visibility = View.VISIBLE
 
             searchEditText.addTextChangedListener(object: TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
-                    val filteredData = l.filter {
-                        it.location.contains(s.toString(), ignoreCase = true) || it.name.contains(s.toString(), ignoreCase = true)
-                    }
-                    recyclerView.adapter = CourtSearchAdapterAdapter(filteredData)
+                    parent.viewModel.name = s.toString().trim().replace("\\s+".toRegex(), " ")
+                    parent.viewModel.applyFilter()
                 }
-
-        parent.context.findViewById<ImageView>(R.id.close_selection).visibility = View.VISIBLE
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}

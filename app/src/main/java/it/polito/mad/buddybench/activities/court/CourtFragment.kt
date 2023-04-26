@@ -254,7 +254,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             dayScrollItem.layoutParams = noMarginParams
         }
 
-        courtViewModel.clearSelectedTime()
         // ** OnClick Listener
         dayScrollItem.setOnClickListener {
             courtViewModel.selectDay(courtToReserve, day, reservationDate)
@@ -278,7 +277,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         val totalCost = bottomSheetDialog.findViewById<TextView>(R.id.total_cost)
         val feeHour = courtViewModel.court.value!!.feeHour
         val feeEquipment = courtViewModel.court.value!!.feeEquipment
-        val nHours = courtViewModel.selectedTimes.value!!.size
+        val nHours = courtViewModel.selectedTimes.size
 
 
 
@@ -306,8 +305,8 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                 userOrganizer = user,
                 court = courtToReserve,
                 date = courtViewModel.selectedDay.value!!,
-                startTime = courtViewModel.selectedTimes.value!!.first(),
-                endTime = courtViewModel.selectedTimes.value!!.last(),
+                startTime = courtViewModel.selectedTimes!!.first(),
+                endTime = courtViewModel.selectedTimes!!.last(),
                 equipment = switch!!.isChecked
             )
             reservationViewModel.saveReservation(reservation)
@@ -320,7 +319,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
         val timeSelected = bottomSheetDialog.findViewById<TextView>(R.id.timeSelected)
         // TODO: Visualize all the prenotation inside the dialog (for the moment just the first)
-        val hourSelected = courtViewModel.selectedTimes.value!![0]
+        val hourSelected = courtViewModel.selectedTimes[0]
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
         timeSelected?.text = hourSelected.format(formatter) + " - " + hourSelected.plusHours(1).format(formatter)
 
