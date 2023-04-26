@@ -30,6 +30,9 @@ interface ReservationDao {
     fun getReservation(email: String, courtId: Int, date: String, startTime: Int): ReservationWithUserAndCourt
 
 
+    @Query("SELECT * FROM reservation R WHERE  R.user = :userId  AND court = :courtId AND date = :date AND start_time = :startTime")
+    fun getReservationPlain(userId: Int, courtId: Int, date: String, startTime: Int): Reservation
+
 
 
 }

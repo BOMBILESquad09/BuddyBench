@@ -48,10 +48,10 @@ class ReservationRepository @Inject constructor(
     fun update(reservationDTO: ReservationDTO, oldDate: LocalDate, oldStartTime: Int){
         val user = userDao.getUserByEmail(reservationDTO.userOrganizer.email)!!
         val courtWithSport = courtDao.getByNameAndSport(reservationDTO.court.name, reservationDTO.court.sport)
-        var oldReservation_ = reservationDao.getReservation(reservationDTO.userOrganizer.email, courtWithSport.court.id,
+        var oldReservation_ = reservationDao.getReservationPlain(user.user.id, courtWithSport.court.id,
             oldDate.format(DateTimeFormatter.ISO_LOCAL_DATE), oldStartTime)
 
-        val oldReservation = reservationDao.get(oldReservation_.reservation.id)
+        val oldReservation = reservationDao.get(oldReservation_.id)
 
         println(oldDate)
         println(oldStartTime)
@@ -111,9 +111,11 @@ class ReservationRepository @Inject constructor(
 
         val user = userDao.getUserByEmail(email)!!
         val courtWithSport = courtDao.getByNameAndSport(courtName, Sports.toJSON(sport))
-        val reservationDTO = getReservation(courtName, Sports.toJSON(sport), email, date, startTime.hour)
-        reservationDao.delete(reservationDTO.toEntity(user.user.id, courtWithSport.court.id, reservationDTO.equipment))
-        unavailableDayCourtDao.delete(UnavailableDayCourt(courtWithSport.court.id, reservationDTO.date.format(
+
+        val reservation = reservationDao.getReservationPlain(user.user.id, courtWithSport.court.id,
+            date.format(DateTimeFormatter.ISO_LOCAL_DATE), startTime.hour)
+        reservationDao.delete(reservation)
+        unavailableDayCourtDao.delete(UnavailableDayCourt(courtWithSport.court.id, reservation.date.format(
             DateTimeFormatter.ISO_LOCAL_DATE)))
     }
 
