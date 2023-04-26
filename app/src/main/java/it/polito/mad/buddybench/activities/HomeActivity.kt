@@ -21,6 +21,7 @@ import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.enums.Tabs
 import it.polito.mad.buddybench.utils.BottomBar
+import it.polito.mad.buddybench.viewmodels.FindCourtViewModel
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
 import org.json.JSONObject
@@ -33,6 +34,7 @@ class HomeActivity: AppCompatActivity() {
     lateinit var profile: Profile
     private lateinit var sharedPref: SharedPreferences
     private val userViewModel by viewModels<UserViewModel>()
+    val viewModel by viewModels<FindCourtViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,8 +82,6 @@ class HomeActivity: AppCompatActivity() {
                 val newProfile = Profile.fromJSON(JSONObject(response.data?.getStringExtra("newProfile").toString()))
                 val newImageUri =  if(newProfile.imageUri != null &&  newProfile.imageUri.toString() != profile.imageUri.toString() )
                     BitmapUtils.saveToInternalStorage(applicationContext, BitmapUtils.uriToBitmap(contentResolver, newProfile.imageUri!!)!!, profile.imageUri) else profile.imageUri
-
-
                 if(newImageUri == null){
                     val toast = Toast.makeText(
                         applicationContext,

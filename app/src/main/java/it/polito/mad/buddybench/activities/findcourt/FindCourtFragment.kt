@@ -15,7 +15,7 @@ import it.polito.mad.buddybench.viewmodels.UserViewModel
 @AndroidEntryPoint
 class FindCourtFragment(val context: HomeActivity): Fragment(R.layout.find_court) {
     val fragmentManager = FindCourtFragmentManager(this)
-    val viewModel by viewModels<FindCourtViewModel>()
+    val viewModel = context.viewModel
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
