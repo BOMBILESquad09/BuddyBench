@@ -58,12 +58,16 @@ class ReservationViewModel @Inject constructor(): ViewModel() {
     }
 
     fun saveReservation(
-        reservation: ReservationDTO
+        reservation: ReservationDTO,
+        edit: Boolean
     ) {
         /*In a thread or not?*/
-            reservationRepository.save(
+        if (edit)
+            reservationRepository.update(
                 reservation
             )
+        else
+            reservationRepository.save(reservation)
     }
 
 

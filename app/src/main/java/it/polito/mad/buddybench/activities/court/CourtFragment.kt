@@ -396,7 +396,9 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                     endTime = courtViewModel.selectedTimes.last().plusHours(1),
                     equipment = true
                 )
-                reservationViewModel.saveReservation(reservation)
+
+
+                reservationViewModel.saveReservation(reservation, editMode)
                 requireActivity().finish()
                 bottomSheetDialog.dismiss()
             }
