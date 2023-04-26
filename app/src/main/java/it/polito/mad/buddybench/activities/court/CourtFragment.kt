@@ -144,7 +144,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
         // Setting the Manager Layout for the RecyclerView
         recyclerView = view.findViewById(R.id.time_slot_grid)
-        recyclerWeeklyCalendarView = view.findViewById(R.id.weekly_calendar_adapter)
+//        recyclerWeeklyCalendarView = view.findViewById(R.id.weekly_calendar_adapter)
 
         val calendarView = view.findViewById<WeekCalendarView>(R.id.calendar)
 
@@ -311,43 +311,42 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
          */
     }
 
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
-    private fun showBottomSheetDialog() {
-        val bottomSheetDialog = BottomSheetDialog(requireContext())
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_court_confirm)
-        val courtName = bottomSheetDialog.findViewById<TextView>(R.id.court_name_confirm_tv)
-        courtName?.text = courtViewModel.court.value?.name
-        val courtAddress = bottomSheetDialog.findViewById<TextView>(R.id.court_address_confirm_tv)
-        courtAddress?.text = courtViewModel.court.value?.address + ", " + courtViewModel.court.value?.location
-        val dateSelected = bottomSheetDialog.findViewById<TextView>(R.id.dateSelected)
-        dateSelected?.text = courtViewModel.selectedDay.value!!.format(DateTimeFormatter.ofPattern("EEEE, d MMMM y"))
-        val confirmButton = bottomSheetDialog.findViewById<Button>(R.id.confirmPrenotation)
-
-        val totalCost = bottomSheetDialog.findViewById<TextView>(R.id.total_cost)
-        val feeHour = courtViewModel.court.value!!.feeHour
-        val feeEquipment = courtViewModel.court.value!!.feeEquipment
-        val nHours = courtViewModel.selectedTimes.size
-        var totalCost = feeHour * nHours
-        val totalCostField = bottomSheetDialog.findViewById<TextView>(R.id.total_euros)
-        totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
-
-        // Take the reference for the switch of equipment
-        val switch = bottomSheetDialog.findViewById<Switch>(R.id.switch_equipment)
-        switch?.setOnCheckedChangeListener { buttonView, isChecked ->
-            // If the equipment is not selected the linear layout will go out
-            // Else it's visible
-            if (isChecked) {
-                val feeEquipment = courtToReserve.feeEquipment
-                equipmentField?.text = String.format(getString(R.string.cost_example, feeEquipment))
-                totalCost = (feeHour + feeEquipment) * nHours
-                totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
-            } else {
-                equipmentField?.text = String.format(getString(R.string.cost_example, 0))
-                totalCost = feeHour * nHours
-                totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
-            }
-        }
-    }
+//    private fun showBottomSheetDialog() {
+//        val bottomSheetDialog = BottomSheetDialog(requireContext())
+//        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_court_confirm)
+//        val courtName = bottomSheetDialog.findViewById<TextView>(R.id.court_name_confirm_tv)
+//        courtName?.text = courtViewModel.court.value?.name
+//        val courtAddress = bottomSheetDialog.findViewById<TextView>(R.id.court_address_confirm_tv)
+//        courtAddress?.text = courtViewModel.court.value?.address + ", " + courtViewModel.court.value?.location
+//        val dateSelected = bottomSheetDialog.findViewById<TextView>(R.id.dateSelected)
+//        dateSelected?.text = courtViewModel.selectedDay.value!!.format(DateTimeFormatter.ofPattern("EEEE, d MMMM y"))
+//        val confirmButton = bottomSheetDialog.findViewById<Button>(R.id.confirmPrenotation)
+//
+//        val totalCost = bottomSheetDialog.findViewById<TextView>(R.id.total_cost)
+//        val feeHour = courtViewModel.court.value!!.feeHour
+//        val feeEquipment = courtViewModel.court.value!!.feeEquipment
+//        val nHours = courtViewModel.selectedTimes.size
+//        var totalCost = feeHour * nHours
+//        val totalCostField = bottomSheetDialog.findViewById<TextView>(R.id.total_euros)
+//        totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
+//
+//        // Take the reference for the switch of equipment
+//        val switch = bottomSheetDialog.findViewById<Switch>(R.id.switch_equipment)
+//        switch?.setOnCheckedChangeListener { buttonView, isChecked ->
+//            // If the equipment is not selected the linear layout will go out
+//            // Else it's visible
+//            if (isChecked) {
+//                val feeEquipment = courtToReserve.feeEquipment
+//                equipmentField?.text = String.format(getString(R.string.cost_example, feeEquipment))
+//                totalCost = (feeHour + feeEquipment) * nHours
+//                totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
+//            } else {
+//                equipmentField?.text = String.format(getString(R.string.cost_example, 0))
+//                totalCost = feeHour * nHours
+//                totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
+//            }
+//        }
+//    }
 
     private fun buildAlertDialog(text: String, context: Context): AlertDialog {
         return AlertDialog.Builder(context)
@@ -424,5 +423,72 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                 it.endTime
             )
         }*/
+    }
+
+    private fun setFirstCard(bottomSheetDialog: BottomSheetDialog) {
+
+        // RESUMED CARD
+        val courtName = bottomSheetDialog.findViewById<TextView>(R.id.court_name_confirm_tv)
+        courtName?.text = courtViewModel.court.value?.name
+        val courtAddress = bottomSheetDialog.findViewById<TextView>(R.id.court_address_confirm_tv)
+        courtAddress?.text = String.format(
+            getString(R.string.court_address_card),
+            courtViewModel.court.value?.address,
+            courtViewModel.court.value?.location
+        )
+        val dateSelected = bottomSheetDialog.findViewById<TextView>(R.id.dateSelected)
+        val formatter = DateTimeFormatter.ofPattern("EEEE, d MMMM y")
+
+        dateSelected?.text =
+            courtViewModel.selectedDay.value?.format(formatter) ?: LocalDate.now().format(formatter)
+        val iconSport = bottomSheetDialog.findViewById<ImageView>(R.id.icon_sport)
+        iconSport?.setImageDrawable(
+            ResourcesCompat.getDrawable(
+                resources,
+                Sports.sportToIconDrawable(Sports.fromJSON(courtToReserve.sport)!!),
+                null
+            )
+        )
+    }
+
+    private fun setAdditionalInformationCard(bottomSheetDialog: BottomSheetDialog) {
+        // ADDITIONAL INFORMATION CARD
+        val additionalInfo = bottomSheetDialog.findViewById<TextView>(R.id.additional_body)
+        additionalInfo?.text = String.format(
+            getString(R.string.informations_body),
+            courtToReserve.name,
+            courtToReserve.sport.lowercase().replaceFirstChar { it.uppercase() })
+
+    }
+
+    private fun setPriceDetailCard(bottomSheetDialog: BottomSheetDialog) {
+        val equipmentField = bottomSheetDialog.findViewById<TextView>(R.id.equipment_field)
+        equipmentField?.text = String.format(getString(R.string.cost_example, 0))
+
+        val costField = bottomSheetDialog.findViewById<TextView>(R.id.cost_field)
+        val feeHour = courtToReserve.feeHour
+        costField?.text = String.format(getString(R.string.cost_example), feeHour)
+        //Evaluate Total Cost
+        val nHours = courtViewModel.selectedTimes.size
+        var totalCost = feeHour * nHours
+        val totalCostField = bottomSheetDialog.findViewById<TextView>(R.id.total_euros)
+        totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
+
+        // Take the reference for the switch of equipment
+        val switch = bottomSheetDialog.findViewById<Switch>(R.id.switch_equipment)
+        switch?.setOnCheckedChangeListener { buttonView, isChecked ->
+            // If the equipment is not selected the linear layout will go out
+            // Else it's visible
+            if (isChecked) {
+                val feeEquipment = courtToReserve.feeEquipment
+                equipmentField?.text = String.format(getString(R.string.cost_example, feeEquipment))
+                totalCost = (feeHour + feeEquipment) * nHours
+                totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
+            } else {
+                equipmentField?.text = String.format(getString(R.string.cost_example, 0))
+                totalCost = feeHour * nHours
+                totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
+            }
+        }
     }
 }
