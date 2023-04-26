@@ -31,7 +31,7 @@ fun ReservationWithUserAndCourt.toReservationDTO(): ReservationDTO {
         court = this.court.toCourtDTO(),
         date = LocalDate.parse(this.reservation.date),
         startTime = LocalTime.of(this.reservation.startTime,0),
-        endTime = LocalTime.of(this.reservation.startTime,0).plusHours(1),
+        endTime = LocalTime.of(this.reservation.endTime,0),
         equipment = this.reservation.equipment
     )
 }
