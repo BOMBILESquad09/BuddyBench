@@ -308,14 +308,10 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         }
     }
 
-
-
-
-
-    private fun buildAlertDialog(text: String, context: Context): AlertDialog {
+    private fun buildAlertDialog(title: String, text: String, context: Context): AlertDialog {
 
         return AlertDialog.Builder(context)
-            .setTitle(text)
+            .setTitle(title)
             .setMessage(text)
             .setPositiveButton("Ok") { dialog, _ ->
                 dialog.dismiss()
@@ -364,13 +360,12 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         val confirmButton = bottomSheetDialog.findViewById<Button>(R.id.confirmPrenotation)
         confirmButton?.setOnClickListener {
             if (!checkboxAccept!!.isChecked) {
-                ""
-                /*val textError = String.format(getString(R.string.error_info), courtToReserve.name)
+                val textError = String.format(getString(R.string.error_info), courtToReserve.name)
                 buildAlertDialog(
                     "Additional Information",
                     textError,
                     bottomSheetDialog.context
-                ).show()*/
+                ).show()
             } else {
                 val reservation = ReservationDTO(
                     userOrganizer = user,
@@ -404,8 +399,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         courtViewModel.endTime = LocalTime.of(endTime,0)
         oldStartTime =  LocalTime.of(startTime,0)
         oldDate = selectedDate
-
-
 
 
     }
