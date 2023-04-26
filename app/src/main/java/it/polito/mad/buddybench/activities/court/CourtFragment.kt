@@ -2,29 +2,18 @@ package it.polito.mad.buddybench.activities.court
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
-import android.content.res.Resources.Theme
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.MarginLayoutParams
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Switch
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.cardview.widget.CardView
-import androidx.compose.ui.res.integerArrayResource
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -32,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
-import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.databinding.FragmentCourtBinding
 import it.polito.mad.buddybench.dto.CourtDTO
@@ -66,7 +54,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
     private val binding get() = _binding!!
     private lateinit var user: UserDTO
     private lateinit var courtToReserve: CourtDTO
-
+    private lateinit var selectedDate: LocalDate
     // ** Court LiveData by ViewModel
     private val courtViewModel by viewModels<CourtViewModel>()
     private val reservationViewModel by viewModels<ReservationViewModel>()
@@ -79,6 +67,8 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
     private var editMode = false
     private var reservationDate: String = LocalDate.now().toString()
     private var emailReservation: String = ""
+    private var startTime: Int = -1
+    private lateinit var recyclerView: RecyclerView
 
 
     override fun onCreateView(
@@ -87,14 +77,13 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         savedInstanceState: Bundle?
     ): View {
 
-        val edit = arguments?.getBoolean("edit", false)
-        val date = arguments?.getString("date", LocalDate.now().toString()).toString()
-        val email = arguments?.getString("email", "")
-        if (edit == true) {
-            editMode = true
-            reservationDate = date
-            emailReservation = email!!
-        }
+        editMode = arguments?.getBoolean("edit", false) ?: false
+        reservationDate = arguments?.getString("date", LocalDate.now().toString()).toString()
+        emailReservation = arguments?.getString("email", "") ?: ""
+        startTime = arguments?.getInt("startTime", -1) ?: -1
+
+
+
 
         _binding = FragmentCourtBinding.inflate(inflater, container, false)
         return binding.root
@@ -110,44 +99,45 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         val sport = Sports.valueOf(
             activity?.intent?.getStringExtra("sport")?.uppercase() ?: Sports.TENNIS.name
         )
-
-        // Callback used inside the ViewHolder Item of the Recycler View
-        val callback: (MutableList<LocalTime>, LocalTime) -> Unit = { listSelected, selected ->
-            if (!listSelected.contains(selected))
-                courtViewModel.addSelectedTime(selected)
-            else
-                courtViewModel.removeSelectedTime(selected)
+        selectedDate = LocalDate.now()
+        if (editMode == true) {
+            editMode(courtName, sport)
         }
 
-        if (editMode) {
-            courtViewModel.selectDay(LocalDate.parse(reservationDate))
-            val currentDateSelected = reservationViewModel.setReservationByCourtNameAndSport(
-                courtName,
-                sport,
-                emailReservation,
-                LocalDate.parse(reservationDate)
-            )
+        // Callback used inside the ViewHolder Item of the Recycler View
 
-            courtViewModel.selectTimesForEdit(
-                currentDateSelected.value!!.startTime,
-                currentDateSelected.value!!.endTime
-            )
+
+        if (editMode) {
+
+            editMode(courtName, sport)
+
         }
 
 
         // Setting the Manager Layout for the RecyclerView
-        binding.timeGridParent.removeAllViews()
-        val gridRecyclerView = layoutInflater.inflate(R.layout.grid_times_slots, binding.timeGridParent, false)
-        binding.timeGridParent.addView(gridRecyclerView)
-        val recyclerView = binding.timeGridParent.findViewById<RecyclerView>(R.id.time_slot_grid)
+        recyclerView = view.findViewById(R.id.time_slot_grid)
+
+        val callback: (  Pair<LocalTime, Boolean>) -> Unit = { selected ->
+            courtViewModel.timeSlots.value?.find {
+                it.first == selected.first
+            }.let {
+                it!!
+                if (!it.second){
+                    val diff = courtViewModel.addSelectedTime(it.first)
+                    for (i in diff)
+                        recyclerView.adapter?.notifyItemChanged(i)
+                } else{
+                    val changedItem = courtViewModel.removeSelectedTime(it)
+                    if (changedItem != null)
+                     recyclerView.adapter?.notifyItemChanged(changedItem)
+                }
+            }
+        }
         recyclerView.layoutManager = GridLayoutManager(context, 4)
         recyclerView.adapter = TimeSlotGripAdapter(
-            listOf(),
+            courtViewModel.timeSlots,
             callback,
-            mutableListOf()
         )
-
-
         // Return to the previous activity
         binding.backButton.setOnClickListener {
             activity?.finish()
@@ -157,56 +147,14 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         courtViewModel.getTimeTables(courtName, sport).observe(viewLifecycleOwner) {
             if (it == null) return@observe
             updateView(it.court)
-            courtToReserve = it.court
-            courtViewModel.timeSlots.observe(viewLifecycleOwner) {
-                if (it == null) return@observe
-                courtViewModel.clearSelectedTime()
-                // Not Available Sports
-                if (it.isEmpty()) {
-                    binding.timeGridParent.removeAllViews()
-                    val timeSlotsNotAvailable = layoutInflater.inflate(R.layout.time_slots_not_available, binding.timeGridParent, false)
-                    binding.timeGridParent.addView(timeSlotsNotAvailable)
-                } else {
-                    binding.timeGridParent.removeAllViews()
-                    val gridRecyclerView = layoutInflater.inflate(R.layout.grid_times_slots, binding.timeGridParent, false)
-                    binding.timeGridParent.addView(gridRecyclerView)
-                    val recyclerView = binding.timeGridParent.findViewById<RecyclerView>(R.id.time_slot_grid)
-                    recyclerView.layoutManager = GridLayoutManager(context, 4)
-                    recyclerView.adapter = TimeSlotGripAdapter(it, callback, courtViewModel.selectedTimes.value!!)
-                }
 
+            courtViewModel.getTimeSlotsAvailable(it.court, selectedDate)
+                .observe(viewLifecycleOwner){
+                    if (it == null) return@observe
+                    recyclerView.adapter?.notifyDataSetChanged()
             }
-            courtViewModel.selectedDay.observe(viewLifecycleOwner) { selected ->
-                binding.daysScrollView.removeAllViews()
-                courtViewModel.getTimeSlotsAvailable(
-                    courtToReserve,
-                    courtViewModel.selectedDay.value!!
-                )
-                courtViewModel.days.map { renderDayItem(it, selected) }
-                courtViewModel.openingAndClosingTimeForCourt(selected.dayOfWeek)
-            }
+        }
 
-
-            // ** DateTime Pickers
-            courtViewModel.selectedTimes.observe(viewLifecycleOwner) { selected ->
-                binding.buttonFirst.isEnabled = selected.isNotEmpty()
-                        && courtViewModel.timeSlots.value!!.any { time -> selected.contains(time) }
-                val timeSlots = courtViewModel.timeSlots
-                binding.timeGridParent.removeAllViews()
-                val gridRecyclerView = layoutInflater.inflate(R.layout.grid_times_slots, binding.timeGridParent, false)
-                binding.timeGridParent.addView(gridRecyclerView)
-                val recyclerView = binding.timeGridParent.findViewById<RecyclerView>(R.id.time_slot_grid)
-                recyclerView.layoutManager = GridLayoutManager(context, 4)
-                recyclerView.adapter = TimeSlotGripAdapter(timeSlots.value ?: listOf(), callback, courtViewModel.selectedTimes.value!!)
-            }
-
-            courtViewModel.timeSlots.observe(viewLifecycleOwner) {
-                if (it.isEmpty()) {
-                    binding.timeGridParent.removeAllViews()
-                    val timeSlotsNotAvailable = layoutInflater.inflate(R.layout.time_slots_not_available, binding.timeGridParent, false)
-                    binding.timeGridParent.addView(timeSlotsNotAvailable)
-                }
-            }
 
         // ** Navigate to court reservation
         binding.buttonFirst.setOnClickListener {
@@ -227,6 +175,9 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         }
 
     }
+
+
+
 
     private fun updateView(court: CourtDTO) {
         binding.courtNameTv.text = court.name.replace("Courts", "")
@@ -256,7 +207,11 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
     private fun renderDayItem(day: LocalDate, selected: LocalDate) {
         val dayScrollItem =
-            layoutInflater.inflate(R.layout.datepicker_scroll_item, binding.daysScrollView, false)
+            layoutInflater.inflate(
+                R.layout.datepicker_scroll_item,
+                binding.daysScrollView,
+                false
+            )
         val dayTv: TextView = dayScrollItem.findViewById(R.id.day_tv)
         val dayOfMonthTv: TextView = dayScrollItem.findViewById(R.id.day_of_month_tv)
         val monthTv: TextView = dayScrollItem.findViewById(R.id.month_tv)
@@ -298,21 +253,17 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         val courtName = bottomSheetDialog.findViewById<TextView>(R.id.court_name_confirm_tv)
         courtName?.text = courtViewModel.court.value?.name
         val courtAddress = bottomSheetDialog.findViewById<TextView>(R.id.court_address_confirm_tv)
-        courtAddress?.text =
-            courtViewModel.court.value?.address + ", " + courtViewModel.court.value?.location
+        courtAddress?.text = courtViewModel.court.value?.address + ", " + courtViewModel.court.value?.location
         val dateSelected = bottomSheetDialog.findViewById<TextView>(R.id.dateSelected)
-        dateSelected?.text = courtViewModel.selectedDay.value!!.format(
-            DateTimeFormatter.ofPattern("EEEE, d MMMM y")
-        )
+        dateSelected?.text = courtViewModel.selectedDay.value!!.format(DateTimeFormatter.ofPattern("EEEE, d MMMM y"))
         val confirmButton = bottomSheetDialog.findViewById<Button>(R.id.confirmPrenotation)
-        courtViewModel.getTimeSlotsAvailable(
-            courtToReserve,
-            courtViewModel.selectedDay.value!!
-        )
+
         val totalCost = bottomSheetDialog.findViewById<TextView>(R.id.total_cost)
         val feeHour = courtViewModel.court.value!!.feeHour
         val feeEquipment = courtViewModel.court.value!!.feeEquipment
         val nHours = courtViewModel.selectedTimes.value!!.size
+
+
 
         val s = " $nHours h x $feeHour = ${feeHour * nHours} €/h"
 
@@ -332,13 +283,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
         confirmButton?.setOnClickListener {
 
-            val callback: (MutableList<LocalTime>, LocalTime) -> Unit = { listSelected, selected ->
-                if (!listSelected.contains(selected))
-                    courtViewModel.addSelectedTime(selected)
-                else
-                    courtViewModel.removeSelectedTime(selected)
 
-            }
 
             val reservation = ReservationDTO(
                 userOrganizer = user,
@@ -348,37 +293,9 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                 endTime = courtViewModel.selectedTimes.value!!.last(),
                 equipment = switch!!.isChecked
             )
-            reservationViewModel.saveReservation(
-                reservation
-            )
+            reservationViewModel.saveReservation(reservation)
 
-
-            val timeSlots = courtViewModel.getTimeSlotsAvailable(
-                courtToReserve,
-                courtViewModel.selectedDay.value!!
-            )
-            if (timeSlots.value?.isEmpty() == true) {
-                binding.timeGridParent.removeAllViews()
-                val timeSlotsNotAvailable = layoutInflater.inflate(
-                    R.layout.time_slots_not_available,
-                    binding.timeGridParent,
-                    false
-                )
-                binding.timeGridParent.addView(timeSlotsNotAvailable)
-            } else {
-                binding.timeGridParent.removeAllViews()
-                val gridRecyclerView =
-                    layoutInflater.inflate(R.layout.grid_times_slots, binding.timeGridParent, false)
-                binding.timeGridParent.addView(gridRecyclerView)
-                val recyclerView =
-                    binding.timeGridParent.findViewById<RecyclerView>(R.id.time_slot_grid)
-                recyclerView.layoutManager = GridLayoutManager(context, 4)
-                recyclerView.adapter = TimeSlotGripAdapter(
-                    timeSlots.value?: listOf(),
-                    callback,
-                    courtViewModel.selectedTimes.value!!
-                )
-            }
+            requireActivity().finish()
 
             bottomSheetDialog.dismiss()
 
@@ -388,8 +305,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         // TODO: Visualize all the prenotation inside the dialog (for the moment just the first)
         val hourSelected = courtViewModel.selectedTimes.value!![0]
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
-        timeSelected?.text =
-            hourSelected.format(formatter) + " - " + hourSelected.plusHours(1).format(formatter)
+        timeSelected?.text = hourSelected.format(formatter) + " - " + hourSelected.plusHours(1).format(formatter)
 
         bottomSheetDialog.show()
     }
@@ -397,6 +313,27 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+
+    private fun editMode(courtName: String, sport: Sports){
+        selectedDate = LocalDate.parse(reservationDate)
+
+        reservationViewModel.getReservation(
+            courtName,
+            sport,
+            emailReservation,
+            LocalDate.parse(reservationDate),
+            startTime
+        ).observe(viewLifecycleOwner){
+            if (it == null) return@observe
+            courtViewModel.selectTimesForEdit(
+                it.startTime,
+                it.endTime
+            )
+
+        }
+
     }
 }
 

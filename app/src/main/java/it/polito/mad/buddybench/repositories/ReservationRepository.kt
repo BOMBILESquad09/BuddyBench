@@ -80,16 +80,18 @@ class ReservationRepository @Inject constructor(
         return timeSlots
     }
 
-    fun getReservationByUserAndCourtNameAndSport(courtName: String, sportInCourt: String, email: String, date: LocalDate): List<ReservationDTO> {
+    fun getReservation(courtName: String, sportInCourt: String, email: String, date: LocalDate, startTime: Int): ReservationDTO {
         val court = courtDao.getByNameAndSport(courtName, sportInCourt.uppercase())
         val user = userDao.getUserByEmail(email)
 
-        val reservations = reservationDao.getReservationByUserAndCourtNameAndSport(
+        val reservation = reservationDao.getReservation(
             user!!.user.email,
             court.court.id,
-            date.toString()
+            date.toString(),
+            startTime
+
         )
-        return reservations.map { it.toReservationDTO() }
+        return reservation.toReservationDTO()
 
     }
 

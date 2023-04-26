@@ -12,6 +12,7 @@ import it.polito.mad.buddybench.dto.UserDTO
 import it.polito.mad.buddybench.entities.Court
 import it.polito.mad.buddybench.entities.Reservation
 import it.polito.mad.buddybench.entities.toReservationDTO
+import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.repositories.CourtRepository
 import it.polito.mad.buddybench.repositories.ReservationRepository
 import it.polito.mad.buddybench.utils.Utils
@@ -25,6 +26,8 @@ class ReservationViewModel @Inject constructor(): ViewModel() {
     private val _reservations: MutableLiveData<HashMap<LocalDate, List<ReservationDTO>>> = MutableLiveData(null)
     private val _selectedDate: MutableLiveData<LocalDate> = MutableLiveData(null)
     val selectedDate: LiveData<LocalDate> = _selectedDate
+    val _currentReservation: MutableLiveData<ReservationDTO?> = MutableLiveData(null)
+    val currentReservation: LiveData<ReservationDTO?> get() = _currentReservation
 
 
     @Inject
@@ -62,8 +65,6 @@ class ReservationViewModel @Inject constructor(): ViewModel() {
             reservationRepository.save(
                 reservation
             )
-
-
     }
 
 
@@ -75,6 +76,23 @@ class ReservationViewModel @Inject constructor(): ViewModel() {
         return reservations.value?.get(selectedDate.value?: LocalDate.now())
     }
 
+    fun getReservation(courtName: String, sport: Sports, email: String, date: LocalDate, startTime: Int): MutableLiveData<ReservationDTO?> {
+        Thread {
+            val sportName = Sports.toJSON(sport)
+            val reservationDTO =
+                reservationRepository.getReservation(
+                    courtName,
+                    sportName,
+                    email,
+                    date,
+                    startTime
+                )
+
+
+            _currentReservation.postValue( reservationDTO)
+         }.start()
+        return _currentReservation
+    }
 
 
 }

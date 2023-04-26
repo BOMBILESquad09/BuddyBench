@@ -241,15 +241,11 @@
                 android:textStyle="bold" />
 
 
-            <androidx.core.widget.NestedScrollView
-                android:id="@+id/time_grid_parent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <include layout="@layout/grid_times_slots" />
 
 
-            </androidx.core.widget.NestedScrollView>
+            <include layout="@layout/grid_times_slots" />
+
+
 
 
             <Button

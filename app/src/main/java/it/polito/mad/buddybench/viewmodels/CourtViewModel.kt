@@ -19,13 +19,14 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
+import kotlin.math.max
 
 @HiltViewModel
 class CourtViewModel @Inject constructor() : ViewModel() {
 
     private var _initialValue: CourtDTO? = null
-    private var _initialOpeningTime = LocalTime.of(6, 0)
-    private var _initialClosingTime = LocalTime.of(23, 0)
+    private var _initialOpeningTime = LocalTime.of(0, 0)
+    private var _initialClosingTime = LocalTime.of(0, 0)
     private var _initialValueTimeSlots =
         Utils.getTimeSlots(_initialOpeningTime, _initialClosingTime)
     private var _court: MutableLiveData<CourtDTO> = MutableLiveData(_initialValue)
@@ -48,15 +49,18 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     private val _openingTime: MutableLiveData<LocalTime> = MutableLiveData(_initialOpeningTime)
     private val _closingTime: MutableLiveData<LocalTime> = MutableLiveData(_initialClosingTime)
     private val _days = Utils.generateDateRange(LocalDate.now(), LocalDate.now().plusDays(14))
-    private val _timeSlots: MutableLiveData<List<LocalTime>> =
-        MutableLiveData(_initialValueTimeSlots)
-    private val _selectedDay: MutableLiveData<LocalDate> = MutableLiveData(LocalDate.now())
+    private val _timeSlots: MutableLiveData<List<Pair<LocalTime, Boolean>>> =
+        MutableLiveData(listOf())
+    private var _plainTimeSlots: MutableLiveData<List<LocalTime>> =
+        MutableLiveData(listOf())
+    private val plainTimeSlots: LiveData<List<LocalTime>> = _plainTimeSlots
+    private val _selectedDay: MutableLiveData<LocalDate> = MutableLiveData(null)
     private val _selectedTimes: MutableLiveData<MutableList<LocalTime>> =
         MutableLiveData(mutableListOf())
     // ** Expose to other classes (view)
     val court: LiveData<CourtDTO> get() = _court
     val days: List<LocalDate> get() = _days
-    val timeSlots: LiveData<List<LocalTime>> get() = _timeSlots
+    val timeSlots: LiveData<List<Pair<LocalTime, Boolean>>> get() = _timeSlots
     val selectedDay: LiveData<LocalDate> get() = _selectedDay
     val selectedTimes: LiveData<MutableList<LocalTime>> get() = _selectedTimes
 
@@ -66,53 +70,84 @@ class CourtViewModel @Inject constructor() : ViewModel() {
      * Update UI in the view
      */
     fun selectDay(date: LocalDate): LiveData<LocalDate> {
+        println("ddddddddddddddd")
         _selectedDay.value = date
         return _selectedDay
     }
 
-    fun addSelectedTime(time: LocalTime): LiveData<MutableList<LocalTime>> {
-
+    fun addSelectedTime(time: LocalTime): MutableList<Int> {
+        val differenceList = mutableListOf<Int>()
+        val alreadySelected = _timeSlots.value?.filter {
+            it.second
+        }?.map {
+            it.first
+        }
         if (
-            _selectedTimes.value!!.isEmpty()
-            || _selectedTimes.value!!.last() == time.minusHours(1)
-            || _selectedTimes.value!!.first() == time.plusHours(1)
+            (alreadySelected != null &&
+            alreadySelected.isEmpty())
+            || alreadySelected!!.max() == time.minusHours(1)
+            || alreadySelected!!.min() == time.plusHours(1)
         ) {
-            _selectedTimes.value!!.add(time)
-            _selectedTimes.value!!.sort()
-            val l = _selectedTimes.value!!
-            _selectedTimes.value = l
-            return _selectedTimes
+            _timeSlots.value = _timeSlots.value?.mapIndexed {
+                index, pair ->
+                if (pair.first == time){
+                    differenceList.add(index)
+                    Pair(time, true)
+                } else pair
+            }
+            //_selectedTimes.value!!.sort()
+            //val l = _selectedTimes.value!!
+            //_selectedTimes.value = l
+
         } else {
-            _selectedTimes.value = mutableListOf()
-            _selectedTimes.value!!.add(time)
+
+            _timeSlots.value?.forEachIndexed(){
+                idx, pair ->
+                if (pair.second){
+                    differenceList.add(idx)
+                }
+            }
+
+            _timeSlots.value = _timeSlots.value?.mapIndexed {
+                idx, pair ->
+                if (pair.first == time){
+                    differenceList.add(idx)
+                    Pair(time, true)
+                } else Pair(pair.first, false)
+            }
         }
 
-
-        return _selectedTimes
+        return differenceList
     }
 
     fun selectTimesForEdit(first: LocalTime, last: LocalTime): List<LocalTime> {
         val l = Utils.getTimeSlots(first, last) as MutableList
-        _selectedTimes.value = l
+
+        //_timeSlots.value = _timeSlots.value?.plus(_selectedTimes.value!!)
         return l
     }
 
-    fun removeSelectedTime(time: LocalTime): LiveData<MutableList<LocalTime>> {
-        if (_selectedTimes.value!!.last() == time || _selectedTimes.value!!.first() == time
-        ) {
-            _selectedTimes.value!!.remove(time)
-            val l = _selectedTimes.value!!
-            _selectedTimes.value = l
-            return _selectedTimes
-        } else if (_selectedTimes.value!!.contains(time)) {
-            _selectedTimes.value = mutableListOf()
-            _selectedTimes.value!!.add(time)
-            return _selectedTimes
-        } else {
-            _selectedTimes.value = mutableListOf()
-            return _selectedTimes
-        }
+    fun removeSelectedTime(time: Pair<LocalTime, Boolean>): Int? {
+        println("rimozioneee")
 
+        val max = _timeSlots.value?.filter { it.second }?.map{it.first}?.max()
+        val min = _timeSlots.value?.filter { it.second }?.map{it.first}?.min()
+        var changed: Int? = null
+        if(time.first == max || time.first == min){
+            _timeSlots.value = _timeSlots.value?.mapIndexed{
+                idx, pair ->
+                if (pair.first == time.first){
+                    changed = idx
+                    Pair(pair.first, false)
+
+                } else {
+                    pair
+                }
+
+            }
+        }
+        println(changed)
+        return changed
     }
 
     fun clearSelectedTime() {
@@ -124,7 +159,9 @@ class CourtViewModel @Inject constructor() : ViewModel() {
             val tt = courtTimeRepository.getCourtTimeTable(name, sport)
             _timetable.postValue(tt)
             _court.postValue( tt.court)
+
         }.start()
+
 
         return _timetable
     }
@@ -135,25 +172,29 @@ class CourtViewModel @Inject constructor() : ViewModel() {
 
 
     fun getTimeSlotsAvailable(courtDTO: CourtDTO, date: LocalDate): LiveData<List<LocalTime>> {
+        if (date == selectedDay.value) return plainTimeSlots
+        _selectedDay.value = date
         Thread {
             val timeSlotsOccupied = reservationRepository.getTimeSlotsOccupiedForCourtAndDate(
                 courtDTO,
                 date
             )
             openingAndClosingTimeForCourt(date.dayOfWeek)
-            val list = _initialValueTimeSlots.filter {
+            var list = _initialValueTimeSlots.filter {
                 !timeSlotsOccupied.contains(it)
             } as MutableList
 
 
-        list.sort()
-        if(list.isNotEmpty())
-            list = Utils.getTimeSlots(list.first(), list.last()) as MutableList<LocalTime>
-              _timeSlots.postValue(list)
-
+            list.sort()
+            if(list.isNotEmpty())
+                list = Utils.getTimeSlots(list.first(), list.last()) as MutableList<LocalTime>
+            _timeSlots.postValue(list.map{
+                Pair(it, false)
+            })
+            _plainTimeSlots.postValue( list )
         }.start()
 
-        return timeSlots
+        return plainTimeSlots
     }
 
     fun openingAndClosingTimeForCourt(dayOfWeek: DayOfWeek) {
