@@ -37,9 +37,19 @@ class ReservationRepository @Inject constructor(
     fun save(reservationDTO: ReservationDTO) {
         val user = userDao.getUserByEmail(reservationDTO.userOrganizer.email)!!
         val courtWithSport = courtDao.getByNameAndSport(reservationDTO.court.name, reservationDTO.court.sport)
+
         reservationDao.save(reservationDTO.toEntity(user.user.id, courtWithSport.court.id, reservationDTO.equipment))
         updateUnavailableDayCourt(reservationDTO, courtWithSport)
     }
+
+    fun update(reservationDTO: ReservationDTO){
+        val user = userDao.getUserByEmail(reservationDTO.userOrganizer.email)!!
+        val courtWithSport = courtDao.getByNameAndSport(reservationDTO.court.name, reservationDTO.court.sport)
+
+        reservationDao.update(reservationDTO.toEntity(user.user.id, courtWithSport.court.id, reservationDTO.equipment))
+        updateUnavailableDayCourt(reservationDTO, courtWithSport)
+    }
+
 
 
     private fun updateUnavailableDayCourt(reservationDTO: ReservationDTO, courtWithSport: CourtWithSport){

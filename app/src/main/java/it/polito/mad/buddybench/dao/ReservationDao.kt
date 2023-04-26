@@ -12,6 +12,8 @@ interface ReservationDao {
     @Insert
     fun save(reservation: Reservation)
 
+    @Update(entity = Reservation::class, onConflict = OnConflictStrategy.REPLACE)
+    fun update(reservation: Reservation)
     @Delete
     fun delete(reservation: Reservation)
 
