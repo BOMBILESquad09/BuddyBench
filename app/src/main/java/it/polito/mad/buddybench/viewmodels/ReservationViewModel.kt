@@ -65,6 +65,13 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         oldStartTime: LocalTime?
     ) {
         /*In a thread or not?*/
+        println("-----nuova reservation ---------------------")
+        println(reservation.startTime)
+        println(reservation.endTime)
+        println(reservation.date)
+        println("---------------------------")
+
+
         if (edit)
             reservationRepository.update(reservation,oldDate!!, oldStartTime!!.hour)
         else
@@ -80,13 +87,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         return reservations.value?.get(selectedDate.value ?: LocalDate.now())
     }
 
-    fun getReservation(
-        courtName: String,
-        sport: Sports,
-        email: String,
-        date: LocalDate,
-        startTime: Int
-    ): MutableLiveData<ReservationDTO?> {
+    fun getReservation(courtName: String, sport: Sports, email: String, date: LocalDate, startTime: Int): MutableLiveData<ReservationDTO?> {
         Thread {
             val sportName = Sports.toJSON(sport)
             val reservationDTO =

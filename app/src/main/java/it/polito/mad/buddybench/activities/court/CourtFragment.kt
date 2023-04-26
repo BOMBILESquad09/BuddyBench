@@ -404,10 +404,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         courtViewModel.endTime = LocalTime.of(endTime,0)
         oldStartTime =  LocalTime.of(startTime,0)
         oldDate = selectedDate
-
-
-
-
     }
 
     private fun setFirstCard(bottomSheetDialog: BottomSheetDialog) {

@@ -11,6 +11,7 @@ import it.polito.mad.buddybench.entities.CourtWithSport
 import it.polito.mad.buddybench.entities.Reservation
 import it.polito.mad.buddybench.entities.UnavailableDayCourt
 import it.polito.mad.buddybench.entities.toReservationDTO
+import it.polito.mad.buddybench.utils.Utils
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -49,6 +50,13 @@ class ReservationRepository @Inject constructor(
         var oldReservation = reservationDao.getReservation(reservationDTO.userOrganizer.email, courtWithSport.court.id,
             oldDate.format(DateTimeFormatter.ISO_LOCAL_DATE), oldStartTime)
 
+        println("-------------------")
+
+        println(oldDate)
+        println(oldStartTime)
+        println(reservationDTO.date.format(DateTimeFormatter.ISO_LOCAL_DATE))
+        println("-------------------")
+
         val newReservation = Reservation(
             id = oldReservation.reservation.id,
             startTime = reservationDTO.startTime.hour,
@@ -60,6 +68,7 @@ class ReservationRepository @Inject constructor(
         )
 
         reservationDao.update(newReservation)
+
         updateUnavailableDayCourt(reservationDTO, courtWithSport)
     }
 
@@ -68,12 +77,15 @@ class ReservationRepository @Inject constructor(
     private fun updateUnavailableDayCourt(reservationDTO: ReservationDTO, courtWithSport: CourtWithSport){
         val reservations = reservationDao.getAllByCourtAndDate(courtWithSport.court.id, reservationDTO.date.format(
             DateTimeFormatter.ISO_LOCAL_DATE))
-        reservations.map { it.reservation.endTime - it.reservation.startTime }.reduce{
+        reservations.map { it.reservation.endTime - it.reservation.startTime }.fold(0){
                 a,b -> a+b
         }.let {
             val time = courtTimeDao.getDayTimeByCourt(courtWithSport.court.id, reservationDTO.date.dayOfWeek.value)!!
             if ((time.courtTime.closingTime - time.courtTime.openingTime) <= it){
                 unavailableDayCourtDao.save(UnavailableDayCourt(courtWithSport.court.id, reservationDTO.date.format(
+                    DateTimeFormatter.ISO_LOCAL_DATE)))
+            } else{
+                unavailableDayCourtDao.delete(UnavailableDayCourt(courtWithSport.court.id, reservationDTO.date.format(
                     DateTimeFormatter.ISO_LOCAL_DATE)))
             }
         }
@@ -94,8 +106,8 @@ class ReservationRepository @Inject constructor(
             date = date.toString()
         )
         val timeSlots = reservations.map {
-            LocalTime.of(it.reservation.startTime,0)
-        }
+            Utils.getTimeSlots(LocalTime.of(it.reservation.startTime,0), LocalTime.of(it.reservation.endTime, 0))
+        }.flatten().toList()
         println(timeSlots.toString() )
         return timeSlots
     }
