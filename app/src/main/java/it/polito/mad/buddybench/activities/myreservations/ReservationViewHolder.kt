@@ -42,10 +42,9 @@ class ReservationViewHolder(v: View): RecyclerView.ViewHolder(v) {
         Utils.setColoredDrawable(iconDrawable!!, iconSport)
         slot.text = "${reservation.startTime.format(formatter)} - ${reservation.endTime.format(formatter)}"
         if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime))
-            manageBtn.visibility = View.GONE
+            manageBtn.visibility = View.INVISIBLE
         manageBtn.setOnClickListener {
             if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime)){
-                manageBtn.visibility = View.GONE
                 return@setOnClickListener
             }
             launchEditReservation(reservation)
