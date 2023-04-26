@@ -347,11 +347,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
     }
 
-        val totalCost = bottomSheetDialog.findViewById<TextView>(R.id.total_cost)
-        val feeHour = courtViewModel.court.value!!.feeHour
-        val feeEquipment = courtViewModel.court.value!!.feeEquipment
-        val nHours = courtViewModel.selectedTimes.size
-
     private fun setPriceDetailCard(bottomSheetDialog: BottomSheetDialog) {
         val equipmentField = bottomSheetDialog.findViewById<TextView>(R.id.equipment_field)
         equipmentField?.text = String.format(getString(R.string.cost_example, 0))
@@ -360,7 +355,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         val feeHour = courtToReserve.feeHour
         costField?.text = String.format(getString(R.string.cost_example), feeHour)
         //Evaluate Total Cost
-        val nHours = courtViewModel.selectedTimes.value!!.size
+        val nHours = courtViewModel.selectedTimes.size
         var totalCost = feeHour * nHours
         val totalCostField = bottomSheetDialog.findViewById<TextView>(R.id.total_euros)
         totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
@@ -458,18 +453,3 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         }*/
     }
 }
-
-//val drawable =
-//    Sports.sportToIconDrawable(Sports.fromJSON(courtViewModel.court.value!!.sport)!!)
-
-
-//        val sportDrawable = ContextCompat.getDrawable(requireContext(), drawable)
-//        sportDrawable!!.mutate().setBounds(10, 10, 10, 10)
-//        binding.equipmentCost.setCompoundDrawables(
-//            sportDrawable, null, null, null
-//        )
-
-//        val wrappedDrawable = DrawableCompat.wrap(iconDrawable!!)
-//        wrappedDrawable.mutate().setTint(Color.WHITE)
-//        val bitmap = wrappedDrawable.toBitmap(160, 160)
-//        b.setImageBitmap(bitmap)
