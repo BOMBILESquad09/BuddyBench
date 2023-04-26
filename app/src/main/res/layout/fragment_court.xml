@@ -239,17 +239,23 @@
                 android:text="Available Timeslots (1h each)"
                 android:textSize="15sp"
                 android:textStyle="bold" />
+            <include layout="@layout/time_slots_not_available"/>
+
 
 
             <androidx.core.widget.NestedScrollView
-                android:id="@+id/time_grid_parent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <include layout="@layout/grid_times_slots" />
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <include layout="@layout/grid_times_slots" />
+                </LinearLayout>
 
 
             </androidx.core.widget.NestedScrollView>
+
+
 
 
             <Button

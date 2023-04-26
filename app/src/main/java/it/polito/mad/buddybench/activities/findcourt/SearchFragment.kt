@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -55,6 +56,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
         }
 
+        parent.context.findViewById<ImageView>(R.id.close_selection).visibility = View.VISIBLE
 
         super.onViewCreated(view, savedInstanceState)
     }

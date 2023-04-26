@@ -32,24 +32,25 @@ class CourtActivity : AppCompatActivity() {
         if (editMode) {
             val args = Bundle()
             args.putBoolean("edit", true)
-            intent.putExtra("edit", true)
 
             val courtName = intent.getStringExtra("courtName")
-            intent.putExtra("courtName", courtName)
             args.putString("courtName", courtName)
 
             val sport = intent.getStringExtra("sport")
-            intent.putExtra("sport", sport)
             args.putString("sport", sport)
 
             val date = intent.getStringExtra("date")
-            intent.putExtra("date", date)
             args.putString("date", date)
 
             val email = intent.getStringExtra("email")
-            intent.putExtra("email", date)
             args.putString("email", email)
 
+            val startTime = intent.getIntExtra("startTime", -1)
+            args.putInt("startTime", startTime)
+
+            val endTime = intent.getIntExtra("endTime",-1)
+            args.putInt("endTime", endTime)
+            println(args.toString())
             fragment.arguments = args
         }
 
