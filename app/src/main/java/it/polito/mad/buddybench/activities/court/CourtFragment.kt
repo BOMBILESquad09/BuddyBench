@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.kizitonwose.calendar.core.WeekDay
+import com.kizitonwose.calendar.core.WeekDayPosition
 import com.kizitonwose.calendar.view.WeekCalendarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
@@ -134,32 +136,33 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         recyclerView = view.findViewById(R.id.time_slot_grid)
         recyclerWeeklyCalendarView = view.findViewById(R.id.weekly_calendar_adapter)
 
+        val calendarView = view.findViewById<WeekCalendarView>(R.id.calendar)
 
-        val calendarCallback: (Int, Int) -> Unit = { last, new ->
+
+
+        val calendarCallback: (LocalDate, LocalDate) -> Unit = { last, new ->
             if(last == new){
-                weeklyDays[last] = Pair(weeklyDays[last].first, !weeklyDays[last].second)
-                recyclerWeeklyCalendarView.adapter!!.notifyItemChanged(last)
+                calendarView.notifyDayChanged(WeekDay(last, WeekDayPosition.InDate))
 
             } else {
-                weeklyDays[last] = Pair(weeklyDays[last].first, false)
-                weeklyDays[new] =  Pair(weeklyDays[new].first, true)
-                recyclerWeeklyCalendarView.adapter!!.notifyItemChanged(last)
-                recyclerWeeklyCalendarView.adapter!!.notifyItemChanged(new)
-                courtViewModel.selectDay(courtToReserve, weeklyDays[new].first, reservationDate)
+                calendarView.notifyDayChanged(WeekDay(new, WeekDayPosition.InDate))
+                calendarView.notifyDayChanged(WeekDay(last, WeekDayPosition.InDate))
+                courtViewModel.selectDay(courtToReserve, new, reservationDate)
             }
-
-
         }
 
+        calendarView.dayBinder = WeeklyCalendarDayBinder( selectedDate, calendarCallback)
+        calendarView.setup(weeklyDays.first().first, weeklyDays.last().first, DayOfWeek.MONDAY)
+        calendarView.scrollToDate(selectedDate)
+
+
         val selectedPosition = (Period.between(LocalDate.now(),selectedDate )).days
-        recyclerWeeklyCalendarView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        /*recyclerWeeklyCalendarView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recyclerWeeklyCalendarView.adapter = WeeklyCalendarAdapter(weeklyDays, selectedPosition, calendarCallback)
         LinearSnapHelper().attachToRecyclerView(recyclerWeeklyCalendarView)
-        recyclerWeeklyCalendarView.scrollToPosition(selectedPosition)
+        recyclerWeeklyCalendarView.scrollToPosition(selectedPosition)*/
 
-        val calendarView = view.findViewById<WeekCalendarView>(R.id.calendar)
-        calendarView.dayBinder = WeeklyCalendarDayBinder()
-        calendarView.setup(weeklyDays.first().first, weeklyDays.last().first, DayOfWeek.MONDAY)
+
 
 
         val callback: (  Pair<LocalTime, Boolean>) -> Unit = { selected ->
@@ -198,7 +201,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                     println(timeSlots)
                     if (timeSlots == null) return@observe
                     if (timeSlots.isEmpty()){
-                        println("oooooooooooooooooooooooooooo")
                         binding.root.findViewById<ConstraintLayout>(R.id.empty_timeslots).visibility = View.VISIBLE
                     } else{
                         binding.root.findViewById<ConstraintLayout>(R.id.empty_timeslots).visibility = View.GONE
