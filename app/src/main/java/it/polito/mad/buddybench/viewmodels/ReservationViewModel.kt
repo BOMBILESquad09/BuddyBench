@@ -103,8 +103,14 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         return _currentReservation
     }
 
-    fun deleteReservation(reservation: ReservationDTO) {
-        reservationRepository.delete(reservation)
+    fun deleteReservation(courtName: String, sport: Sports, startTime: LocalTime, date: LocalDate, email: String) {
+        reservationRepository.delete(
+            courtName,
+            sport,
+            startTime,
+            email,
+            date
+        )
     }
 
 }

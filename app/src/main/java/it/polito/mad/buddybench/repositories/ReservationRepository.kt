@@ -11,6 +11,7 @@ import it.polito.mad.buddybench.entities.CourtWithSport
 import it.polito.mad.buddybench.entities.Reservation
 import it.polito.mad.buddybench.entities.UnavailableDayCourt
 import it.polito.mad.buddybench.entities.toReservationDTO
+import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.Utils
 import java.time.LocalDate
 import java.time.LocalTime
@@ -92,7 +93,7 @@ class ReservationRepository @Inject constructor(
     private fun updateUnavailableDayCourt(reservationDTO: ReservationDTO, courtWithSport: CourtWithSport){
         val reservations = reservationDao.getAllByCourtAndDate(courtWithSport.court.id, reservationDTO.date.format(
             DateTimeFormatter.ISO_LOCAL_DATE))
-        reservations.map { it.reservation.endTime - it.reservation.startTime }.fold(0){
+        reservations.map { it.reservation.endTime - it.reservation.startTime }.reduce{
                 a,b -> a+b
         }.let {
             val time = courtTimeDao.getDayTimeByCourt(courtWithSport.court.id, reservationDTO.date.dayOfWeek.value)!!
@@ -106,9 +107,11 @@ class ReservationRepository @Inject constructor(
         }
     }
 
-    fun delete(reservationDTO: ReservationDTO) {
-        val user = userDao.getUserByEmail(reservationDTO.userOrganizer.email)!!
-        val courtWithSport = courtDao.getByNameAndSport(reservationDTO.court.name, reservationDTO.court.sport)
+    fun delete(courtName: String, sport: Sports, startTime: LocalTime, email: String, date: LocalDate) {
+
+        val user = userDao.getUserByEmail(email)!!
+        val courtWithSport = courtDao.getByNameAndSport(courtName, Sports.toJSON(sport))
+        val reservationDTO = getReservation(courtName, Sports.toJSON(sport), email, date, startTime.hour)
         reservationDao.delete(reservationDTO.toEntity(user.user.id, courtWithSport.court.id, reservationDTO.equipment))
         unavailableDayCourtDao.delete(UnavailableDayCourt(courtWithSport.court.id, reservationDTO.date.format(
             DateTimeFormatter.ISO_LOCAL_DATE)))

@@ -56,6 +56,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.Period
 import java.time.format.DateTimeFormatter
+import kotlin.time.Duration.Companion.hours
 
 
 /**
@@ -324,7 +325,11 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             .setMessage(text)
             .setPositiveButton("Yes") { dialog, _ ->
                 reservationViewModel.deleteReservation(
-                    reservationViewModel.currentReservation.value!!
+                    courtName,
+                    sport,
+                    LocalTime.of(startTime, 0),
+                    selectedDate,
+                    profile.email
                 )
                 dialog.dismiss()
                 requireActivity().finish()
@@ -398,8 +403,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         courtViewModel.endTime = LocalTime.of(endTime,0)
         oldStartTime =  LocalTime.of(startTime,0)
         oldDate = selectedDate
-
-
     }
 
     private fun setFirstCard(bottomSheetDialog: BottomSheetDialog) {
