@@ -13,6 +13,7 @@ import android.view.ViewGroup.MarginLayoutParams
 import android.widget.Button
 import android.widget.Switch
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -65,25 +66,24 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
     // ** Edit mode (default to false)
     private var editMode = false
-    private var reservationDate: String = LocalDate.now().toString()
+    private var reservationDate: LocalDate? = null
     private var emailReservation: String = ""
     private var startTime: Int = -1
+    private var endTime: Int = -1
     private lateinit var recyclerView: RecyclerView
 
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         editMode = arguments?.getBoolean("edit", false) ?: false
-        reservationDate = arguments?.getString("date", LocalDate.now().toString()).toString()
+        arguments?.getString("date").let {
+            if (it != null)
+                reservationDate = LocalDate.parse( it, DateTimeFormatter.ISO_LOCAL_DATE)
+        }
+
         emailReservation = arguments?.getString("email", "") ?: ""
         startTime = arguments?.getInt("startTime", -1) ?: -1
-
-
-
+        endTime = arguments?.getInt("endTime", -1) ?: -1
 
         _binding = FragmentCourtBinding.inflate(inflater, container, false)
         return binding.root
@@ -100,18 +100,17 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             activity?.intent?.getStringExtra("sport")?.uppercase() ?: Sports.TENNIS.name
         )
         selectedDate = LocalDate.now()
-        if (editMode == true) {
-            editMode(courtName, sport)
+        if (editMode) {
+            courtViewModel.setReservationDate(reservationDate!!)
+            editMode()
+            val b = view.findViewById<Button>(R.id.button_first)
+            b.text = "Edit Book"
+
         }
 
         // Callback used inside the ViewHolder Item of the Recycler View
 
 
-        if (editMode) {
-
-            editMode(courtName, sport)
-
-        }
 
 
         // Setting the Manager Layout for the RecyclerView
@@ -147,13 +146,24 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         courtViewModel.getTimeTables(courtName, sport).observe(viewLifecycleOwner) {
             if (it == null) return@observe
             updateView(it.court)
-
-            courtViewModel.getTimeSlotsAvailable(it.court, selectedDate)
+            courtViewModel.getTimeSlotsAvailable(it.court, selectedDate, reservationDate)
                 .observe(viewLifecycleOwner){
-                    if (it == null) return@observe
-                    recyclerView.adapter?.notifyDataSetChanged()
+                    timeSlots ->
+                    println(timeSlots)
+                    if (timeSlots == null) return@observe
+                    if (timeSlots.isEmpty()){
+                        println("oooooooooooooooooooooooooooo")
+                        binding.root.findViewById<ConstraintLayout>(R.id.empty_timeslots).visibility = View.VISIBLE
+                    } else{
+                        binding.root.findViewById<ConstraintLayout>(R.id.empty_timeslots).visibility = View.GONE
+                    }
+                   recyclerView.adapter?.notifyDataSetChanged()
+
             }
+
         }
+
+
 
 
         // ** Navigate to court reservation
@@ -169,13 +179,20 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             Profile.fromJSON(JSONObject(sharedPref.getString("profile", Profile.mockJSON())!!))
         user = profile.toUserDto()
 
-        if (editMode) {
-            val b = view.findViewById<Button>(R.id.button_first)
-            b.text = "Edit Book"
-        }
+        renderWeeklyCalendar()
+
 
     }
 
+    fun renderWeeklyCalendar(){
+        val now = LocalDate.now()
+        binding.daysScrollView.removeAllViews()
+
+
+        for ( i in 0..13){
+            renderDayItem(now.plusDays(i.toLong()), courtViewModel.selectedDay.value ?: now)
+        }
+    }
 
 
 
@@ -188,7 +205,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                 binding.courtOpeningHoursTv.text = Utils.getStringifyTimeTable(it)
             }
         }
-
         val bitmap = try {
             BitmapFactory.decodeStream(view?.context?.assets?.open("courtImages/" + court.path + ".jpg"))
         } catch (_: FileNotFoundException) {
@@ -239,10 +255,11 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         }
 
         courtViewModel.clearSelectedTime()
-
         // ** OnClick Listener
-        dayScrollItem.setOnClickListener { courtViewModel.selectDay(day) }
-
+        dayScrollItem.setOnClickListener {
+            courtViewModel.selectDay(courtToReserve, day, reservationDate)
+            renderWeeklyCalendar()
+        }
         binding.daysScrollView.addView(dayScrollItem)
     }
 
@@ -316,23 +333,26 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
     }
 
 
-    private fun editMode(courtName: String, sport: Sports){
-        selectedDate = LocalDate.parse(reservationDate)
+    private fun editMode(){
+        selectedDate = reservationDate!!
+        courtViewModel.reservationSlots = Pair(LocalTime.of(startTime,0), LocalTime.of(endTime,0))
 
+        /*
         reservationViewModel.getReservation(
             courtName,
             sport,
             emailReservation,
-            LocalDate.parse(reservationDate),
+            reservationDate,
             startTime
         ).observe(viewLifecycleOwner){
             if (it == null) return@observe
+
             courtViewModel.selectTimesForEdit(
                 it.startTime,
                 it.endTime
             )
 
-        }
+        }*/
 
     }
 }

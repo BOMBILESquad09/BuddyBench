@@ -29,7 +29,6 @@ class ReservationViewModel @Inject constructor(): ViewModel() {
     val _currentReservation: MutableLiveData<ReservationDTO?> = MutableLiveData(null)
     val currentReservation: LiveData<ReservationDTO?> get() = _currentReservation
 
-
     @Inject
     lateinit var reservationRepository: ReservationRepository
 
@@ -87,10 +86,8 @@ class ReservationViewModel @Inject constructor(): ViewModel() {
                     date,
                     startTime
                 )
-
-
             _currentReservation.postValue( reservationDTO)
-         }.start()
+        }.start()
         return _currentReservation
     }
 

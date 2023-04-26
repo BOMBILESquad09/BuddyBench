@@ -48,6 +48,9 @@ class CourtActivity : AppCompatActivity() {
             val startTime = intent.getIntExtra("startTime", -1)
             args.putInt("startTime", startTime)
 
+            val endTime = intent.getIntExtra("endTime",-1)
+            args.putInt("endTime", endTime)
+            println(args.toString())
             fragment.arguments = args
         }
 

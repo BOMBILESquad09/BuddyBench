@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.dto.CourtDTO
 import it.polito.mad.buddybench.dto.CourtTimeDTO
 import it.polito.mad.buddybench.dto.CourtTimeTableDTO
+import it.polito.mad.buddybench.dto.ReservationDTO
 import it.polito.mad.buddybench.entities.Court
 import it.polito.mad.buddybench.entities.toCourtDTO
 import it.polito.mad.buddybench.enums.Sports
@@ -27,8 +28,7 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     private var _initialValue: CourtDTO? = null
     private var _initialOpeningTime = LocalTime.of(0, 0)
     private var _initialClosingTime = LocalTime.of(0, 0)
-    private var _initialValueTimeSlots =
-        Utils.getTimeSlots(_initialOpeningTime, _initialClosingTime)
+    private var _initialValueTimeSlots = Utils.getTimeSlots(_initialOpeningTime, _initialClosingTime)
     private var _court: MutableLiveData<CourtDTO> = MutableLiveData(_initialValue)
     private var _timetable: MutableLiveData<CourtTimeTableDTO> = MutableLiveData(null)
     private var _courtSportsInitial: List<CourtDTO> = listOf()
@@ -64,13 +64,22 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     val selectedDay: LiveData<LocalDate> get() = _selectedDay
     val selectedTimes: LiveData<MutableList<LocalTime>> get() = _selectedTimes
 
+    private val _currentReservation: MutableLiveData<ReservationDTO?> = MutableLiveData(null)
+    val currentReservation: LiveData<ReservationDTO?> get() = _currentReservation
 
+    /*already selected slots*/
+    var reservationSlots: Pair<LocalTime, LocalTime>? = null
     /**
      * Select day from the list
      * Update UI in the view
      */
-    fun selectDay(date: LocalDate): LiveData<LocalDate> {
-        println("ddddddddddddddd")
+
+    fun setReservationDate(reservationDate: LocalDate){
+        _selectedDay.value = reservationDate
+    }
+
+    fun selectDay(courtToReserve:CourtDTO, date: LocalDate, reservationDate: LocalDate?): LiveData<LocalDate> {
+        getTimeSlotsAvailable(courtToReserve,date, reservationDate)
         _selectedDay.value = date
         return _selectedDay
     }
@@ -95,19 +104,15 @@ class CourtViewModel @Inject constructor() : ViewModel() {
                     Pair(time, true)
                 } else pair
             }
-            //_selectedTimes.value!!.sort()
-            //val l = _selectedTimes.value!!
-            //_selectedTimes.value = l
+
 
         } else {
-
             _timeSlots.value?.forEachIndexed(){
                 idx, pair ->
                 if (pair.second){
                     differenceList.add(idx)
                 }
             }
-
             _timeSlots.value = _timeSlots.value?.mapIndexed {
                 idx, pair ->
                 if (pair.first == time){
@@ -128,7 +133,6 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     }
 
     fun removeSelectedTime(time: Pair<LocalTime, Boolean>): Int? {
-        println("rimozioneee")
 
         val max = _timeSlots.value?.filter { it.second }?.map{it.first}?.max()
         val min = _timeSlots.value?.filter { it.second }?.map{it.first}?.min()
@@ -139,14 +143,11 @@ class CourtViewModel @Inject constructor() : ViewModel() {
                 if (pair.first == time.first){
                     changed = idx
                     Pair(pair.first, false)
-
                 } else {
                     pair
                 }
-
             }
         }
-        println(changed)
         return changed
     }
 
@@ -159,10 +160,7 @@ class CourtViewModel @Inject constructor() : ViewModel() {
             val tt = courtTimeRepository.getCourtTimeTable(name, sport)
             _timetable.postValue(tt)
             _court.postValue( tt.court)
-
         }.start()
-
-
         return _timetable
     }
 
@@ -171,41 +169,37 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     }
 
 
-    fun getTimeSlotsAvailable(courtDTO: CourtDTO, date: LocalDate): LiveData<List<LocalTime>> {
-        if (date == selectedDay.value) return plainTimeSlots
-        _selectedDay.value = date
+    fun getTimeSlotsAvailable(courtDTO: CourtDTO, date: LocalDate, reservationDate: LocalDate?): LiveData<List<LocalTime>> {
+        println(date)
+        println(reservationDate)
+        println("------------")
         Thread {
-            val timeSlotsOccupied = reservationRepository.getTimeSlotsOccupiedForCourtAndDate(
-                courtDTO,
-                date
-            )
+
+            val timeSlotsOccupied = reservationRepository.getTimeSlotsOccupiedForCourtAndDate(courtDTO, date)
             openingAndClosingTimeForCourt(date.dayOfWeek)
-            var list = _initialValueTimeSlots.filter {
-                !timeSlotsOccupied.contains(it)
-            } as MutableList
-
-
+            var list = _initialValueTimeSlots.filter { !timeSlotsOccupied.contains(it) } as MutableList
             list.sort()
-            if(list.isNotEmpty())
-                list = Utils.getTimeSlots(list.first(), list.last()) as MutableList<LocalTime>
+            if(list.isNotEmpty()) list = Utils.getTimeSlots(list.first(), list.last().plusHours(1)) as MutableList<LocalTime>
+            println(list)
             _timeSlots.postValue(list.map{
                 Pair(it, false)
             })
             _plainTimeSlots.postValue( list )
+            if(reservationDate == date)
+                getReservation()
         }.start()
-
         return plainTimeSlots
     }
 
-    fun openingAndClosingTimeForCourt(dayOfWeek: DayOfWeek) {
-
+    private fun openingAndClosingTimeForCourt(dayOfWeek: DayOfWeek) {
         val courtTime = _timetable.value?.timeTable?.get(dayOfWeek)
         _openingTime.postValue( courtTime?.first ?: LocalTime.of(0, 0))
         _closingTime.postValue(  courtTime?.second ?: LocalTime.of(0, 0))
-        _initialValueTimeSlots = if (courtTime != null)
-            Utils.getTimeSlots(courtTime.first, courtTime.second)
+        _initialValueTimeSlots = if (courtTime != null) Utils.getTimeSlots(courtTime.first, courtTime.second)
         else
             listOf()
+        println(_initialValueTimeSlots)
+
     }
 
     fun getCourtsBySport(sport: Sports): List<CourtDTO> {
@@ -217,6 +211,20 @@ class CourtViewModel @Inject constructor() : ViewModel() {
         _court.value = court
         return _court
     }
+
+
+    fun getReservation(): LiveData<ReservationDTO?> {
+
+
+        val ts = Utils.getTimeSlots(reservationSlots!!.first, reservationSlots!!.second ).map {
+            Pair(it, true)
+        }
+        val plain = Utils.getTimeSlots(reservationSlots!!.first, reservationSlots!!.second )
+        _plainTimeSlots.postValue( (_plainTimeSlots.value?.plus(plain)))
+        _timeSlots.postValue(  (_timeSlots.value?.plus(ts)))
+        return currentReservation
+    }
+
 
 
 }
