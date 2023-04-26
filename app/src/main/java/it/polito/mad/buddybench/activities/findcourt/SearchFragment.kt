@@ -95,7 +95,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
     private fun showBottomSheetDialog(){
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         val rangeSliderPrice = bottomSheetDialog.findViewById<RangeSlider>(R.id.range_slider_price)
-        rangeSliderPrice?.setValues(2.0f,7.0f)
+        rangeSliderPrice?.setValues(2.0f,75.0f)
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_filter)
         bottomSheetDialog.show()
     }

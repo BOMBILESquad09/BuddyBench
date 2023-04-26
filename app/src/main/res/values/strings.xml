@@ -48,7 +48,7 @@
     <string name="nickname">Nickname</string>
     <string name="full_name">Full Name</string>
     <string name="manage">Manage</string>
-    <string name="price">12 €/h</string>
+    <string name="court_price">12 €/h</string>
     <string name="court_name">Tennis Club</string>
     <string name="court_address">Torino, Via Roma 16</string>
     <string name="overflowReservations">+</string>
@@ -86,8 +86,6 @@
     <string name="filters">Filters</string>
     <string name="show_filter_results">Show Results</string>
     <string name="clear">Clear</string>
-    <string-array name="range_price">
-        <item>2</item>
-        <item>7</item>
-    </string-array>
+    <string name="rating">Rating</string>
+    <string name="price">Price</string>
 </resources>
