@@ -15,6 +15,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -22,6 +23,7 @@ import com.google.android.material.slider.RangeSlider
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.findcourt.sportselection.CourtSearchAdapter
+import it.polito.mad.buddybench.dto.CourtDTO
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.viewmodels.FindCourtViewModel
 
@@ -29,7 +31,7 @@ import it.polito.mad.buddybench.viewmodels.FindCourtViewModel
 class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_search_court) {
 
     lateinit var recyclerView: RecyclerView
-
+    private var lastCourts: List<CourtDTO> = listOf()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         recyclerView = view.findViewById(R.id.searchRecyclerView)
@@ -54,9 +56,11 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         }
 
         parent.viewModel.currentCourts.observe(viewLifecycleOwner){
-            println("aggiornatoooooooooooo")
-            println(it.size)
-            recyclerView.adapter?.notifyDataSetChanged()
+            val diff = CourtsDiffUtils(lastCourts, it)
+            val diffResult = DiffUtil.calculateDiff(diff)
+            lastCourts = it
+            diffResult.dispatchUpdatesTo(recyclerView.adapter!!)
+
         }
 
         parent.viewModel.selectedSport.observe(viewLifecycleOwner){

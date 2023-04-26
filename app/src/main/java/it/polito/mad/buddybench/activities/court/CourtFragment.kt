@@ -8,18 +8,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams
-import android.view.ViewGroup.MarginLayoutParams
 import android.widget.Button
 import android.widget.Switch
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.kizitonwose.calendar.view.WeekCalendarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Profile
@@ -28,14 +28,17 @@ import it.polito.mad.buddybench.dto.CourtDTO
 import it.polito.mad.buddybench.dto.ReservationDTO
 import it.polito.mad.buddybench.dto.UserDTO
 import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.utils.WeeklyCalendarAdapter
 import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.CourtViewModel
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
 import org.json.JSONObject
 import java.io.FileNotFoundException
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.Period
 import java.time.format.DateTimeFormatter
 
 
@@ -71,6 +74,9 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
     private var startTime: Int = -1
     private var endTime: Int = -1
     private lateinit var recyclerView: RecyclerView
+
+    private lateinit var recyclerWeeklyCalendarView: RecyclerView
+    private lateinit var  weeklyDays: MutableList<Pair<LocalDate, Boolean>>
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -108,6 +114,17 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
         }
 
+
+
+        weeklyDays = (0..30).map {
+            val day = LocalDate.now().plusDays(it.toLong())
+            if(day == selectedDate){
+                Pair(selectedDate, true)
+            } else {
+                Pair(day, false)
+            }
+        } as MutableList<Pair<LocalDate, Boolean>>
+
         // Callback used inside the ViewHolder Item of the Recycler View
 
 
@@ -115,6 +132,35 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
         // Setting the Manager Layout for the RecyclerView
         recyclerView = view.findViewById(R.id.time_slot_grid)
+        recyclerWeeklyCalendarView = view.findViewById(R.id.weekly_calendar_adapter)
+
+
+        val calendarCallback: (Int, Int) -> Unit = { last, new ->
+            if(last == new){
+                weeklyDays[last] = Pair(weeklyDays[last].first, !weeklyDays[last].second)
+                recyclerWeeklyCalendarView.adapter!!.notifyItemChanged(last)
+
+            } else {
+                weeklyDays[last] = Pair(weeklyDays[last].first, false)
+                weeklyDays[new] =  Pair(weeklyDays[new].first, true)
+                recyclerWeeklyCalendarView.adapter!!.notifyItemChanged(last)
+                recyclerWeeklyCalendarView.adapter!!.notifyItemChanged(new)
+                courtViewModel.selectDay(courtToReserve, weeklyDays[new].first, reservationDate)
+            }
+
+
+        }
+
+        val selectedPosition = (Period.between(LocalDate.now(),selectedDate )).days
+        recyclerWeeklyCalendarView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        recyclerWeeklyCalendarView.adapter = WeeklyCalendarAdapter(weeklyDays, selectedPosition, calendarCallback)
+        LinearSnapHelper().attachToRecyclerView(recyclerWeeklyCalendarView)
+        recyclerWeeklyCalendarView.scrollToPosition(selectedPosition)
+
+        val calendarView = view.findViewById<WeekCalendarView>(R.id.calendar)
+        calendarView.dayBinder = WeeklyCalendarDayBinder()
+        calendarView.setup(weeklyDays.first().first, weeklyDays.last().first, DayOfWeek.MONDAY)
+
 
         val callback: (  Pair<LocalTime, Boolean>) -> Unit = { selected ->
             courtViewModel.timeSlots.value?.find {
@@ -179,20 +225,11 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             Profile.fromJSON(JSONObject(sharedPref.getString("profile", Profile.mockJSON())!!))
         user = profile.toUserDto()
 
-        renderWeeklyCalendar()
 
 
     }
 
-    fun renderWeeklyCalendar(){
-        val now = LocalDate.now()
-        binding.daysScrollView.removeAllViews()
 
-
-        for ( i in 0..13){
-            renderDayItem(now.plusDays(i.toLong()), courtViewModel.selectedDay.value ?: now)
-        }
-    }
 
 
 
@@ -222,6 +259,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
     }
 
     private fun renderDayItem(day: LocalDate, selected: LocalDate) {
+        /*
         val dayScrollItem =
             layoutInflater.inflate(
                 R.layout.datepicker_scroll_item,
@@ -260,6 +298,8 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             renderWeeklyCalendar()
         }
         binding.daysScrollView.addView(dayScrollItem)
+
+         */
     }
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -319,9 +359,9 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
         val timeSelected = bottomSheetDialog.findViewById<TextView>(R.id.timeSelected)
         // TODO: Visualize all the prenotation inside the dialog (for the moment just the first)
-        val hourSelected = courtViewModel.selectedTimes[0]
+        val hourSelected = courtViewModel.selectedTimes
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
-        timeSelected?.text = hourSelected.format(formatter) + " - " + hourSelected.plusHours(1).format(formatter)
+        timeSelected?.text = hourSelected.first().format(formatter) + " - " + hourSelected.last().plusHours(1).format(formatter)
 
         bottomSheetDialog.show()
     }

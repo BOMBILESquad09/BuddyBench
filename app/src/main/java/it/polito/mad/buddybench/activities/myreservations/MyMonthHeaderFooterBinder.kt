@@ -12,7 +12,7 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 class MyMonthHeaderFooterBinder: MonthHeaderFooterBinder<MonthViewContainer> {
-    val daysOfWeek = daysOfWeek(DayOfWeek.MONDAY)
+    private val daysOfWeek = daysOfWeek(DayOfWeek.MONDAY)
 
     override fun create(view: View) = MonthViewContainer(view)
     override fun bind(container: MonthViewContainer, data: CalendarMonth){
