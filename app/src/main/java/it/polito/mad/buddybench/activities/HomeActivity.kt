@@ -34,7 +34,8 @@ class HomeActivity: AppCompatActivity() {
     lateinit var profile: Profile
     private lateinit var sharedPref: SharedPreferences
     private val userViewModel by viewModels<UserViewModel>()
-    val viewModel by viewModels<FindCourtViewModel>()
+    val findCourtViewModel by viewModels<FindCourtViewModel>()
+    val reservationViewModel by viewModels<ReservationViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
