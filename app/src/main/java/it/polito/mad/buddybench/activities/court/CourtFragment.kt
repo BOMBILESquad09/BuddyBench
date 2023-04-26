@@ -230,8 +230,9 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         // ** Navigate to court reservation
         binding.buttonFirst.setOnClickListener {
             if (courtViewModel.selectedTimes.isEmpty()) {
-                val textError = getString(R.string.error_book)
-                buildAlertDialog("Book Error", textError, requireContext()).show()
+                "ok"
+                /*val textError = getString(R.string.error_book)
+                buildAlertDialog("Book Error", requireContext()textError, ).show()*/
             } else {
                 showBottomSheetDialog()
             }
@@ -307,14 +308,14 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         }
     }
 
-    private fun buildAlertDialog(title: String, text: String, context: Context): AlertDialog {
-    }
+
 
 
 
     private fun buildAlertDialog(text: String, context: Context): AlertDialog {
+
         return AlertDialog.Builder(context)
-            .setTitle(title)
+            .setTitle(text)
             .setMessage(text)
             .setPositiveButton("Ok") { dialog, _ ->
                 dialog.dismiss()
@@ -363,12 +364,13 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         val confirmButton = bottomSheetDialog.findViewById<Button>(R.id.confirmPrenotation)
         confirmButton?.setOnClickListener {
             if (!checkboxAccept!!.isChecked) {
-                val textError = String.format(getString(R.string.error_info), courtToReserve.name)
+                ""
+                /*val textError = String.format(getString(R.string.error_info), courtToReserve.name)
                 buildAlertDialog(
                     "Additional Information",
                     textError,
                     bottomSheetDialog.context
-                ).show()
+                ).show()*/
             } else {
                 val reservation = ReservationDTO(
                     userOrganizer = user,
@@ -378,11 +380,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                     endTime = courtViewModel.selectedTimes.last().plusHours(1),
                     equipment = switch.isChecked
                 )
-                reservationViewModel.saveReservation(reservation, editMode)
 
-                println(reservation.date)
-                println(reservation.startTime)
-                println(reservation.endTime)
 
                 reservationViewModel.saveReservation(reservation, editMode, oldDate, oldStartTime)
                 requireActivity().finish()
