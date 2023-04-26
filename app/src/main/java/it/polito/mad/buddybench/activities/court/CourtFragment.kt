@@ -499,4 +499,5 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             }
         }
     }
+
 }
