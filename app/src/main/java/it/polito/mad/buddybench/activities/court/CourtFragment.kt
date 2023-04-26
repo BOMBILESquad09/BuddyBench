@@ -250,7 +250,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
     private fun updateView(court: CourtDTO) {
         binding.courtNameTv.text = court.name.replace("Courts", "")
-        binding.courtAddressTv.text = court.address + ", " + court.location
+        binding.courtAddressTv.text = String.format(getString(R.string.court_address_card), court.address, court.location)
         binding.courtFeeTv.text = getString(R.string.court_fee, court.feeHour.toString())
         courtViewModel.getTimeTable().value?.timeTable.let {
             if (it != null) {
