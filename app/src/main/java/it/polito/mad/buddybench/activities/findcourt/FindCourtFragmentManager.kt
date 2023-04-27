@@ -16,7 +16,6 @@ class FindCourtFragmentManager(private val root: FindCourtFragment) {
         currentState = newState
     }
 
-
     private fun replaceFragment(lastTag: States, newTag: States){
         val transaction = context.supportFragmentManager.beginTransaction()
 

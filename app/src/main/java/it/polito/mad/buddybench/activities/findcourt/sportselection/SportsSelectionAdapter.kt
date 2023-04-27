@@ -8,10 +8,8 @@ import it.polito.mad.buddybench.enums.Sports
 
 class SportsSelectionAdapter(val sports: List<Sports>, private val callback: (Sports) -> Unit): RecyclerView.Adapter<SportsSelectionViewHolder>()  {
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SportsSelectionViewHolder {
-        val v = LayoutInflater.from(parent.context)
-            .inflate(R.layout.sport_selector, parent, false)
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.sport_selector, parent, false)
         v.setPadding(0, 40, 0, 0)
         return SportsSelectionViewHolder(v, callback)
     }

@@ -1,5 +1,9 @@
 
 <resources>
+    <color name="basketball_sport">#EA8125</color>
+    <color name="tennis_sport">#BADB2A</color>
+    <color name="football_sport">#3B953E</color>
+    <color name="volleyball_sport">#0AA9C8</color>
     <color name="error">#FF0000</color>
     <color name="seed">#1b1b6c</color>
     <color name="md_theme_light_primary">#1b1b6c</color>

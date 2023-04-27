@@ -13,7 +13,6 @@ class FindCourtFragment(val context: HomeActivity): Fragment(R.layout.find_court
     val fragmentManager = FindCourtFragmentManager(this)
     val viewModel = context.findCourtViewModel
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fragmentManager.setup()

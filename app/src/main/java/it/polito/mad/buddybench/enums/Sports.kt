@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.enums
 
+import android.content.Context
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.toUpperCase
 import it.polito.mad.buddybench.R
@@ -51,26 +52,16 @@ enum class Sports {
             return valuesArray.toTypedArray()
         }
 
-
-        fun fromIntToEnum(value: Int): Sports? {
-            return when(value) {
-                0 -> FOOTBALL
-                1 -> BASKETBALL
-                2 -> TENNIS
-                3 -> VOLLEYBALL
-                else -> null
+        fun getSportColor(sport: Sports, context: Context): Int {
+            return when (sport) {
+                TENNIS -> context.getColor(R.color.tennis_sport)
+                FOOTBALL -> context.getColor(R.color.football_sport)
+                BASKETBALL -> context.getColor(R.color.basketball_sport)
+                VOLLEYBALL -> context.getColor(R.color.volleyball_sport)
             }
         }
 
-        fun fromIntToString(value: Int): String? {
-            return when(value) {
-                0 -> "Football"
-                1 -> "BasketBall"
-                2 -> "Tennis"
-                3 -> "Volleyball"
-                else -> null
-            }
-        }
+
     }
 
 

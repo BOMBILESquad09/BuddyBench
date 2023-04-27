@@ -26,8 +26,6 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
 
     private var selectedDate: LocalDate = LocalDate.now()
 
-
-
     //filters
     var minRating: Float = 0f
     var maxRating: Float = 5f
@@ -42,7 +40,6 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     lateinit var courtRepository: CourtRepository
     @Inject
     lateinit var courtTimeRepository: CourtTimeRepository
-
 
 
     fun getAllSports(): LiveData<List<Sports>>{
@@ -91,14 +88,10 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     }
 
     fun applyFiltersOnCourts(courts: List<CourtDTO>): List<CourtDTO> {
-
         return courts.filter{
             (it.location.contains(name, ignoreCase = true) || it.name.contains(name, ignoreCase = true))
                     && it.rating >= minRating && it.rating <= maxRating
                     && it.feeHour >= minFee && it.feeHour <= maxFee
         }.sortedBy { it.name }
-
     }
-
-
 }
