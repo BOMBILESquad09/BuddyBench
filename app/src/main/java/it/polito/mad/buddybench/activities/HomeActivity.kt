@@ -21,6 +21,7 @@ import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.enums.Tabs
 import it.polito.mad.buddybench.utils.BottomBar
+import it.polito.mad.buddybench.viewmodels.FindCourtViewModel
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
 import org.json.JSONObject
@@ -33,6 +34,8 @@ class HomeActivity: AppCompatActivity() {
     lateinit var profile: Profile
     private lateinit var sharedPref: SharedPreferences
     private val userViewModel by viewModels<UserViewModel>()
+    val findCourtViewModel by viewModels<FindCourtViewModel>()
+    val reservationViewModel by viewModels<ReservationViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,12 +46,13 @@ class HomeActivity: AppCompatActivity() {
         } else{
             Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
         }
-        profile = userViewModel.getUser(profile.email).let {
+        userViewModel.getUser(profile.email).observe(this){
             if (it == null){
                 profile
             }
             it
         }
+
         bottomBar.setup()
     }
 
@@ -63,6 +67,8 @@ class HomeActivity: AppCompatActivity() {
         return when (item.itemId) {
             R.id.edit -> {
                 val intent = Intent(this, EditProfileActivity::class.java)
+                if(!::profile.isInitialized)
+                    profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
                 intent.putExtra("profile", profile.toJSON().toString())
                 launcherEdit.launch(intent)
                 return true
@@ -77,8 +83,6 @@ class HomeActivity: AppCompatActivity() {
                 val newProfile = Profile.fromJSON(JSONObject(response.data?.getStringExtra("newProfile").toString()))
                 val newImageUri =  if(newProfile.imageUri != null &&  newProfile.imageUri.toString() != profile.imageUri.toString() )
                     BitmapUtils.saveToInternalStorage(applicationContext, BitmapUtils.uriToBitmap(contentResolver, newProfile.imageUri!!)!!, profile.imageUri) else profile.imageUri
-
-
                 if(newImageUri == null){
                     val toast = Toast.makeText(
                         applicationContext,
@@ -93,7 +97,6 @@ class HomeActivity: AppCompatActivity() {
                 putString("profile", profile.toJSON().toString())
                 apply()
                 userViewModel.updateUserInfo(profile)
-                userViewModel.setUserName(profile.name!!)
                 supportFragmentManager.findFragmentByTag(Tabs.PROFILE.name).let {
                     if (it != null){
                         (it as ShowProfileFragment).let {
@@ -103,5 +106,10 @@ class HomeActivity: AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        reservationViewModel.getAllByUser(profile.email)
     }
 }

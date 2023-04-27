@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -190,17 +191,37 @@
                 android:textSize="12sp"
                 app:drawableStartCompat="@drawable/round_access_time_24" />
 
-            <TextView
-                android:id="@+id/equipment_cost"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="8dp"
-                android:drawablePadding="8dp"
-                android:fontFamily="@font/montserrat_medium_500"
-                android:gravity="center_vertical"
-                android:text="@string/equipment_phrase"
-                android:textSize="12sp"
-                app:drawableStartCompat="@drawable/tennis" />
+                android:layout_marginVertical="8dp">
+
+                <ImageView
+                    android:id="@+id/sport_icon_equipment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/tennis"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                <TextView
+                    android:id="@+id/equipment_cost"
+                    android:layout_width="wrap_content"
+                    android:paddingStart="8dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_medium_500"
+                    android:gravity="center_vertical"
+                    android:text="@string/equipment_phrase"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/sport_icon_equipment"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <!-- Date and Time Selection -->
 
@@ -212,23 +233,22 @@
                 android:text="@string/reservation"
                 android:textSize="16sp" />
 
-            <HorizontalScrollView
+            <com.kizitonwose.calendar.view.WeekCalendarView
+
+                android:id="@+id/calendar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="none">
+                app:cv_dayViewResource="@layout/datepicker_scroll_item"
+                app:cv_monthHeaderResource="@layout/calendar_header"
+                app:cv_daySize="rectangle"
+                />
 
-                <LinearLayout
-                    android:id="@+id/days_scroll_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <include layout="@layout/datepicker_scroll_item" />
-
-                </LinearLayout>
-
-
-            </HorizontalScrollView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/weekly_calendar_adapter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                />
 
 
             <TextView
@@ -239,30 +259,60 @@
                 android:text="Available Timeslots (1h each)"
                 android:textSize="15sp"
                 android:textStyle="bold" />
+            <include layout="@layout/time_slots_not_available"/>
+
 
 
             <androidx.core.widget.NestedScrollView
-                android:id="@+id/time_grid_parent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <include layout="@layout/grid_times_slots" />
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <include layout="@layout/grid_times_slots" />
+                </LinearLayout>
 
 
             </androidx.core.widget.NestedScrollView>
 
 
-            <Button
-                android:id="@+id/button_first"
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginVertical="16dp"
-                android:background="@drawable/rounded_shape"
-                android:backgroundTint="@color/md_theme_light_primary"
-                android:fontFamily="@font/montserrat_semibold_600"
-                android:text="@string/book"
-                android:textAllCaps="false"
-                android:textColor="@color/md_theme_light_background" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_first"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:layout_marginVertical="16dp"
+                    android:background="@drawable/rounded_shape"
+                    android:backgroundTint="@color/md_theme_light_primary"
+                    android:fontFamily="@font/montserrat_semibold_600"
+                    android:text="@string/book"
+                    android:textAllCaps="false"
+                    android:layout_margin = "5dp"
+                    android:textColor="@color/md_theme_light_background" />
+
+                <Button
+                    android:id="@+id/cancel_button"
+                    android:layout_width="0dp"
+                    android:layout_margin = "5dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:layout_marginVertical="16dp"
+                    android:background="@drawable/rounded_shape"
+                    android:backgroundTint="@color/error"
+                    android:fontFamily="@font/montserrat_semibold_600"
+                    android:text="@string/delete"
+                    android:textAllCaps="false"
+                    android:textColor="@color/md_theme_light_background" />
+
+
+            </LinearLayout>
+
         </LinearLayout>
 
 

@@ -84,7 +84,7 @@ class DayViewContainer(view: View) : ViewContainer(view) {
                     iv.setImageResource(Sports.sportToIconDrawable(Sports.fromJSON(r.court.sport)!!))
                 }
             }
-        }else {
+        } else {
             reservationsContainer.removeAllViews()
             val sportIcon = context.layoutInflater.inflate(
                 R.layout.sport_icon,

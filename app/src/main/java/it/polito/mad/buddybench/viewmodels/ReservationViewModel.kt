@@ -23,76 +23,94 @@ import javax.inject.Inject
 @HiltViewModel
 class ReservationViewModel @Inject constructor() : ViewModel() {
 
-    private val _currentReservation: MutableLiveData<ReservationDTO?> = MutableLiveData(null)
     private val _reservations: MutableLiveData<HashMap<LocalDate, List<ReservationDTO>>> =
         MutableLiveData(null)
-    val reservation: LiveData<HashMap<LocalDate, List<ReservationDTO>>> = _reservations
     private val _selectedDate: MutableLiveData<LocalDate> = MutableLiveData(null)
     val selectedDate: LiveData<LocalDate> = _selectedDate
-
+    val _currentReservation: MutableLiveData<ReservationDTO?> = MutableLiveData(null)
+    val currentReservation: LiveData<ReservationDTO?> get() = _currentReservation
 
     @Inject
     lateinit var reservationRepository: ReservationRepository
 
     // ** Expose to other classes (view)
     val reservations: LiveData<HashMap<LocalDate, List<ReservationDTO>>> get() = _reservations
-    val currentReservation: MutableLiveData<ReservationDTO?> get() = _currentReservation
 
     fun getAll(): LiveData<HashMap<LocalDate, List<ReservationDTO>>> {
         // Repository Call, All the repos return DTO Obj
-        val reservations = reservationRepository.getAll()
-        _reservations.value = reservations
-        return _reservations
-    }
+        Thread {
+            val reservations = reservationRepository.getAll()
+            _reservations.postValue(reservations)
+        }.start()
 
-    fun setReservationByCourtNameAndSport(courtName: String, sport: Sports, email: String, date: LocalDate): MutableLiveData<ReservationDTO?> {
-        val sportName = Sports.toJSON(sport)
-        val reservationList =
-            reservationRepository.getReservationByUserAndCourtNameAndSport(
-                courtName,
-                sportName,
-                email,
-                date
-            )
-        val reservationDTO = ReservationDTO(
-            reservationList[0].userOrganizer,
-            reservationList[0].court,
-            reservationList[0].date,
-            reservationList[0].startTime,
-            reservationList.last().endTime,
-            reservationList[0].equipment
-        )
-        _currentReservation.value = reservationDTO
-        return _currentReservation
+        return _reservations
     }
 
     fun getAllByUser(email: String): LiveData<HashMap<LocalDate, List<ReservationDTO>>> {
         // Repository Call, All the repos return DTO Obj
-        val reservations = reservationRepository.getAllByUser(email)
-        println("Reservation For: $email")
-        println(reservations)
-        _reservations.value = reservations
+        Thread {
+            val reservations = reservationRepository.getAllByUser(email)
+            println("Reservation For: $email")
+            println(reservations)
+            _reservations.postValue(reservations)
+        }.start()
+
         return _reservations
     }
 
     fun saveReservation(
-        reservation: ReservationDTO
+        reservation: ReservationDTO,
+        edit: Boolean,
+        oldDate: LocalDate?,
+        oldStartTime: LocalTime?
     ) {
-        reservationRepository.save(
-            reservation
-        )
+        /*In a thread or not?*/
+        println("-----nuova reservation ---------------------")
+        println(reservation.startTime)
+        println(reservation.endTime)
+        println(reservation.date)
+        println("---------------------------")
+
+
+        if (edit)
+            reservationRepository.update(reservation,oldDate!!, oldStartTime!!.hour)
+        else
+            reservationRepository.save(reservation)
     }
 
 
     fun updateSelectedDay(date: LocalDate) {
         _selectedDate.value = date
-
-
     }
 
     fun getSelectedReservations(): List<ReservationDTO>? {
         return reservations.value?.get(selectedDate.value ?: LocalDate.now())
     }
 
+    fun getReservation(courtName: String, sport: Sports, email: String, date: LocalDate, startTime: Int): MutableLiveData<ReservationDTO?> {
+        Thread {
+            val sportName = Sports.toJSON(sport)
+            val reservationDTO =
+                reservationRepository.getReservation(
+                    courtName,
+                    sportName,
+                    email,
+                    date,
+                    startTime
+                )
+            _currentReservation.postValue(reservationDTO)
+        }.start()
+        return _currentReservation
+    }
+
+    fun deleteReservation(courtName: String, sport: Sports, startTime: LocalTime, date: LocalDate, email: String) {
+        reservationRepository.delete(
+            courtName,
+            sport,
+            startTime,
+            email,
+            date
+        )
+    }
 
 }

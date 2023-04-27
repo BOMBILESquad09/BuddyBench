@@ -3,21 +3,16 @@ package it.polito.mad.buddybench.utils
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
-import androidx.compose.ui.text.capitalize
-import androidx.compose.ui.text.toLowerCase
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.lifecycle.MutableLiveData
-import it.polito.mad.buddybench.dto.CourtTimeDTO
+import it.polito.mad.buddybench.activities.myreservations.displayText
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import java.util.*
-import kotlin.collections.HashMap
-import it.polito.mad.buddybench.activities.myreservations.displayText
-import it.polito.mad.buddybench.dto.CourtTimeTableDTO
+import java.time.temporal.WeekFields
+import java.util.Locale
+
 
 class Utils {
     companion object {
@@ -45,14 +40,14 @@ class Utils {
 
         /**
          * Given two LocalTime values (8:00, 11:00)
-         * @return array of time ranges [8:00, 9:00, 10:00, 11:00]
+         * @return array of time ranges [8:00, 9:00, 10:00]
          */
         fun getTimeSlots(start: LocalTime, end: LocalTime): List<LocalTime> {
             val diff = Duration.between(start, end)
                 .toHours() // calculate the difference between start and end time in hours
-            val list = (0..diff).map { start.plusHours(it) } as MutableList
-            list.removeLast()
-            return (0..diff).map { start.plusHours(it) } // generate a list of hourly time slots using a range operator and the map() function
+            val list = (0 until diff).map { start.plusHours(it) } as MutableList
+
+            return list // generate a list of hourly time slots using a range operator and the map() function
         }
 
         fun getStringifyTimeTable(timeTable: HashMap<DayOfWeek, Pair<LocalTime, LocalTime>>): String {
@@ -109,6 +104,14 @@ class Utils {
             val wrappedDrawable = DrawableCompat.wrap(drawable)
             wrappedDrawable.mutate().setTint(color)
             iv.setImageDrawable(wrappedDrawable)
+        }
+
+        fun getDateRanges(): Pair<LocalDate, LocalDate> {
+            val now = LocalDate.now()
+            val fieldISO = WeekFields.of(Locale.FRANCE).dayOfWeek()
+            val start = now.with(fieldISO,1)
+            val end = now.plusWeeks(4).with(fieldISO, 7)
+            return Pair(start, end)
         }
     }
 }

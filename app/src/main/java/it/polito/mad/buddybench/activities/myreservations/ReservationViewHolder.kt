@@ -16,6 +16,8 @@ import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.court.CourtActivity
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.Utils
+import java.time.LocalDate
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 class ReservationViewHolder(v: View): RecyclerView.ViewHolder(v) {
@@ -39,8 +41,14 @@ class ReservationViewHolder(v: View): RecyclerView.ViewHolder(v) {
         )
         Utils.setColoredDrawable(iconDrawable!!, iconSport)
         slot.text = "${reservation.startTime.format(formatter)} - ${reservation.endTime.format(formatter)}"
-
-        manageBtn.setOnClickListener { launchEditReservation(reservation) }
+        if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime))
+            manageBtn.visibility = View.INVISIBLE
+        manageBtn.setOnClickListener {
+            if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime)){
+                return@setOnClickListener
+            }
+            launchEditReservation(reservation)
+        }
 
     }
 
@@ -51,6 +59,8 @@ class ReservationViewHolder(v: View): RecyclerView.ViewHolder(v) {
         intent.putExtra("sport", reservation.court.sport)
         intent.putExtra("date", reservation.date.toString())
         intent.putExtra("email", reservation.userOrganizer.email)
+        intent.putExtra("startTime", reservation.startTime.hour)
+        intent.putExtra("endTime", reservation.endTime.hour)
 
         view.context.startActivity(intent)
     }

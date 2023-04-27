@@ -42,8 +42,8 @@ import java.util.Locale
 @AndroidEntryPoint
 class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_reservations) {
     lateinit var recyclerViewReservations: RecyclerView
-    private val viewModel by viewModels<ReservationViewModel>()
-
+    lateinit var calendarView: CalendarView
+    val viewModel = context.reservationViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -57,69 +57,24 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         }
 
 
-        val calendarView = view.findViewById<CalendarView>(R.id.calendar)
+        calendarView = view.findViewById(R.id.calendar)
         recyclerViewReservations = view.findViewById(R.id.reservations)
         recyclerViewReservations.layoutManager = LinearLayoutManager(context)
         val dayTitle = view.findViewById<TextView>(R.id.dayTitle)
         dayTitle.text = LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, d MMMM y"))
 
-
-        calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
-            // Called only when a new container is needed.
-            override fun create(view: View): DayViewContainer {
-                return DayViewContainer(view)
-            }
-            // Called every time we need to reuse a container.
-            override fun bind(container: DayViewContainer, data: CalendarDay) {
-                container.day = data
-                container.setOnClickCallback{
-                    if (container.day.position == DayPosition.MonthDate) {
-                        if (viewModel.selectedDate.value != container.day.date) {
-                            val oldDate = viewModel.selectedDate.value
-                            viewModel.updateSelectedDay(container.day.date)
-                            if(oldDate != null)
-                                calendarView.notifyDateChanged(oldDate)
-                            calendarView.notifyDateChanged(data.date)
-                        }
-                        dayTitle.text = viewModel.selectedDate.value?.format(DateTimeFormatter.ofPattern("EEEE, d MMMM y"))
-                        println(viewModel.selectedDate.value)
-                        recyclerViewReservations.adapter = ReservationAdapter(viewModel.getSelectedReservations() ?: listOf())
-
-                    }
-
-                }
-                container.textView.text = data.date.dayOfMonth.toString()
-                container.setBackground(viewModel.selectedDate.value )
-                container.setTextColor(viewModel.selectedDate.value, this@MyReservationsFragment.context)
-                container.reservations = viewModel.reservations.value?.get(data.date)
-                container.setSportsIcon(this@MyReservationsFragment.context)
-
-            }
-        }
+        calendarView.dayBinder = MyMonthDayBinder(this, calendarView, recyclerViewReservations)
 
 
         val currentMonth = YearMonth.now()
         val startMonth = currentMonth.minusMonths(0)  // Adjust as needed
-        val endMonth = currentMonth.plusMonths(2)  // Adjust as needed
+        val endMonth = currentMonth.plusMonths(1)  // Adjust as needed
         val daysOfWeek = daysOfWeek(DayOfWeek.MONDAY)
         calendarView.setup(startMonth, endMonth, daysOfWeek.first()) // Available from the library
         calendarView.scrollToMonth(currentMonth)
         val monthName = view.findViewById<TextView>(R.id.monthName)
 
-        calendarView.monthHeaderBinder = object : MonthHeaderFooterBinder<MonthViewContainer> {
-            override fun create(view: View) = MonthViewContainer(view)
-            override fun bind(container: MonthViewContainer, data: CalendarMonth){
-                if (container.titlesContainer.tag == null) {
-                    container.titlesContainer.tag = data.yearMonth
-                    (container.titlesContainer.children.first() as ViewGroup).children.map { it as TextView }
-                        .forEachIndexed { index, textView ->
-                            val dayOfWeek = daysOfWeek[index]
-                            val title = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
-                            textView.text = title
-                        }
-                }
-            }
-        }
+        calendarView.monthHeaderBinder = MyMonthHeaderFooterBinder()
 
         val previousButton = view.findViewById<ImageView>(R.id.previousButton)
         val nextButton = view.findViewById<ImageView>(R.id.nextButton)
@@ -135,8 +90,10 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
                     previousButton.setColorFilter(Color.WHITE)
                 }
                 nextButton.setColorFilter(Color.WHITE)
+                refreshCalendar()
 
             }
+
         }
 
         nextButton.setOnClickListener {
@@ -148,23 +105,46 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
                     nextButton.setColorFilter(Color.WHITE)
                 }
                 previousButton.setColorFilter(Color.WHITE)
+                refreshCalendar()
             }
+        }
+
+
+        viewModel.reservations.observe(viewLifecycleOwner){
+            refreshCalendar()
         }
     }
 
     private fun refresh(){
         val selectedReservations = viewModel.getSelectedReservations()
         context.findViewById<View>(R.id.emptyReservations).let {
-            println("------------------------")
             println(selectedReservations.isNullOrEmpty())
             it.visibility = if (selectedReservations.isNullOrEmpty()){
                 View.VISIBLE
-
             } else {
                 View.GONE}
         }
         recyclerViewReservations.adapter = ReservationAdapter(
             selectedReservations ?: listOf())
+    }
+
+
+    private fun refreshCalendar(){
+        val reservations = viewModel.reservations.value ?: return
+
+        for(entries in reservations.entries){
+
+            val firstDay = calendarView.findFirstVisibleMonth()?.weekDays?.get(0)?.get(0)!!
+            val lastDay = calendarView.findFirstVisibleMonth()?.weekDays?.last()?.last()!!
+            val calendarDay = if (firstDay.date <= entries.key && entries.key <= lastDay.date ){
+                CalendarDay(entries.key, DayPosition.MonthDate)
+            } else {
+                null
+            }
+            if(calendarDay != null)
+                calendarView.notifyDayChanged(calendarDay)
+
+        }
     }
 
 

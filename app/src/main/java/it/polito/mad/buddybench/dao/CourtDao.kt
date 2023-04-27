@@ -25,6 +25,15 @@ interface CourtDao {
     @Query("SELECT * FROM Court C, Sport S WHERE C.sport = S.sport_name AND C.name = :courtName AND S.sport_name = :sportInCourt")
     fun getByNameAndSport(courtName: String, sportInCourt: String): CourtWithSport
 
+
+    @Query("SELECT * FROM Court  WHERE   name = :courtName and sport = :sportInCourt")
+    fun getByNameAndSportPlain(courtName: String, sportInCourt: String): Court
+
+
+    @Query("SELECT * FROM Court  WHERE name = :courtName")
+    fun getByName(courtName: String): Court
+
+
     @Query("SELECT * FROM Court WHERE sport = :sport")
     fun getCourtsBySport(sport: String): List<CourtWithSport>
 
