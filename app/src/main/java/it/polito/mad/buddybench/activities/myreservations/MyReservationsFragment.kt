@@ -28,7 +28,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.classes.Profile
-import it.polito.mad.buddybench.dto.ReservationDTO
+import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -48,13 +48,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getAllByUser(context.profile.email).observe(viewLifecycleOwner) {
-            refresh()
-        }
 
-        viewModel.selectedDate.observe(viewLifecycleOwner){
-            refresh()
-        }
 
 
         calendarView = view.findViewById(R.id.calendar)
@@ -111,6 +105,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
 
 
         viewModel.reservations.observe(viewLifecycleOwner){
+
             refreshCalendar()
         }
     }
@@ -118,20 +113,17 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
     private fun refresh(){
         val selectedReservations = viewModel.getSelectedReservations()
         context.findViewById<View>(R.id.emptyReservations).let {
-            println(selectedReservations.isNullOrEmpty())
             it.visibility = if (selectedReservations.isNullOrEmpty()){
                 View.VISIBLE
             } else {
                 View.GONE}
         }
-        recyclerViewReservations.adapter = ReservationAdapter(
-            selectedReservations ?: listOf())
+        recyclerViewReservations.adapter = ReservationAdapter(selectedReservations ?: listOf())
     }
 
 
     private fun refreshCalendar(){
         val reservations = viewModel.reservations.value ?: return
-
         for(entries in reservations.entries){
 
             val firstDay = calendarView.findFirstVisibleMonth()?.weekDays?.get(0)?.get(0)!!
@@ -143,10 +135,21 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
             }
             if(calendarDay != null)
                 calendarView.notifyDayChanged(calendarDay)
-
         }
+        calendarView.notifyDayChanged(CalendarDay(viewModel.selectedDate.value ?: LocalDate.now(), DayPosition.MonthDate))
     }
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.getAllByUser(context.profile.email).observe(viewLifecycleOwner) {
+            refresh()
+            refreshCalendar()
+        }
+
+        viewModel.selectedDate.observe(viewLifecycleOwner){
+            refresh()
+        }
+    }
 
 
 }

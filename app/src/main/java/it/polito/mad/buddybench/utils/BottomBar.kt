@@ -14,7 +14,7 @@ import nl.joery.animatedbottombar.AnimatedBottomBar
 
 class BottomBar(val context: HomeActivity) {
 
-    var currentTab = Tabs.RESERVATIONS
+    private var currentTab = Tabs.RESERVATIONS
 
     fun setup(){
         val bottomBar = context.findViewById<AnimatedBottomBar>(R.id.bottom_bar)
@@ -28,12 +28,28 @@ class BottomBar(val context: HomeActivity) {
 
                 if(lastTab == newTab) return
                 val newTag = Tabs.valueOf( newTab.title.replace(" ","").uppercase())
-                val lastTag = Tabs.valueOf(lastTab?.title?.replace(" ","")?.uppercase() ?: newTab.title.replace(" ","").uppercase())
+                val lastTag = Tabs.valueOf(currentTab.name ?: currentTab.name)
                 currentTab = newTag
                 replaceFragment(lastTag,newTag)
             }
         })
-        replaceFragment(currentTab,currentTab)
+
+        addInitialFragment()
+    }
+
+    private fun addInitialFragment(){
+        val transaction = context.supportFragmentManager.beginTransaction()
+        val newFragment =  when(currentTab){
+            Tabs.PROFILE -> ShowProfileFragment(context)
+            Tabs.RESERVATIONS -> MyReservationsFragment(context)
+            Tabs.FINDCOURT -> FindCourtFragment(context)
+        }
+        transaction.add(R.id.home_fragment_container, newFragment, currentTab.name)
+        transaction.commit()
+        val bottomBar = context.findViewById<AnimatedBottomBar>(R.id.bottom_bar)
+        bottomBar.selectTabAt(tabIndex = currentTab.getId())
+        if (currentTab != Tabs.PROFILE)
+            adjustExternalComponents(currentTab)
     }
 
     fun replaceFragment(lastTag: Tabs, newTag: Tabs){
@@ -44,8 +60,6 @@ class BottomBar(val context: HomeActivity) {
                 transaction.hide(it)
             }
         }
-
-
         context.supportFragmentManager.findFragmentByTag(newTag.name).let {
             if (it == null){
                 val newFragment =  when(newTag){
@@ -53,13 +67,15 @@ class BottomBar(val context: HomeActivity) {
                     Tabs.RESERVATIONS -> MyReservationsFragment(context)
                     Tabs.FINDCOURT -> FindCourtFragment(context)
                 }
+
                 transaction.add(R.id.home_fragment_container, newFragment, newTag.name)
             } else {
                 transaction.show(it)
             }
         }
         transaction.commit()
-        adjustExternalComponents(currentTab)
+        adjustExternalComponents(newTag)
+
     }
 
     private fun adjustExternalComponents(currentTab: Tabs){
@@ -67,7 +83,6 @@ class BottomBar(val context: HomeActivity) {
             Tabs.PROFILE -> setToolbar()
             else -> {clearToolbar()}
         }
-
     }
 
     private fun setToolbar(){

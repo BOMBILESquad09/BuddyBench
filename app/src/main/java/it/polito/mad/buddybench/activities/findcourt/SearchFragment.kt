@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.activities.findcourt
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
@@ -22,14 +23,16 @@ import com.kizitonwose.calendar.core.WeekDayPosition
 import com.kizitonwose.calendar.view.WeekCalendarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.activities.court.CourtActivity
 import it.polito.mad.buddybench.activities.court.WeeklyCalendarDayBinder
 import it.polito.mad.buddybench.activities.findcourt.sportselection.CourtSearchAdapter
-import it.polito.mad.buddybench.dto.CourtDTO
+import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.FindCourtViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
 class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_search_court) {
@@ -50,7 +53,17 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
         textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
 
-        recyclerView.adapter = CourtSearchAdapter(parent.viewModel.currentCourts)
+        val callbackCourt: (String, Sports) -> Unit  = {
+                name, sport ->
+            val intent = Intent(context, CourtActivity::class.java)
+            intent.putExtra("courtName", name)
+            intent.putExtra("sport", sport.name.uppercase())
+            intent.putExtra("date", parent.viewModel.getSelectedDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
+
+            context?.startActivity(intent)
+        }
+
+        recyclerView.adapter = CourtSearchAdapter(parent.viewModel.currentCourts, callbackCourt)
         recyclerView.layoutManager = LinearLayoutManager(view.context)
 
 
@@ -59,13 +72,14 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
 
 
+
         val calendarCallback: (LocalDate, LocalDate) -> Unit = { last, new ->
             if(last == new){
                 calendarView.notifyDayChanged(WeekDay(last, WeekDayPosition.InDate))
-
             } else {
                 calendarView.notifyDayChanged(WeekDay(new, WeekDayPosition.InDate))
                 calendarView.notifyDayChanged(WeekDay(last, WeekDayPosition.InDate))
+                parent.viewModel.setSelectedDate(new)
             }
         }
 
@@ -93,7 +107,6 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             lastCourts = it
             diffResult.dispatchUpdatesTo(recyclerView.adapter!!)
             recyclerView.scrollToPosition(0)
-
         }
 
         parent.viewModel.selectedSport.observe(viewLifecycleOwner){
@@ -108,7 +121,6 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             b.setImageBitmap(bitmap)
 
             textNearButton.text = getString(R.string.court_search_phrase, it.toString().lowercase().replaceFirstChar { c -> c.uppercase() })
-            parent.viewModel.getCourtsBySport(it)
 
             textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
             parent.context.findViewById<ImageView>(R.id.close_selection).visibility = View.VISIBLE
@@ -170,6 +182,11 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             bottomSheetDialog.dismiss()
         }
         bottomSheetDialog.show()
+    }
+
+    override  fun onStart() {
+        super.onStart()
+        parent.viewModel.getCourtsBySport( )
     }
 
 

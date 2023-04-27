@@ -25,7 +25,6 @@ class ValidationUtils {
         }
         private fun validateLocalDate(string: String?): Boolean{
             try{
-                println(DateTimeFormatter.ofPattern("dd/MM/yyyy").parse(string))
             } catch (_: java.lang.Exception){
                 return false
             }

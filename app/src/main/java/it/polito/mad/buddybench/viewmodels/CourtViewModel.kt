@@ -4,23 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.buddybench.dto.CourtDTO
-import it.polito.mad.buddybench.dto.CourtTimeDTO
-import it.polito.mad.buddybench.dto.CourtTimeTableDTO
-import it.polito.mad.buddybench.dto.ReservationDTO
-import it.polito.mad.buddybench.entities.Court
-import it.polito.mad.buddybench.entities.toCourtDTO
+import it.polito.mad.buddybench.persistence.dto.CourtDTO
+import it.polito.mad.buddybench.persistence.dto.CourtTimeTableDTO
+import it.polito.mad.buddybench.persistence.dto.ReservationDTO
+
 import it.polito.mad.buddybench.enums.Sports
-import it.polito.mad.buddybench.repositories.CourtRepository
-import it.polito.mad.buddybench.repositories.CourtTimeRepository
-import it.polito.mad.buddybench.repositories.ReservationRepository
+import it.polito.mad.buddybench.persistence.repositories.CourtRepository
+import it.polito.mad.buddybench.persistence.repositories.CourtTimeRepository
+import it.polito.mad.buddybench.persistence.repositories.ReservationRepository
 import it.polito.mad.buddybench.utils.Utils
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
-import kotlin.math.max
 
 @HiltViewModel
 class CourtViewModel @Inject constructor() : ViewModel() {
@@ -87,7 +83,7 @@ class CourtViewModel @Inject constructor() : ViewModel() {
         _selectedDay.value = reservationDate
     }
 
-    fun selectDay(courtToReserve:CourtDTO, date: LocalDate, reservationDate: LocalDate?): LiveData<LocalDate> {
+    fun selectDay(courtToReserve: CourtDTO, date: LocalDate, reservationDate: LocalDate?): LiveData<LocalDate> {
         getTimeSlotsAvailable(courtToReserve,date, reservationDate)
         _selectedDay.value = date
         return _selectedDay
@@ -103,7 +99,7 @@ class CourtViewModel @Inject constructor() : ViewModel() {
         if (
             (alreadySelected != null && alreadySelected.isEmpty())
             || alreadySelected!!.max() == time.minusHours(1)
-            || alreadySelected!!.min() == time.plusHours(1)
+            || alreadySelected.min() == time.plusHours(1)
         ) {
             _timeSlots.value = _timeSlots.value?.mapIndexed {
                 index, pair ->

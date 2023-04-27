@@ -30,9 +30,15 @@ class CourtActivity : AppCompatActivity() {
 
         // ** Check intent for edit mode
         val editMode = intent.getBooleanExtra("edit", false);
+        val args = Bundle()
+        val date = intent.getStringExtra("date")
+        args.putString("date", date)
+
         if (editMode) {
-            val args = Bundle()
+
             args.putBoolean("edit", true)
+
+
 
             val courtName = intent.getStringExtra("courtName")
             args.putString("courtName", courtName)
@@ -40,8 +46,7 @@ class CourtActivity : AppCompatActivity() {
             val sport = intent.getStringExtra("sport")
             args.putString("sport", sport)
 
-            val date = intent.getStringExtra("date")
-            args.putString("date", date)
+
 
             val email = intent.getStringExtra("email")
             args.putString("email", email)
@@ -51,8 +56,10 @@ class CourtActivity : AppCompatActivity() {
 
             val endTime = intent.getIntExtra("endTime",-1)
             args.putInt("endTime", endTime)
-            fragment.arguments = args
         }
+        fragment.arguments = args
+
+
 
 
         supportFragmentManager.beginTransaction()

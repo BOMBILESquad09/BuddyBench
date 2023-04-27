@@ -13,7 +13,7 @@ import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getInt
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getJSONArray
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getString
-import it.polito.mad.buddybench.dto.UserDTO
+import it.polito.mad.buddybench.persistence.dto.UserDTO
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.Utils
@@ -156,7 +156,6 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
             val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
 
             sportName.text = Utils.formatString(sport.name.toString())
-            println(sportName.text)
             sportIcon?.setImageResource(Sports.sportToIconDrawable(sport.name))
             // TODO: Doesn't work
             //sportSkillLevelText.setBackgroundColor(Skills.skillToColor(sport.skill))
@@ -191,8 +190,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
             sportContainer.addView(sportCard)
         }
 
-        print("------------size-----------------")
-        println(sportContainer.size)
+        
 
     }
 }

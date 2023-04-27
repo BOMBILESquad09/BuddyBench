@@ -40,9 +40,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.databinding.FragmentCourtBinding
-import it.polito.mad.buddybench.dto.CourtDTO
-import it.polito.mad.buddybench.dto.ReservationDTO
-import it.polito.mad.buddybench.dto.UserDTO
+import it.polito.mad.buddybench.persistence.dto.CourtDTO
+import it.polito.mad.buddybench.persistence.dto.ReservationDTO
+import it.polito.mad.buddybench.persistence.dto.UserDTO
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.WeeklyCalendarAdapter
 import it.polito.mad.buddybench.utils.Utils
@@ -118,8 +118,8 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         emailReservation = arguments?.getString("email", "") ?: ""
         startTime = arguments?.getInt("startTime", -1) ?: -1
         endTime = arguments?.getInt("endTime", -1) ?: -1
-        val s = arguments?.getString("date", LocalDate.now().format(DateTimeFormatter.ISO_DATE)) ?: LocalDate.now().toString()
-        selectedDate = LocalDate.parse(s, DateTimeFormatter.ISO_DATE)
+
+        selectedDate = reservationDate ?: LocalDate.now()
         _binding = FragmentCourtBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -175,8 +175,8 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         calendarView.scrollToDate(selectedDate)
 
 
-        val selectedPosition = (Period.between(LocalDate.now(), selectedDate)).days
-        /*recyclerWeeklyCalendarView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        /*val selectedPosition = (Period.between(LocalDate.now(), selectedDate)).days
+        recyclerWeeklyCalendarView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recyclerWeeklyCalendarView.adapter = WeeklyCalendarAdapter(weeklyDays, selectedPosition, calendarCallback)
         LinearSnapHelper().attachToRecyclerView(recyclerWeeklyCalendarView)
         recyclerWeeklyCalendarView.scrollToPosition(selectedPosition)*/
@@ -271,17 +271,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         binding.equipmentCost.text = String.format(
             getString(R.string.equipment_phrase),
             court.feeEquipment
-        );
-        binding.sportIconEquipment.setImageDrawable(
-            ResourcesCompat.getDrawable(
-                resources,
-                Sports.sportToIconDrawable(
-                    Sports.fromJSON(
-                        court.sport
-                    )!!
-                ),
-                null
-            )
         )
         if(!editMode) {
             val b : Button? = view?.findViewById(R.id.cancel_button)
