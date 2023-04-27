@@ -1,43 +1,10 @@
-INSERT INTO user (
-        id,
-        name,
-        surname,
-        nickname,
-        birthdate,
-        location,
-        email,
-        reliability
-    )
-VALUES (
-        1,
-        'Jacopo',
-        'De Cristofaro',
-        'Jeff',
-        '1999-04-27',
-        'New York',
-        'jeff@buddybench.com',
-        80
-    );
-INSERT INTO user (
-        id,
-        name,
-        surname,
-        nickname,
-        birthdate,
-        location,
-        email,
-        reliability
-    )
-VALUES (
-        0,
-        'Vittorio',
-        'Arpino',
-        'TheNextLayer',
-        '1999-09-30',
-        'Scafati',
-        'varpino@buddybench.it',
-        70
-    );
+--- User informations
+INSERT INTO user (id,name,surname,nickname,birthdate,location,email,reliability)
+VALUES (0,"Vittorio","Arpino","TheNextLayer","1999-09-30","Scafati","varpino@buddybench.it",70);
+INSERT INTO user (id,name,surname,nickname,birthdate,location,email,reliability)
+VALUES (1,"Jacopo","De Cristofaro","Jeff'","1999-04-27","New York","jeff@buddybench.com",80);
+
+-- Sports Available
 INSERT INTO sport
 VALUES ("TENNIS");
 INSERT INTO sport
@@ -46,18 +13,9 @@ INSERT INTO sport
 VALUES ("FOOTBALL");
 INSERT INTO sport
 VALUES ("VOLLEYBALL");
-INSERT INTO court (
-        id,
-        name,
-        address,
-        location,
-        fee_hour,
-        sport,
-        path,
-        fee_equipment,
-        rating,
-        n_reviews
-    )
+
+-- Courts Informations
+INSERT INTO court (id,name,address,location, fee_hour,sport,path,fee_equipment,rating,n_reviews)
 VALUES (
         1,
         'Central Park Tennis',
@@ -407,18 +365,30 @@ VALUES (
         68
     );
 
+INSERT INTO court (id, name, address, location, fee_hour, sport, fee_equipment, path, rating, n_reviews)
+VALUES (16, "Volley Court", "Via Roma 123", "Milano", 15, "VOLLEYBALL", 5, "court16", 4.5, 30);
+INSERT INTO court (id, name, address, location, fee_hour, sport, fee_equipment, path, rating, n_reviews)
+VALUES (17, "Beach Volley Paradise", "Viale dei Tigli 21", "Rimini", 20, "VOLLEYBALL", 10, "court17", 4.2, 45);
+INSERT INTO court (id, name, address, location, fee_hour, sport, fee_equipment, path, rating, n_reviews)
+VALUES (18, "Green Volley", "Piazza Garibaldi 7", "Napoli", 12, "VOLLEYBALL", 3, "court18", 4.0, 15);
+INSERT INTO court (id, name, address, location, fee_hour, sport, fee_equipment, path, rating, n_reviews)
+VALUES (19, "Volley Palace", "Corso Italia 45", "Firenze", 18, "VOLLEYBALL", 8, "court19", 4.8, 75);
+INSERT INTO court (id, name, address, location, fee_hour, sport, fee_equipment, path, rating, n_reviews)
+VALUES (20, "Volleyball Arena","'Via Dante 87", "Roma", 22, "VOLLEYBALL", 15, "court20", 4.7, 60);
 
 
+-- Some reservations (Compatibility with the date/time for court)
 INSERT INTO reservation (id, user, court, date, start_time, end_time, equipment)
-VALUES 
-    (2, 0, 8, '2023-05-16', 14, 15, false),
+VALUES
+    (2, 0, 8, '2023-05-16', 14, 15, true),
     (3, 1, 11, '2023-05-17', 9, 10, false),
     (4, 0, 14, '2023-05-18', 16, 17, false),
-    (5, 0, 3, '2023-05-19', 11, 12,false),
+    (5, 0, 3, '2023-05-19', 11, 12,true),
     (6, 1, 6, '2023-05-15', 10, 11,false),
-    (0, 0, 5, '2023-04-30', 18, 19,false),
+    (0, 0, 5, '2023-04-28', 18, 19,true),
     (7, 0, 5, '2023-05-01', 18, 19,false);
 
+-- Some UserSports Rows
 INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized) VALUES
 (0,0,"VOLLEYBALL","NEWBIE",9,10);
 INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized) VALUES
@@ -532,7 +502,37 @@ INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALU
 (86, 15, 3, "8:00", "18:00"),
 (87, 15, 4, "6:00", "18:00"),
 (88, 15, 5, "8:00", "23:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALUES
+(89, 16, 1, "6:00", "13:00"),
+(90, 16, 2, "10:00", "20:00"),
+(91, 16, 3, "8:00", "18:00"),
+(92, 16, 4, "6:00", "18:00"),
+(93, 16, 5, "8:00", "23:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALUES
+(94, 17, 1, "6:00", "13:00"),
+(95, 17, 2, "10:00", "20:00"),
+(96, 17, 3, "8:00", "18:00"),
+(98, 17, 4, "6:00", "18:00"),
+(99, 17, 5, "8:00", "23:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALUES
+(101, 18, 1, "10:00", "18:00"),
+(102, 18, 2, "6:00", "13:00"),
+(103, 18, 3, "6:00", "20:00"),
+(104, 18, 4, "6:00", "18:00"),
+(105, 18, 5, "8:00", "13:00"),
+(106, 18, 6, "10:00", "20:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALUES
+(107, 19, 1, "6:00", "13:00"),
+(108, 19, 2, "10:00", "20:00"),
+(109, 19, 3, "8:00", "18:00"),
+(110, 19, 4, "6:00", "18:00"),
+(111, 19, 5, "8:00", "23:00");
+INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALUES
+(112, 20, 1, "10:00", "18:00"),
+(113, 20, 2, "6:00", "13:00"),
+(114, 20, 3, "6:00", "20:00"),
+(115, 20, 4, "6:00", "18:00"),
+(116, 20, 5, "8:00", "13:00"),
+(117, 20, 6, "10:00", "20:00");
 
-
-
-SELECT * FROM Court C WHERE C.name = "Central Park Tennis" 
+SELECT * FROM Court C WHERE C.name = "Central Park Tennis"
