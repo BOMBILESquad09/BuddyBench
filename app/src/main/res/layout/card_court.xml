@@ -107,13 +107,13 @@
 
                 <TextView
                     android:id="@+id/court_address"
-                    android:layout_width="wrap_content"
+                    android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
                     android:ellipsize="end"
-                    android:maxLines="1"
                     android:fontFamily="@font/montserrat_medium_500"
-                    android:text="@string/court_address"
+                    android:maxLines="1"
+                    android:text="@string/court_name"
                     android:textColor="@color/md_theme_light_onPrimary"
                     android:textSize="16sp"
                     card_view:layout_constraintBottom_toBottomOf="parent"

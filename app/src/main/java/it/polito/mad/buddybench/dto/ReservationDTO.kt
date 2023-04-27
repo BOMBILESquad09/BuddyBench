@@ -45,7 +45,6 @@ class ReservationDTO(val userOrganizer: UserDTO,
 
             val hm = HashMap<LocalDate, MutableList<ReservationDTO>>()
             val entries  = list.forEach{
-                println(it)
                 val l = hm[it.date]
                 if(l == null){
                     hm[it.date] = mutableListOf(it)

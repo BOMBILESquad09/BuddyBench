@@ -90,17 +90,9 @@ class ReservationRepository @Inject constructor(
     fun delete(courtName: String, sport: Sports, startTime: LocalTime, email: String, date: LocalDate) {
 
         val user = userDao.getUserByEmail(email)!!
-        println("==========================")
-        println(courtName)
-        println(sport.toString())
-        println(startTime)
-        println(email)
-        println(date)
 
-        courtDao.getAll().forEach{
-            println(it.court.name == courtName && it.court.sport == sport.name)
 
-        }
+
 
         val court = courtDao.getByNameAndSportPlain(courtName, sport.toString().uppercase())
 
@@ -122,7 +114,6 @@ class ReservationRepository @Inject constructor(
         val timeSlots = reservations.map {
             Utils.getTimeSlots(LocalTime.of(it.reservation.startTime,0), LocalTime.of(it.reservation.endTime, 0))
         }.flatten().toList()
-        println(timeSlots.toString() )
         return timeSlots
     }
 

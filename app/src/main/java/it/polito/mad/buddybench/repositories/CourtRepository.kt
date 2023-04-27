@@ -11,18 +11,22 @@ import it.polito.mad.buddybench.entities.Sport
 import it.polito.mad.buddybench.entities.toCourtDTO
 import it.polito.mad.buddybench.enums.Sports
 import java.time.DayOfWeek
+import java.util.Date
 import javax.inject.Inject
 
 class CourtRepository @Inject constructor(
     private val courtDao: CourtDao,
-    private val sportDao: SportDao
+    private val sportDao: SportDao,
+
 ) {
 
     fun getAll(): List<CourtDTO> = courtDao.getAll().map { it.toCourtDTO() }
 
+
+
+
     fun getByNameAndSports(name: String, sport: Sports): CourtDTO {
         courtDao.getByNameAndSport(name, sport.name.uppercase()).let {
-            println(it.toString())
             return it.toCourtDTO()
         }
     }

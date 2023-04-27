@@ -118,8 +118,8 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         emailReservation = arguments?.getString("email", "") ?: ""
         startTime = arguments?.getInt("startTime", -1) ?: -1
         endTime = arguments?.getInt("endTime", -1) ?: -1
-        val s = arguments?.getString("date", LocalDate.now().format(DateTimeFormatter.ISO_DATE)) ?: LocalDate.now().toString()
-        selectedDate = LocalDate.parse(s, DateTimeFormatter.ISO_DATE)
+
+        selectedDate = reservationDate ?: LocalDate.now()
         _binding = FragmentCourtBinding.inflate(inflater, container, false)
         return binding.root
     }

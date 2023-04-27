@@ -8,8 +8,10 @@ import it.polito.mad.buddybench.dto.CourtDTO
 import it.polito.mad.buddybench.dto.ReservationDTO
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.repositories.CourtRepository
+import it.polito.mad.buddybench.repositories.CourtTimeRepository
 import it.polito.mad.buddybench.repositories.SportRepository
 import java.time.LocalDate
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,15 +40,20 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     lateinit var sportRepository: SportRepository
     @Inject
     lateinit var courtRepository: CourtRepository
+    @Inject
+    lateinit var courtTimeRepository: CourtTimeRepository
+
+
+
     fun getAllSports(): LiveData<List<Sports>>{
         Thread{
             _sports.postValue(  sportRepository.getAll().map { Sports.valueOf(it.name) })
         }.start()
         return sports
     }
-    fun getCourtsBySport(sport: Sports): LiveData<List<CourtDTO>> {
+    fun getCourtsBySport(sport: Sports, date: LocalDate): LiveData<List<CourtDTO>> {
         Thread{
-            _courts = courtRepository.getCourtsBySports(Sports.toJSON(sport).uppercase())
+            _courts = courtTimeRepository.getCourtTimesByDay(sport, date)
             _currentCourts.postValue(_courts.sortedBy { it.name })
         }.start()
         return currentCourts
@@ -68,7 +75,7 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
 
     fun setSelectedDate(date: LocalDate){
         selectedDate = date
-        getCourtsBySport(selectedSport.value!!)
+        getCourtsBySport(selectedSport.value!!, date)
     }
 
     fun getSelectedDate(): LocalDate {

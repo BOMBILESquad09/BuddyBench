@@ -50,6 +50,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
 
         viewModel.getAllByUser(context.profile.email).observe(viewLifecycleOwner) {
             refresh()
+            refreshCalendar()
         }
 
         viewModel.selectedDate.observe(viewLifecycleOwner){
@@ -111,6 +112,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
 
 
         viewModel.reservations.observe(viewLifecycleOwner){
+
             refreshCalendar()
         }
     }
@@ -118,20 +120,18 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
     private fun refresh(){
         val selectedReservations = viewModel.getSelectedReservations()
         context.findViewById<View>(R.id.emptyReservations).let {
-            println(selectedReservations.isNullOrEmpty())
             it.visibility = if (selectedReservations.isNullOrEmpty()){
                 View.VISIBLE
             } else {
                 View.GONE}
         }
-        recyclerViewReservations.adapter = ReservationAdapter(
-            selectedReservations ?: listOf())
+        recyclerViewReservations.adapter = ReservationAdapter(selectedReservations ?: listOf())
     }
 
 
     private fun refreshCalendar(){
         val reservations = viewModel.reservations.value ?: return
-
+        println("refreshinggg")
         for(entries in reservations.entries){
 
             val firstDay = calendarView.findFirstVisibleMonth()?.weekDays?.get(0)?.get(0)!!

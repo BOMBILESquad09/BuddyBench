@@ -33,16 +33,12 @@ class UserRepository @Inject constructor(
     fun update(user: UserWithSportsDTO) {
 
         val u = userDao.getUserByEmail(user.user.email)!!
-        userSportDao.getAll(u.user.id).forEach{
-            println(it)
-        }
+
         userDao.update(user.user.toEntity())
         val dbSports = userSportDao.getAll(u.user.id)
         val hashMap: HashMap<Sports, Sport> = HashMap()
         user.sports.forEach{
             hashMap[it.name] = it
-
-
         }
 
         for (dbS in dbSports){
@@ -65,9 +61,6 @@ class UserRepository @Inject constructor(
         }
 
 
-        userSportDao.getAll(u.user.id).forEach{
-            println(it)
-        }
 
 
 
