@@ -90,12 +90,15 @@ class HomeActivity: AppCompatActivity() {
                     )
                     toast.show()
                 }
+
+                val oldEmail = profile.email
                 profile = newProfile
                 profile.imageUri = newImageUri?: profile.imageUri
 
                 putString("profile", profile.toJSON().toString())
                 apply()
-                userViewModel.updateUserInfo(profile)
+
+                userViewModel.updateUserInfo(profile, oldEmail)
                 supportFragmentManager.findFragmentByTag(Tabs.PROFILE.name).let {
                     if (it != null){
                         (it as ShowProfileFragment).let {

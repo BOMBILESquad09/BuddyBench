@@ -16,27 +16,20 @@ import it.polito.mad.buddybench.enums.Sports
 import java.io.FileNotFoundException
 
 class CourtSearchViewHolder(val v: View, val callback: (String, Sports) -> Unit): RecyclerView.ViewHolder(v){
+
     private val name: TextView = v.findViewById(R.id.court_name)
     private val courtImage: ImageView = v.findViewById(R.id.court_image)
     private val address: TextView = v.findViewById(R.id.court_address)
     private val feeHour: TextView = v.findViewById(R.id.court_fee_hour)
     private val courtRating: TextView = v.findViewById(R.id.court_rating)
 
-
     fun bind(court: CourtDTO){
 
-        v.setOnClickListener {
-
-            callback(court.name, Sports.valueOf(court.sport))
-
-
-        }
-
+        v.setOnClickListener { callback(court.name, Sports.valueOf(court.sport)) }
         name.text = court.name
-        address.text = court.location + ", " + court.address
-        feeHour.text = court.feeHour.toString() + "€/h"
+        address.text = String.format(v.context.getString(R.string.court_address_card), court.location, court.address)
+        feeHour.text = String.format(v.context.getString(R.string.court_fee), court.feeHour.toString())
         courtRating.text = court.rating.toString()
-
         val bitmap = try {
             BitmapFactory.decodeStream(courtImage.context?.assets?.open("courtImages/" + court.path + ".jpg"))
         } catch (_: FileNotFoundException) {
@@ -44,6 +37,6 @@ class CourtSearchViewHolder(val v: View, val callback: (String, Sports) -> Unit)
         }
         courtImage.setImageBitmap(bitmap)
 
-
     }
+
 }

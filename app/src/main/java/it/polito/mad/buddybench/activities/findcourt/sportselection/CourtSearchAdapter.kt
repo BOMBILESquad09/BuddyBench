@@ -14,7 +14,6 @@ class CourtSearchAdapter(private val l: LiveData<List<CourtDTO>>, val callback: 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourtSearchViewHolder {
         val v = LayoutInflater.from(parent.context)
             .inflate(R.layout.card_court,parent,false)
-
         return CourtSearchViewHolder(v, callback)
     }
 

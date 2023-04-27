@@ -49,8 +49,6 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         val searchEditText = view.findViewById<EditText>(R.id.searchEditText)
         val filterButton = view.findViewById<CardView>(R.id.filterButton)
 
-
-
         textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
 
         val callbackCourt: (String, Sports) -> Unit  = {
@@ -66,12 +64,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         recyclerView.adapter = CourtSearchAdapter(parent.viewModel.currentCourts, callbackCourt)
         recyclerView.layoutManager = LinearLayoutManager(view.context)
 
-
         val calendarView = view.findViewById<WeekCalendarView>(R.id.calendar)
-
-
-
-
 
         val calendarCallback: (LocalDate, LocalDate) -> Unit = { last, new ->
             if(last == new){
@@ -83,14 +76,10 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             }
         }
 
-
-
         calendarView.dayBinder = WeeklyCalendarDayBinder( parent.viewModel.getSelectedDate(), calendarCallback)
         val ranges = Utils.getDateRanges()
         calendarView.setup(ranges.first, ranges.second, DayOfWeek.MONDAY)
         calendarView.scrollToDate(parent.viewModel.getSelectedDate())
-
-
 
         filterButton.setOnClickListener{
             showBottomSheetDialog()
@@ -141,10 +130,10 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
     private fun showBottomSheetDialog(){
 
-        var minRating: Float = parent.viewModel.minRating
-        var maxRating: Float = parent.viewModel.maxRating
-        var minFee: Float = parent.viewModel.minFee
-        var maxFee: Float = parent.viewModel.maxFee
+        val minRating: Float = parent.viewModel.minRating
+        val maxRating: Float = parent.viewModel.maxRating
+        val minFee: Float = parent.viewModel.minFee
+        val maxFee: Float = parent.viewModel.maxFee
 
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_filter)
@@ -163,7 +152,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         val confirmButton = bottomSheetDialog.findViewById<Button>(R.id.confirmFilter)
         confirmButton?.setOnClickListener{
             parent.viewModel.minRating = rangeSliderRating?.values?.get(0)!!
-            parent.viewModel.maxRating = rangeSliderRating?.values?.get(1)!!
+            parent.viewModel.maxRating = rangeSliderRating.values[1]!!
             parent.viewModel.minFee = rangeSliderPrice?.values?.get(0)!!
             parent.viewModel.maxFee = rangeSliderPrice?.values?.get(1)!!
 
@@ -188,9 +177,5 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         super.onStart()
         parent.viewModel.getCourtsBySport( )
     }
-
-
-
-
 
 }

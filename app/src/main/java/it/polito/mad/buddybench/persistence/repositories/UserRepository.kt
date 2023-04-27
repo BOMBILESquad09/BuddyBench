@@ -11,6 +11,8 @@ import it.polito.mad.buddybench.persistence.entities.toUserDTO
 import it.polito.mad.buddybench.persistence.entities.toUserSportDTO
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.persistence.entities.User
+import it.polito.mad.buddybench.persistence.entities.UserWithSports
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
@@ -30,14 +32,25 @@ class UserRepository @Inject constructor(
     }
 
 
-    fun update(user: UserWithSportsDTO) {
+    fun update(user: UserWithSportsDTO, oldEmail: String) {
 
-        val u = userDao.getUserByEmail(user.user.email)!!
+        val u = userDao.getUserByEmail(oldEmail)!!
+        val newUser = User (
+            u.user.id,
+            user.user.name,
+            user.user.surname,
+            user.user.nickname,
+            user.user.birthdate.toString(),
+            user.user.location,
+            user.user.email,
+            user.user.reliability,
+            user.user.imagePath
+        )
 
-        userDao.update(user.user.toEntity())
+        userDao.update(newUser)
         val dbSports = userSportDao.getAll(u.user.id)
         val hashMap: HashMap<Sports, Sport> = HashMap()
-        user.sports.forEach{
+        user.sports.forEach {
             hashMap[it.name] = it
         }
 

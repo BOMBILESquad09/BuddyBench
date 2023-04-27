@@ -18,6 +18,6 @@ class SportsSelectionViewHolder(private val v: View, private val callback: (Spor
         Utils.setColoredDrawable(wrappedDrawable, v.findViewById<ImageView>(R.id.sport_image))
         v.findViewById<TextView>(R.id.sport_name).text = Utils.capitalize(sport.name)
         v.setOnClickListener { callback(sport) }
-
     }
+
 }

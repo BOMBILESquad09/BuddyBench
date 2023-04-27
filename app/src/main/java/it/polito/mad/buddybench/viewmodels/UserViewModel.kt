@@ -51,14 +51,14 @@ class UserViewModel @Inject constructor() : ViewModel() {
 
     }
 
-    fun updateUserInfo(profile: Profile) {
+    fun updateUserInfo(profile: Profile, oldEmail: String) {
         _user.value = profile
         Thread{
             userRepository.update(
                 UserWithSportsDTO(
                     profile.toUserDto(),
                     profile.sports
-                )
+                ), oldEmail
             )
         }.start()
 

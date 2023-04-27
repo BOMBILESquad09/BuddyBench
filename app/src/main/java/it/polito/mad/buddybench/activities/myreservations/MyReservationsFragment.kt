@@ -48,9 +48,6 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
-
         calendarView = view.findViewById(R.id.calendar)
         recyclerViewReservations = view.findViewById(R.id.reservations)
         recyclerViewReservations.layoutManager = LinearLayoutManager(context)
