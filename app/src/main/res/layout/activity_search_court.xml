@@ -84,7 +84,7 @@
           android:backgroundTint="@color/cardview_light_background"
           android:drawableStart="@drawable/search"
           android:drawablePadding="8dp"
-          android:hint="Search"/>
+          android:hint="@string/search"/>
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView

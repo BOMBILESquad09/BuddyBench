@@ -30,7 +30,7 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     var minRating: Float = 0f
     var maxRating: Float = 5f
     var minFee: Float = 0f
-    var maxFee: Float = 1000f
+    var maxFee: Float = 100f
     var name: String = ""
 
 
@@ -60,7 +60,7 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
         minRating= 0f
         maxRating= 5f
         minFee= 0f
-        maxFee= 1000f
+        maxFee= 100f
         name= ""
     }
 

@@ -6,23 +6,35 @@
     android:orientation="vertical">
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp">
+        android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/close_selection"
-            android:layout_width="70dp"
-            android:layout_height="match_parent"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="4dp"
             android:layout_gravity="right"
-            android:src="@drawable/close_button"/>
+            android:background="@drawable/rounded_shape"
+            android:backgroundTint="@color/md_theme_light_primary"
+            android:src="@drawable/close"/>
     </FrameLayout>
 
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="30sp"
-        android:layout_marginBottom="30dp"
-        android:textStyle="bold"
-        android:text="@string/which_sport_do_you_want_to_play"/>
+        android:textSize="36sp"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/md_theme_light_background"
+        android:fontFamily="@font/montserrat_bold_700"
+        android:background="@color/md_theme_light_primary"
+        android:text="Ready to start?"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="32sp"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/montserrat_medium_500"
+        android:text="Pick a sport!"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/sports_selection"
