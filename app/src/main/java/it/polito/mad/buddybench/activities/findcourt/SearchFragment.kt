@@ -6,11 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -144,18 +140,47 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
     }
 
     private fun showBottomSheetDialog(){
+
+        var minRating: Float = parent.viewModel.minRating
+        var maxRating: Float = parent.viewModel.maxRating
+        var minFee: Float = parent.viewModel.minFee
+        var maxFee: Float = parent.viewModel.maxFee
+
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_filter)
 
+        val filterButton = view?.findViewById<CardView>(R.id.filterButton)
+        val filterIcon = view?.findViewById<ImageView>(R.id.filterIcon)
+
         val rangeSliderPrice : RangeSlider? = bottomSheetDialog.findViewById<RangeSlider>(R.id.range_slider_price)
-        rangeSliderPrice?.setValues(0f,100f)
+        rangeSliderPrice?.setValues(minFee,maxFee)
         rangeSliderPrice?.stepSize = 1f
 
         val rangeSliderRating : RangeSlider? = bottomSheetDialog.findViewById<RangeSlider>(R.id.range_slider_rating)
-        rangeSliderRating?.setValues(0f,5f)
+        rangeSliderRating?.setValues(minRating,maxRating)
         rangeSliderRating?.stepSize = 1f
 
         val confirmButton = bottomSheetDialog.findViewById<Button>(R.id.confirmFilter)
+        confirmButton?.setOnClickListener{
+            parent.viewModel.minRating = rangeSliderRating?.values?.get(0)!!
+            parent.viewModel.maxRating = rangeSliderRating?.values?.get(1)!!
+            parent.viewModel.minFee = rangeSliderPrice?.values?.get(0)!!
+            parent.viewModel.maxFee = rangeSliderPrice?.values?.get(1)!!
+
+            parent.viewModel.applyFilter()
+            filterButton?.setBackgroundResource(R.drawable.circle_dark_bg)
+            filterIcon?.setImageResource(R.drawable.filter_white)
+            bottomSheetDialog.dismiss()
+        }
+
+        val clearButton = bottomSheetDialog.findViewById<Button>(R.id.clearFilter)
+        clearButton?.setOnClickListener{
+            parent.viewModel.clearFilters()
+            parent.viewModel.applyFilter()
+            filterButton?.setBackgroundResource(R.drawable.circle_light_bg)
+            filterIcon?.setImageResource(R.drawable.filter)
+            bottomSheetDialog.dismiss()
+        }
         bottomSheetDialog.show()
     }
 
