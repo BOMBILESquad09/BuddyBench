@@ -1,9 +1,16 @@
-package it.polito.mad.buddybench.database
+package it.polito.mad.buddybench.persistence.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import it.polito.mad.buddybench.dao.*
-import it.polito.mad.buddybench.entities.*
+import it.polito.mad.buddybench.persistence.dao.CourtDao
+import it.polito.mad.buddybench.persistence.dao.CourtTimeDao
+import it.polito.mad.buddybench.persistence.dao.InvitationDao
+import it.polito.mad.buddybench.persistence.dao.ReservationDao
+import it.polito.mad.buddybench.persistence.dao.SportDao
+import it.polito.mad.buddybench.persistence.dao.UnavailableDayCourtDao
+import it.polito.mad.buddybench.persistence.dao.UserDao
+import it.polito.mad.buddybench.persistence.dao.UserSportDao
+import it.polito.mad.buddybench.persistence.entities.*
 
 @Database(
     entities = [

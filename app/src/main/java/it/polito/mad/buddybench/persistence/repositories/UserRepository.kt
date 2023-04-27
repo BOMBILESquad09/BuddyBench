@@ -1,14 +1,14 @@
-package it.polito.mad.buddybench.repositories
+package it.polito.mad.buddybench.persistence.repositories
 
 import it.polito.mad.buddybench.classes.Sport
-import it.polito.mad.buddybench.dao.UserDao
-import it.polito.mad.buddybench.dao.UserSportDao
-import it.polito.mad.buddybench.dto.UserDTO
-import it.polito.mad.buddybench.entities.UserSport
+import it.polito.mad.buddybench.persistence.dao.UserDao
+import it.polito.mad.buddybench.persistence.dao.UserSportDao
+import it.polito.mad.buddybench.persistence.dto.UserDTO
+import it.polito.mad.buddybench.persistence.entities.UserSport
 
-import it.polito.mad.buddybench.entities.UserWithSportsDTO
-import it.polito.mad.buddybench.entities.toUserDTO
-import it.polito.mad.buddybench.entities.toUserSportDTO
+import it.polito.mad.buddybench.persistence.entities.UserWithSportsDTO
+import it.polito.mad.buddybench.persistence.entities.toUserDTO
+import it.polito.mad.buddybench.persistence.entities.toUserSportDTO
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
 import javax.inject.Inject
@@ -18,7 +18,7 @@ class UserRepository @Inject constructor(
     private val userSportDao: UserSportDao,
 
 
-) {
+    ) {
 
     fun getUser(email: String): UserWithSportsDTO{
         return userDao.getUserByEmail(email)!!.toUserSportDTO()

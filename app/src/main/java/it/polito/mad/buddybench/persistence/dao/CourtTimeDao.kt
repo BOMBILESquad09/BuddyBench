@@ -1,8 +1,8 @@
-package it.polito.mad.buddybench.dao
+package it.polito.mad.buddybench.persistence.dao
 import androidx.room.*
-import it.polito.mad.buddybench.entities.CourtTime
-import it.polito.mad.buddybench.entities.CourtWithCourtTime
-import it.polito.mad.buddybench.entities.UnavailableDayCourt
+import it.polito.mad.buddybench.persistence.entities.CourtTime
+import it.polito.mad.buddybench.persistence.entities.CourtWithCourtTime
+import it.polito.mad.buddybench.persistence.entities.UnavailableDayCourt
 
 @Dao
 interface CourtTimeDao {

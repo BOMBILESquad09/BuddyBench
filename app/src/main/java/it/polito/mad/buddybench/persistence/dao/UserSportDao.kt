@@ -1,9 +1,9 @@
-package it.polito.mad.buddybench.dao
+package it.polito.mad.buddybench.persistence.dao
 
 import androidx.room.*
-import it.polito.mad.buddybench.entities.Sport
-import it.polito.mad.buddybench.entities.User
-import it.polito.mad.buddybench.entities.UserSport
+import it.polito.mad.buddybench.persistence.entities.Sport
+import it.polito.mad.buddybench.persistence.entities.User
+import it.polito.mad.buddybench.persistence.entities.UserSport
 
 @Dao
 interface UserSportDao {

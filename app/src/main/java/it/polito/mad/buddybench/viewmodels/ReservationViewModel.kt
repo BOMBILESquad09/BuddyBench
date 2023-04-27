@@ -6,16 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SAVED_STATE_REGISTRY_OWNER_KEY
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.buddybench.dto.CourtDTO
-import it.polito.mad.buddybench.dto.ReservationDTO
-import it.polito.mad.buddybench.dto.UserDTO
-import it.polito.mad.buddybench.entities.Court
-import it.polito.mad.buddybench.entities.Reservation
-import it.polito.mad.buddybench.entities.toReservationDTO
+import it.polito.mad.buddybench.persistence.dto.ReservationDTO
+
 import it.polito.mad.buddybench.enums.Sports
-import it.polito.mad.buddybench.repositories.CourtRepository
-import it.polito.mad.buddybench.repositories.ReservationRepository
-import it.polito.mad.buddybench.utils.Utils
+import it.polito.mad.buddybench.persistence.repositories.ReservationRepository
 import java.time.LocalDate
 import java.time.LocalTime
 import javax.inject.Inject

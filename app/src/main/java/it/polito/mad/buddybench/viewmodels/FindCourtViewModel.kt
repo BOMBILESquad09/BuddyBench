@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.buddybench.dto.CourtDTO
-import it.polito.mad.buddybench.dto.ReservationDTO
+import it.polito.mad.buddybench.persistence.dto.CourtDTO
+import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.enums.Sports
-import it.polito.mad.buddybench.repositories.CourtRepository
-import it.polito.mad.buddybench.repositories.CourtTimeRepository
-import it.polito.mad.buddybench.repositories.SportRepository
+import it.polito.mad.buddybench.persistence.repositories.CourtRepository
+import it.polito.mad.buddybench.persistence.repositories.CourtTimeRepository
+import it.polito.mad.buddybench.persistence.repositories.SportRepository
 import java.time.LocalDate
 import java.util.Date
 import javax.inject.Inject

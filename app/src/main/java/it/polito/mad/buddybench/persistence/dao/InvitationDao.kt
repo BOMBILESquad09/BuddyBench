@@ -1,7 +1,7 @@
-package it.polito.mad.buddybench.dao
+package it.polito.mad.buddybench.persistence.dao
 import androidx.room.*
-import it.polito.mad.buddybench.entities.Invitation
-import it.polito.mad.buddybench.entities.InvitationWithReservationAndUser
+import it.polito.mad.buddybench.persistence.entities.Invitation
+import it.polito.mad.buddybench.persistence.entities.InvitationWithReservationAndUser
 
 
 @Dao

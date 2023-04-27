@@ -1,9 +1,9 @@
-package it.polito.mad.buddybench.repositories
+package it.polito.mad.buddybench.persistence.repositories
 
-import it.polito.mad.buddybench.dao.SportDao
-import it.polito.mad.buddybench.dto.SportDTO
+import it.polito.mad.buddybench.persistence.dao.SportDao
+import it.polito.mad.buddybench.persistence.dto.SportDTO
 
-import it.polito.mad.buddybench.entities.toSportDTO
+import it.polito.mad.buddybench.persistence.entities.toSportDTO
 import javax.inject.Inject
 import javax.inject.Singleton
 

@@ -1,13 +1,13 @@
-package it.polito.mad.buddybench.dao
+package it.polito.mad.buddybench.persistence.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import it.polito.mad.buddybench.entities.Court
-import it.polito.mad.buddybench.entities.Sport
-import it.polito.mad.buddybench.entities.UnavailableDayCourt
+import it.polito.mad.buddybench.persistence.entities.Court
+import it.polito.mad.buddybench.persistence.entities.Sport
+import it.polito.mad.buddybench.persistence.entities.UnavailableDayCourt
 
 @Dao
 interface UnavailableDayCourtDao {

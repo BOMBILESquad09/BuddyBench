@@ -6,7 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import it.polito.mad.buddybench.dao.*
-import it.polito.mad.buddybench.database.CourtReservationDatabase
+import it.polito.mad.buddybench.persistence.database.CourtReservationDatabase
 import it.polito.mad.buddybench.entities.*
 import it.polito.mad.buddybench.utilsTest.Utils
 import org.hamcrest.CoreMatchers.equalTo

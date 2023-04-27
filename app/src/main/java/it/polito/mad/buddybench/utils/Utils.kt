@@ -79,7 +79,7 @@ class Utils {
                 }
             }
 
-            return adiacentMap.entries.toList().sortedBy {
+            adiacentMap.entries.toList().sortedBy {
                 it.key
             }.joinToString("\n") {
                 it.value

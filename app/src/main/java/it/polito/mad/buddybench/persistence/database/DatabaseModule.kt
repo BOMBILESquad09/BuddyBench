@@ -1,4 +1,4 @@
-package it.polito.mad.buddybench.database
+package it.polito.mad.buddybench.persistence.database
 
 import android.content.Context
 import androidx.room.Room
@@ -8,8 +8,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import it.polito.mad.buddybench.database.CourtReservationDatabase
-import it.polito.mad.buddybench.repositories.*
+import it.polito.mad.buddybench.persistence.database.CourtReservationDatabase
+import it.polito.mad.buddybench.persistence.repositories.CourtRepository
+import it.polito.mad.buddybench.persistence.repositories.CourtTimeRepository
+import it.polito.mad.buddybench.persistence.repositories.InvitationRepository
+import it.polito.mad.buddybench.persistence.repositories.ReservationRepository
+import it.polito.mad.buddybench.persistence.repositories.SportRepository
+import it.polito.mad.buddybench.persistence.repositories.UserRepository
+import it.polito.mad.buddybench.persistence.repositories.UserSportRepository
 import javax.inject.Singleton
 
 

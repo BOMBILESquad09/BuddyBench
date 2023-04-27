@@ -7,12 +7,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Profile
-import it.polito.mad.buddybench.dto.UserDTO
-import it.polito.mad.buddybench.entities.UserWithSports
-import it.polito.mad.buddybench.entities.UserWithSportsDTO
-import it.polito.mad.buddybench.repositories.UserRepository
+import it.polito.mad.buddybench.persistence.entities.UserWithSportsDTO
+
+import it.polito.mad.buddybench.persistence.repositories.UserRepository
 import org.json.JSONObject
 import javax.inject.Inject
 

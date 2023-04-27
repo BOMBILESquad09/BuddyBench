@@ -1,13 +1,13 @@
-package it.polito.mad.buddybench.repositories
+package it.polito.mad.buddybench.persistence.repositories
 
-import it.polito.mad.buddybench.dao.CourtDao
-import it.polito.mad.buddybench.dao.CourtTimeDao
-import it.polito.mad.buddybench.dao.SportDao
-import it.polito.mad.buddybench.dto.CourtDTO
-import it.polito.mad.buddybench.dto.CourtTimeDTO
-import it.polito.mad.buddybench.dto.CourtTimeTableDTO
-import it.polito.mad.buddybench.entities.toCourtDTO
-import it.polito.mad.buddybench.entities.toCourtTimeDTO
+import it.polito.mad.buddybench.persistence.dao.CourtDao
+import it.polito.mad.buddybench.persistence.dao.CourtTimeDao
+import it.polito.mad.buddybench.persistence.dao.SportDao
+import it.polito.mad.buddybench.persistence.dto.CourtDTO
+import it.polito.mad.buddybench.persistence.dto.CourtTimeDTO
+import it.polito.mad.buddybench.persistence.dto.CourtTimeTableDTO
+import it.polito.mad.buddybench.persistence.entities.toCourtDTO
+import it.polito.mad.buddybench.persistence.entities.toCourtTimeDTO
 import it.polito.mad.buddybench.enums.Sports
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -23,7 +23,7 @@ class CourtTimeRepository @Inject constructor(
 
     fun getAll(): List<CourtTimeDTO> = courtTimeDao.getAll().map { it.toCourtTimeDTO() }
 
-    fun getCourtTimeTable(name: String, sport: Sports): CourtTimeTableDTO{
+    fun getCourtTimeTable(name: String, sport: Sports): CourtTimeTableDTO {
         val court = courtDao.getByNameAndSport(name, sport.name.uppercase())
         val list= courtTimeDao.getCourtTimeTable(court.court.id).map {
             it.toCourtTimeDTO()

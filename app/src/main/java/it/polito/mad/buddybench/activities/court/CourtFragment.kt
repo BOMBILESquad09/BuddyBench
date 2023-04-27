@@ -40,9 +40,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.databinding.FragmentCourtBinding
-import it.polito.mad.buddybench.dto.CourtDTO
-import it.polito.mad.buddybench.dto.ReservationDTO
-import it.polito.mad.buddybench.dto.UserDTO
+import it.polito.mad.buddybench.persistence.dto.CourtDTO
+import it.polito.mad.buddybench.persistence.dto.ReservationDTO
+import it.polito.mad.buddybench.persistence.dto.UserDTO
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.WeeklyCalendarAdapter
 import it.polito.mad.buddybench.utils.Utils
@@ -175,8 +175,8 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         calendarView.scrollToDate(selectedDate)
 
 
-        val selectedPosition = (Period.between(LocalDate.now(), selectedDate)).days
-        /*recyclerWeeklyCalendarView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        /*val selectedPosition = (Period.between(LocalDate.now(), selectedDate)).days
+        recyclerWeeklyCalendarView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recyclerWeeklyCalendarView.adapter = WeeklyCalendarAdapter(weeklyDays, selectedPosition, calendarCallback)
         LinearSnapHelper().attachToRecyclerView(recyclerWeeklyCalendarView)
         recyclerWeeklyCalendarView.scrollToPosition(selectedPosition)*/

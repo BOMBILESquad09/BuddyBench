@@ -1,4 +1,4 @@
-package it.polito.mad.buddybench.dao
+package it.polito.mad.buddybench.persistence.dao
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,8 +7,8 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
-import it.polito.mad.buddybench.entities.Court
-import it.polito.mad.buddybench.entities.CourtWithSport
+import it.polito.mad.buddybench.persistence.entities.Court
+import it.polito.mad.buddybench.persistence.entities.CourtWithSport
 
 @Dao
 interface CourtDao {
