@@ -16,8 +16,9 @@ class SportsSelectionViewHolder(private val v: View, private val callback: (Spor
     fun bind(sport: Sports){
         val icon = ContextCompat.getDrawable(v.context, Sports.sportToIconDrawable(sport))
         val wrappedDrawable = DrawableCompat.wrap(icon!!)
-        Utils.setColoredDrawable(wrappedDrawable, v.findViewById<ImageView>(R.id.sport_image))
         val sportSelectionCard = v.findViewById<CardView>(R.id.sport_selection_card)
+
+        Utils.setColoredDrawable(wrappedDrawable, v.findViewById<ImageView>(R.id.sport_image))
         sportSelectionCard.setBackgroundColor(Sports.getSportColor(sport, v.context))
         v.findViewById<TextView>(R.id.sport_name).text = Utils.capitalize(sport.name)
         v.setOnClickListener { callback(sport) }
