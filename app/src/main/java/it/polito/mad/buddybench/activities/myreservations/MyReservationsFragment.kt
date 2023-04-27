@@ -131,7 +131,6 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
 
     private fun refreshCalendar(){
         val reservations = viewModel.reservations.value ?: return
-        println("refreshinggg")
         for(entries in reservations.entries){
 
             val firstDay = calendarView.findFirstVisibleMonth()?.weekDays?.get(0)?.get(0)!!
