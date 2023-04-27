@@ -14,11 +14,7 @@ import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 @AndroidEntryPoint
 class CourtActivity : AppCompatActivity() {
 
-
-    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityCourtBinding
-    val reservationViewModel by viewModels<ReservationViewModel>()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,17 +31,13 @@ class CourtActivity : AppCompatActivity() {
         args.putString("date", date)
 
         if (editMode) {
-
             args.putBoolean("edit", true)
-
-
 
             val courtName = intent.getStringExtra("courtName")
             args.putString("courtName", courtName)
 
             val sport = intent.getStringExtra("sport")
             args.putString("sport", sport)
-
 
 
             val email = intent.getStringExtra("email")
@@ -59,13 +51,9 @@ class CourtActivity : AppCompatActivity() {
         }
         fragment.arguments = args
 
-
-
-
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentContainerCourt, fragment)
             .commit()
-
     }
 
 

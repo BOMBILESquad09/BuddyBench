@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +32,11 @@ class ReservationViewHolder(v: View): RecyclerView.ViewHolder(v) {
     val view: View = v
 
     fun bind(reservation: ReservationDTO){
+
+        // ** Card color
+        val card = view.findViewById<CardView>(R.id.card_reservation)
+        card.setCardBackgroundColor(Sports.getSportColor(Sports.valueOf(reservation.court.sport), view.context))
+
         courtName.text = reservation.court.name
         val iconDrawable = ContextCompat.getDrawable(view.context,
             Sports.sportToIconDrawable(
@@ -43,6 +49,7 @@ class ReservationViewHolder(v: View): RecyclerView.ViewHolder(v) {
         slot.text = "${reservation.startTime.format(formatter)} - ${reservation.endTime.format(formatter)}"
         if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime))
             manageBtn.visibility = View.INVISIBLE
+        manageBtn.setTextColor(Sports.getSportColor(Sports.valueOf(reservation.court.sport), view.context))
         manageBtn.setOnClickListener {
             if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime)){
                 return@setOnClickListener
