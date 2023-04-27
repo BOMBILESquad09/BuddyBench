@@ -1,7 +1,7 @@
-package it.polito.mad.buddybench.dto
+package it.polito.mad.buddybench.persistence.dto
 
-import it.polito.mad.buddybench.entities.User
-import it.polito.mad.buddybench.entities.UserSport
+import it.polito.mad.buddybench.persistence.entities.User
+import it.polito.mad.buddybench.persistence.entities.UserSport
 
 class UserSportDTO(
     val user: User,

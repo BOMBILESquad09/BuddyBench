@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.buddybench.R
-import it.polito.mad.buddybench.dto.CourtDTO
+import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.enums.Sports
 
 class CourtSearchAdapter(private val l: LiveData<List<CourtDTO>>, val callback: (String, Sports) -> Unit): RecyclerView.Adapter<CourtSearchViewHolder>(){

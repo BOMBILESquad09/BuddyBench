@@ -1,4 +1,4 @@
-package it.polito.mad.buddybench.dto
+package it.polito.mad.buddybench.persistence.dto
 
 import java.time.DayOfWeek
 import java.time.LocalTime

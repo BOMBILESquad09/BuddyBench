@@ -1,6 +1,6 @@
-package it.polito.mad.buddybench.dto
+package it.polito.mad.buddybench.persistence.dto
 
-import it.polito.mad.buddybench.entities.*
+import it.polito.mad.buddybench.persistence.entities.*
 import it.polito.mad.buddybench.enums.Sports
 import java.time.LocalDate
 import java.time.LocalTime
@@ -60,13 +60,28 @@ class ReservationDTO(val userOrganizer: UserDTO,
             val timeNow = LocalTime.now()
             val endNow = timeNow.plusHours(1)
             val timeLaterEnd = timeNow.plusHours(3)
-            val list =  listOf(ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), now,timeNow, endNow, false),
-                    ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.BASKETBALL)).toCourtDTO(), later, timeNow, timeLaterEnd, false),
-                ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.FOOTBALL)).toCourtDTO(), later, timeNow, timeLaterEnd, false),
-                ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.VOLLEYBALL)).toCourtDTO(), later, timeNow, timeLaterEnd, false),
-                ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd, false),
-                ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd, false),
-                ReservationDTO(createUser().toUserDTO(),createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd, false)
+            val list =  listOf(
+                ReservationDTO(
+                    createUser().toUserDTO(),
+                    createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), now,timeNow, endNow, false),
+                    ReservationDTO(
+                        createUser().toUserDTO(),
+                        createCourt(Sports.toJSON(Sports.BASKETBALL)).toCourtDTO(), later, timeNow, timeLaterEnd, false),
+                ReservationDTO(
+                    createUser().toUserDTO(),
+                    createCourt(Sports.toJSON(Sports.FOOTBALL)).toCourtDTO(), later, timeNow, timeLaterEnd, false),
+                ReservationDTO(
+                    createUser().toUserDTO(),
+                    createCourt(Sports.toJSON(Sports.VOLLEYBALL)).toCourtDTO(), later, timeNow, timeLaterEnd, false),
+                ReservationDTO(
+                    createUser().toUserDTO(),
+                    createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd, false),
+                ReservationDTO(
+                    createUser().toUserDTO(),
+                    createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd, false),
+                ReservationDTO(
+                    createUser().toUserDTO(),
+                    createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd, false)
             )
             return toHashmap(list)
         }

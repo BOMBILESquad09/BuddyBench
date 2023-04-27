@@ -1,6 +1,6 @@
-package it.polito.mad.buddybench.dto
+package it.polito.mad.buddybench.persistence.dto
 
-import it.polito.mad.buddybench.entities.User
+import it.polito.mad.buddybench.persistence.entities.User
 import java.time.LocalDate
 
 class UserDTO(val name: String, val surname: String, val nickname: String, val birthdate: LocalDate, val location: String,

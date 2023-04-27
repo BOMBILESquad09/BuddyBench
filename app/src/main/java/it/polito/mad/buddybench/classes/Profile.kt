@@ -13,7 +13,7 @@ import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getInt
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getJSONArray
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getString
-import it.polito.mad.buddybench.dto.UserDTO
+import it.polito.mad.buddybench.persistence.dto.UserDTO
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.Utils

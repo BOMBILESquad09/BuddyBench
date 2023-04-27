@@ -1,6 +1,6 @@
-package it.polito.mad.buddybench.dto
+package it.polito.mad.buddybench.persistence.dto
 
-import it.polito.mad.buddybench.entities.Court
+import it.polito.mad.buddybench.persistence.entities.Court
 
 class CourtDTO(
     val name: String,

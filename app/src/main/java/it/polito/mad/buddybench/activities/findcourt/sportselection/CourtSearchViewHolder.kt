@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.activities.court.CourtActivity
-import it.polito.mad.buddybench.dto.CourtDTO
+import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.enums.Sports
 import java.io.FileNotFoundException
 

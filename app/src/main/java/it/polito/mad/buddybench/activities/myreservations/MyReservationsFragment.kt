@@ -28,7 +28,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.classes.Profile
-import it.polito.mad.buddybench.dto.ReservationDTO
+import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate

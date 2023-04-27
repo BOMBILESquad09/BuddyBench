@@ -1,7 +1,7 @@
-package it.polito.mad.buddybench.dto
+package it.polito.mad.buddybench.persistence.dto
 
 
-import it.polito.mad.buddybench.entities.CourtTime
+import it.polito.mad.buddybench.persistence.entities.CourtTime
 import java.time.DayOfWeek
 import java.time.LocalTime
 

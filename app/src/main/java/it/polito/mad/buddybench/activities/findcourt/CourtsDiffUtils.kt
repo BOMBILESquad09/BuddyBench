@@ -1,7 +1,7 @@
 package it.polito.mad.buddybench.activities.findcourt
 
 import androidx.recyclerview.widget.DiffUtil
-import it.polito.mad.buddybench.dto.CourtDTO
+import it.polito.mad.buddybench.persistence.dto.CourtDTO
 
 class CourtsDiffUtils(
     private val lastCourts: List<CourtDTO>,

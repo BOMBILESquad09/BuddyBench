@@ -1,6 +1,6 @@
-package it.polito.mad.buddybench.dto
+package it.polito.mad.buddybench.persistence.dto
 
-import it.polito.mad.buddybench.entities.Sport
+import it.polito.mad.buddybench.persistence.entities.Sport
 
 class SportDTO(val name: String) {
 
