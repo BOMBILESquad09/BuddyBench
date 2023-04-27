@@ -1,8 +1,8 @@
 --- User informations
 INSERT INTO user (id,name,surname,nickname,birthdate,location,email,reliability)
-VALUES (0,"Vittorio","Arpino","TheNextLayer","1999-09-30","Scafati","varpino@buddybench.it",70);
+VALUES (1,"Vittorio","Arpino","TheNextLayer","1999-09-30","Scafati","varpino@buddybench.it",70);
 INSERT INTO user (id,name,surname,nickname,birthdate,location,email,reliability)
-VALUES (1,"Jacopo","De Cristofaro","Jeff'","1999-04-27","New York","jeff@buddybench.com",80);
+VALUES (2,"Jacopo","De Cristofaro","Jeff","1999-04-27","New York","jeff@buddybench.com",80);
 
 -- Sports Available
 INSERT INTO sport
@@ -210,7 +210,7 @@ INSERT INTO court (
     )
 VALUES (
         9,
-        'Santa Monica Volleyball',
+        'Santa Monica',
         '101 Ocean Ave',
         'Santa Monica, CA',
         45,
@@ -366,15 +366,15 @@ VALUES (
     );
 
 INSERT INTO court (id, name, address, location, fee_hour, sport, fee_equipment, path, rating, n_reviews)
-VALUES (16, "Volley Court", "Via Roma 123", "Milano", 15, "VOLLEYBALL", 5, "court16", 4.5, 30);
+VALUES (16, "Volley Court", "124 Victorian St", "New York, NY", 15, "VOLLEYBALL", 5, "court16", 4.5, 30);
 INSERT INTO court (id, name, address, location, fee_hour, sport, fee_equipment, path, rating, n_reviews)
-VALUES (17, "Beach Volley Paradise", "Viale dei Tigli 21", "Rimini", 20, "VOLLEYBALL", 10, "court17", 4.2, 45);
+VALUES (17, "Beach Volley Paradise", "342 Dominican St", "Los Angeles, LA", 20, "VOLLEYBALL", 10, "court17", 4.2, 45);
 INSERT INTO court (id, name, address, location, fee_hour, sport, fee_equipment, path, rating, n_reviews)
-VALUES (18, "Green Volley", "Piazza Garibaldi 7", "Napoli", 12, "VOLLEYBALL", 3, "court18", 4.0, 15);
+VALUES (18, "Green Volley", "333 Tremont St", "New Jersey, NJ", 12, "VOLLEYBALL", 3, "court18", 4.0, 15);
 INSERT INTO court (id, name, address, location, fee_hour, sport, fee_equipment, path, rating, n_reviews)
-VALUES (19, "Volley Palace", "Corso Italia 45", "Firenze", 18, "VOLLEYBALL", 8, "court19", 4.8, 75);
+VALUES (19, "Volley Palace", "938 Main St", "Los Angeles, LA", 18, "VOLLEYBALL", 8, "court19", 4.8, 75);
 INSERT INTO court (id, name, address, location, fee_hour, sport, fee_equipment, path, rating, n_reviews)
-VALUES (20, "Volleyball Arena","'Via Dante 87", "Roma", 22, "VOLLEYBALL", 15, "court20", 4.7, 60);
+VALUES (20, "Volleyball Arena","238 Mapi St", "New York, NY", 22, "VOLLEYBALL", 15, "court20", 4.7, 60);
 
 
 -- Some reservations (Compatibility with the date/time for court)
