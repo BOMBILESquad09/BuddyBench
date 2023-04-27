@@ -91,6 +91,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             val diffResult = DiffUtil.calculateDiff(diff)
             lastCourts = it
             diffResult.dispatchUpdatesTo(recyclerView.adapter!!)
+            recyclerView.scrollToPosition(0)
 
         }
 

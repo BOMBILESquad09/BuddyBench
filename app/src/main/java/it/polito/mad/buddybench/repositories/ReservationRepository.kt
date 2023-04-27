@@ -9,6 +9,7 @@ import it.polito.mad.buddybench.dao.UserDao
 import it.polito.mad.buddybench.dto.CourtDTO
 import it.polito.mad.buddybench.entities.CourtWithSport
 import it.polito.mad.buddybench.entities.Reservation
+import it.polito.mad.buddybench.entities.Sport
 import it.polito.mad.buddybench.entities.UnavailableDayCourt
 import it.polito.mad.buddybench.entities.toReservationDTO
 import it.polito.mad.buddybench.enums.Sports
@@ -112,20 +113,24 @@ class ReservationRepository @Inject constructor(
         val user = userDao.getUserByEmail(email)!!
         println("==========================")
         println(courtName)
-        println(sport)
+        println(sport.toString())
         println(startTime)
         println(email)
         println(date)
 
-        val court = courtDao.getByNameAndSport(courtName, Sports.toJSON(sport))
-        println(courtWithSport)
+        courtDao.getAll().forEach{
+            println(it.court.name == courtName && it.court.sport == sport.name)
+
+        }
+
+        val court = courtDao.getByNameAndSportPlain(courtName, sport.toString().uppercase())
 
         val reservation = reservationDao.getReservationPlain(user.user.id, court.id,
             date.format(DateTimeFormatter.ISO_LOCAL_DATE), startTime.hour)
 
 
         reservationDao.delete(reservation)
-        unavailableDayCourtDao.delete(UnavailableDayCourt(courtWithSport.court.id, reservation.date.format(
+        unavailableDayCourtDao.delete(UnavailableDayCourt(court.id, reservation.date.format(
             DateTimeFormatter.ISO_LOCAL_DATE)))
     }
 

@@ -532,3 +532,7 @@ INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALU
 (86, 15, 3, "8:00", "18:00"),
 (87, 15, 4, "6:00", "18:00"),
 (88, 15, 5, "8:00", "23:00");
+
+
+
+SELECT * FROM Court C WHERE C.name = "Central Park Tennis" 

@@ -47,7 +47,7 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     fun getCourtsBySport(sport: Sports): LiveData<List<CourtDTO>> {
         Thread{
             _courts = courtRepository.getCourtsBySports(Sports.toJSON(sport).uppercase())
-            _currentCourts.postValue(_courts)
+            _currentCourts.postValue(_courts.sortedBy { it.name })
         }.start()
         return currentCourts
     }
@@ -63,7 +63,7 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     fun applyFilter(){
         _currentCourts.value = _courts.filter{
             it.location.contains(name, ignoreCase = true) || it.name.contains(name, ignoreCase = true)
-        }
+        }.sortedBy { it.name }
     }
 
     fun setSelectedDate(date: LocalDate){
