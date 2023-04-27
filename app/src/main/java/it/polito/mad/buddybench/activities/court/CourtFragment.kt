@@ -271,17 +271,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         binding.equipmentCost.text = String.format(
             getString(R.string.equipment_phrase),
             court.feeEquipment
-        );
-        binding.sportIconEquipment.setImageDrawable(
-            ResourcesCompat.getDrawable(
-                resources,
-                Sports.sportToIconDrawable(
-                    Sports.fromJSON(
-                        court.sport
-                    )!!
-                ),
-                null
-            )
         )
         if(!editMode) {
             val b : Button? = view?.findViewById(R.id.cancel_button)
