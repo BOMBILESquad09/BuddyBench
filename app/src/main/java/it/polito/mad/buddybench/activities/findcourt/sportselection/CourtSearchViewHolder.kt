@@ -1,11 +1,13 @@
 package it.polito.mad.buddybench.activities.findcourt.sportselection
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContentProviderCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.buddybench.R
@@ -29,6 +31,7 @@ class CourtSearchViewHolder(val v: View, val callback: (String, Sports) -> Unit)
         name.text = court.name
         address.text = String.format(v.context.getString(R.string.court_address_card), court.location, court.address)
         feeHour.text = String.format(v.context.getString(R.string.court_fee), court.feeHour.toString())
+        feeHour.backgroundTintList = ColorStateList.valueOf(Sports.getSportColor(Sports.valueOf(court.sport), v.context))
         courtRating.text = court.rating.toString()
         val bitmap = try {
             BitmapFactory.decodeStream(courtImage.context?.assets?.open("courtImages/" + court.path + ".jpg"))

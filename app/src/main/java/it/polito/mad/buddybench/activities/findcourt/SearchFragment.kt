@@ -1,6 +1,7 @@
 package it.polito.mad.buddybench.activities.findcourt
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
@@ -37,7 +38,7 @@ import java.time.format.DateTimeFormatter
 @AndroidEntryPoint
 class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_search_court) {
 
-    lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: RecyclerView
     private var lastCourts: List<CourtDTO> = listOf()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -104,6 +105,8 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
                     it
                 )
             )
+            //** Sport selection button color
+            b.backgroundTintList = ColorStateList.valueOf(Sports.getSportColor(parent.viewModel.selectedSport.value!!, requireContext()))
             val wrappedDrawable = DrawableCompat.wrap(iconDrawable!!)
             wrappedDrawable.mutate().setTint(Color.WHITE)
             val bitmap = wrappedDrawable.toBitmap(160, 160)

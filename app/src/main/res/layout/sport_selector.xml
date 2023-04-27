@@ -17,6 +17,7 @@
         app:cardElevation="3dp">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/sport_selection_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardBackgroundColor="@color/md_theme_light_onBackground"
@@ -46,8 +47,8 @@
                     android:layout_gravity="center"
                     android:fontFamily="@font/montserrat_semibold_600"
                     android:text="@string/sport_tennis"
-                    android:textColor="@color/md_theme_light_onPrimary"
-                    android:textSize="20dp"
+                    android:textColor="@color/md_theme_light_background"
+                    android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_chainStyle="spread"

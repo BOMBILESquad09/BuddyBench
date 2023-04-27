@@ -1,21 +1,22 @@
 package it.polito.mad.buddybench.activities.court
 
+import android.content.res.ColorStateList
 import android.view.View
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.enums.Sports
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
-class TimeSlotViewHolder(private val v: View,
-                         private val timeSlots: LiveData<List<Pair<LocalTime, Boolean>>>,
-                         private val callback: (Pair<LocalTime, Boolean>) -> Unit
+class TimeSlotViewHolder(
+    private val v: View,
+    private val callback: (Pair<LocalTime, Boolean>) -> Unit,
+    private val sport: Sports
 ) : RecyclerView.ViewHolder(v) {
 
-    private var created: Boolean = false
     fun bind(pair: Pair<LocalTime, Boolean>) {
         renderTimeItem(pair,  v, callback)
     }
@@ -33,12 +34,11 @@ class TimeSlotViewHolder(private val v: View,
         timeSlotTv.text = timeSlotText
 
         // ** Selected time
-        val primaryColor =
-            ContextCompat.getColor(v.context, R.color.md_theme_light_primary)
-        val whiteColor =
-            ContextCompat.getColor(v.context, R.color.md_theme_light_background)
+        val primaryColor = ContextCompat.getColor(v.context, R.color.md_theme_light_primary)
+        val sportColor = Sports.getSportColor(sport, v.context)
+        val whiteColor = ContextCompat.getColor(v.context, R.color.md_theme_light_background)
         if (pair.second) {
-            timeSlotCard.background.setTint(primaryColor)
+            timeSlotCard.background.setTint(sportColor)
             timeSlotTv.setTextColor(whiteColor)
         } else {
             timeSlotCard.background.setTint(whiteColor)
@@ -46,13 +46,8 @@ class TimeSlotViewHolder(private val v: View,
         }
 
         timeSlotCard.setOnClickListener {
-
             callback(pair)
-
-
-
         }
-
     }
 }
 

@@ -43,6 +43,7 @@ class MyMonthDayBinder(val context: MyReservationsFragment, private val calendar
             }
 
         }
+
         container.textView.text = data.date.dayOfMonth.toString()
         container.setBackground(viewModel.selectedDate.value)
         container.setTextColor(viewModel.selectedDate.value, context.context)

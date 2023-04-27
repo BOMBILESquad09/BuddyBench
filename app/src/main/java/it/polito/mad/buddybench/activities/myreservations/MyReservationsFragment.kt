@@ -41,8 +41,8 @@ import java.util.Locale
 
 @AndroidEntryPoint
 class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_reservations) {
-    lateinit var recyclerViewReservations: RecyclerView
-    lateinit var calendarView: CalendarView
+    private lateinit var recyclerViewReservations: RecyclerView
+    private lateinit var calendarView: CalendarView
     val viewModel = context.reservationViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -102,7 +102,6 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
 
 
         viewModel.reservations.observe(viewLifecycleOwner){
-
             refreshCalendar()
         }
     }

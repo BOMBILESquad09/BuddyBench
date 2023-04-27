@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
 import android.opengl.Visibility
 import android.os.Bundle
@@ -80,7 +81,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
     // ** Court LiveData by ViewModel
     private val courtViewModel by viewModels<CourtViewModel>()
     private val reservationViewModel by viewModels<ReservationViewModel>()
-    val userViewModel by viewModels<UserViewModel>()
 
     private lateinit var profile: Profile
     private lateinit var sharedPref: SharedPreferences
@@ -90,13 +90,13 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
     // ** Edit mode (default to false)
     private var editMode = false
+
     private var reservationDate: LocalDate? = null
     private var emailReservation: String = ""
     private var startTime: Int = -1
     private var endTime: Int = -1
     private lateinit var recyclerView: RecyclerView
 
-    private lateinit var recyclerWeeklyCalendarView: RecyclerView
     private lateinit var weeklyDays: MutableList<Pair<LocalDate, Boolean>>
     private lateinit var switch: Switch
 
@@ -138,8 +138,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             editMode()
         }
 
-
-
         weeklyDays = (0..30).map {
             val day = LocalDate.now().plusDays(it.toLong())
             if (day == selectedDate) {
@@ -151,13 +149,11 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
         // Callback used inside the ViewHolder Item of the Recycler View
 
-
         // Setting the Manager Layout for the RecyclerView
         recyclerView = view.findViewById(R.id.time_slot_grid)
 //        recyclerWeeklyCalendarView = view.findViewById(R.id.weekly_calendar_adapter)
 
         val calendarView = view.findViewById<WeekCalendarView>(R.id.calendar)
-
 
         val calendarCallback: (LocalDate, LocalDate) -> Unit = { last, new ->
             if (last == new) {
@@ -202,6 +198,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         recyclerView.adapter = TimeSlotGripAdapter(
             courtViewModel.timeSlots,
             callback,
+            sport
         )
         // Return to the previous activity
         binding.backButton.setOnClickListener {
@@ -253,6 +250,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         binding.courtNameTv.text = court.name.replace("Courts", "")
         binding.courtAddressTv.text = String.format(getString(R.string.court_address_card), court.address, court.location)
         binding.courtFeeTv.text = getString(R.string.court_fee, court.feeHour.toString())
+        binding.feeCard.backgroundTintList = ColorStateList.valueOf(Sports.getSportColor(Sports.valueOf(court.sport), requireContext()))
         courtViewModel.getTimeTable().value?.timeTable.let {
             if (it != null) {
                 binding.courtOpeningHoursTv.text = Utils.getStringifyTimeTable(it)
