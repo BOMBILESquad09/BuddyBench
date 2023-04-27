@@ -81,6 +81,10 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
 
 
+        filterButton.setOnClickListener{
+            showBottomSheetDialog()
+        }
+
         b.setOnClickListener{
             parent.fragmentManager.switchFragment(States.SPORTS_SELECTION)
             textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
@@ -123,16 +127,22 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             })
         }
 
-        filterButton.setOnClickListener{showBottomSheetDialog()}
-
         super.onViewCreated(view, savedInstanceState)
     }
 
     private fun showBottomSheetDialog(){
         val bottomSheetDialog = BottomSheetDialog(requireContext())
-        val rangeSliderPrice = bottomSheetDialog.findViewById<RangeSlider>(R.id.range_slider_price)
-        rangeSliderPrice?.setValues(2.0f,75.0f)
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_filter)
+
+        val rangeSliderPrice : RangeSlider? = bottomSheetDialog.findViewById<RangeSlider>(R.id.range_slider_price)
+        rangeSliderPrice?.setValues(0f,100f)
+        rangeSliderPrice?.stepSize = 1f
+
+        val rangeSliderRating : RangeSlider? = bottomSheetDialog.findViewById<RangeSlider>(R.id.range_slider_rating)
+        rangeSliderRating?.setValues(0f,5f)
+        rangeSliderRating?.stepSize = 1f
+
+        val confirmButton = bottomSheetDialog.findViewById<Button>(R.id.confirmFilter)
         bottomSheetDialog.show()
     }
 
