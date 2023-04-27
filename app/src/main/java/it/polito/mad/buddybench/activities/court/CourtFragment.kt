@@ -459,12 +459,12 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
     private fun setPriceDetailCard(bottomSheetDialog: BottomSheetDialog) {
         val equipmentField = bottomSheetDialog.findViewById<TextView>(R.id.equipment_field)
         equipmentField?.text = String.format(getString(R.string.cost_example, 0))
+        val nHours = courtViewModel.selectedTimes.size
 
         val costField = bottomSheetDialog.findViewById<TextView>(R.id.cost_field)
         val feeHour = courtToReserve.feeHour
-        costField?.text = String.format(getString(R.string.cost_example), feeHour)
+        costField?.text = String.format(getString(R.string.cost_example), feeHour * nHours)
         //Evaluate Total Cost
-        val nHours = courtViewModel.selectedTimes.size
         var totalCost = feeHour * nHours
         val totalCostField = bottomSheetDialog.findViewById<TextView>(R.id.total_euros)
         totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
@@ -473,7 +473,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         // has equipment selected previously
         if(editMode && switch.isChecked) {
             val feeEquipment = courtToReserve.feeEquipment
-            equipmentField?.text = String.format(getString(R.string.cost_example, feeEquipment))
+            equipmentField?.text = String.format(getString(R.string.cost_example, feeEquipment * nHours))
             totalCost = (feeHour + feeEquipment) * nHours
             totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
         }
@@ -483,7 +483,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             // Else it's visible
             if (isChecked) {
                 val feeEquipment = courtToReserve.feeEquipment
-                equipmentField?.text = String.format(getString(R.string.cost_example, feeEquipment))
+                equipmentField?.text = String.format(getString(R.string.cost_example, feeEquipment * nHours))
                 totalCost = (feeHour + feeEquipment) * nHours
                 totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
             } else {
