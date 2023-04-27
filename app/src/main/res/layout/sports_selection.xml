@@ -11,8 +11,11 @@
             android:id="@+id/close_selection"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:padding="4dp"
             android:layout_gravity="right"
-            android:src="@drawable/close_button"/>
+            android:background="@drawable/rounded_shape"
+            android:backgroundTint="@color/md_theme_light_primary"
+            android:src="@drawable/close"/>
     </FrameLayout>
 
 
