@@ -18,6 +18,7 @@ class SportsSelectionViewHolder(private val v: View, private val callback: (Spor
         val wrappedDrawable = DrawableCompat.wrap(icon!!)
         val sportSelectionCard = v.findViewById<CardView>(R.id.sport_selection_card)
 
+
         Utils.setColoredDrawable(wrappedDrawable, v.findViewById<ImageView>(R.id.sport_image))
         sportSelectionCard.setBackgroundColor(Sports.getSportColor(sport, v.context))
         v.findViewById<TextView>(R.id.sport_name).text = Utils.capitalize(sport.name)

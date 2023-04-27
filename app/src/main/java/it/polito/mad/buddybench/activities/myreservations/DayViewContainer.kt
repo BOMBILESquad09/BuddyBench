@@ -42,7 +42,7 @@ class DayViewContainer(view: View) : ViewContainer(view) {
             val wrappedDrawable = unwrappedDrawable?.let { DrawableCompat.wrap(it) }
 
             // ** If there is 1 reservation change the drawable color to the sport color
-            if (reservations != null && reservations!!.size == 1) {
+            if ((reservations != null && reservations!!.size == 1) || (reservations?.map { it.court.sport }?.toSet()?.size == 1) ) {
                 val sportColor = Sports.getSportColor(Sports.valueOf(reservations!![0].court.sport), view.context)
 
                 if (wrappedDrawable != null) {
@@ -104,10 +104,16 @@ class DayViewContainer(view: View) : ViewContainer(view) {
                 } else {
                     val sportIcon = context.layoutInflater.inflate(
                         R.layout.sport_icon,
-                        reservationsContainer
+                        reservationsContainer,
+                        true
+
                     )
                     val iv = sportIcon.findViewById<ImageView>(R.id.sport_icon)
+                    iv.id = idx
+
                     iv.setImageResource(Sports.sportToIconDrawable(Sports.fromJSON(r.court.sport)!!))
+
+
                 }
             }
         } else {

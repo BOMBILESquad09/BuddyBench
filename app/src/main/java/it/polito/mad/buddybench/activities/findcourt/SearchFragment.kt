@@ -46,7 +46,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         recyclerView = view.findViewById(R.id.searchRecyclerView)
-        val b = view.findViewById<ImageButton>(R.id.change_sport_button)
+        val b = view.findViewById<ImageView>(R.id.change_sport_button)
         val textNearButton = view.findViewById<TextView>(R.id.textView12)
         val textUser = view.findViewById<TextView>(R.id.textView11)
         val searchEditText = view.findViewById<EditText>(R.id.searchEditText)

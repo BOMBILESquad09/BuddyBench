@@ -13,12 +13,21 @@ enum class Sports {
     VOLLEYBALL;
 
     companion object {
-        fun sportToIconDrawable(sport: Sports): Int {
+        fun sportToIconDrawableAlternative(sport: Sports): Int {
             return when (sport) {
                 FOOTBALL -> R.drawable.football
                 TENNIS -> R.drawable.tennis
                 BASKETBALL -> R.drawable.basketball
                 VOLLEYBALL -> R.drawable.volleyball
+            }
+        }
+
+        fun sportToIconDrawable(sport: Sports): Int {
+            return when (sport) {
+                FOOTBALL -> R.drawable.football_png
+                TENNIS -> R.drawable.tennis_png
+                BASKETBALL -> R.drawable.basketball_png
+                VOLLEYBALL -> R.drawable.volleyball_png
             }
         }
 

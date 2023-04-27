@@ -71,8 +71,8 @@
             <ImageView
                 android:id="@+id/sport_card_icon"
                 android:layout_marginLeft="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:contentDescription="@string/sport_tennis"
                 android:scaleX="1"
                 android:scaleY="1"

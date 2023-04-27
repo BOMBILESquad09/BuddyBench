@@ -21,15 +21,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-      <ImageButton
+      <ImageView
           android:id="@+id/change_sport_button"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:layout_width="86dp"
+          android:layout_height="86dp"
           android:contentDescription="@string/sport_choice"
           android:background="@drawable/circle_shape"
           android:backgroundTint="@color/md_theme_light_primary"
+          android:scaleX="1"
+          android:scaleY="1"
           android:padding="16dp"
-          android:src="@drawable/tennis_white" />
+          android:src="@drawable/basketball_png"
+          />
+
 
 
     </androidx.cardview.widget.CardView>
