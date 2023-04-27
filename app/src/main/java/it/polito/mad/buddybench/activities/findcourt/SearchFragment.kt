@@ -9,6 +9,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.*
 import androidx.cardview.widget.CardView
+import androidx.compose.material3.contentColorFor
 import androidx.compose.ui.res.painterResource
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -50,6 +51,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         val textUser = view.findViewById<TextView>(R.id.textView11)
         val searchEditText = view.findViewById<EditText>(R.id.searchEditText)
         val filterButton = view.findViewById<CardView>(R.id.filterButton)
+        val filterIcon = view.findViewById<ImageView>(R.id.filterIcon)
 
         parent.context.userViewModel.username.observe(viewLifecycleOwner) {
             textUser.text = parent.context.getString(R.string.user_hello, it)
@@ -77,6 +79,10 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             if(last == new){
                 calendarView.notifyDayChanged(WeekDay(last, WeekDayPosition.InDate))
             } else {
+                // Clean the filters after selected another day
+                parent.context.findCourtViewModel.clearFilters()
+                filterButton?.setBackgroundResource(R.drawable.circle_light_bg)
+                filterIcon?.setImageResource(R.drawable.filter)
                 calendarView.notifyDayChanged(WeekDay(new, WeekDayPosition.InDate))
                 calendarView.notifyDayChanged(WeekDay(last, WeekDayPosition.InDate))
                 parent.viewModel.setSelectedDate(new)
@@ -95,6 +101,10 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         b.setOnClickListener{
             parent.fragmentManager.switchFragment(States.SPORTS_SELECTION)
             textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
+            // When I return to sport selection, clear filter
+            parent.context.findCourtViewModel.clearFilters()
+            filterButton?.setBackgroundResource(R.drawable.circle_light_bg)
+            filterIcon?.setImageResource(R.drawable.filter)
         }
 
         parent.viewModel.currentCourts.observe(viewLifecycleOwner){
