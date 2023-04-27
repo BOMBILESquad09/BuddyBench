@@ -9,6 +9,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.*
 import androidx.cardview.widget.CardView
+import androidx.compose.ui.res.painterResource
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.toBitmap
@@ -50,7 +51,12 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         val searchEditText = view.findViewById<EditText>(R.id.searchEditText)
         val filterButton = view.findViewById<CardView>(R.id.filterButton)
 
+        parent.context.userViewModel.username.observe(viewLifecycleOwner) {
+            textUser.text = parent.context.getString(R.string.user_hello, it)
+        }
+
         textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
+
 
         val callbackCourt: (String, Sports) -> Unit  = {
                 name, sport ->

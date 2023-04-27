@@ -32,7 +32,7 @@ class HomeActivity: AppCompatActivity() {
     private val launcherEdit = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onEditReturn(it)}
     lateinit var profile: Profile
     private lateinit var sharedPref: SharedPreferences
-    private val userViewModel by viewModels<UserViewModel>()
+    val userViewModel by viewModels<UserViewModel>()
     val findCourtViewModel by viewModels<FindCourtViewModel>()
     val reservationViewModel by viewModels<ReservationViewModel>()
 
@@ -96,7 +96,6 @@ class HomeActivity: AppCompatActivity() {
 
                 putString("profile", profile.toJSON().toString())
                 apply()
-
                 userViewModel.updateUserInfo(profile, oldEmail)
                 supportFragmentManager.findFragmentByTag(Tabs.PROFILE.name).let {
                     if (it != null){
