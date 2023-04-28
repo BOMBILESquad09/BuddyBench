@@ -3,4 +3,4 @@
     android:layout_width="24sp"
     android:layout_height="24sp"
     android:contentDescription="TODO"
-    android:src="@drawable/tennis_white" />
+    android:src="@drawable/tennis_white_72" />
