@@ -7,7 +7,10 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.compose.material3.contentColorFor
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
@@ -44,6 +47,8 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
     private lateinit var recyclerViewReservations: RecyclerView
     private lateinit var calendarView: CalendarView
     val viewModel = context.reservationViewModel
+    private lateinit var progressBar: ProgressBar
+    private lateinit var progressLayout: LinearLayout
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -56,6 +61,18 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
 
         calendarView.dayBinder = MyMonthDayBinder(this, calendarView, recyclerViewReservations)
 
+        progressLayout = view.findViewById(R.id.progess_layout)
+        progressBar = progressLayout.findViewById(R.id.progress_circular)
+
+        context.reservationViewModel.loading.observe(viewLifecycleOwner) {
+            if(it) {
+                recyclerViewReservations.visibility = View.GONE
+                progressLayout.visibility = View.VISIBLE
+            } else {
+                progressLayout.visibility = View.GONE
+                recyclerViewReservations.visibility = View.VISIBLE
+            }
+        }
 
         val currentMonth = YearMonth.now()
         val startMonth = currentMonth.minusMonths(0)  // Adjust as needed
@@ -115,6 +132,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
                 View.GONE}
         }
         recyclerViewReservations.adapter = ReservationAdapter(selectedReservations ?: listOf())
+        context.reservationViewModel.loading.postValue(false)
     }
 
 
