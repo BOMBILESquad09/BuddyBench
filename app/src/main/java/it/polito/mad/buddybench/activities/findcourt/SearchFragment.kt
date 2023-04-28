@@ -116,9 +116,9 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
         parent.context.findCourtViewModel.loading.observe(viewLifecycleOwner) {
             if(it) {
-                progressLayout.visibility = View.VISIBLE
                 recyclerView.visibility = View.GONE
                 noCourts.visibility = View.GONE
+                progressLayout.visibility = View.VISIBLE
             } else {
                 progressLayout.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE
