@@ -29,6 +29,8 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
@@ -109,15 +111,8 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         savedInstanceState: Bundle?
     ): View {
 
-        editMode = arguments?.getBoolean("edit", false) ?: false
-        arguments?.getString("date").let {
-            if (it != null)
-                reservationDate = LocalDate.parse(it, DateTimeFormatter.ISO_LOCAL_DATE)
-        }
-
-        emailReservation = arguments?.getString("email", "") ?: ""
-        startTime = arguments?.getInt("startTime", -1) ?: -1
-        endTime = arguments?.getInt("endTime", -1) ?: -1
+        // ** Get arguments from activity intent
+        getArgs()
 
         selectedDate = reservationDate ?: LocalDate.now()
         _binding = FragmentCourtBinding.inflate(inflater, container, false)
@@ -231,7 +226,8 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                 val textError = getString(R.string.error_book)
                 buildAlertDialog("Book Error", textError, requireContext()).show()
             } else {
-                showBottomSheetDialog()
+                this.findNavController().navigate(R.id.action_to_recap_and_confirm)
+                // showBottomSheetDialog()
             }
 
         }
@@ -242,8 +238,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         profile =
             Profile.fromJSON(JSONObject(sharedPref.getString("profile", Profile.mockJSON())!!))
         user = profile.toUserDto()
-
-
     }
 
     private fun updateView(court: CourtDTO) {
@@ -479,6 +473,19 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                 totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
             }
         }
+    }
+
+    private fun getArgs() {
+        // ** Check intent for arguments
+        editMode = activity?.intent?.getBooleanExtra("edit", false) ?: false
+        activity?.intent?.getStringExtra("date").let {
+            if (it != null)
+                reservationDate = LocalDate.parse(it, DateTimeFormatter.ISO_LOCAL_DATE)
+        }
+
+        emailReservation = activity?.intent?.getStringExtra("email") ?: ""
+        startTime = activity?.intent?.getIntExtra("startTime", -1) ?: -1
+        endTime = activity?.intent?.getIntExtra("endTime", -1) ?: -1
     }
 
 }
