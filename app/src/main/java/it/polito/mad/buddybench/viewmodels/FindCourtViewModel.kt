@@ -53,8 +53,8 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
         Thread{
             loading.postValue(true)
             _courts = courtTimeRepository.getCourtTimesByDay(selectedSport.value!!, selectedDate)
-            _currentCourts.postValue(applyFiltersOnCourts(_courts))
-            loading.postValue(false)
+            val courts = applyFiltersOnCourts(_courts)
+            _currentCourts.postValue(courts)
         }.start()
         return currentCourts
     }

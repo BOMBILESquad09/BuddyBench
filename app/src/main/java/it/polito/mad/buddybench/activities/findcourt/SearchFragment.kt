@@ -116,7 +116,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         parent.context.findCourtViewModel.loading.observe(viewLifecycleOwner) {
             if(it) {
                 progressLayout.visibility = View.VISIBLE
-                recyclerView.visibility = View.INVISIBLE
+                recyclerView.visibility = View.GONE
             } else {
                 progressLayout.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE
@@ -129,6 +129,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             lastCourts = it
             diffResult.dispatchUpdatesTo(recyclerView.adapter!!)
             recyclerView.scrollToPosition(0)
+            parent.context.findCourtViewModel.loading.postValue(false)
         }
 
         parent.viewModel.selectedSport.observe(viewLifecycleOwner){
