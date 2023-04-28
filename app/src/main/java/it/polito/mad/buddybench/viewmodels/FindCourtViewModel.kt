@@ -25,6 +25,7 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     val currentCourts: LiveData<List<CourtDTO>> = _currentCourts
 
     private var selectedDate: LocalDate = LocalDate.now()
+    var loading = MutableLiveData(false)
 
     //filters
     var minRating: Float = 0f
@@ -50,8 +51,10 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     }
     fun getCourtsBySport(): LiveData<List<CourtDTO>> {
         Thread{
+            loading.postValue(true)
             _courts = courtTimeRepository.getCourtTimesByDay(selectedSport.value!!, selectedDate)
             _currentCourts.postValue(applyFiltersOnCourts(_courts))
+            loading.postValue(false)
         }.start()
         return currentCourts
     }

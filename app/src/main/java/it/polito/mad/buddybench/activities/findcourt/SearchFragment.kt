@@ -29,6 +29,7 @@ import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.court.CourtActivity
 import it.polito.mad.buddybench.activities.court.WeeklyCalendarDayBinder
 import it.polito.mad.buddybench.activities.findcourt.sportselection.CourtSearchAdapter
+import it.polito.mad.buddybench.activities.profile.EditProfileActivity_GeneratedInjector
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.Utils
@@ -42,6 +43,8 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
     private lateinit var recyclerView: RecyclerView
     private var lastCourts: List<CourtDTO> = listOf()
+    private lateinit var progressLayout: LinearLayout
+    private lateinit var progressBar: ProgressBar
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
@@ -56,6 +59,9 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         parent.context.userViewModel.username.observe(viewLifecycleOwner) {
             textUser.text = parent.context.getString(R.string.user_hello, it)
         }
+
+        progressLayout = view.findViewById(R.id.progess_layout)
+        progressBar = progressLayout.findViewById(R.id.progress_circular)
 
         textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
 
@@ -105,6 +111,16 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             parent.context.findCourtViewModel.clearFilters()
             filterButton?.setBackgroundResource(R.drawable.circle_light_bg)
             filterIcon?.setImageResource(R.drawable.filter)
+        }
+
+        parent.context.findCourtViewModel.loading.observe(viewLifecycleOwner) {
+            if(it) {
+                progressLayout.visibility = View.VISIBLE
+                recyclerView.visibility = View.INVISIBLE
+            } else {
+                progressLayout.visibility = View.GONE
+                recyclerView.visibility = View.VISIBLE
+            }
         }
 
         parent.viewModel.currentCourts.observe(viewLifecycleOwner){
