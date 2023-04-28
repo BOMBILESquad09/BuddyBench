@@ -21,7 +21,7 @@
             android:drawablePadding="8dp"
             android:textColor="@color/md_theme_light_onPrimary"
             android:fontFamily="@font/montserrat_semibold_600"
-            app:drawableTopCompat="@drawable/tennis_white"
+            app:drawableTopCompat="@drawable/tennis_white_72"
             app:drawableBottomCompat="@drawable/round_check_circle_24" />
 
     </androidx.cardview.widget.CardView>

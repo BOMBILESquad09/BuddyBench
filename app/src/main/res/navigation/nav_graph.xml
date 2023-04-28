@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_court">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
+            android:id="@+id/action_to_recap_and_confirm"
             app:destination="@id/SecondFragment" />
     </fragment>
     <fragment
@@ -22,7 +22,7 @@
         tools:layout="@layout/fragment_court_reservation">
 
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
+            android:id="@+id/action_recap_back_to_court"
             app:destination="@id/FirstFragment" />
     </fragment>
 </navigation>

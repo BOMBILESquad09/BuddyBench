@@ -23,6 +23,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     val selectedDate: LiveData<LocalDate> = _selectedDate
     private val _currentReservation: MutableLiveData<ReservationDTO?> = MutableLiveData(null)
     val currentReservation: LiveData<ReservationDTO?> get() = _currentReservation
+    val loading = MutableLiveData(false)
 
     @Inject
     lateinit var reservationRepository: ReservationRepository
@@ -41,10 +42,9 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     }
 
     fun getAllByUser(email: String): LiveData<HashMap<LocalDate, List<ReservationDTO>>> {
-        // Repository Call, All the repos return DTO Obj
         Thread {
+            loading.postValue(true)
             val reservations = reservationRepository.getAllByUser(email)
-
             _reservations.postValue(reservations)
         }.start()
 
