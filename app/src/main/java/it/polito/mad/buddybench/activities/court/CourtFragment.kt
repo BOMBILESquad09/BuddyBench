@@ -19,6 +19,7 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.widget.ScrollView
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
@@ -36,6 +37,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.WeekDayPosition
@@ -227,8 +229,8 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                 val textError = getString(R.string.error_book)
                 buildAlertDialog("Book Error", textError, requireContext()).show()
             } else {
-                this.findNavController().navigate(R.id.action_to_recap_and_confirm)
-                // showBottomSheetDialog()
+                // this.findNavController().navigate(R.id.action_to_recap_and_confirm)
+                showBottomSheetDialog()
             }
 
         }
@@ -328,6 +330,10 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         // Set the constructor of bottom dialog with the content
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_court_confirm)
+
+        // Disable dragging
+        bottomSheetDialog.behavior.isDraggable = false
+        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
 
         // Take the reference for the switch of equipment
         switch = bottomSheetDialog.findViewById(R.id.switch_equipment)!!
