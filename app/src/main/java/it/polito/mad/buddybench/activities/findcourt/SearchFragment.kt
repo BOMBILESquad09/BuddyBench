@@ -45,6 +45,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
     private var lastCourts: List<CourtDTO> = listOf()
     private lateinit var progressLayout: LinearLayout
     private lateinit var progressBar: ProgressBar
+    private lateinit var noCourts: TextView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
@@ -63,7 +64,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         progressLayout = view.findViewById(R.id.progess_layout)
         progressBar = progressLayout.findViewById(R.id.progress_circular)
 
-        textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
+        noCourts = view.findViewById(R.id.no_courts_available)
 
 
         val callbackCourt: (String, Sports) -> Unit  = {
@@ -117,6 +118,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             if(it) {
                 progressLayout.visibility = View.VISIBLE
                 recyclerView.visibility = View.GONE
+                noCourts.visibility = View.GONE
             } else {
                 progressLayout.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE
@@ -130,6 +132,13 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             diffResult.dispatchUpdatesTo(recyclerView.adapter!!)
             recyclerView.scrollToPosition(0)
             parent.context.findCourtViewModel.loading.postValue(false)
+            if(it.isEmpty()) {
+                recyclerView.visibility = View.GONE
+                noCourts.visibility = View.VISIBLE
+            } else {
+                recyclerView.visibility = View.VISIBLE
+                noCourts.visibility = View.GONE
+            }
         }
 
         parent.viewModel.selectedSport.observe(viewLifecycleOwner){

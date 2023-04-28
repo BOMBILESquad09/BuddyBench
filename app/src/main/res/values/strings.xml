@@ -110,4 +110,6 @@
     <string name="delete"> Delete </string>
     <string name="confirm_delete">Are you sure to delete the reservation for %1$s (%2$s) at %3$s - %4$s ?</string>
     <string name="search">Search</string>
+
+    <string name="no_courts">There are no courts available</string>
 </resources>

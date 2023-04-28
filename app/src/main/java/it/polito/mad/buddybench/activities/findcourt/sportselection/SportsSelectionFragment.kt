@@ -35,6 +35,7 @@ class SportsSelectionFragment(val parent: FindCourtFragment): Fragment(R.layout.
 
             parent.viewModel.getAllSports().observe(viewLifecycleOwner) {
                 sportsRecyclerView.adapter = SportsSelectionAdapter(it) { sport ->
+                    parent.viewModel.loading.postValue(true)
                     parent.viewModel.setSport(sport)
                     parent.fragmentManager.switchFragment(States.SEARCH)
                 }
