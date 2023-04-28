@@ -1,9 +1,11 @@
 package it.polito.mad.buddybench.utils
 
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.buddybench.R
@@ -45,6 +47,9 @@ class WeeklyCalendarAdapter(private val l: List<Pair<LocalDate,Boolean>>,
             dayTv.text = Utils.capitalize(date.first.dayOfWeek.name.subSequence(0, 3).toString())
             dayOfMonthTv.text = date.first.dayOfMonth.toString()
             monthTv.text = Utils.capitalize(date.first.month.name.subSequence(0, 3).toString())
+
+
+
             val primaryColor =
                 ContextCompat.getColor(v.context, R.color.md_theme_light_primary)
             val whiteColor =
@@ -57,6 +62,11 @@ class WeeklyCalendarAdapter(private val l: List<Pair<LocalDate,Boolean>>,
             } else {
                 dayOfMonthTv.background.setTint(whiteColor)
                 dayOfMonthTv.setTextColor(primaryColor)
+            }
+
+            if (true){
+
+                return
             }
 
 
