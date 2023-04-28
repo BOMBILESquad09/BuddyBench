@@ -14,6 +14,7 @@ import android.util.TypedValue
 import android.view.*
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
@@ -33,6 +34,7 @@ import it.polito.mad.buddybench.dialogs.EditSportsDialog
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.Utils
+import it.polito.mad.buddybench.viewmodels.UserViewModel
 import org.json.JSONObject
 
 import java.time.LocalDate
@@ -57,6 +59,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     private var tempCalendarDate: LocalDate? = null
     private var popupOpened: PopupMenu? = null
     private var tempSelectedSport: ArrayList<Sports>? = null
+    private var oldEmail: String? = null
     // ** Profile Image
     private val launcherCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -73,6 +76,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     // ** Sports
     private lateinit var addSportButton: ImageButton
     private lateinit var sportContainer: LinearLayout
+
+    private val userViewModel by viewModels<UserViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,6 +114,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
         nicknameEdit.setText(profile.nickname)
 
+        oldEmail = profile.email
         val emailEdit = findViewById<EditText>(R.id.Email)
         emailEdit.doOnTextChanged { text, _, _, _ ->
             changeColor(emailEdit, true, resources)
@@ -268,7 +274,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             nicknameEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
             flag = false
         }
-        if (!changeColor(emailEdit, validateEmail(emailEdit.text.toString()), resources)) {
+        if (!changeColor(emailEdit, validateEmail(emailEdit.text.toString(), oldEmail, userViewModel), resources)) {
             emailEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
             flagEmail = false
         }

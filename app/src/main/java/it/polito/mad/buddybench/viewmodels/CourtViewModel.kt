@@ -184,6 +184,11 @@ class CourtViewModel @Inject constructor() : ViewModel() {
             }.toMutableList()
             finalTimeSlots.addAll(alreadySelectedTimeSlots)
             finalTimeSlots.sortBy { it.first }
+            if(date.isEqual(LocalDate.now())) {
+                finalTimeSlots = finalTimeSlots.filter {
+                    it.first.isAfter(LocalTime.now())
+                } as MutableList<Pair<LocalTime, Boolean>>
+            }
             _timeSlots.postValue(finalTimeSlots)
             _plainTimeSlots.postValue(finalTimeSlots.map { it.first })
 
@@ -196,8 +201,8 @@ class CourtViewModel @Inject constructor() : ViewModel() {
         _openingTime.postValue( courtTime?.first ?: LocalTime.of(0, 0))
         _closingTime.postValue(  courtTime?.second ?: LocalTime.of(0, 0))
         _initialValueTimeSlots = if (courtTime != null) Utils.getTimeSlots(courtTime.first, courtTime.second) else listOf()
-        return _initialValueTimeSlots
 
+        return _initialValueTimeSlots
     }
 
 
