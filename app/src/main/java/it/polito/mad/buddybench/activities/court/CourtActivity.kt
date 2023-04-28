@@ -2,6 +2,7 @@ package it.polito.mad.buddybench.activities.court
 
 import android.app.Activity
 import android.os.Bundle
+import android.widget.ProgressBar
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels

@@ -6,144 +6,171 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-  <androidx.constraintlayout.widget.ConstraintLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-
-      android:orientation="horizontal">
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="99dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-      <ImageView
-          android:id="@+id/change_sport_button"
-          android:layout_width="86dp"
-          android:layout_height="86dp"
-          android:contentDescription="@string/sport_choice"
-          android:background="@drawable/circle_shape"
-          android:backgroundTint="@color/md_theme_light_primary"
-          android:scaleX="1"
-          android:scaleY="1"
-          android:padding="16dp"
-          android:src="@drawable/basketball_png"
-          />
-
-
-
-    </androidx.cardview.widget.CardView>
-
-    <TextView
-        android:id="@+id/textView11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:fontFamily="@font/montserrat_bold_700"
-        android:text="@string/user_hello"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/textView12"
-        app:layout_constraintStart_toEndOf="@+id/cardView3"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView12"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:lines="2"
-        android:text= "@string/court_search_phrase"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/textView11"
-        app:layout_constraintTop_toBottomOf="@+id/textView11" />
-
-  </androidx.constraintlayout.widget.ConstraintLayout>
-
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:layout_marginTop="12dp">
-
-    <androidx.cardview.widget.CardView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        app:cardElevation="4dp"
-        app:cardCornerRadius="24dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginVertical="2dp">
 
-      <EditText
-          android:id="@+id/searchEditText"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="12dp"
-          android:inputType="text"
-          android:backgroundTint="@color/cardview_light_background"
-          android:drawableStart="@drawable/search"
-          android:drawablePadding="8dp"
-          android:hint="@string/search"/>
-    </androidx.cardview.widget.CardView>
+        android:orientation="horizontal">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/filterButton"
-        android:layout_width="wrap_content"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="99dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/change_sport_button"
+                android:layout_width="86dp"
+                android:layout_height="86dp"
+                android:background="@drawable/circle_shape"
+                android:backgroundTint="@color/md_theme_light_primary"
+                android:contentDescription="@string/sport_choice"
+                android:padding="16dp"
+                android:scaleX="1"
+                android:scaleY="1"
+                android:src="@drawable/basketball_png" />
+
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/montserrat_bold_700"
+            android:text="@string/user_hello"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/textView12"
+            app:layout_constraintStart_toEndOf="@+id/cardView3"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:lines="2"
+            android:text="@string/court_search_phrase"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/textView11"
+            app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="99dp"
-        android:layout_marginVertical="1dp"
-        android:layout_marginEnd="1dp">
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal">
 
-      <ImageView
-          android:id="@+id/filterIcon"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:padding="12dp"
-          android:src="@drawable/filter" />
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="2dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginEnd="12dp"
+            android:layout_weight="1"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="4dp">
 
-    </androidx.cardview.widget.CardView>
+            <EditText
+                android:id="@+id/searchEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:backgroundTint="@color/cardview_light_background"
+                android:drawableStart="@drawable/search"
+                android:drawablePadding="8dp"
+                android:hint="@string/search"
+                android:inputType="text" />
+        </androidx.cardview.widget.CardView>
 
-  </LinearLayout>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/filterButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="1dp"
+            android:layout_marginEnd="1dp"
+            app:cardCornerRadius="99dp">
 
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:layout_marginTop="12dp"
-      >
+            <ImageView
+                android:id="@+id/filterIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:src="@drawable/filter" />
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal">
 
 
-      <com.kizitonwose.calendar.view.WeekCalendarView
-          android:id="@+id/calendar"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          app:cv_dayViewResource="@layout/datepicker_scroll_item"
-          app:cv_monthHeaderResource="@layout/calendar_header"
-          app:cv_daySize="rectangle"
-          />
+        <com.kizitonwose.calendar.view.WeekCalendarView
+            android:id="@+id/calendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cv_daySize="rectangle"
+            app:cv_dayViewResource="@layout/datepicker_scroll_item"
+            app:cv_monthHeaderResource="@layout/calendar_header" />
     </LinearLayout>
 
 
-
-
-
-  <LinearLayout
-      android:id="@+id/linearLayout2"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_marginTop="12dp"
-      android:orientation="vertical" >
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/searchRecyclerView"
+    <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-  </LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_marginTop="12dp"
+        android:orientation="vertical">
 
+        <LinearLayout
+            android:id="@+id/progess_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="100dp"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:id="@+id/progress_circular"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Loading..."
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/no_courts_available"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/no_courts"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:layout_margin="20sp"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:gravity="center"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
 </LinearLayout>
