@@ -31,7 +31,7 @@
                 android:padding="16dp"
                 android:scaleX="1"
                 android:scaleY="1"
-                android:src="@drawable/basketball_png" />
+                android:src="@drawable/tennis_white_72" />
 
 
         </androidx.cardview.widget.CardView>
@@ -54,6 +54,7 @@
             android:layout_height="wrap_content"
             android:lines="2"
             android:text="@string/court_search_phrase"
+            android:textColor="@color/md_theme_light_text"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/textView11"

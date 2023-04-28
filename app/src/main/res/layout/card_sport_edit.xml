@@ -92,6 +92,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
                         android:fontFamily="@font/montserrat_regular_400"
+                        android:textColor="@color/md_theme_light_text"
                         android:gravity="start"
                         android:text="@string/games_played_default"
                         android:textSize="11sp"
