@@ -6,6 +6,7 @@ import android.widget.ProgressBar
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
@@ -22,40 +23,5 @@ class CourtActivity : AppCompatActivity() {
 
         binding = ActivityCourtBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        val fragment = CourtFragment()
-
-        // ** Check intent for edit mode
-        val editMode = intent.getBooleanExtra("edit", false);
-        val args = Bundle()
-        val date = intent.getStringExtra("date")
-        args.putString("date", date)
-
-        if (editMode) {
-            args.putBoolean("edit", true)
-
-            val courtName = intent.getStringExtra("courtName")
-            args.putString("courtName", courtName)
-
-            val sport = intent.getStringExtra("sport")
-            args.putString("sport", sport)
-
-
-            val email = intent.getStringExtra("email")
-            args.putString("email", email)
-
-            val startTime = intent.getIntExtra("startTime", -1)
-            args.putInt("startTime", startTime)
-
-            val endTime = intent.getIntExtra("endTime",-1)
-            args.putInt("endTime", endTime)
-        }
-        fragment.arguments = args
-
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainerCourt, fragment)
-            .commit()
     }
-
-
 }
