@@ -332,8 +332,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_court_confirm)
 
         // Disable dragging
-        bottomSheetDialog.behavior.isDraggable = false
-        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        bottomSheetDialog.behavior.isDraggable = true
 
         // Take the reference for the switch of equipment
         switch = bottomSheetDialog.findViewById(R.id.switch_equipment)!!
