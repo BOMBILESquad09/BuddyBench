@@ -65,7 +65,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_bold_700"
-                    android:text="@string/sport_tennis"
+                    android:text="@string/court_name"
                     android:textSize="20sp" />
 
 
@@ -176,6 +176,7 @@
                     android:gravity="center_vertical"
                     android:text="@string/via_roma_16_torino"
                     android:textSize="12sp"
+                    android:drawableTint="@color/md_theme_light_text"
                     android:textColor="@color/md_theme_light_text"
                     app:drawableStartCompat="@drawable/location" />
 
@@ -186,6 +187,7 @@
                 android:id="@+id/court_opening_hours_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:drawableTint="@color/md_theme_light_text"
                 android:drawablePadding="8dp"
                 android:fontFamily="@font/montserrat_medium_500"
                 android:textColor="@color/md_theme_light_text"
@@ -203,6 +205,7 @@
                     android:id="@+id/sport_icon_equipment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    app:tint="@color/md_theme_light_text"
                     android:src="@drawable/baseline_shopping_bag_24"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

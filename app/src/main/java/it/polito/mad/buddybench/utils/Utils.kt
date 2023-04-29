@@ -101,7 +101,7 @@ class Utils {
 
         fun setColoredDrawable(drawable: Drawable, iv: ImageView, color: Int = Color.WHITE) {
             val wrappedDrawable = DrawableCompat.wrap(drawable)
-            wrappedDrawable.mutate().setTint(color)
+//            wrappedDrawable.mutate().setTint(color)
             iv.setImageDrawable(wrappedDrawable)
         }
 
