@@ -2,6 +2,7 @@ package it.polito.mad.buddybench.activities.court
 
 import android.R.attr.duration
 import android.R.attr.text
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
@@ -282,7 +283,9 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         if(editMode)
             binding.parentScrollView.post {
                 binding.parentScrollView.isSmoothScrollingEnabled = true
-                binding.parentScrollView.fullScroll(ScrollView.FOCUS_DOWN)
+                binding.parentScrollView.smoothScrollBy(0, Int.MAX_VALUE)
+                //ObjectAnimator.ofInt(binding.parentScrollView, "scrollY",  Int.MAX_VALUE).setDuration(1).start();
+
             }
     }
 

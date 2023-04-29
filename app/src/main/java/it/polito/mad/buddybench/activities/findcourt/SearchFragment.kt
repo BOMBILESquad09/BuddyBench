@@ -139,7 +139,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
         parent.viewModel.selectedSport.observe(viewLifecycleOwner){
             val iconDrawable = ContextCompat.getDrawable(view.context,
-                Sports.sportToIconDrawable(
+                Sports.sportToIconDrawableAlternative(
                     it
                 )
             )

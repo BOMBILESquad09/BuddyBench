@@ -117,6 +117,7 @@
 
             <FrameLayout
                 android:layout_marginTop="5dp"
+                android:layout_marginLeft="3dp"
                 android:id="@+id/emptyReservations"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -125,7 +126,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
-                    android:text="@string/no_reservation"/>
+                    android:text="@string/no_reservation"
+                    android:textColor="@color/disabled"/>
             </FrameLayout>
 
             <LinearLayout
