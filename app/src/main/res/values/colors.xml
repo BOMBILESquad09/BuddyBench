@@ -1,10 +1,10 @@
 
 <resources>
     <color name="disabled">#808080</color>
-    <color name="basketball_sport">#FF784F</color>
-    <color name="tennis_sport">#DACC3E</color>
+    <color name="basketball_sport">#FFD166</color>
+    <color name="tennis_sport">#08B2E3</color>
     <color name="football_sport">#3B953E</color>
-    <color name="volleyball_sport">#1282A2</color>
+    <color name="volleyball_sport">#EE6352</color>
     <color name="error">#FF0000</color>
     <color name="seed">#1b1b6c</color>
     <color name="md_theme_light_primary">#1b1b6c</color>

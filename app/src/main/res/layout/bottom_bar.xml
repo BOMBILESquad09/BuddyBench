@@ -10,8 +10,8 @@
     <nl.joery.animatedbottombar.AnimatedBottomBar android:id="@+id/bottom_bar"
 
         app:abb_badgeTextColor="@android:color/black"
-        app:abb_tabColorSelected="@android:color/black"
-        app:abb_indicatorColor="@android:color/black"
+        app:abb_tabColorSelected="@color/md_theme_light_primary"
+        app:abb_indicatorColor="@color/md_theme_light_primary"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         app:abb_textSize="14sp"

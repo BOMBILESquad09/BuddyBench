@@ -39,13 +39,15 @@ class ReservationViewHolder(v: View): RecyclerView.ViewHolder(v) {
 
         courtName.text = reservation.court.name
         val iconDrawable = ContextCompat.getDrawable(view.context,
-            Sports.sportToIconDrawable(
+            Sports.sportToIconDrawableAlternative(
                 Sports.fromJSON(
                     reservation.court.sport
                 )!!
             )
         )
-        Utils.setColoredDrawable(iconDrawable!!, iconSport)
+
+        val wrappedDrawable = DrawableCompat.wrap(iconDrawable!!)
+        iconSport.setImageDrawable(wrappedDrawable)
         slot.text = "${reservation.startTime.format(formatter)} - ${reservation.endTime.format(formatter)}"
         if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime))
             manageBtn.visibility = View.INVISIBLE

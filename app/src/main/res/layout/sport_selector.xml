@@ -2,9 +2,7 @@
 
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/prova"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="3dp">
@@ -27,7 +25,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingVertical="10dp">
 
                 <ImageView
                     android:id="@+id/sport_button"
@@ -58,14 +57,17 @@
 
                 <ImageView
                     android:id="@+id/sport_image"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="50dp"
+                    android:layout_height="70dp"
+                    android:layout_marginStart="25dp"
                     android:contentDescription="@string/sport_tennis"
-                    android:src="@drawable/tennis"
-                    app:tint="@color/md_theme_light_background"
-                    tools:ignore="MissingConstraints"
-                    tools:layout_editor_absoluteX="-16dp"
-                    tools:layout_editor_absoluteY="-32dp" />
+                    android:scaleX="1"
+                    android:scaleY="1"
+                    android:src="@drawable/tennis_png"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

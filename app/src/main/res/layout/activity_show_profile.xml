@@ -88,6 +88,7 @@
 
                         <TextView
                             android:id="@+id/fullNameView"
+                            android:textColor="@color/md_theme_light_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/montserrat_bold_700"
@@ -148,6 +149,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
+                                    app:tint="@color/md_theme_light_text"
                                     android:contentDescription="@string/location_icon"
                                     android:src="@drawable/location" />
 
