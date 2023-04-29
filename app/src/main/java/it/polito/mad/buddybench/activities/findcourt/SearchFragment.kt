@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.RangeSlider
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.WeekDayPosition
@@ -34,6 +35,7 @@ import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.FindCourtViewModel
+import org.w3c.dom.Text
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -172,30 +174,37 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
     private fun showBottomSheetDialog(){
 
         val minRating: Float = parent.viewModel.minRating
-        val maxRating: Float = parent.viewModel.maxRating
-        val minFee: Float = parent.viewModel.minFee
         val maxFee: Float = parent.viewModel.maxFee
-
-        val bottomSheetDialog = BottomSheetDialog(requireContext())
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_filter)
 
         val filterButton = view?.findViewById<CardView>(R.id.filterButton)
         val filterIcon = view?.findViewById<ImageView>(R.id.filterIcon)
 
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_filter)
+
         val rangeSliderPrice : RangeSlider? = bottomSheetDialog.findViewById<RangeSlider>(R.id.range_slider_price)
-        rangeSliderPrice?.setValues(minFee,maxFee)
+        rangeSliderPrice?.labelBehavior = LabelFormatter.LABEL_GONE
+        rangeSliderPrice?.setValues(maxFee)
         rangeSliderPrice?.stepSize = 1f
 
         val rangeSliderRating : RangeSlider? = bottomSheetDialog.findViewById<RangeSlider>(R.id.range_slider_rating)
-        rangeSliderRating?.setValues(minRating,maxRating)
+        rangeSliderRating?.labelBehavior = LabelFormatter.LABEL_GONE
+        rangeSliderRating?.setValues(minRating)
         rangeSliderRating?.stepSize = 1f
+
+        val showMinRating = bottomSheetDialog.findViewById<TextView>(R.id.minRating)
+        val showMaxPrice = bottomSheetDialog.findViewById<TextView>(R.id.maxFee)
+        showMinRating?.text = minRating.toInt().toString()
+        showMaxPrice?.text = maxFee.toInt().toString() + "€"
+
+        rangeSliderRating?.addOnChangeListener(RangeSlider.OnChangeListener { _, value, _ -> showMinRating?.text = value.toInt().toString() })
+
+        rangeSliderPrice?.addOnChangeListener(RangeSlider.OnChangeListener { _, value, _ -> showMaxPrice?.text = value.toInt().toString() + "€" })
 
         val confirmButton = bottomSheetDialog.findViewById<Button>(R.id.confirmFilter)
         confirmButton?.setOnClickListener{
             parent.viewModel.minRating = rangeSliderRating?.values?.get(0)!!
-            parent.viewModel.maxRating = rangeSliderRating.values[1]!!
-            parent.viewModel.minFee = rangeSliderPrice?.values?.get(0)!!
-            parent.viewModel.maxFee = rangeSliderPrice?.values?.get(1)!!
+            parent.viewModel.maxFee = rangeSliderPrice?.values?.get(0)!!
 
             parent.viewModel.applyFilter()
             filterButton?.setBackgroundResource(R.drawable.circle_dark_bg)
