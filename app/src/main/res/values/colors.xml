@@ -1,8 +1,8 @@
 
 <resources>
     <color name="disabled">#808080</color>
-    <color name="basketball_sport">#FFD166</color>
-    <color name="tennis_sport">#08B2E3</color>
+    <color name="basketball_sport">#E3B505</color>
+    <color name="tennis_sport">#006D77</color>
     <color name="football_sport">#3B953E</color>
     <color name="volleyball_sport">#EE6352</color>
     <color name="error">#FF0000</color>
