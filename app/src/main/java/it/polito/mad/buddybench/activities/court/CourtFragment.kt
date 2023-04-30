@@ -261,31 +261,21 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             val b : Button? = view?.findViewById(R.id.cancel_button)
             b?.visibility = View.GONE
         } else {
-            reservationViewModel.getReservation(
-                courtToReserve.name,
-                Sports.fromJSON(courtToReserve.sport)!!,
-                profile.email,
-                selectedDate,
-                startTime
-            )
             val b : Button? = view?.findViewById(R.id.cancel_button)
             b?.setOnClickListener {
-                val textConfirm = String.format(
-                    getString(R.string.confirm_delete),
-                    courtToReserve.name,
-                    courtToReserve.sport,
-                    reservationViewModel.currentReservation.value!!.startTime,
-                    reservationViewModel.currentReservation.value!!.endTime)
-                val alertDialog = buildAlertDialogDelete("Confirm Delete", textConfirm, requireContext())
-                alertDialog.show()
+                val deleteSheet = DialogSheetDeleteReservation(
+                    courtName,
+                    sport,
+                    oldStartTime!!,
+                    oldDate!!,
+                    profile.email
+                )
+                deleteSheet.show(requireActivity().supportFragmentManager, "DeleteSheet")
             }
         }
         if(editMode)
             binding.parentScrollView.post {
-                binding.parentScrollView.isSmoothScrollingEnabled = true
                 binding.parentScrollView.smoothScrollBy(0, Int.MAX_VALUE)
-                //ObjectAnimator.ofInt(binding.parentScrollView, "scrollY",  Int.MAX_VALUE).setDuration(1).start();
-
             }
     }
 
@@ -295,27 +285,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             .setTitle(title)
             .setMessage(text)
             .setPositiveButton("Ok") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .create()
-    }
-
-    private fun buildAlertDialogDelete(title: String, text: String, context: Context): AlertDialog {
-        return AlertDialog.Builder(context)
-            .setTitle(title)
-            .setMessage(text)
-            .setPositiveButton("Yes") { dialog, _ ->
-                reservationViewModel.deleteReservation(
-                    courtName,
-                    sport,
-                    oldStartTime!!,
-                    oldDate!!,
-                    profile.email
-                )
-                dialog.dismiss()
-                requireActivity().finish()
-            }
-            .setNegativeButton("No") { dialog, _ ->
                 dialog.dismiss()
             }
             .create()
