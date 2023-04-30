@@ -1,11 +1,13 @@
 package it.polito.mad.buddybench.activities.profile
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
@@ -17,11 +19,17 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.activity
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
     }
 
     override fun onResume() {
         super.onResume()
         setGUI()
+
+    }
+
+    override fun onStart() {
+        super.onStart()
     }
 
     private fun setGUI(){
@@ -76,6 +84,6 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.activity
             iv.layoutParams = FrameLayout.LayoutParams(diameter, diameter)
             iv.requestLayout()
         }
-
     }
+
 }

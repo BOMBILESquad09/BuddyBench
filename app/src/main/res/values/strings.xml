@@ -101,7 +101,7 @@
     <string name="total_cost">Total (EUR)</string>
     <string name="court_address_card">%1$s, %2$s</string>
     <string name="error_info">Make sure to accept the additional information of %1$s</string>
-    <string name="error_book">Before to book, please select at least one time slot</string>
+    <string name="error_book">Before booking, select at least one time slot</string>
     <string name="time_selected"> %1$s - %2$s</string>
     <string name="delete"> Delete </string>
     <string name="confirm_delete">Are you sure to delete the reservation for %1$s (%2$s) at %3$s - %4$s ?</string>

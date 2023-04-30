@@ -30,8 +30,8 @@ class WeeklyCalendarDayBinder(var selectedDate: LocalDate, val calendarCallback:
 
 
         fun bind(data: WeekDay) {
-            v.findViewById<TextView>(R.id.day_t).text = data.date.dayOfWeek.displayText()
             val weekDay = v.findViewById<TextView>(R.id.day_t)
+            weekDay.text = data.date.dayOfWeek.displayText()
             val dayTv = v.findViewById<TextView>(R.id.day_of_month_tv).let{
                 val primaryColor =
                     ContextCompat.getColor(v.context, R.color.md_theme_light_primary)
@@ -47,7 +47,8 @@ class WeeklyCalendarDayBinder(var selectedDate: LocalDate, val calendarCallback:
                 it.text = data.date.dayOfMonth.toString()
                 it
             }
-            v.findViewById<TextView>(R.id.month_tv).text = data.date.month.displayText()
+            val monthTv = v.findViewById<TextView>(R.id.month_tv)
+            monthTv.text = data.date.month.displayText()
             // ** Selected day
 
             v.setOnClickListener {
@@ -58,7 +59,7 @@ class WeeklyCalendarDayBinder(var selectedDate: LocalDate, val calendarCallback:
 
             if (data.date < LocalDate.now()){
                 weekDay.setTextColor( ContextCompat.getColor(v.context, R.color.disabled) )
-
+                monthTv.setTextColor( ContextCompat.getColor(v.context, R.color.disabled) )
                 dayTv.setTextColor( ContextCompat.getColor(v.context, R.color.disabled) )
             }
 

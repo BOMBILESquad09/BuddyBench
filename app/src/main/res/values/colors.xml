@@ -5,7 +5,7 @@
     <color name="tennis_sport">#006D77</color>
     <color name="football_sport">#3B953E</color>
     <color name="volleyball_sport">#EE6352</color>
-    <color name="error">#FF0000</color>
+    <color name="error">#A00000</color>
     <color name="seed">#1b1b6c</color>
     <color name="md_theme_light_primary">#1b1b6c</color>
     <color name="md_theme_light_onPrimary">#FFFBFF</color>

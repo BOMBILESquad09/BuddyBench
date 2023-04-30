@@ -33,8 +33,14 @@ class BottomBar(val context: HomeActivity) {
                 replaceFragment(lastTag,newTag)
             }
         })
-
         addInitialFragment()
+        initializeProfile()
+    }
+
+    private fun initializeProfile(){
+        replaceFragment(currentTab, Tabs.PROFILE)
+        context.supportFragmentManager.executePendingTransactions()
+        replaceFragment(Tabs.PROFILE, currentTab)
     }
 
     private fun addInitialFragment(){
@@ -45,7 +51,7 @@ class BottomBar(val context: HomeActivity) {
             Tabs.FINDCOURT -> FindCourtFragment(context)
         }
         transaction.add(R.id.home_fragment_container, newFragment, currentTab.name)
-        transaction.commit()
+        transaction.commitNow()
         val bottomBar = context.findViewById<AnimatedBottomBar>(R.id.bottom_bar)
         bottomBar.selectTabAt(tabIndex = currentTab.getId())
         if (currentTab != Tabs.PROFILE)
@@ -56,8 +62,11 @@ class BottomBar(val context: HomeActivity) {
         val transaction = context.supportFragmentManager.beginTransaction()
 
         context.supportFragmentManager.findFragmentByTag(lastTag.name).let {
+            println(it)
+            println("watch--------------------------")
             if(it != null){
                 transaction.hide(it)
+                println("hideeee")
             }
         }
         context.supportFragmentManager.findFragmentByTag(newTag.name).let {
@@ -80,7 +89,7 @@ class BottomBar(val context: HomeActivity) {
 
     private fun adjustExternalComponents(currentTab: Tabs){
         when(currentTab){
-            Tabs.PROFILE -> setToolbar()
+            Tabs.PROFILE -> {setToolbar() }
             else -> {clearToolbar()}
         }
     }

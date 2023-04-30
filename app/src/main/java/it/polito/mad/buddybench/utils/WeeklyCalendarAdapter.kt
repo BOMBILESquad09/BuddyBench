@@ -56,20 +56,12 @@ class WeeklyCalendarAdapter(private val l: List<Pair<LocalDate,Boolean>>,
                 ContextCompat.getColor(v.context, R.color.md_theme_light_background)
             // ** Selected day
             if (date.second) {
-
                 dayOfMonthTv.background.setTint(primaryColor)
                 dayOfMonthTv.setTextColor(whiteColor)
             } else {
                 dayOfMonthTv.background.setTint(whiteColor)
                 dayOfMonthTv.setTextColor(primaryColor)
             }
-
-            if (true){
-
-                return
-            }
-
-
 
             // ** Last item no margin at the end
         }

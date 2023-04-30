@@ -217,7 +217,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         binding.buttonFirst.setOnClickListener {
             if (courtViewModel.selectedTimes.isEmpty()) {
                 val textError = getString(R.string.error_book)
-                buildAlertDialog("Book Error", textError, requireContext()).show()
+                buildAlertDialog("Pick a timeslot", textError, requireContext()).show()
             } else {
                 showBottomSheetDialog()
             }

@@ -107,8 +107,4 @@ class HomeActivity: AppCompatActivity() {
             }
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-    }
 }
