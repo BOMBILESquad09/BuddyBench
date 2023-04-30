@@ -160,6 +160,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
                 popup.menuInflater.inflate(R.menu.skill_level_edit, popup.menu)
                 popup.setOnMenuItemClickListener {
                     profile.updateSkillLevel(sport, Skills.fromJSON(it.title.toString().uppercase())!!)
+                    profile.refreshSportsCard(this, sportContainer, sport)
                     true
                 }
                 popupOpened = popup
@@ -398,6 +399,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
                 continue
             }
         }
+
         profile.sports = newSports.plus(alreadySelectedSports)
         profile.populateSportCards(this, sportContainer,
             edit = true,
@@ -407,6 +409,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
                 popup.menuInflater.inflate(R.menu.skill_level_edit, popup.menu)
                 popup.setOnMenuItemClickListener {
                     profile.updateSkillLevel(sport, Skills.fromJSON(it.title.toString().uppercase())!!)
+
                     true
                 }
                 popupOpened = popup

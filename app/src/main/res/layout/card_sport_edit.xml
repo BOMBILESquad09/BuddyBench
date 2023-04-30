@@ -63,6 +63,7 @@
                             android:gravity="start|center"
                             android:text="@string/sport_tennis"
                             android:textSize="15sp"
+                            android:textColor="@color/md_theme_light_text"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/close_button"
                             app:layout_constraintHorizontal_bias="0.5"
