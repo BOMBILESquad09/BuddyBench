@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.TypedValue
@@ -127,7 +128,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         localityEdit.doOnTextChanged { text, _, _, _ ->
             changeColor(localityEdit, true, resources)
             profile.location = text.toString()
-            //localityEdit.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.location,0)
         }
 
 
@@ -238,14 +238,38 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
     }
 
+    private fun checkSdkVersion(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+    }
 
     private fun checkCameraPermission(): Boolean {
+        return if(checkSdkVersion()) {
+            checkCameraPermissionFromSdk32()
+        } else {
+            checkCameraPermissionUntilSdk31()
+        }
+    }
+
+    private fun checkCameraPermissionUntilSdk31(): Boolean {
         if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED || checkSelfPermission(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_DENIED
         ) {
             val permission =
                 arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            requestPermissions(permission, 121)
+            return false
+        }
+        return true
+    }
+
+    private fun checkCameraPermissionFromSdk32(): Boolean {
+        if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED || checkSelfPermission(
+                Manifest.permission.READ_MEDIA_IMAGES
+            ) == PackageManager.PERMISSION_DENIED
+        ) {
+            val permission =
+                arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_MEDIA_IMAGES)
             requestPermissions(permission, 121)
             return false
         }
@@ -339,7 +363,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     fun showDatePickerDialog(v: View?) {
         val myDateListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
             val date = LocalDate.of(year, month + 1, day)
-            //the user must be 18+ yo??
             if(!date.isAfter(LocalDate.now())){
                 birthdateListener.value = date
             } else {
