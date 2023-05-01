@@ -70,6 +70,7 @@ class ReservationViewHolder(v: View): RecyclerView.ViewHolder(v) {
         intent.putExtra("email", reservation.userOrganizer.email)
         intent.putExtra("startTime", reservation.startTime.hour)
         intent.putExtra("endTime", reservation.endTime.hour)
+        intent.putExtra("equipment", reservation.equipment)
 
         view.context.startActivity(intent)
     }

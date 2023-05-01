@@ -20,7 +20,6 @@ class CourtActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityCourtBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }

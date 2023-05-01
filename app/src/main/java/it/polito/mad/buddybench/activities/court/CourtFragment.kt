@@ -99,6 +99,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
     private var reservationDate: LocalDate? = null
     private var emailReservation: String = ""
+    private var equipment: Boolean? = null
     private var startTime: Int = -1
     private var endTime: Int = -1
     private lateinit var recyclerView: RecyclerView
@@ -388,7 +389,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             )
         )
         if(editMode) {
-            switch.isChecked = reservationViewModel.currentReservation.value!!.equipment
+            switch.isChecked = equipment!!
         }
     }
 
@@ -458,6 +459,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         emailReservation = activity?.intent?.getStringExtra("email") ?: ""
         startTime = activity?.intent?.getIntExtra("startTime", -1) ?: -1
         endTime = activity?.intent?.getIntExtra("endTime", -1) ?: -1
+        equipment = activity?.intent?.getBooleanExtra("equipment", false) ?: false
     }
 
 }
