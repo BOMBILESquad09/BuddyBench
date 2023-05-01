@@ -4,6 +4,8 @@ import android.R.attr.duration
 import android.R.attr.text
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.Instrumentation.ActivityResult
 import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
@@ -192,7 +194,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         )
         // Return to the previous activity
         binding.backButton.setOnClickListener {
-            activity?.finish()
+            requireActivity().finish()
         }
 
         // Retrieve the time tables associated to a Court
@@ -241,7 +243,11 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         binding.feeCard.backgroundTintList = ColorStateList.valueOf(Sports.getSportColor(Sports.valueOf(court.sport), requireContext()))
         courtViewModel.getTimeTable().value?.timeTable.let {
             if (it != null) {
-                binding.courtOpeningHoursTv.text = Utils.getStringifyTimeTable(it)
+                Utils.getStringifyTimeTable(it).apply {
+                    binding.courtOpeningHoursTv.text = first
+                    binding.courtHours.text = second
+                }
+
             }
         }
         val bitmap = try {
@@ -270,7 +276,8 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                     oldStartTime!!,
                     oldDate!!,
                     profile.email
-                )
+                ) { finishActivity(oldDate!!) }
+
                 deleteSheet.show(requireActivity().supportFragmentManager, "DeleteSheet")
             }
         }
@@ -336,7 +343,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
 
                 reservationViewModel.saveReservation(reservation, editMode, oldDate, oldStartTime)
-                requireActivity().finish()
+                finishActivity(selectedDate)
                 bottomSheetDialog.dismiss()
             }
         }
@@ -460,6 +467,12 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         startTime = activity?.intent?.getIntExtra("startTime", -1) ?: -1
         endTime = activity?.intent?.getIntExtra("endTime", -1) ?: -1
         equipment = activity?.intent?.getBooleanExtra("equipment", false) ?: false
+    }
+
+    private fun finishActivity(date: LocalDate) {
+        requireActivity().intent.putExtra("date", date.format(DateTimeFormatter.ISO_LOCAL_DATE))
+        requireActivity().setResult(Activity.RESULT_OK, requireActivity().intent)
+        requireActivity().finish()
     }
 
 }

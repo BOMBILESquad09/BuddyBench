@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.activities.findcourt
 
+import android.app.Activity
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -8,6 +9,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
 import androidx.compose.material3.contentColorFor
 import androidx.compose.ui.res.painterResource
@@ -49,6 +51,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
     private lateinit var progressBar: ProgressBar
     private lateinit var noCourts: TextView
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         recyclerView = view.findViewById(R.id.searchRecyclerView)
@@ -75,8 +78,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             intent.putExtra("courtName", name)
             intent.putExtra("sport", sport.name.uppercase())
             intent.putExtra("date", parent.viewModel.getSelectedDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
-
-            context?.startActivity(intent)
+            parent.context.launcherReservation.launch(intent)
         }
 
         recyclerView.adapter = CourtSearchAdapter(parent.viewModel.currentCourts, callbackCourt)
@@ -222,6 +224,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         }
         bottomSheetDialog.show()
     }
+
 
     override  fun onStart() {
         super.onStart()

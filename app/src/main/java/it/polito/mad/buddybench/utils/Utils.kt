@@ -50,7 +50,7 @@ class Utils {
             return list // generate a list of hourly time slots using a range operator and the map() function
         }
 
-        fun getStringifyTimeTable(timeTable: HashMap<DayOfWeek, Pair<LocalTime, LocalTime>>): String {
+        fun getStringifyTimeTable(timeTable: HashMap<DayOfWeek, Pair<LocalTime, LocalTime>>): Pair<String,String> {
             val hm: HashMap<Pair<LocalTime, LocalTime>, MutableList<DayOfWeek>> = HashMap()
             for (day in timeTable) {
                 hm.get(Pair(day.value.first, day.value.second)).let {
@@ -74,19 +74,29 @@ class Utils {
                     }
 
 
-                    val s = "$prefix: ${entry.key.first} - ${entry.key.second}"
+                    val s = "$prefix: ! ${entry.key.first} - ${entry.key.second}"
                     adiacentMap[x.first()] = s
                 }
             }
 
+
+
+            return Pair(
+
             adiacentMap.entries.toList().sortedBy {
                 it.key
             }.joinToString("\n") {
-                it.value
-            }.let {
+                it.value.split(":").first()
+            },
 
-                return it
-            }
+            adiacentMap.entries.toList().sortedBy {
+                it.key
+            }.joinToString("\n") {
+                it.value.split("!").last()
+            })
+
+
+
         }
 
         private fun getConsecutiveNumbers(srcList: List<DayOfWeek>): List<List<DayOfWeek>> {

@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -21,7 +22,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
-class ReservationViewHolder(v: View): RecyclerView.ViewHolder(v) {
+class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent>): RecyclerView.ViewHolder(v) {
 
     private val courtName : TextView = v.findViewById(R.id.textView6)
     private val slot : TextView = v.findViewById(R.id.textView5)
@@ -72,7 +73,7 @@ class ReservationViewHolder(v: View): RecyclerView.ViewHolder(v) {
         intent.putExtra("endTime", reservation.endTime.hour)
         intent.putExtra("equipment", reservation.equipment)
 
-        view.context.startActivity(intent)
+        launcher.launch(intent)
     }
 
 

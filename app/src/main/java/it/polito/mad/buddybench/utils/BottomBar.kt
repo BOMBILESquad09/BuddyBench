@@ -14,10 +14,10 @@ import nl.joery.animatedbottombar.AnimatedBottomBar
 
 class BottomBar(val context: HomeActivity) {
 
-    private var currentTab = Tabs.RESERVATIONS
-
+    var currentTab = Tabs.RESERVATIONS
+    lateinit var bottomBar: AnimatedBottomBar
     fun setup(){
-        val bottomBar = context.findViewById<AnimatedBottomBar>(R.id.bottom_bar)
+        bottomBar = context.findViewById(R.id.bottom_bar)
         bottomBar.setOnTabSelectListener(object : AnimatedBottomBar.OnTabSelectListener {
             override fun onTabSelected(
                 lastIndex: Int,

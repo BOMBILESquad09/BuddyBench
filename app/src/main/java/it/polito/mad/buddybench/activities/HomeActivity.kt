@@ -24,12 +24,15 @@ import it.polito.mad.buddybench.viewmodels.FindCourtViewModel
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
 import org.json.JSONObject
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
 class HomeActivity: AppCompatActivity() {
 
     private val bottomBar = BottomBar(this)
     private val launcherEdit = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onEditReturn(it)}
+    val launcherReservation = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onReservationReturn(it)}
     lateinit var profile: Profile
     private lateinit var sharedPref: SharedPreferences
     val userViewModel by viewModels<UserViewModel>()
@@ -51,6 +54,7 @@ class HomeActivity: AppCompatActivity() {
             }
             it
         }
+        reservationViewModel.email = profile.email
         bottomBar.setup()
     }
 
@@ -105,6 +109,17 @@ class HomeActivity: AppCompatActivity() {
                     }
                 }
             }
+        }
+    }
+
+    private fun onReservationReturn(response: androidx.activity.result.ActivityResult){
+        if(response.resultCode  == Activity.RESULT_OK){
+            reservationViewModel.refresh = true
+
+            reservationViewModel.updateSelectedDay( LocalDate.parse(response.data!!.getStringExtra("date"), DateTimeFormatter.ISO_LOCAL_DATE))
+            bottomBar.replaceFragment(bottomBar.currentTab, Tabs.RESERVATIONS)
+            bottomBar.currentTab = Tabs.RESERVATIONS
+            bottomBar.bottomBar.selectTabAt(tabIndex = bottomBar.currentTab.getId())
         }
     }
 }

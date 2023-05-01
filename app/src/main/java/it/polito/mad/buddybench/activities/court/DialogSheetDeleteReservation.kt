@@ -20,7 +20,8 @@ class DialogSheetDeleteReservation(
     private val sport: Sports,
     private val oldStartTime: LocalTime,
     private val oldDate: LocalDate,
-    private val email: String
+    private val email: String,
+    private val callback: () -> Unit
 ) : SuperBottomSheetFragment() {
 
     private val reservationViewModel by viewModels<ReservationViewModel>()
@@ -46,7 +47,9 @@ class DialogSheetDeleteReservation(
                 email
             )
             dismiss()
-            requireActivity().finish()
+            callback()
         }
     }
+
+
 }
