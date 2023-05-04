@@ -37,38 +37,70 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:fontFamily="@font/montserrat_semibold_600"
-                android:text="Tennis Club"
-                android:layout_marginTop="4dp"
                 android:layout_marginLeft="6dp"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/montserrat_semibold_600"
+                android:text="@string/court_name"
                 android:textColor="@color/md_theme_light_background"
                 android:textSize="20sp"
-                card_view:layout_constraintBottom_toTopOf="@+id/textView5"
+                card_view:layout_constraintBottom_toTopOf="@+id/court_address"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toTopOf="parent"
-                card_view:layout_constraintVertical_chainStyle="spread_inside">
+                card_view:layout_constraintVertical_chainStyle="spread">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/court_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/montserrat_medium_500"
+                android:text="@string/court_address"
+                android:textColor="@color/md_theme_light_background"
+                android:textSize="16sp"
+                card_view:layout_constraintBottom_toTopOf="@+id/court_phone_number"
+                card_view:layout_constraintStart_toStartOf="@+id/textView6"
+                card_view:layout_constraintTop_toBottomOf="@+id/textView6">
 
             </TextView>
 
 
             <TextView
+                android:id="@+id/court_phone_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/montserrat_medium_500"
+                android:text="@string/phone_number"
+                android:textColor="@color/md_theme_light_background"
+                android:textSize="16sp"
+                card_view:layout_constraintBottom_toTopOf="@+id/textView5"
+                card_view:layout_constraintStart_toStartOf="@+id/court_address"
+                card_view:layout_constraintTop_toBottomOf="@+id/court_address">
+
+            </TextView>
+
+            <TextView
                 android:id="@+id/textView5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="6dp"
                 android:fontFamily="@font/montserrat_medium_500"
                 android:text="16:00 - 17:00"
                 android:textColor="@color/md_theme_light_background"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="6dp"
-                android:layout_marginStart="6dp"
                 android:textSize="14sp"
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintEnd_toStartOf="@+id/manage_btn"
                 card_view:layout_constraintHorizontal_bias="0.5"
                 card_view:layout_constraintHorizontal_chainStyle="spread_inside"
                 card_view:layout_constraintStart_toStartOf="parent"
-                card_view:layout_constraintTop_toBottomOf="@+id/textView6" />
-
+                card_view:layout_constraintTop_toBottomOf="@+id/court_phone_number"
+                card_view:layout_constraintVertical_bias="0.0" />
 
             <ImageView
                 android:id="@+id/imageView"
