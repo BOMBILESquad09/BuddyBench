@@ -131,7 +131,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
     }
 
     private fun refresh(){
-        val selectedReservations = viewModel.getSelectedReservations()
+        val selectedReservations = viewModel.getSelectedReservations()?.sortedBy { it.endTime }
         context.findViewById<View>(R.id.emptyReservations).let {
             it.visibility = if (selectedReservations.isNullOrEmpty()){
                 View.VISIBLE
