@@ -175,60 +175,23 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
     private fun showBottomSheetDialog(){
 
-        val minRating: Float = parent.viewModel.minRating
-        val maxFee: Float = parent.viewModel.maxFee
-
         val filterButton = view?.findViewById<CardView>(R.id.filterButton)
         val filterIcon = view?.findViewById<ImageView>(R.id.filterIcon)
 
-        val bottomSheetDialog = BottomSheetDialog(requireContext())
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_filter)
+        val bottomSheet = FilterSheetDialog(
+            parent.viewModel,
+            filterButton!!,
+            filterIcon!!
+        )
 
-        val rangeSliderPrice : RangeSlider? = bottomSheetDialog.findViewById<RangeSlider>(R.id.range_slider_price)
-        rangeSliderPrice?.labelBehavior = LabelFormatter.LABEL_GONE
-        rangeSliderPrice?.setValues(maxFee)
-        rangeSliderPrice?.stepSize = 1f
+        bottomSheet.show(parentFragmentManager, "filterSheet")
 
-        val rangeSliderRating : RangeSlider? = bottomSheetDialog.findViewById<RangeSlider>(R.id.range_slider_rating)
-        rangeSliderRating?.labelBehavior = LabelFormatter.LABEL_GONE
-        rangeSliderRating?.setValues(minRating)
-        rangeSliderRating?.stepSize = 1f
-
-        val showMinRating = bottomSheetDialog.findViewById<TextView>(R.id.minRating)
-        val showMaxPrice = bottomSheetDialog.findViewById<TextView>(R.id.maxFee)
-        showMinRating?.text = minRating.toInt().toString()
-        showMaxPrice?.text = maxFee.toInt().toString() + "€"
-
-        rangeSliderRating?.addOnChangeListener(RangeSlider.OnChangeListener { _, value, _ -> showMinRating?.text = value.toInt().toString() })
-
-        rangeSliderPrice?.addOnChangeListener(RangeSlider.OnChangeListener { _, value, _ -> showMaxPrice?.text = value.toInt().toString() + "€" })
-
-        val confirmButton = bottomSheetDialog.findViewById<Button>(R.id.confirmFilter)
-        confirmButton?.setOnClickListener{
-            parent.viewModel.minRating = rangeSliderRating?.values?.get(0)!!
-            parent.viewModel.maxFee = rangeSliderPrice?.values?.get(0)!!
-
-            parent.viewModel.applyFilter()
-            filterButton?.setBackgroundResource(R.drawable.circle_dark_bg)
-            filterIcon?.setImageResource(R.drawable.filter_white)
-            bottomSheetDialog.dismiss()
-        }
-
-        val clearButton = bottomSheetDialog.findViewById<Button>(R.id.clearFilter)
-        clearButton?.setOnClickListener{
-            parent.viewModel.clearFilters()
-            parent.viewModel.applyFilter()
-            filterButton?.setBackgroundResource(R.drawable.circle_light_bg)
-            filterIcon?.setImageResource(R.drawable.filter)
-            bottomSheetDialog.dismiss()
-        }
-        bottomSheetDialog.show()
     }
 
 
     override  fun onStart() {
         super.onStart()
-        parent.viewModel.getCourtsBySport( )
+        parent.viewModel.getCourtsBySport()
     }
 
 }
