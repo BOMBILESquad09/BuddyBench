@@ -16,7 +16,6 @@ import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.findcourt.ReviewsDiffUtils
-import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.persistence.dto.ReviewDTO
 import it.polito.mad.buddybench.viewmodels.ReviewViewModel
 
@@ -89,11 +88,12 @@ class ReviewsBottomSheet : SuperBottomSheetFragment() {
 
         // ** Loading state
         pbReviews = parent.findViewById(R.id.pb_reviews)
-        reviewViewModel.loading.observe(this) {
+        reviewViewModel.l.observe(this) {
             println("Loading $it")
             if (it) {
                 pbReviews.visibility = View.VISIBLE
                 rvReviews.visibility = View.GONE
+                tvNoReviews.visibility = View.GONE
             } else {
                 pbReviews.visibility = View.GONE
                 rvReviews.visibility = View.VISIBLE
@@ -101,13 +101,12 @@ class ReviewsBottomSheet : SuperBottomSheetFragment() {
         }
 
         // ** Update recycler view
-        reviewViewModel.reviews.observe(viewLifecycleOwner){
+        reviewViewModel.reviews.observe(this){
             val diff = ReviewsDiffUtils(lastReviews, it)
             val diffResult = DiffUtil.calculateDiff(diff)
             lastReviews = it
             diffResult.dispatchUpdatesTo(rvReviews.adapter!!)
             rvReviews.scrollToPosition(0)
-            reviewViewModel.loading.postValue(false)
             if(it.isEmpty()) {
                 rvReviews.visibility = View.GONE
                 tvNoReviews.visibility = View.VISIBLE

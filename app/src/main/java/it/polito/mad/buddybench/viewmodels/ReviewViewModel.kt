@@ -14,7 +14,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ReviewViewModel @Inject constructor(): ViewModel() {
 
-
     @Inject
     lateinit var reviewRepository: ReviewRepository
 
@@ -24,19 +23,18 @@ class ReviewViewModel @Inject constructor(): ViewModel() {
     private val _reviews: MutableLiveData<List<ReviewDTO>> = MutableLiveData(listOf())
     val reviews: LiveData<List<ReviewDTO>> get() = _reviews
 
-    private val _l: MutableLiveData<Boolean> = MutableLiveData(false)
-    private val l: LiveData<Boolean> = _l
-
-    private val _loading: MutableLiveData<Boolean> = MutableLiveData(true)
-    val loading: MutableLiveData<Boolean> = _loading
-
+    private val _l: MutableLiveData<Boolean> = MutableLiveData(true)
+    val l: LiveData<Boolean> = _l
 
     fun getCourtReviews(name: String, sport: String): LiveData<List<ReviewDTO>>{
-        _loading.value = true
-        val court = courtRepository.getByNameAndSports(name, Sports.valueOf(sport))
-        val reviewsList = reviewRepository.getAllByCourt(court)
-        _reviews.postValue(reviewsList)
-        _loading.postValue(false)
+        _l.postValue(true)
+        Thread{
+            val court = courtRepository.getByNameAndSports(name, Sports.valueOf(sport))
+            val reviewsList = reviewRepository.getAllByCourt(court)
+            Thread.sleep(3000)
+            _reviews.postValue(reviewsList)
+            _l.postValue(false)
+        }.start()
         return reviews
     }
 
