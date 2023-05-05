@@ -4,7 +4,11 @@ import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
 import org.json.JSONObject
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getInt
-class Sport(val name: Sports, var skill: Skills, val matchesPlayed: Int, val matchesOrganized: Int = 0): java.io.Serializable {
+import it.polito.mad.buddybench.classes.JSONUtils.Companion.getString
+
+class Sport(val name: Sports, var skill: Skills, val matchesPlayed: Int, val matchesOrganized: Int = 0,
+    val achievements: List<String>
+): java.io.Serializable {
     companion object{
         fun fromJSON(jsonSport: JSONObject): Sport {
             val name = jsonSport.getString("name")
@@ -23,7 +27,9 @@ class Sport(val name: Sports, var skill: Skills, val matchesPlayed: Int, val mat
 
             val matchesPlayed = jsonSport.getInt("matchesPlayed")
             val matchesOrganized = jsonSport.getInt("matchesOrganized",0)
-            return Sport(sportName, skillName, matchesPlayed, matchesOrganized)
+            val achievements = jsonSport.getString("achievements", "")
+
+            return Sport(sportName, skillName, matchesPlayed, matchesOrganized, achievements.split(";"))
         }
     }
 

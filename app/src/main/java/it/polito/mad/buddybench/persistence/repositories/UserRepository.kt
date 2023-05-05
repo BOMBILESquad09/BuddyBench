@@ -68,7 +68,8 @@ class UserRepository @Inject constructor(
                     skill = entry.skill.name,
                     sport = entry.name.name,
                     gamesOrganized = entry.matchesOrganized,
-                    gamesPlayed = entry.matchesPlayed
+                    gamesPlayed = entry.matchesPlayed,
+                    achievements = entry.achievements.joinToString(";")
                 )
 
                 userSportDao.update(convertedSport)
