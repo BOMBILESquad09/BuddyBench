@@ -9,16 +9,18 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContentProviderCompat
 import androidx.core.content.ContextCompat.startActivity
+import androidx.fragment.app.findFragment
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.activities.court.CourtActivity
+import it.polito.mad.buddybench.activities.court.ReviewsBottomSheet
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.enums.Sports
 import java.io.FileNotFoundException
 import java.text.DecimalFormat
 
-class CourtSearchViewHolder(val v: View, val callback: (String, Sports) -> Unit): RecyclerView.ViewHolder(v){
+class CourtSearchViewHolder(val v: View, val callback: (String, Sports) -> Unit, val reviewsCallback: (String, Sports) -> Unit): RecyclerView.ViewHolder(v){
 
     private val name: TextView = v.findViewById(R.id.court_name)
     private val courtImage: ImageView = v.findViewById(R.id.court_image)
@@ -34,6 +36,10 @@ class CourtSearchViewHolder(val v: View, val callback: (String, Sports) -> Unit)
         feeHour.text = String.format(v.context.getString(R.string.court_fee), court.feeHour.toString())
         feeHour.backgroundTintList = ColorStateList.valueOf(Sports.getSportColor(Sports.valueOf(court.sport), v.context))
         courtRating.text = DecimalFormat("#.0").format(court.rating)
+
+        // ** Reviews
+        courtRating.setOnClickListener { reviewsCallback(court.name, Sports.valueOf(court.sport)) }
+
         val bitmap = try {
             BitmapFactory.decodeStream(courtImage.context?.assets?.open("courtImages/" + court.path + ".jpg"))
         } catch (_: FileNotFoundException) {

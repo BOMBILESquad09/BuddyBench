@@ -9,12 +9,11 @@ import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.enums.Sports
 
-class CourtSearchAdapter(private val l: LiveData<List<CourtDTO>>, val callback: (String, Sports) -> Unit): RecyclerView.Adapter<CourtSearchViewHolder>(){
+class CourtSearchAdapter(private val l: LiveData<List<CourtDTO>>, val callback: (String, Sports) -> Unit, val reviewsCallback: (String, Sports) -> Unit): RecyclerView.Adapter<CourtSearchViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourtSearchViewHolder {
-        val v = LayoutInflater.from(parent.context)
-            .inflate(R.layout.card_court,parent,false)
-        return CourtSearchViewHolder(v, callback)
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.card_court,parent,false)
+        return CourtSearchViewHolder(v, callback, reviewsCallback)
     }
 
     override fun getItemCount(): Int {

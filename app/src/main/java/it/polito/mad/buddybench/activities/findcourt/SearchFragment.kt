@@ -30,6 +30,7 @@ import com.kizitonwose.calendar.view.WeekCalendarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.court.CourtActivity
+import it.polito.mad.buddybench.activities.court.ReviewsBottomSheet
 import it.polito.mad.buddybench.activities.court.WeeklyCalendarDayBinder
 import it.polito.mad.buddybench.activities.findcourt.sportselection.CourtSearchAdapter
 import it.polito.mad.buddybench.activities.profile.EditProfileActivity_GeneratedInjector
@@ -81,7 +82,15 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             parent.context.launcherReservation.launch(intent)
         }
 
-        recyclerView.adapter = CourtSearchAdapter(parent.viewModel.currentCourts, callbackCourt)
+        val reviewsCallback: (String, Sports) -> Unit = {
+            name, sport ->
+            run {
+                val reviewsBottomSheet = ReviewsBottomSheet.newInstance(name, sport.toString())
+                reviewsBottomSheet.show(parentFragmentManager, "ReviewsBottomSheet")
+            }
+        }
+
+        recyclerView.adapter = CourtSearchAdapter(parent.viewModel.currentCourts, callbackCourt, reviewsCallback)
         recyclerView.layoutManager = LinearLayoutManager(view.context)
 
         val calendarView = view.findViewById<WeekCalendarView>(R.id.calendar)

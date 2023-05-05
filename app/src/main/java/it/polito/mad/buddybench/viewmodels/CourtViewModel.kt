@@ -155,7 +155,6 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     fun getTimeTables(name: String, sport: Sports): LiveData<CourtTimeTableDTO> {
         Thread{
             val tt = courtTimeRepository.getCourtTimeTable(name, sport)
-
             _timetable.postValue(tt)
             _court.postValue( tt.court)
         }.start()

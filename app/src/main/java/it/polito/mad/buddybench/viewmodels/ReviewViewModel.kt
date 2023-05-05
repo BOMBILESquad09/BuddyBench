@@ -19,25 +19,24 @@ class ReviewViewModel @Inject constructor(): ViewModel() {
     lateinit var reviewRepository: ReviewRepository
 
     private val _reviews: MutableLiveData<List<ReviewDTO>> = MutableLiveData(null)
-    val reviews: LiveData<List<ReviewDTO>> = _reviews
+    private val reviews: LiveData<List<ReviewDTO>> get() = _reviews
 
     private val _l: MutableLiveData<Boolean> = MutableLiveData(false)
     private val l: LiveData<Boolean> = _l
 
-
+    private val _loading: MutableLiveData<Boolean> = MutableLiveData(true)
+    private val loading: LiveData<Boolean> get() = _loading
 
     fun setCourt(court: CourtDTO){
         this.court = court
     }
 
-
     fun getCourtReviews(): LiveData<List<ReviewDTO>>{
+        _loading.value = true
         Thread{
             val reviewsList = reviewRepository.getAllByCourt(this.court)
             _reviews.postValue(reviewsList)
-
-
-
+            _loading.value = false
         }.start()
         return reviews
     }
