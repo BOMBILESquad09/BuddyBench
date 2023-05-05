@@ -1,15 +1,15 @@
 package it.polito.mad.buddybench.activities.court
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.RecyclerView
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.viewmodels.CourtViewModel
@@ -27,6 +27,13 @@ private const val ARG_COURT_SPORT = "court_sport"
  */
 class ReviewsBottomSheet : SuperBottomSheetFragment() {
 
+    // ** UI Elements
+    private lateinit var parent: View
+    private lateinit var tvCourtName: TextView
+    private lateinit var rvReviews: RecyclerView
+    private lateinit var backButton: ImageButton
+
+    // ** Data
     private var courtName: String? = null
     private var courtSport: String? = null
     private lateinit var court: CourtDTO
@@ -47,10 +54,25 @@ class ReviewsBottomSheet : SuperBottomSheetFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         // Inflate the layout for this fragment
-
         return inflater.inflate(R.layout.fragment_reviews_bottom_sheet, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        this.parent = view
+        uiSetup()
+    }
+
+    // ** UI Elements binding
+    private fun uiSetup() {
+        tvCourtName = parent.findViewById(R.id.tv_court_name_reviews)
+        tvCourtName.text = courtName
+
+        backButton = parent.findViewById(R.id.back_button_reviews)
+        backButton.setOnClickListener { this.dismiss() }
+    }
+
+    // ** Bottom Sheet is always expanded
     override fun isSheetAlwaysExpanded(): Boolean {
         return true
     }
