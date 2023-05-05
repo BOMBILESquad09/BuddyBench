@@ -23,8 +23,6 @@ class CourtViewModel @Inject constructor() : ViewModel() {
 
     private var _initialValue: CourtDTO? = null
 
-
-
     private var _initialValueTimeSlots = Utils.getTimeSlots(LocalTime.of(0, 0), LocalTime.of(0, 0))
     private var _court: MutableLiveData<CourtDTO> = MutableLiveData(null)
     private var _timetable: MutableLiveData<CourtTimeTableDTO> = MutableLiveData(null)
@@ -165,7 +163,6 @@ class CourtViewModel @Inject constructor() : ViewModel() {
         return _timetable
     }
 
-
     fun getTimeSlotsAvailable(courtDTO: CourtDTO, date: LocalDate, reservationDate: LocalDate?): LiveData<List<LocalTime>> {
 
         Thread {
@@ -195,6 +192,7 @@ class CourtViewModel @Inject constructor() : ViewModel() {
         return plainTimeSlots
     }
 
+
     private fun openingAndClosingTimeForCourt(dayOfWeek: DayOfWeek): List<LocalTime> {
         val courtTime = _timetable.value?.timeTable?.get(dayOfWeek)
         _openingTime.postValue( courtTime?.first ?: LocalTime.of(0, 0))
@@ -203,14 +201,4 @@ class CourtViewModel @Inject constructor() : ViewModel() {
 
         return _initialValueTimeSlots
     }
-
-
-
-
-
-
-
-
-
-
 }

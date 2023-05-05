@@ -5,17 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
+import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.activities.findcourt.ReviewsDiffUtils
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
-import it.polito.mad.buddybench.viewmodels.CourtViewModel
+import it.polito.mad.buddybench.persistence.dto.ReviewDTO
 import it.polito.mad.buddybench.viewmodels.ReviewViewModel
 
-// TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_COURT_NAME = "court_name"
 private const val ARG_COURT_SPORT = "court_sport"
@@ -25,6 +29,7 @@ private const val ARG_COURT_SPORT = "court_sport"
  * Use the [ReviewsBottomSheet.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class ReviewsBottomSheet : SuperBottomSheetFragment() {
 
     // ** UI Elements
@@ -32,15 +37,17 @@ class ReviewsBottomSheet : SuperBottomSheetFragment() {
     private lateinit var tvCourtName: TextView
     private lateinit var rvReviews: RecyclerView
     private lateinit var backButton: ImageButton
+    private lateinit var pbReviews: ProgressBar
+    private lateinit var tvNoReviews: TextView
 
     // ** Data
     private var courtName: String? = null
     private var courtSport: String? = null
-    private lateinit var court: CourtDTO
+    private var lastReviews: List<ReviewDTO> = listOf()
+
 
     // ** View Models
-    private val courtViewModel = viewModels<CourtViewModel>()
-    private val reviewViewModel = viewModels<ReviewViewModel>()
+    private val reviewViewModel by viewModels<ReviewViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +55,6 @@ class ReviewsBottomSheet : SuperBottomSheetFragment() {
             courtName = it.getString(ARG_COURT_NAME)
             courtSport = it.getString(ARG_COURT_SPORT)
         }
-        // ** Fetch court (?) and reviews while loading
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -59,7 +65,9 @@ class ReviewsBottomSheet : SuperBottomSheetFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        this.parent = view
+
+        // ** UI
+        parent = view
         uiSetup()
     }
 
@@ -70,6 +78,46 @@ class ReviewsBottomSheet : SuperBottomSheetFragment() {
 
         backButton = parent.findViewById(R.id.back_button_reviews)
         backButton.setOnClickListener { this.dismiss() }
+
+        // ** Recycler View
+        rvReviews = parent.findViewById(R.id.rv_reviews)
+        rvReviews.layoutManager = LinearLayoutManager(context)
+        rvReviews.adapter = ReviewsAdapter(reviewViewModel.reviews)
+
+        // ** Empty data
+        tvNoReviews = parent.findViewById(R.id.tv_no_reviews)
+
+        // ** Loading state
+        pbReviews = parent.findViewById(R.id.pb_reviews)
+        reviewViewModel.loading.observe(this) {
+            println("Loading $it")
+            if (it) {
+                pbReviews.visibility = View.VISIBLE
+                rvReviews.visibility = View.GONE
+            } else {
+                pbReviews.visibility = View.GONE
+                rvReviews.visibility = View.VISIBLE
+            }
+        }
+
+        // ** Update recycler view
+        reviewViewModel.reviews.observe(viewLifecycleOwner){
+            val diff = ReviewsDiffUtils(lastReviews, it)
+            val diffResult = DiffUtil.calculateDiff(diff)
+            lastReviews = it
+            diffResult.dispatchUpdatesTo(rvReviews.adapter!!)
+            rvReviews.scrollToPosition(0)
+            reviewViewModel.loading.postValue(false)
+            if(it.isEmpty()) {
+                rvReviews.visibility = View.GONE
+                tvNoReviews.visibility = View.VISIBLE
+            } else {
+                rvReviews.visibility = View.VISIBLE
+                tvNoReviews.visibility = View.GONE
+            }
+        }
+
+        reviewViewModel.getCourtReviews(courtName!!, courtSport!!)
     }
 
     // ** Bottom Sheet is always expanded
@@ -95,5 +143,6 @@ class ReviewsBottomSheet : SuperBottomSheetFragment() {
                     putString(ARG_COURT_SPORT, court_sport)
                 }
             }
+
     }
 }
