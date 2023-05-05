@@ -21,8 +21,6 @@ data class ReservationWithUserAndCourt(
     )
     val court: Court,
 
-
-
     )
 
 fun ReservationWithUserAndCourt.toReservationDTO(): ReservationDTO {

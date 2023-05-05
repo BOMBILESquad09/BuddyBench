@@ -6,6 +6,7 @@ import it.polito.mad.buddybench.persistence.dao.CourtDao
 import it.polito.mad.buddybench.persistence.dao.CourtTimeDao
 import it.polito.mad.buddybench.persistence.dao.InvitationDao
 import it.polito.mad.buddybench.persistence.dao.ReservationDao
+import it.polito.mad.buddybench.persistence.dao.ReviewDao
 import it.polito.mad.buddybench.persistence.dao.SportDao
 import it.polito.mad.buddybench.persistence.dao.UnavailableDayCourtDao
 import it.polito.mad.buddybench.persistence.dao.UserDao
@@ -21,7 +22,10 @@ import it.polito.mad.buddybench.persistence.entities.*
         Reservation::class,
         UserSport::class,
         User::class,
-        UnavailableDayCourt::class
+        UnavailableDayCourt::class,
+        CourtFacility::class,
+        Facility::class,
+        Review::class,
     ], version = 2, exportSchema = true
 )
 abstract class CourtReservationDatabase: RoomDatabase() {
@@ -34,5 +38,7 @@ abstract class CourtReservationDatabase: RoomDatabase() {
     abstract fun userSportDao(): UserSportDao
     abstract fun reservationDao(): ReservationDao
     abstract fun unavailableDayCourtDao(): UnavailableDayCourtDao
+
+    abstract fun reviewDao(): ReviewDao
 
 }

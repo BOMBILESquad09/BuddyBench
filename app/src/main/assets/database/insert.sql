@@ -377,6 +377,14 @@ INSERT INTO court (id, name, address, location, fee_hour, sport, fee_equipment, 
 VALUES (20, "Volleyball Arena","238 Mapi St", "New York, NY", 22, "VOLLEYBALL", 15, "court20", 4.7, 60);
 
 
+
+INSERT INTO facility(facility_id, name) VALUES (0, "Shower");
+INSERT INTO facility(facility_id, name) VALUES (1, "Dress room");
+
+INSERT INTO court_facility(cf_id, court, facility) VALUES (0,1,0);
+INSERT INTO court_facility(cf_id, court, facility) VALUES (1,1,1);
+
+
 -- Some reservations (Compatibility with the date/time for court)
 INSERT INTO reservation (id, user, court, date, start_time, end_time, equipment)
 VALUES
@@ -535,4 +543,11 @@ INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALU
 (114, 20, 5, "10:00", "18:00"),
 (115, 20, 6, "10:00", "20:00");
 
-SELECT * FROM Court C WHERE C.name = "Central Park Tennis"
+INSERT INTO review (review_id, court, user, description, date, rating) VALUES (
+    0,1,1,"One of the best court in town!", "2023-04-04", 5
+);
+
+INSERT INTO review (review_id, court, user, description, date, rating) VALUES (
+    1,1,2,"Cool dress room!", "2023-04-03", 4
+);
+

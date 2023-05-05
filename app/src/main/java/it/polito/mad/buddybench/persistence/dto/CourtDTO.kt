@@ -11,7 +11,8 @@ class CourtDTO(
     val path: String,
     val feeEquipment: Int,
     val rating: Double,
-    val nReviews: Int
+    val nReviews: Int,
+    val facilities: List<String>? = null
 ) {
     fun toEntity(): Court {
         return Court(
@@ -25,6 +26,7 @@ class CourtDTO(
             feeEquipment = this.feeEquipment,
             rating = this.rating,
             nReviews = this.nReviews
+
         )
     }
 

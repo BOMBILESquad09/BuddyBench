@@ -53,13 +53,16 @@ import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.persistence.dto.UserDTO
 import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.persistence.dto.ReviewDTO
 import it.polito.mad.buddybench.utils.WeeklyCalendarAdapter
 import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.CourtViewModel
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
+import it.polito.mad.buddybench.viewmodels.ReviewViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
 import org.json.JSONObject
 import java.io.FileNotFoundException
+import java.text.DecimalFormat
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
@@ -256,8 +259,11 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             BitmapFactory.decodeStream(view?.context?.assets?.open("courtImages/default_image.jpg"))
         }
         courtToReserve = court
+
+
+
         binding.backgroundImage.setImageBitmap(bitmap)
-        binding.rating.text = court.rating.toString()
+        binding.rating.text = DecimalFormat("#.0").format(court.rating)
         binding.ratingBar.rating = court.rating.toFloat()
         binding.nReviews.text = "(${court.nReviews})"
         binding.equipmentCost.text = String.format(

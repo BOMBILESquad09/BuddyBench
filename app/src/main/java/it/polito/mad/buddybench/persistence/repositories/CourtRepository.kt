@@ -31,9 +31,7 @@ class CourtRepository @Inject constructor(
         }
     }
 
-    fun save(court: CourtDTO) {
-        courtDao.save(court.toEntity())
-    }
+
 
     fun delete(court: CourtDTO) {
         courtDao.delete(court.toEntity())
