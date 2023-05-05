@@ -69,6 +69,8 @@ class ShowProfileActivity : AppCompatActivity() {
         val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
         sportContainer.removeAllViews()
 
+
+
     }
 
 

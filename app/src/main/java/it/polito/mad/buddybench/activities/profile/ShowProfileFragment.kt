@@ -1,13 +1,16 @@
 package it.polito.mad.buddybench.activities.profile
 
-import android.graphics.Color
+import android.animation.AnimatorInflater
+import android.animation.AnimatorSet
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
+import androidx.core.animation.doOnEnd
+import androidx.core.view.allViews
 import androidx.fragment.app.Fragment
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
@@ -30,6 +33,7 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.activity
 
     override fun onStart() {
         super.onStart()
+
     }
 
     private fun setGUI(){
@@ -70,6 +74,7 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.activity
 
         // ** Populate sport cards
         profile.populateSportCards(context, sportContainer)
+
     }
 
 
@@ -85,5 +90,7 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.activity
             iv.requestLayout()
         }
     }
+
+
 
 }
