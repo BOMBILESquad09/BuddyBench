@@ -6,6 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
@@ -22,7 +25,7 @@ private const val ARG_COURT_SPORT = "court_sport"
  * Use the [ReviewsBottomSheet.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ReviewsBottomSheet : BottomSheetDialogFragment() {
+class ReviewsBottomSheet : SuperBottomSheetFragment() {
 
     private var courtName: String? = null
     private var courtSport: String? = null
@@ -38,14 +41,18 @@ class ReviewsBottomSheet : BottomSheetDialogFragment() {
             courtName = it.getString(ARG_COURT_NAME)
             courtSport = it.getString(ARG_COURT_SPORT)
         }
+        // ** Fetch court (?) and reviews while loading
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        super.onCreateView(inflater, container, savedInstanceState)
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_reviews_bottom_sheet, container, false)
+    }
+
+    override fun isSheetAlwaysExpanded(): Boolean {
+        return true
     }
 
     companion object {
@@ -53,8 +60,8 @@ class ReviewsBottomSheet : BottomSheetDialogFragment() {
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
          *
-         * @param param1 Parameter 1.
-         * @param court_sport Parameter 2.
+         * @param court_name Court name.
+         * @param court_sport Court sport.
          * @return A new instance of fragment ReviewsBottomSheet.
          */
         // TODO: Rename and change types and number of parameters
