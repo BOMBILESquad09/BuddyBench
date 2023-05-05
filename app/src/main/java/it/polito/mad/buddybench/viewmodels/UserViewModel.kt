@@ -8,6 +8,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.classes.Profile
+import it.polito.mad.buddybench.persistence.entities.User
+import it.polito.mad.buddybench.persistence.entities.UserWithSports
 import it.polito.mad.buddybench.persistence.entities.UserWithSportsDTO
 
 import it.polito.mad.buddybench.persistence.repositories.UserRepository
@@ -27,34 +29,42 @@ class UserViewModel @Inject constructor() : ViewModel() {
 
     val username: LiveData<String> get() = _userName
 
-    fun getUser(email: String): LiveData<Profile>{
-        Thread{
+
+    fun checkUserEmail(email: String): UserWithSports? {
+        val u = userRepository.checkUser(email);
+        return u
+    }
+
+
+    fun getUser(email: String): LiveData<Profile> {
+        Thread {
             val u = userRepository.getUser(email);
-            val uri = if (u.user.imagePath == null || u.user.imagePath=="null"||u.user.imagePath=="" )
-                Uri.parse("null") else
-                Uri.parse(u.user.imagePath)
-            _user.postValue(  Profile(
-                u.user.name,
-                u.user.surname,
-                u.user.nickname,
-                u.user.email,
-                u.user.location,
-                u.user.birthdate,
-                u.user.reliability,
-                uri,
-                u.sports
-            ))
+            val uri =
+                if (u.user.imagePath == null || u.user.imagePath == "null" || u.user.imagePath == "")
+                    Uri.parse("null") else
+                    Uri.parse(u.user.imagePath)
+            _user.postValue(
+                Profile(
+                    u.user.name,
+                    u.user.surname,
+                    u.user.nickname,
+                    u.user.email,
+                    u.user.location,
+                    u.user.birthdate,
+                    u.user.reliability,
+                    uri,
+                    u.sports
+                )
+            )
         }.start()
 
-
         return user
-
     }
 
     fun updateUserInfo(profile: Profile, oldEmail: String) {
         _user.value = profile
         _userName.value = profile.name!!
-        Thread{
+        Thread {
             userRepository.update(
                 UserWithSportsDTO(
                     profile.toUserDto(),
@@ -66,7 +76,7 @@ class UserViewModel @Inject constructor() : ViewModel() {
     }
 
     fun setUserName(name: String) {
-        Thread{
+        Thread {
             _userName.value = name
         }.start()
 

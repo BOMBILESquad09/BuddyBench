@@ -8,6 +8,7 @@ import android.widget.EditText
 import androidx.compose.ui.text.input.KeyboardType.Companion.Email
 import androidx.core.net.MailTo
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.viewmodels.UserViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 class ValidationUtils {
@@ -16,11 +17,15 @@ class ValidationUtils {
             return string != null && string.trim().isNotEmpty()
         }
 
-        fun validateEmail(string: String?): Boolean{
+        fun validateEmail(string: String?, oldEmail: String?, userViewModel: UserViewModel): Boolean{
             if(!validateString(string)) return  false
             //maybe this pattern
             //the following instructions returns true for invalid email like name@domain.i should be false.
             //at least two characters after the last dot
+            val user = userViewModel.checkUserEmail(string!!)
+            if(user!= null && oldEmail != user.user.email) {
+                return false
+            }
             return Patterns.EMAIL_ADDRESS.matcher(string).matches();
         }
         private fun validateLocalDate(string: String?): Boolean{

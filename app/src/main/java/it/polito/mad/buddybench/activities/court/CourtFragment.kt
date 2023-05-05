@@ -145,11 +145,9 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             }
         } as MutableList<Pair<LocalDate, Boolean>>
 
-        // Callback used inside the ViewHolder Item of the Recycler View
 
         // Setting the Manager Layout for the RecyclerView
         recyclerView = view.findViewById(R.id.time_slot_grid)
-//        recyclerWeeklyCalendarView = view.findViewById(R.id.weekly_calendar_adapter)
 
         val calendarView = view.findViewById<WeekCalendarView>(R.id.calendar)
 
@@ -167,14 +165,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         calendarView.dayBinder = WeeklyCalendarDayBinder(selectedDate, calendarCallback)
         calendarView.setup(weeklyDays.first().first, weeklyDays.last().first, DayOfWeek.MONDAY)
         calendarView.scrollToDate(selectedDate)
-
-
-        /*val selectedPosition = (Period.between(LocalDate.now(), selectedDate)).days
-        recyclerWeeklyCalendarView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        recyclerWeeklyCalendarView.adapter = WeeklyCalendarAdapter(weeklyDays, selectedPosition, calendarCallback)
-        LinearSnapHelper().attachToRecyclerView(recyclerWeeklyCalendarView)
-        recyclerWeeklyCalendarView.scrollToPosition(selectedPosition)*/
-
 
         val callback: (Pair<LocalTime, Boolean>) -> Unit = { selected ->
             courtViewModel.timeSlots.value?.find {
@@ -219,7 +209,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                     }
                     recyclerView.adapter?.notifyDataSetChanged()
                 }
-
         }
 
 
@@ -229,7 +218,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                 val textError = getString(R.string.error_book)
                 buildAlertDialog("Book Error", textError, requireContext()).show()
             } else {
-                // this.findNavController().navigate(R.id.action_to_recap_and_confirm)
                 showBottomSheetDialog()
             }
 
@@ -241,6 +229,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         profile =
             Profile.fromJSON(JSONObject(sharedPref.getString("profile", Profile.mockJSON())!!))
         user = profile.toUserDto()
+
     }
 
     private fun updateView(court: CourtDTO) {
@@ -290,6 +279,11 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
                 alertDialog.show()
             }
         }
+        if(editMode)
+            binding.parentScrollView.post {
+                binding.parentScrollView.isSmoothScrollingEnabled = true
+                binding.parentScrollView.fullScroll(ScrollView.FOCUS_DOWN)
+            }
     }
 
     private fun buildAlertDialog(title: String, text: String, context: Context): AlertDialog {

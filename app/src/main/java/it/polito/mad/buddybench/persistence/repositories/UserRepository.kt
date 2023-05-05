@@ -31,6 +31,10 @@ class UserRepository @Inject constructor(
         userDao.save(user.toEntity())
     }
 
+    fun checkUser(email: String): UserWithSports? {
+        return userDao.getUserByEmail(email)
+    }
+
 
     fun update(user: UserWithSportsDTO, oldEmail: String) {
 

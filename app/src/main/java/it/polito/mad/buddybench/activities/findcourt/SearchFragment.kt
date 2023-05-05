@@ -86,10 +86,6 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             if(last == new){
                 calendarView.notifyDayChanged(WeekDay(last, WeekDayPosition.InDate))
             } else {
-                // Clean the filters after selected another day
-                parent.context.findCourtViewModel.clearFilters()
-                filterButton?.setBackgroundResource(R.drawable.circle_light_bg)
-                filterIcon?.setImageResource(R.drawable.filter)
                 calendarView.notifyDayChanged(WeekDay(new, WeekDayPosition.InDate))
                 calendarView.notifyDayChanged(WeekDay(last, WeekDayPosition.InDate))
                 parent.viewModel.setSelectedDate(new)

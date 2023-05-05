@@ -116,6 +116,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
                                 android:fontFamily="@font/montserrat_medium_500"
+                                android:textColor="@color/md_theme_light_text"
                                 android:gravity="center_vertical"
                                 android:text="Nickname"
                                 android:textSize="16sp" />
@@ -145,6 +146,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:fontFamily="@font/montserrat_medium_500"
+                                    android:textColor="@color/md_theme_light_text"
                                     android:gravity="center"
                                     android:text="@string/turin"
                                     android:textAlignment="center"
@@ -167,6 +169,7 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1"
                                 android:fontFamily="@font/montserrat_medium_500"
+                                android:textColor="@color/md_theme_light_text"
                                 android:gravity="center_vertical"
                                 android:text="0 years old"
                                 android:textSize="16sp" />
@@ -179,7 +182,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:baselineAligned="false"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        >
 
                         <TextView
                             android:layout_width="match_parent"
@@ -214,6 +218,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:fontFamily="@font/montserrat_bold_700"
+                                    android:textColor="@color/md_theme_light_text"
                                     android:gravity="center"
                                     android:text="80"
                                     android:textSize="18sp" />
@@ -222,6 +227,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:fontFamily="@font/montserrat_medium_500"
+                                    android:textColor="@color/md_theme_light_text"
                                     android:gravity="center"
                                     android:text="@string/organized"
                                     android:textSize="12sp" />
@@ -241,6 +247,7 @@
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center"
                                     android:fontFamily="@font/montserrat_bold_700"
+                                    android:textColor="@color/md_theme_light_text"
                                     android:gravity="center"
                                     android:text="80"
                                     android:textSize="18sp" />
@@ -249,6 +256,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:fontFamily="@font/montserrat_medium_500"
+                                    android:textColor="@color/md_theme_light_text"
                                     android:gravity="center"
                                     android:text="@string/played"
                                     android:textSize="12sp" />
@@ -268,6 +276,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:fontFamily="@font/montserrat_bold_700"
+                                    android:textColor="@color/md_theme_light_text"
                                     android:gravity="center"
                                     android:text="80%"
                                     android:textSize="18sp" />
@@ -276,6 +285,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:fontFamily="@font/montserrat_medium_500"
+                                    android:textColor="@color/md_theme_light_text"
                                     android:gravity="center"
                                     android:text="@string/reliability"
                                     android:textSize="12sp" />

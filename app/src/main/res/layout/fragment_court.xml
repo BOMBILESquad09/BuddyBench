@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    android:id="@+id/parent_scroll_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
@@ -175,6 +176,7 @@
                     android:gravity="center_vertical"
                     android:text="@string/via_roma_16_torino"
                     android:textSize="12sp"
+                    android:textColor="@color/md_theme_light_text"
                     app:drawableStartCompat="@drawable/location" />
 
 
@@ -186,6 +188,7 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="8dp"
                 android:fontFamily="@font/montserrat_medium_500"
+                android:textColor="@color/md_theme_light_text"
                 android:gravity="center_vertical"
                 android:text="@string/opening_hours_default"
                 android:textSize="12sp"
@@ -211,6 +214,7 @@
                     android:layout_width="wrap_content"
                     android:paddingStart="8dp"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/md_theme_light_text"
                     android:fontFamily="@font/montserrat_medium_500"
                     android:gravity="center_vertical"
                     android:text="@string/equipment_phrase"
