@@ -397,12 +397,12 @@ VALUES
     (7, 0, 5, '2023-05-01', 18, 19,false);
 
 -- Some UserSports Rows
-INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized) VALUES
-(0,0,"VOLLEYBALL","NEWBIE",9,10);
-INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized) VALUES
-(1,0,"BASKETBALL","NEWBIE",10,10);
-INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized) VALUES
-(2,0,"FOOTBALL","NEWBIE",11,10);
+INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized, achievements) VALUES
+(0,0,"VOLLEYBALL","NEWBIE",9,10, "");
+INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized, achievements) VALUES
+(1,0,"BASKETBALL","NEWBIE",10,10, "");
+INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized, achievements) VALUES
+(2,0,"FOOTBALL","NEWBIE",11,10, "");
 
 
 --- Inserted Court Time Table

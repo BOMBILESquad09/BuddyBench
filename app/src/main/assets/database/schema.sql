@@ -1,5 +1,4 @@
 DROP TABLE IF EXISTS court_facility;
-DROP TABLE IF EXISTS achievements;
 DROP TABLE IF EXISTS facility;
 DROP TABLE IF EXISTS sport;
 DROP TABLE IF EXISTS court;
