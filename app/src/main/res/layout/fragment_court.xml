@@ -65,8 +65,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_bold_700"
-                    android:text="@string/sport_tennis"
-                    android:textSize="20sp" />
+                    android:text="@string/court_name"
+                    android:textSize="22sp" />
 
 
                 <View
@@ -91,7 +91,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_semibold_600"
                     android:text="@string/rating_default_value"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/rating_bar"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -157,9 +157,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:fontFamily="@font/montserrat_semibold_600"
+                android:textStyle="bold"
                 android:text="@string/court_information"
-                android:textSize="16sp" />
+                android:textSize="18sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -175,24 +175,63 @@
                     android:fontFamily="@font/montserrat_medium_500"
                     android:gravity="center_vertical"
                     android:text="@string/via_roma_16_torino"
-                    android:textSize="12sp"
+                    android:textSize="16sp"
+                    android:drawableTint="@color/md_theme_light_text"
                     android:textColor="@color/md_theme_light_text"
                     app:drawableStartCompat="@drawable/location" />
 
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/court_opening_hours_tv"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawablePadding="8dp"
-                android:fontFamily="@font/montserrat_medium_500"
-                android:textColor="@color/md_theme_light_text"
-                android:gravity="center_vertical"
-                android:text="@string/opening_hours_default"
-                android:textSize="12sp"
-                app:drawableStartCompat="@drawable/round_access_time_24" />
+                android:layout_marginVertical="8dp">
+
+                <ImageView
+                    android:id="@+id/icon_hour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:tint="@color/md_theme_light_text"
+                    android:src="@drawable/round_access_time_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                <TextView
+                    android:id="@+id/court_opening_hours_tv"
+                    android:layout_width="wrap_content"
+                    android:paddingStart="8dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/md_theme_light_text"
+                    android:fontFamily="@font/montserrat_medium_500"
+                    android:gravity="center_vertical"
+                    android:text="@string/opening_hours_default"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/icon_hour"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/court_hours"
+                    android:layout_width="wrap_content"
+                    android:paddingStart="8dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/md_theme_light_text"
+                    android:fontFamily="@font/montserrat_medium_500"
+                    android:gravity="center_vertical"
+                    android:text="@string/opening_hours_default"
+                    android:textSize="16sp"
+                    android:layout_marginLeft="15dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/court_opening_hours_tv"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -203,6 +242,7 @@
                     android:id="@+id/sport_icon_equipment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    app:tint="@color/md_theme_light_text"
                     android:src="@drawable/baseline_shopping_bag_24"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -218,7 +258,7 @@
                     android:fontFamily="@font/montserrat_medium_500"
                     android:gravity="center_vertical"
                     android:text="@string/equipment_phrase"
-                    android:textSize="12sp"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -232,10 +272,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_semibold_600"
                 android:paddingVertical="16dp"
+                android:textStyle="bold"
                 android:text="@string/reservation"
-                android:textSize="16sp" />
+                android:textSize="18sp" />
 
             <com.kizitonwose.calendar.view.WeekCalendarView
 
@@ -259,20 +299,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="10dp"
-                android:paddingBottom="30dp"
                 android:text="Available Timeslots (1h each)"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/montserrat_semibold_600"
+                android:textSize="16sp"
+                 />
             <include layout="@layout/time_slots_not_available"/>
-
-
 
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="15dp"
+                >
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    >
                     <include layout="@layout/grid_times_slots" />
                 </LinearLayout>
 
@@ -284,31 +325,32 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingBottom="30dp"
+                >
 
                 <Button
                     android:id="@+id/button_first"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
-                    android:layout_marginVertical="16dp"
                     android:background="@drawable/rounded_shape"
                     android:backgroundTint="@color/md_theme_light_primary"
                     android:fontFamily="@font/montserrat_semibold_600"
                     android:text="@string/book"
+                    android:layout_marginRight="5dp"
                     android:textAllCaps="false"
-                    android:layout_margin = "5dp"
+
                     android:textColor="@color/md_theme_light_background" />
 
                 <Button
                     android:id="@+id/cancel_button"
                     android:layout_width="0dp"
-                    android:layout_margin = "5dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
-                    android:layout_marginVertical="16dp"
                     android:background="@drawable/rounded_shape"
                     android:backgroundTint="@color/error"
+                    android:layout_marginLeft="5dp"
                     android:fontFamily="@font/montserrat_semibold_600"
                     android:text="@string/delete"
                     android:textAllCaps="false"

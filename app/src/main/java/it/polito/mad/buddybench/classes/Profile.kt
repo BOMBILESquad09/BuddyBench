@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.view.children
 import androidx.core.view.size
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getInt
@@ -113,6 +114,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
 
     fun updateSkillLevel(sport: Sport, skill: Skills) {
         this.sports.find { it.name == sport.name }?.skill = skill
+
     }
 
     //TODO: BETTER TO MOVE THE FOLLOWING METHODS IN ANOTHER FILE
@@ -130,7 +132,6 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
                            edit: Boolean = false,
                            popupOpened:PopupMenu?  = null
     ) {
-
         sportContainer.removeAllViews()
         if (this.sports.filter { it.skill != Skills.NULL }.isEmpty()) {
             val emptySportsText = TextView(context)
@@ -182,15 +183,22 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
             val sportSkillLevel = sportCard.findViewById<CardView>(R.id.skill_level_card)
             if (edit) {
                 sportSkillLevel.setOnClickListener(){
-                    onSkillSelected(sportSkillLevel, sport)
-                    this.populateSportCards(context, sportContainer, edit = true, onSkillSelected = onSkillSelected)
 
+                    onSkillSelected(sportSkillLevel, sport)
                 }
             }
             sportContainer.addView(sportCard)
         }
+    }
 
-        
+    fun refreshSportsCard(context: AppCompatActivity, sportContainer: LinearLayout, sport: Sport){
+        val children = sportContainer.children
+        for (child in children){
+            val sportName = child.findViewById<TextView>(R.id.sport_card_name)
+            if(sportName.text == Utils.formatString(sport.name.toString())){
+                child.findViewById<TextView>(R.id.skill_level_card_text).text = Utils.formatString(sport.skill.toString())
+            }
+        }
 
     }
 }

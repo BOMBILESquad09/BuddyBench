@@ -437,7 +437,7 @@ INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALU
 (30, 6, 1, "8:00", "18:00"),
 (31, 6, 2, "8:00", "18:00"),
 (32, 6, 3, "8:00", "18:00"),
-(33, 6, 4, "8:00", "20:00"),
+(33, 6, 4, "8:00", "18:00"),
 (34, 6, 5, "8:00", "18:00"),
 (35, 6, 6, "10:00", "20:00");
 INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALUES
@@ -457,7 +457,7 @@ INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALU
 INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALUES
 (48, 9, 1, "8:00", "13:00"),
 (49, 9, 2, "8:00", "13:00"),
-(50, 9, 3, "10:00", "18:00"),
+(50, 9, 3, "8:00", "13:00"),
 (51, 9, 4, "8:00", "13:00"),
 (52, 9, 5, "8:00", "13:00"),
 (53, 9, 6, "10:00", "20:00");

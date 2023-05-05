@@ -2,7 +2,10 @@ package it.polito.mad.buddybench.activities.court
 
 import android.R.attr.duration
 import android.R.attr.text
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.Instrumentation.ActivityResult
 import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
@@ -98,6 +101,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
     private var reservationDate: LocalDate? = null
     private var emailReservation: String = ""
+    private var equipment: Boolean? = null
     private var startTime: Int = -1
     private var endTime: Int = -1
     private lateinit var recyclerView: RecyclerView
@@ -190,7 +194,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         )
         // Return to the previous activity
         binding.backButton.setOnClickListener {
-            activity?.finish()
+            requireActivity().finish()
         }
 
         // Retrieve the time tables associated to a Court
@@ -216,7 +220,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         binding.buttonFirst.setOnClickListener {
             if (courtViewModel.selectedTimes.isEmpty()) {
                 val textError = getString(R.string.error_book)
-                buildAlertDialog("Book Error", textError, requireContext()).show()
+                buildAlertDialog("Pick a timeslot", textError, requireContext()).show()
             } else {
                 showBottomSheetDialog()
             }
@@ -239,7 +243,11 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         binding.feeCard.backgroundTintList = ColorStateList.valueOf(Sports.getSportColor(Sports.valueOf(court.sport), requireContext()))
         courtViewModel.getTimeTable().value?.timeTable.let {
             if (it != null) {
-                binding.courtOpeningHoursTv.text = Utils.getStringifyTimeTable(it)
+                Utils.getStringifyTimeTable(it).apply {
+                    binding.courtOpeningHoursTv.text = first
+                    binding.courtHours.text = second
+                }
+
             }
         }
         val bitmap = try {
@@ -260,29 +268,22 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             val b : Button? = view?.findViewById(R.id.cancel_button)
             b?.visibility = View.GONE
         } else {
-            reservationViewModel.getReservation(
-                courtToReserve.name,
-                Sports.fromJSON(courtToReserve.sport)!!,
-                profile.email,
-                selectedDate,
-                startTime
-            )
             val b : Button? = view?.findViewById(R.id.cancel_button)
             b?.setOnClickListener {
-                val textConfirm = String.format(
-                    getString(R.string.confirm_delete),
-                    courtToReserve.name,
-                    courtToReserve.sport,
-                    reservationViewModel.currentReservation.value!!.startTime,
-                    reservationViewModel.currentReservation.value!!.endTime)
-                val alertDialog = buildAlertDialogDelete("Confirm Delete", textConfirm, requireContext())
-                alertDialog.show()
+                val deleteSheet = DialogSheetDeleteReservation(
+                    courtName,
+                    sport,
+                    oldStartTime!!,
+                    oldDate!!,
+                    profile.email
+                ) { finishActivity(oldDate!!) }
+
+                deleteSheet.show(requireActivity().supportFragmentManager, "DeleteSheet")
             }
         }
         if(editMode)
             binding.parentScrollView.post {
-                binding.parentScrollView.isSmoothScrollingEnabled = true
-                binding.parentScrollView.fullScroll(ScrollView.FOCUS_DOWN)
+                binding.parentScrollView.smoothScrollBy(0, Int.MAX_VALUE)
             }
     }
 
@@ -292,27 +293,6 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             .setTitle(title)
             .setMessage(text)
             .setPositiveButton("Ok") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .create()
-    }
-
-    private fun buildAlertDialogDelete(title: String, text: String, context: Context): AlertDialog {
-        return AlertDialog.Builder(context)
-            .setTitle(title)
-            .setMessage(text)
-            .setPositiveButton("Yes") { dialog, _ ->
-                reservationViewModel.deleteReservation(
-                    courtName,
-                    sport,
-                    oldStartTime!!,
-                    oldDate!!,
-                    profile.email
-                )
-                dialog.dismiss()
-                requireActivity().finish()
-            }
-            .setNegativeButton("No") { dialog, _ ->
                 dialog.dismiss()
             }
             .create()
@@ -363,7 +343,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
 
 
                 reservationViewModel.saveReservation(reservation, editMode, oldDate, oldStartTime)
-                requireActivity().finish()
+                finishActivity(selectedDate)
                 bottomSheetDialog.dismiss()
             }
         }
@@ -416,7 +396,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             )
         )
         if(editMode) {
-            switch.isChecked = reservationViewModel.currentReservation.value!!.equipment
+            switch.isChecked = equipment!!
         }
     }
 
@@ -486,6 +466,13 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
         emailReservation = activity?.intent?.getStringExtra("email") ?: ""
         startTime = activity?.intent?.getIntExtra("startTime", -1) ?: -1
         endTime = activity?.intent?.getIntExtra("endTime", -1) ?: -1
+        equipment = activity?.intent?.getBooleanExtra("equipment", false) ?: false
+    }
+
+    private fun finishActivity(date: LocalDate) {
+        requireActivity().intent.putExtra("date", date.format(DateTimeFormatter.ISO_LOCAL_DATE))
+        requireActivity().setResult(Activity.RESULT_OK, requireActivity().intent)
+        requireActivity().finish()
     }
 
 }

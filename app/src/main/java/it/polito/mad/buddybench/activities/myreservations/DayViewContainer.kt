@@ -35,50 +35,52 @@ class DayViewContainer(view: View) : ViewContainer(view) {
 
     fun setBackground(selectedDate: LocalDate?){
 
-        if(selectedDate == day.date ){
-
+        if(selectedDate == day.date && day.position == DayPosition.MonthDate){
+            textView.setBackgroundResource(0)
             // ** Unwrap the R.drawable.circle_selected_drawable to change its color
             val unwrappedDrawable: Drawable? = AppCompatResources.getDrawable(view.context, R.drawable.circle_selected_day)
             val wrappedDrawable = unwrappedDrawable?.let { DrawableCompat.wrap(it) }
+            val primaryColor = ContextCompat.getColor(view.context, R.color.md_theme_light_primary)
 
             // ** If there is 1 reservation change the drawable color to the sport color
             if ((reservations != null && reservations!!.size == 1) || (reservations?.map { it.court.sport }?.toSet()?.size == 1) ) {
                 val sportColor = Sports.getSportColor(Sports.valueOf(reservations!![0].court.sport), view.context)
 
                 if (wrappedDrawable != null) {
+                    //TO BE FIXED
+                    println("-------------------------------------------")
                     DrawableCompat.setTint(wrappedDrawable, sportColor)
                 }
             }
             // ** Else ( > 1 reservation or no reservation) use the primary
             else {
-                val primaryColor = ContextCompat.getColor(view.context, R.color.md_theme_light_primary)
                 if (wrappedDrawable != null) {
+                    println("------ vuota --------------")
                     DrawableCompat.setTint(wrappedDrawable, primaryColor)
                 }
             }
 
             textView.setTextColor(ContextCompat.getColor(view.context, R.color.md_theme_light_background))
             textView.setBackgroundResource(R.drawable.circle_selected_day)
+
         }
         else if (day.date == LocalDate.now()){
             textView.setBackgroundResource(R.drawable.circle_current_day)
             textViewContainer.setBackgroundColor(Color.WHITE)
         }
-        else if (day.position == DayPosition.MonthDate) {
-            textView.setBackgroundResource(R.drawable.circle_ghost_day)
-            textViewContainer.setBackgroundColor(Color.WHITE)
-
-        } else {
+        else {
             textView.setBackgroundResource(R.drawable.circle_ghost_day)
             textViewContainer.setBackgroundColor(Color.WHITE)
         }
+        textViewContainer.setBackgroundColor(Color.WHITE)
+
     }
 
     fun setTextColor(selectedDate: LocalDate?, context: Context){
         if (day.date == LocalDate.now()){
             textView.setTextColor(Color.WHITE)
         }
-        else if(selectedDate == day.date ){
+        else if(selectedDate == day.date && day.position == DayPosition.MonthDate){
             textView.setTextColor(context.getColor(R.color.md_theme_light_background))
         }
         else if (day.position == DayPosition.MonthDate) {
@@ -89,8 +91,9 @@ class DayViewContainer(view: View) : ViewContainer(view) {
     }
 
     fun setSportsIcon(context: Activity){
+        reservationsContainer.removeAllViews()
         if(reservations != null){
-            reservationsContainer.removeAllViews()
+
             reservations!!.forEachIndexed { idx, r  ->
                 if (idx == 2 && idx != (reservations!!.size -1) ){
                     val overflowText = context.layoutInflater.inflate(
@@ -117,7 +120,7 @@ class DayViewContainer(view: View) : ViewContainer(view) {
                 }
             }
         } else {
-            reservationsContainer.removeAllViews()
+
             val sportIcon = context.layoutInflater.inflate(
                 R.layout.sport_icon,
                 reservationsContainer)

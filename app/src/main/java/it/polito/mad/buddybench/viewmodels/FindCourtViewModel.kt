@@ -29,8 +29,6 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
 
     //filters
     var minRating: Float = 0f
-    var maxRating: Float = 5f
-    var minFee: Float = 0f
     var maxFee: Float = 100f
     var name: String = ""
 
@@ -61,8 +59,6 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
 
     fun clearFilters(){
         minRating= 0f
-        maxRating= 5f
-        minFee= 0f
         maxFee= 100f
         name= ""
     }
@@ -70,8 +66,7 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     fun applyFilter(){
         _currentCourts.value = _courts.filter{
             (it.location.contains(name, ignoreCase = true) || it.name.contains(name, ignoreCase = true))
-                    && it.rating >= minRating && it.rating <= maxRating
-                    && it.feeHour >= minFee && it.feeHour <= maxFee
+                    && it.rating >= minRating && it.feeHour <= maxFee
         }.sortedBy { it.name }
     }
 
@@ -93,8 +88,7 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     fun applyFiltersOnCourts(courts: List<CourtDTO>): List<CourtDTO> {
         return courts.filter{
             (it.location.contains(name, ignoreCase = true) || it.name.contains(name, ignoreCase = true))
-                    && it.rating >= minRating && it.rating <= maxRating
-                    && it.feeHour >= minFee && it.feeHour <= maxFee
+                    && it.rating >= minRating &&  it.feeHour <= maxFee
         }.sortedBy { it.name }
     }
 }

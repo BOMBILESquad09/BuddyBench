@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -21,7 +22,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
-class ReservationViewHolder(v: View): RecyclerView.ViewHolder(v) {
+class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent>): RecyclerView.ViewHolder(v) {
 
     private val courtName : TextView = v.findViewById(R.id.textView6)
     private val slot : TextView = v.findViewById(R.id.textView5)
@@ -39,13 +40,15 @@ class ReservationViewHolder(v: View): RecyclerView.ViewHolder(v) {
 
         courtName.text = reservation.court.name
         val iconDrawable = ContextCompat.getDrawable(view.context,
-            Sports.sportToIconDrawable(
+            Sports.sportToIconDrawableAlternative(
                 Sports.fromJSON(
                     reservation.court.sport
                 )!!
             )
         )
-        Utils.setColoredDrawable(iconDrawable!!, iconSport)
+
+        val wrappedDrawable = DrawableCompat.wrap(iconDrawable!!)
+        iconSport.setImageDrawable(wrappedDrawable)
         slot.text = "${reservation.startTime.format(formatter)} - ${reservation.endTime.format(formatter)}"
         if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime))
             manageBtn.visibility = View.INVISIBLE
@@ -68,8 +71,9 @@ class ReservationViewHolder(v: View): RecyclerView.ViewHolder(v) {
         intent.putExtra("email", reservation.userOrganizer.email)
         intent.putExtra("startTime", reservation.startTime.hour)
         intent.putExtra("endTime", reservation.endTime.hour)
+        intent.putExtra("equipment", reservation.equipment)
 
-        view.context.startActivity(intent)
+        launcher.launch(intent)
     }
 
 
