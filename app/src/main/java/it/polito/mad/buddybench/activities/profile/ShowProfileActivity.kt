@@ -56,7 +56,7 @@ class ShowProfileActivity : AppCompatActivity() {
         val reliabilityTv = findViewById<TextView>(R.id.reliabilityView)
         reliabilityTv.text = getString(R.string.reliabilityValue).format(profile.reliability)
 
-        val iv = findViewById<ImageView>(R.id.imageEdit)
+        val iv = findViewById<ImageView>(R.id.profile_image)
         resizeImageView(iv)
         try{
             iv.setImageURI(profile.imageUri)

@@ -1,23 +1,18 @@
 package it.polito.mad.buddybench.activities.profile
 
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.animation.doOnEnd
-import androidx.core.view.allViews
 import androidx.fragment.app.Fragment
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 
 @AndroidEntryPoint
-class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.activity_show_profile) {
+class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_profile) {
     var profile = context.profile
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,40 +35,40 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.activity
 
         val thisView = requireView()
 
-        val fullNameTv = thisView.findViewById<TextView>(R.id.fullNameView)
+        val fullNameTv = thisView.findViewById<TextView>(R.id.fullname_tv)
         fullNameTv.text = profile.fullName
 
-        val nicknameTv = requireView().findViewById<TextView>(R.id.nickNameView)
-        nicknameTv.text = profile.nickname
+        val nicknameTv = requireView().findViewById<TextView>(R.id.nickname_tv)
+        nicknameTv.text = "@${profile.nickname}"
 
-        val ageTv = thisView.findViewById<TextView>(R.id.ageView)
+        val ageTv = thisView.findViewById<TextView>(R.id.age_tv)
         ageTv.text = getString(R.string.age).format(profile.age)
 
-        val locationTv = thisView.findViewById<TextView>(R.id.locationView)
+        val locationTv = thisView.findViewById<TextView>(R.id.location_tv)
         locationTv.text = profile.location
 
-        val matchesPlayedTv = thisView.findViewById<TextView>(R.id.matchesPlayedView)
+        val matchesPlayedTv = thisView.findViewById<TextView>(R.id.games_played)
         matchesPlayedTv.text = profile.matchesPlayed.toString()
 
-        val matchesOrganizedTv = thisView.findViewById<TextView>(R.id.matchesOrganizedView)
+        val matchesOrganizedTv = thisView.findViewById<TextView>(R.id.games_organized)
         matchesOrganizedTv.text = profile.matchesOrganized.toString()
 
-        val reliabilityTv = thisView.findViewById<TextView>(R.id.reliabilityView)
+        val reliabilityTv = thisView.findViewById<TextView>(R.id.reliability)
         reliabilityTv.text = getString(R.string.reliabilityValue).format(profile.reliability)
 
-        val iv = thisView.findViewById<ImageView>(R.id.imageEdit)
-        resizeImageView(iv)
+        val iv = thisView.findViewById<ImageView>(R.id.profile_image)
+        //resizeImageView(iv)
         try{
             iv.setImageURI(profile.imageUri)
         } catch (_: Exception){
             iv.setImageResource(R.drawable.person)
         }
 
-        val sportContainer = thisView.findViewById<LinearLayout>(R.id.sportsContainerEdit)
-        sportContainer.removeAllViews()
+        //val sportContainer = thisView.findViewById<LinearLayout>(R.id.sportsContainerEdit)
+        //sportContainer.removeAllViews()
 
         // ** Populate sport cards
-        profile.populateSportCards(context, sportContainer)
+        //profile.populateSportCards(context, sportContainer)
 
     }
 
