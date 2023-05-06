@@ -36,7 +36,7 @@ VALUES
     (4,'Riverside Park Diamond','321 Pine St','New York, NY',20,'BASKETBALL','555-345-6789','court4',4,3.1,13),
     (5,'Griffith Park','555 Maple St','Los Angeles, CA',60,'FOOTBALL','555-789-0123','court5',7,4.5,73),
     (6,'Boston Common Court','777 Tremont St','Boston, MA',25,'TENNIS','555-456-7890','court6',3,3.4,14),
-    (7,'Lakefront Field','888 Lakeshore Dr','Chicago, IL',35,"BASKETBALL",'555-890-1234',"court7",5,3.6,68),
+    (7,'Lakefront Field','888 Lakeshore Dr','Chicago, IL',35,'BASKETBALL','555-890-1234','court7',5,3.6,68),
     (8,'Battery Park Diamond','444 Battery Pl','New York, NY',15,'FOOTBALL','555-567-8901','court8',6,3.8,35),
     (9,'Santa Monica','101 Ocean Ave','Santa Monica, CA',45,'TENNIS','555-321-0987','court9',3,4.3,23),
     (10,'Grant Park Courts','777 State St','Chicago, IL',55,'BASKETBALL','555-678-9012','court10',8,3.6,12),
@@ -45,11 +45,11 @@ VALUES
     (13,'Brooklyn Bridge Park Field','334 Furman St','Brooklyn, NY',30,'FOOTBALL','555-345-6789','court13',6,4.5,73),
     (14,'Central Park Field','123 Main St','New York, NY',25,'TENNIS','555-789-0123','court14',4,3.6,12),
     (15,'Echo Park Courts','1010 Glendale Blvd','Los Angeles, CA',35,'TENNIS','555-456-7890','court15',3,3.6,68),
-    (16, "Volley Court", "124 Victorian St", "New York, NY", 15, "VOLLEYBALL",'555-890-1234', 5, "court16", 4.5, 30),
-    (17, "Beach Volley Paradise", "342 Dominican St", "Los Angeles, LA", 20, "VOLLEYBALL",'555-432-1098', 10, "court17", 4.2, 45),
-    (18, "Green Volley", "333 Tremont St", "New Jersey, NJ", 12, "VOLLEYBALL",'555-987-6543', 3, "court18", 4.0, 15),
-    (19, "Volley Palace", "938 Main St", "Los Angeles, LA", 18, "VOLLEYBALL",'555-321-0987', 8, "court19", 4.8, 75),
-    (20, "Volleyball Arena","238 Mapi St", "New York, NY", 22, "VOLLEYBALL",'555-765-4321', 15, "court20", 4.7, 60);
+    (16, "Volley Court", "124 Victorian St", "New York, NY", 15, "VOLLEYBALL",'555-890-1234',"court16", 5, 4.5, 30),
+    (17, "Beach Volley Paradise", "342 Dominican St", "Los Angeles, LA", 20, "VOLLEYBALL",'555-432-1098',"court17", 10, 4.2, 45),
+    (18, "Green Volley", "333 Tremont St", "New Jersey, NJ", 12, "VOLLEYBALL",'555-987-6543',"court18", 3, 4.0, 15),
+    (19, "Volley Palace", "938 Main St", "Los Angeles, LA", 18, "VOLLEYBALL",'555-321-0987',"court19", 8, 4.8, 75),
+    (20, "Volleyball Arena","238 Mapi St", "New York, NY", 22, "VOLLEYBALL",'555-765-4321',"court20", 15, 4.7, 60);
 
 
 -- Some reservations (Compatibility with the date/time for court)
