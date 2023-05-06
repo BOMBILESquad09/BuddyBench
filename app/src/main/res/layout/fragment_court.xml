@@ -105,7 +105,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
                     android:indeterminate="false"
-                    android:isIndicator="false"
+                    android:isIndicator="true"
                     android:numStars="5"
                     android:rating="4.5"
                     app:layout_constraintBottom_toBottomOf="parent"
