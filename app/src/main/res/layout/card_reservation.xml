@@ -67,7 +67,7 @@
                     android:layout_marginEnd="4dp"/>
 
                 <TextView
-                    android:id="@+id/court_address"
+                    android:id="@+id/card_reservation_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
@@ -99,7 +99,7 @@
                     android:layout_marginEnd="4dp"/>
 
                 <TextView
-                    android:id="@+id/court_phone_number"
+                    android:id="@+id/card_reservation_phone_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"

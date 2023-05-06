@@ -26,6 +26,7 @@ CREATE TABLE court(
     location TEXT NOT NULL,
     fee_hour INTEGER NOT NULL,
     sport TEXT NOT NULL,
+    phone_number TEXT NOT NULL,
     fee_equipment INTEGER NOT NULL,
     path TEXT NOT NULL,
     rating REAL NOT NULL,
