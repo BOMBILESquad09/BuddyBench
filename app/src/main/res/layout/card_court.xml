@@ -34,8 +34,9 @@
             android:textColor="#FFFFFF"
             android:fontFamily="@font/montserrat_semibold_600"
             android:text="@string/court_rating"
-            android:drawableEnd="@drawable/star_24"
-            android:textSize="11sp">
+            android:textSize="20sp"
+            android:drawablePadding="5dp"
+            card_view:drawableEndCompat="@drawable/star_24">
         </TextView>
 
         <LinearLayout
