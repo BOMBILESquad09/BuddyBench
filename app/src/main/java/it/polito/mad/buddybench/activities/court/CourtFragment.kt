@@ -256,6 +256,7 @@ class CourtFragment() : Fragment(R.layout.fragment_court) {
             BitmapFactory.decodeStream(view?.context?.assets?.open("courtImages/default_image.jpg"))
         }
         courtToReserve = court
+        binding.courtPhoneNumber.text = court.phoneNumber
         binding.backgroundImage.setImageBitmap(bitmap)
         binding.rating.text = court.rating.toString()
         binding.ratingBar.rating = court.rating.toFloat()
