@@ -16,6 +16,7 @@ import it.polito.mad.buddybench.activities.court.CourtActivity
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.enums.Sports
 import java.io.FileNotFoundException
+import java.text.DecimalFormat
 
 class CourtSearchViewHolder(val v: View, val callback: (String, Sports) -> Unit): RecyclerView.ViewHolder(v){
 
@@ -32,7 +33,11 @@ class CourtSearchViewHolder(val v: View, val callback: (String, Sports) -> Unit)
         address.text = String.format(v.context.getString(R.string.court_address_card), court.location, court.address)
         feeHour.text = String.format(v.context.getString(R.string.court_fee), court.feeHour.toString())
         feeHour.backgroundTintList = ColorStateList.valueOf(Sports.getSportColor(Sports.valueOf(court.sport), v.context))
-        courtRating.text = court.rating.toString()
+        courtRating.text = DecimalFormat("#.0").format(court.rating)
+        courtRating.setOnClickListener {
+            // TODO: Adding the call to open the review page of the court
+            println(court.rating)
+        }
         val bitmap = try {
             BitmapFactory.decodeStream(courtImage.context?.assets?.open("courtImages/" + court.path + ".jpg"))
         } catch (_: FileNotFoundException) {

@@ -1,13 +1,20 @@
+DROP TABLE IF EXISTS court_facility;
+DROP TABLE IF EXISTS facility;
 DROP TABLE IF EXISTS sport;
 DROP TABLE IF EXISTS court;
 DROP TABLE IF EXISTS court_time;
+DROP TABLE review;
 DROP TABLE IF EXISTS invitation;
 DROP TABLE IF EXISTS reservation;
 DROP TABLE IF EXISTS user_sport;
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS unavailable_court_date;
 DROP TRIGGER IF EXISTS check_court_availability;
-CREATE TABLE sport(sport_name TEXT PRIMARY KEY NOT NULL);
+
+
+CREATE TABLE sport(
+    sport_name TEXT PRIMARY KEY NOT NULL
+);
 CREATE TABLE user(
     id INTEGER PRIMARY KEY NOT NULL,
     name TEXT NOT NULL,
@@ -19,6 +26,9 @@ CREATE TABLE user(
     image_path TEXT  NULL,
     reliability INTEGER NOT NULL
 );
+
+
+
 CREATE TABLE court(
     id INTEGER PRIMARY KEY NOT NULL,
     name TEXT NOT NULL,
@@ -33,6 +43,20 @@ CREATE TABLE court(
     n_reviews INTEGER NOT NULL,
     FOREIGN KEY (sport) REFERENCES sport(sport_name) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+CREATE TABLE court_facility(
+    cf_id INTEGER PRIMARY KEY NOT NULL,
+    court INTEGER NOT NULL,
+    facility INTEGER NOT NULL,
+    FOREIGN KEY(court) REFERENCES court(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(facility) REFERENCES facility(facility_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE facility(
+    facility_id INTEGER PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL
+);
+
 CREATE TABLE user_sport(
     id INTEGER PRIMARY KEY NOT NULL,
     user INTEGER NOT NULL,
@@ -40,9 +64,14 @@ CREATE TABLE user_sport(
     skill TEXT NOT NULL,
     games_played INTEGER NOT NULL,
     games_organized INTEGER NOT NULL,
+    achievements TEXT NOT NULL,
     FOREIGN KEY (sport) REFERENCES sport(sport_name) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (user) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+
+
+
 CREATE TABLE court_time(
     id INTEGER PRIMARY KEY NOT NULL,
     court INTEGER NOT NULL,
@@ -61,6 +90,8 @@ CREATE TABLE reservation(
     equipment INTEGER NOT NULL,
     FOREIGN KEY (user) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE FOREIGN KEY (court) REFERENCES court(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+
 CREATE TABLE invitation(
     id INTEGER PRIMARY KEY NOT NULL,
     confirmed INTEGER NOT NULL,
@@ -70,9 +101,22 @@ CREATE TABLE invitation(
     FOREIGN KEY (reservation) REFERENCES reservation(id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (user) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+
 CREATE TABLE unavailable_court_date(
     id INTEGER NOT NULL,
     date TEXT NOT NULL,
     PRIMARY KEY(id, date),
     FOREIGN KEY (id) REFERENCES court(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE review(
+    review_id INTEGER PRIMARY KEY NOT NULL,
+    court INTEGER NOT NULL,
+    user INTEGER NOT NULL,
+    description TEXT NOT NULL,
+    date TEXT NOT NULL,
+    rating INTEGER NOT NULL,
+    FOREIGN KEY (court) REFERENCES court(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (user) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
 );

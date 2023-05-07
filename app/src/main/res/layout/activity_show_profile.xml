@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,16 +20,14 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/imageContainer"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:id ="@+id/imageContainer"
-                    >
+                    android:gravity="center">
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="wrap_content"
@@ -40,28 +37,29 @@
                         app:cardBackgroundColor="@android:color/transparent"
                         app:cardCornerRadius="255dp"
                         app:cardElevation="3dp">
-                    <androidx.cardview.widget.CardView
-                        android:padding="1dp"
-                        android:id="@+id/cardView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-                        <ImageView
-                            android:id="@+id/imageEdit"
-                            android:layout_width="200dp"
-                            android:layout_height="200dp"
-                            android:contentDescription="@string/profile_photo_cd"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/person"
-                            android:background="@drawable/person"/>
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/cardView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:padding="1dp"
+                            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-                    </androidx.cardview.widget.CardView>
+                            <ImageView
+                                android:id="@+id/profile_image"
+                                android:layout_width="200dp"
+                                android:layout_height="200dp"
+                                android:background="@drawable/person"
+                                android:contentDescription="@string/profile_photo_cd"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/person" />
+
+                        </androidx.cardview.widget.CardView>
                     </androidx.cardview.widget.CardView>
                 </LinearLayout>
 
@@ -77,8 +75,8 @@
                         android:id="@+id/linearLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
                         android:layout_marginTop="10dp"
+                        android:orientation="vertical"
 
                         app:layout_constraintBottom_toTopOf="@+id/textView"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -88,25 +86,25 @@
 
                         <TextView
                             android:id="@+id/fullNameView"
-                            android:textColor="@color/md_theme_light_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/montserrat_bold_700"
                             android:gravity="center"
+                            android:paddingBottom="8dp"
                             android:text="@string/full_name"
-                            android:textSize="20sp"
-                            android:paddingBottom="8dp"/>
+                            android:textColor="@color/md_theme_light_text"
+                            android:textSize="20sp" />
 
                         <TextView
                             android:id="@+id/nickNameView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/md_theme_light_text"
                             android:fontFamily="@font/montserrat_semibold_600"
                             android:gravity="center"
+                            android:paddingBottom="8dp"
                             android:text="@string/nickname"
-                            android:textSize="16sp"
-                            android:paddingBottom="8dp"/>
+                            android:textColor="@color/md_theme_light_text"
+                            android:textSize="16sp" />
                         <!--
                         <TextView
                             android:id="@+id/emailView"
@@ -138,20 +136,20 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
-                                    android:textColor="@color/md_theme_light_text"
                                     android:fontFamily="@font/montserrat_semibold_600"
                                     android:gravity="center"
                                     android:text="@string/turin"
                                     android:textAlignment="center"
+                                    android:textColor="@color/md_theme_light_text"
                                     android:textSize="16sp" />
 
                                 <ImageView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
-                                    app:tint="@color/md_theme_light_text"
                                     android:contentDescription="@string/location_icon"
-                                    android:src="@drawable/location" />
+                                    android:src="@drawable/location"
+                                    app:tint="@color/md_theme_light_text" />
 
 
                             </LinearLayout>
@@ -159,8 +157,7 @@
                             <View
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:layout_weight="0.1">
-                            </View>
+                                android:layout_weight="0.1"></View>
 
                             <TextView
                                 android:id="@+id/ageView"
@@ -168,10 +165,10 @@
                                 android:layout_height="match_parent"
                                 android:layout_marginEnd="0dp"
                                 android:layout_weight="1"
-                                android:textColor="@color/md_theme_light_text"
                                 android:fontFamily="@font/montserrat_semibold_600"
-                                android:text="23 years old"
                                 android:gravity="center"
+                                android:text="23 years old"
+                                android:textColor="@color/md_theme_light_text"
                                 android:textSize="16sp"
                                 tools:ignore="RtlCompat" />
 
@@ -184,15 +181,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:baselineAligned="false"
-                        android:paddingVertical="16dp"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:paddingVertical="16dp">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/montserrat_bold_700"
-                            android:text="@string/games_section"
                             android:paddingVertical="6dp"
+                            android:text="@string/games_section"
                             android:textSize="20sp"
                             app:layout_constraintBottom_toTopOf="@+id/sports_horizontal_scroll"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -218,18 +215,18 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:fontFamily="@font/montserrat_bold_700"
-                                    android:textColor="@color/md_theme_light_text"
                                     android:gravity="center"
                                     android:text="80"
+                                    android:textColor="@color/md_theme_light_text"
                                     android:textSize="18sp" />
 
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:textColor="@color/md_theme_light_text"
                                     android:fontFamily="@font/montserrat_bold_700"
                                     android:gravity="center"
                                     android:text="@string/organized"
+                                    android:textColor="@color/md_theme_light_text"
                                     android:textSize="12sp" />
 
 
@@ -247,18 +244,18 @@
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center"
                                     android:fontFamily="@font/montserrat_bold_700"
-                                    android:textColor="@color/md_theme_light_text"
                                     android:gravity="center"
                                     android:text="80"
+                                    android:textColor="@color/md_theme_light_text"
                                     android:textSize="18sp" />
 
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:fontFamily="@font/montserrat_bold_700"
-                                    android:textColor="@color/md_theme_light_text"
                                     android:gravity="center"
                                     android:text="@string/played"
+                                    android:textColor="@color/md_theme_light_text"
                                     android:textSize="12sp" />
 
 
@@ -276,18 +273,18 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:fontFamily="@font/montserrat_bold_700"
-                                    android:textColor="@color/md_theme_light_text"
                                     android:gravity="center"
                                     android:text="80%"
+                                    android:textColor="@color/md_theme_light_text"
                                     android:textSize="18sp" />
 
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:fontFamily="@font/montserrat_bold_700"
-                                    android:textColor="@color/md_theme_light_text"
                                     android:gravity="center"
                                     android:text="@string/reliability"
+                                    android:textColor="@color/md_theme_light_text"
                                     android:textSize="12sp" />
 
 
@@ -304,11 +301,11 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:paddingBottom="10dp"
                             android:id="@+id/textView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/montserrat_bold_700"
+                            android:paddingBottom="10dp"
                             android:text="@string/sports_section"
                             android:textSize="18sp"
                             app:layout_constraintBottom_toTopOf="@+id/sports_horizontal_scroll"
@@ -332,8 +329,6 @@
                                 android:layout_height="wrap_content"
                                 android:baselineAligned="false"
                                 android:orientation="horizontal">
-
-
 
 
                             </LinearLayout>

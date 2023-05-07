@@ -11,7 +11,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.TypedValue
 import android.view.*
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
@@ -34,7 +33,6 @@ import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateString
 import it.polito.mad.buddybench.dialogs.EditSportsDialog
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
-import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.UserViewModel
 import org.json.JSONObject
 
@@ -138,7 +136,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             profile.birthdate = it
         }
         // ** Profile Image
-        imageEdit = findViewById(R.id.imageEdit)
+        imageEdit = findViewById(R.id.profile_image)
         try{
             imageEdit.setImageURI(profile.imageUri)
         } catch (_: Exception){
@@ -186,7 +184,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     }
 
     private  fun resizeImageView(){
-        val iv = findViewById<ImageView>(R.id.imageEdit)
+        val iv = findViewById<ImageView>(R.id.profile_image)
         val ll = findViewById<LinearLayout>(R.id.imageContainer)
         ll.post {
             val width = ll.width
@@ -415,7 +413,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         for (selectedSport in selectedItems) {
             try {
                 checkNotNull(selectedSport)
-                val newSport = profile.sports.find { it.name == selectedSport } ?:Sport(selectedSport, Skills.NEWBIE, 0)
+                val newSport = profile.sports.find { it.name == selectedSport } ?:Sport(selectedSport, Skills.NEWBIE, 0,0, listOf(""))
                 newSport.skill = Skills.NEWBIE
                 newSports.add(newSport)
             } catch (e: java.lang.IllegalStateException) {

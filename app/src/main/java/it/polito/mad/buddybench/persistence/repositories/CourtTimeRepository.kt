@@ -24,7 +24,8 @@ class CourtTimeRepository @Inject constructor(
     fun getAll(): List<CourtTimeDTO> = courtTimeDao.getAll().map { it.toCourtTimeDTO() }
 
     fun getCourtTimeTable(name: String, sport: Sports): CourtTimeTableDTO {
-        val court = courtDao.getByNameAndSport(name, sport.name.uppercase())
+        val court = courtDao.getCourtWithFacilities(name, sport.name.uppercase())
+
         val list= courtTimeDao.getCourtTimeTable(court.court.id).map {
             it.toCourtTimeDTO()
         }
@@ -32,6 +33,8 @@ class CourtTimeRepository @Inject constructor(
         for (x in list){
             tt[x.dayOfWeek] = Pair(x.openingTime, x.closingTime)
         }
+
+
         return CourtTimeTableDTO(
             court.toCourtDTO(),
             tt

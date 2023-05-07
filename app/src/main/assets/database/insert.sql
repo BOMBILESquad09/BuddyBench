@@ -52,6 +52,14 @@ VALUES
     (20, "Volleyball Arena","238 Mapi St", "New York, NY", 22, "VOLLEYBALL",'555-765-4321',"court20", 15, 4.7, 60);
 
 
+
+INSERT INTO facility(facility_id, name) VALUES (0, "Shower");
+INSERT INTO facility(facility_id, name) VALUES (1, "Dress room");
+
+INSERT INTO court_facility(cf_id, court, facility) VALUES (0,1,0);
+INSERT INTO court_facility(cf_id, court, facility) VALUES (1,1,1);
+
+
 -- Some reservations (Compatibility with the date/time for court)
 INSERT INTO reservation (id, user, court, date, start_time, end_time, equipment)
 VALUES
@@ -64,12 +72,12 @@ VALUES
     (7, 0, 5, '2023-05-01', 18, 19,false);
 
 -- Some UserSports Rows
-INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized) VALUES
-(0,0,"VOLLEYBALL","NEWBIE",9,10);
-INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized) VALUES
-(1,0,"BASKETBALL","NEWBIE",10,10);
-INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized) VALUES
-(2,0,"FOOTBALL","NEWBIE",11,10);
+INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized, achievements) VALUES
+(0,0,"VOLLEYBALL","NEWBIE",9,10, "");
+INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized, achievements) VALUES
+(1,0,"BASKETBALL","NEWBIE",10,10, "");
+INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized, achievements) VALUES
+(2,0,"FOOTBALL","NEWBIE",11,10, "");
 
 
 --- Inserted Court Time Table
@@ -210,4 +218,11 @@ INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALU
 (114, 20, 5, "10:00", "18:00"),
 (115, 20, 6, "10:00", "20:00");
 
-SELECT * FROM Court C WHERE C.name = "Central Park Tennis"
+INSERT INTO review (review_id, court, user, description, date, rating) VALUES (
+    0,1,1,"One of the best court in town!", "2023-04-04", 5
+);
+
+INSERT INTO review (review_id, court, user, description, date, rating) VALUES (
+    1,1,2,"Cool dress room!", "2023-04-03", 4
+);
+

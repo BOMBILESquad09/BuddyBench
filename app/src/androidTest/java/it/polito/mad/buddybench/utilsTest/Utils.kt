@@ -1,5 +1,5 @@
 package it.polito.mad.buddybench.utilsTest
-
+/*
 import it.polito.mad.buddybench.entities.*
 import it.polito.mad.buddybench.enums.Sports
 import java.time.LocalDate
@@ -70,4 +70,4 @@ class Utils {
         }
 
     }
-}
+}*/

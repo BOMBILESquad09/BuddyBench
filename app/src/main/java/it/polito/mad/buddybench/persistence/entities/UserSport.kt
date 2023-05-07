@@ -44,7 +44,10 @@ data class UserSport(
     val gamesOrganized: Int,
 
     @ColumnInfo(name = "sport")
-    val sport: String
+    val sport: String,
+
+    @ColumnInfo(name = "achievements")
+    val achievements: String
 
 )
 

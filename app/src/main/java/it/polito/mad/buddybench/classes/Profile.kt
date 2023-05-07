@@ -2,12 +2,20 @@ package it.polito.mad.buddybench.classes
 
 
 
+import android.animation.Animator
+import android.animation.AnimatorInflater
+import android.animation.AnimatorSet
+import android.animation.ValueAnimator
+import android.content.Context
 import android.net.Uri
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.animation.doOnEnd
 import androidx.core.view.children
 import androidx.core.view.size
 import it.polito.mad.buddybench.R
@@ -62,8 +70,8 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
             return Profile("Vittorio", "Arpino","TheNextLayer", "varpino@buddybench.it", "Scafati", LocalDate.parse("27/04/1999", DateTimeFormatter.ofPattern("dd/MM/yyyy")), 70,
                 null,
                 listOf(
-                    Sport(Sports.TENNIS, Skills.SKILLED, 3, 2),
-                    Sport(Sports.FOOTBALL, Skills.NEWBIE, 7, 6)
+                    Sport(Sports.TENNIS, Skills.SKILLED, 3, 2, listOf("Coppa del Nonno")),
+                    Sport(Sports.FOOTBALL, Skills.NEWBIE, 7, 6, listOf(""))
                 )).toJSON().toString()
         }
 
@@ -146,8 +154,12 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
         for (sport in this.sports.filter { it.skill != Skills.NULL }) {
             val layout = if (!edit) R.layout.card_sport else R.layout.card_sport_edit
 
-            val sportCard =
-                LayoutInflater.from(context).inflate(layout, sportContainer, false)
+            val sportCard = LayoutInflater.from(context).inflate(layout, sportContainer, false)
+
+
+            sportCard.setOnClickListener {
+                flipCard(context, it)
+            }
 
             // ** Sport card dynamic values
 
@@ -199,6 +211,48 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
                 child.findViewById<TextView>(R.id.skill_level_card_text).text = Utils.formatString(sport.skill.toString())
             }
         }
+    }
+
+    fun flipCard(context: Context, view: View) {
+        val front = view.findViewById<ConstraintLayout>(R.id.sport_card_linear_layout)
+        val back = view.findViewById<ConstraintLayout>(R.id.sport_card_back)
+        if(front.visibility == View.VISIBLE){
+
+            val flipOutAnimatorSet =
+                AnimatorInflater.loadAnimator(
+                    context,
+                    R.animator.flip_out
+                ) as AnimatorSet
+            flipOutAnimatorSet.setTarget(view)
+            flipOutAnimatorSet.start()
+            front.visibility = View.INVISIBLE
+            back.visibility = View.VISIBLE
+
+        } else {
+
+            val flipInAnimatorSet =
+                AnimatorInflater.loadAnimator(
+                    context,
+                    R.animator.flip_in
+                ) as AnimatorSet
+            flipInAnimatorSet.setTarget(view)
+            val mainAnimator = flipInAnimatorSet.childAnimations[0] as ValueAnimator
+            mainAnimator.addUpdateListener { p0 ->
+                val currentValue = p0.animatedValue as Float
+
+
+                if (currentValue == -90.0f) {
+                    front.visibility = View.VISIBLE
+                    back.visibility = View.INVISIBLE
+                }
+            }
+            flipInAnimatorSet.start()
+
+
+
+        }
 
     }
+
+
 }
