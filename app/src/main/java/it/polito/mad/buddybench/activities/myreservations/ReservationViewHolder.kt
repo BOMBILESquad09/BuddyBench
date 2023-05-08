@@ -1,26 +1,25 @@
 package it.polito.mad.buddybench.activities.myreservations
 
-import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.view.View
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
-import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.court.CourtActivity
 import it.polito.mad.buddybench.enums.Sports
-import it.polito.mad.buddybench.utils.Utils
+import it.polito.mad.buddybench.persistence.dto.ReservationDTO
+import java.lang.String
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent>): RecyclerView.ViewHolder(v) {
 
@@ -31,6 +30,8 @@ class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent
     private val iconSport : ImageView = v.findViewById(R.id.imageView)
     var formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("H:mm")
     private var manageBtn: TextView = v.findViewById(R.id.manage_btn)
+    private var telephoneIcon: ImageView = v.findViewById(R.id.telephone)
+    private var positionIcon: ImageView = v.findViewById(R.id.position)
 
     val view: View = v
 
@@ -50,6 +51,18 @@ class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent
                 )!!
             )
         )
+
+        telephoneIcon.setOnClickListener {
+            val number = Uri.parse("tel:" + reservation.court.phoneNumber);
+            val dial = Intent(Intent.ACTION_DIAL, number)
+            launcher.launch(dial)
+        }
+
+        positionIcon.setOnClickListener {
+            val uri = "geo:0,0?q=" + reservation.court.address
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
+            launcher.launch(intent)
+        }
 
         val wrappedDrawable = DrawableCompat.wrap(iconDrawable!!)
         iconSport.setImageDrawable(wrappedDrawable)
