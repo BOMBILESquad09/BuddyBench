@@ -25,6 +25,8 @@ import java.time.format.DateTimeFormatter
 class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent>): RecyclerView.ViewHolder(v) {
 
     private val courtName : TextView = v.findViewById(R.id.textView6)
+    private val courtAddress: TextView = v.findViewById(R.id.card_reservation_address)
+    private val courtPhone: TextView = v.findViewById(R.id.card_reservation_phone_number)
     private val slot : TextView = v.findViewById(R.id.textView5)
     private val iconSport : ImageView = v.findViewById(R.id.imageView)
     var formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("H:mm")
@@ -39,6 +41,8 @@ class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent
         card.setCardBackgroundColor(Sports.getSportColor(Sports.valueOf(reservation.court.sport), view.context))
 
         courtName.text = reservation.court.name
+        courtAddress.text = reservation.court.address
+        courtPhone.text = reservation.court.phoneNumber
         val iconDrawable = ContextCompat.getDrawable(view.context,
             Sports.sportToIconDrawableAlternative(
                 Sports.fromJSON(

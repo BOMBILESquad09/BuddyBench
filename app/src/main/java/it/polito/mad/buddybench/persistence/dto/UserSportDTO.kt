@@ -8,7 +8,8 @@ class UserSportDTO(
     val skill: String,
     val gamesPlayed: Int,
     val gamesOrganized: Int,
-    val sport: String
+    val sport: String,
+    val achievements: List<String>
 ) {
     fun toEntity(userId: Int): UserSport {
         return UserSport(
@@ -17,6 +18,7 @@ class UserSportDTO(
             gamesPlayed = this.gamesPlayed,
             gamesOrganized = this.gamesOrganized,
             sport = this.sport,
+            achievements = this.achievements.joinToString(";")
         )
     }
 

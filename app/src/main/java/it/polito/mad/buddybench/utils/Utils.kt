@@ -1,9 +1,15 @@
 package it.polito.mad.buddybench.utils
 
+import android.animation.AnimatorInflater
+import android.animation.AnimatorSet
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.view.View
 import android.widget.ImageView
+import androidx.core.animation.doOnEnd
 import androidx.core.graphics.drawable.DrawableCompat
+import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.myreservations.displayText
 import java.time.DayOfWeek
 import java.time.Duration
@@ -122,5 +128,7 @@ class Utils {
             val end = now.plusWeeks(4).with(fieldISO, 7)
             return Pair(start, end)
         }
+
+
     }
 }

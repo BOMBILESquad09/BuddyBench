@@ -43,7 +43,7 @@ class ValidationUtils {
             }
             else{
                 ev.backgroundTintList =
-                    ColorStateList.valueOf(resources.getColor(R.color.md_theme_dark_onPrimary,null))
+                    ColorStateList.valueOf(resources.getColor(R.color.disabled,null))
                 ev.setCompoundDrawablesWithIntrinsicBounds(0, 0,0, 0)
 
             }

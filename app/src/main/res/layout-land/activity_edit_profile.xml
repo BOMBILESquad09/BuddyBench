@@ -45,7 +45,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
                     <ImageView
-                        android:id="@+id/imageEdit"
+                        android:id="@+id/profile_image"
                         android:layout_width="200dp"
                         android:layout_height="200dp"
                         android:contentDescription="@string/profile_photo_cd"

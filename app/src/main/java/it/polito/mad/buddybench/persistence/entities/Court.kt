@@ -39,6 +39,9 @@ data class Court(
     @ColumnInfo(name = "sport")
     var sport: String,
 
+    @ColumnInfo(name = "phone_number")
+    var phoneNumber: String,
+
     @ColumnInfo(name = "path")
     var path: String,
 
@@ -60,6 +63,7 @@ fun Court.toCourtDTO(): CourtDTO {
         location = this.location,
         feeHour = this.feeHour,
         sport = this.sport,
+        phoneNumber =this.phoneNumber,
         path = this.path,
         feeEquipment = this.feeEquipment,
         rating = this.rating,

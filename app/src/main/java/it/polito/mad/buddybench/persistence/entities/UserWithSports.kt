@@ -26,7 +26,8 @@ fun UserWithSports.toUserSportDTO(): UserWithSportsDTO {
                 Sports.fromJSON(it.sport)!!,
                 Skills.valueOf(it.skill.uppercase()),
                 it.gamesPlayed,
-                it.gamesOrganized
+                it.gamesOrganized,
+                it.achievements.split(";")
             )
         }
         )
@@ -45,7 +46,8 @@ fun UserWithSportsDTO.toEntity(): UserWithSports{
                 skill = it.skill.name,
                 gamesPlayed = it.matchesPlayed,
                 gamesOrganized = it.matchesOrganized,
-                sport = it.name.name
+                sport = it.name.name,
+                achievements = it.achievements.joinToString(";")
             )
         }
     )

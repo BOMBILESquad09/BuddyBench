@@ -55,7 +55,7 @@ class BottomBar(val context: HomeActivity) {
         val bottomBar = context.findViewById<AnimatedBottomBar>(R.id.bottom_bar)
         bottomBar.selectTabAt(tabIndex = currentTab.getId())
         if (currentTab != Tabs.PROFILE)
-            adjustExternalComponents(currentTab)
+            adjustExternalComponents()
     }
 
     fun replaceFragment(lastTag: Tabs, newTag: Tabs){
@@ -83,12 +83,13 @@ class BottomBar(val context: HomeActivity) {
             }
         }
         transaction.commit()
-        adjustExternalComponents(newTag)
+        adjustExternalComponents()
 
     }
 
-    private fun adjustExternalComponents(currentTab: Tabs){
-        when(currentTab){
+    private fun adjustExternalComponents(){
+
+        when(this.currentTab){
             Tabs.PROFILE -> {setToolbar() }
             else -> {clearToolbar()}
         }

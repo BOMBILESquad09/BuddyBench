@@ -1,10 +1,9 @@
 DROP TABLE IF EXISTS court_facility;
-DROP TABLE IF EXISTS achievements;
 DROP TABLE IF EXISTS facility;
 DROP TABLE IF EXISTS sport;
 DROP TABLE IF EXISTS court;
 DROP TABLE IF EXISTS court_time;
-DROP TABLE review;
+DROP TABLE IF EXISTS review;
 DROP TABLE IF EXISTS invitation;
 DROP TABLE IF EXISTS reservation;
 DROP TABLE IF EXISTS user_sport;
@@ -37,6 +36,7 @@ CREATE TABLE court(
     location TEXT NOT NULL,
     fee_hour INTEGER NOT NULL,
     sport TEXT NOT NULL,
+    phone_number TEXT NOT NULL,
     fee_equipment INTEGER NOT NULL,
     path TEXT NOT NULL,
     rating REAL NOT NULL,
@@ -64,18 +64,11 @@ CREATE TABLE user_sport(
     skill TEXT NOT NULL,
     games_played INTEGER NOT NULL,
     games_organized INTEGER NOT NULL,
+    achievements TEXT NOT NULL,
     FOREIGN KEY (sport) REFERENCES sport(sport_name) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (user) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE achievements(
-    achievements_id INTEGER PRIMARY KEY NOT NULL,
-    user INTEGER  NOT NULL,
-    sport INTEGER NOT NULL,
-    name TEXT NOT NULL,
-    FOREIGN KEY (sport) REFERENCES sport(sport_name) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (user) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
-);
 
 
 

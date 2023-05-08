@@ -32,6 +32,7 @@ fun CourtWithFacilities.toCourtDTO(): CourtDTO {
         location = this.court.location,
         feeHour = this.court.feeHour,
         sport = this.court.sport,
+        phoneNumber = this.court.phoneNumber,
         path = this.court.path,
         feeEquipment = this.court.feeEquipment,
         rating = this.court.rating,

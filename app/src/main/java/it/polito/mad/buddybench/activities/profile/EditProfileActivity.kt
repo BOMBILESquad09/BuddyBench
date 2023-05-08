@@ -11,7 +11,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.TypedValue
 import android.view.*
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
@@ -34,7 +33,6 @@ import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateString
 import it.polito.mad.buddybench.dialogs.EditSportsDialog
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
-import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.UserViewModel
 import org.json.JSONObject
 
@@ -82,7 +80,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_edit_profile)
+        setContentView(R.layout.edit_profile)
         // ** Toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.title = "Profile"
@@ -138,21 +136,28 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             profile.birthdate = it
         }
         // ** Profile Image
-        imageEdit = findViewById(R.id.imageEdit)
+        imageEdit = findViewById(R.id.profile_image)
         try{
             imageEdit.setImageURI(profile.imageUri)
         } catch (_: Exception){
             imageEdit.setImageResource(R.drawable.person)
         }
-        resizeImageView()
-        val cardViewImage = findViewById<CardView>(R.id.cardView)
-        registerForContextMenu(cardViewImage)
+        //resizeImageView()
+        val cardViewImage = findViewById<ImageView>(R.id.camera_button)
+        cardViewImage.setOnClickListener {
+            val popup = PopupMenu(this, it)
+            popup.menuInflater.inflate(R.menu.menu_camera_edit, popup.menu)
+            popup.setOnMenuItemClickListener {
+                onContextItemSelected(it)
+            }
+            popup.show()
+        }
 
-        sportContainer = findViewById(R.id.sportsContainerEdit)
-        sportContainer.removeAllViews()
+        //sportContainer = findViewById(R.id.sportsContainerEdit)
+        //sportContainer.removeAllViews()
 
         // ** Populate sport cards
-        profile.populateSportCards(this, sportContainer,
+        /*profile.populateSportCards(this, sportContainer,
             edit = true,
             onSkillSelected = { sportSkillLevel, sport ->
 
@@ -165,7 +170,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
                 }
                 popupOpened = popup
                 popup.show()
-            })
+            })*/
 
 
 
@@ -176,8 +181,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
 
         // ** Add Sports Button
-        addSportButton = findViewById(R.id.add_sport_button)
-        addSportButton.setOnClickListener { openSportSelectionDialog() }
+        //addSportButton = findViewById(R.id.add_sport_button)
+        //addSportButton.setOnClickListener { openSportSelectionDialog() }
         checkCameraPermission()
 
 
@@ -186,7 +191,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     }
 
     private  fun resizeImageView(){
-        val iv = findViewById<ImageView>(R.id.imageEdit)
+        val iv = findViewById<ImageView>(R.id.profile_image)
         val ll = findViewById<LinearLayout>(R.id.imageContainer)
         ll.post {
             val width = ll.width
@@ -415,7 +420,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         for (selectedSport in selectedItems) {
             try {
                 checkNotNull(selectedSport)
-                val newSport = profile.sports.find { it.name == selectedSport } ?:Sport(selectedSport, Skills.NEWBIE, 0)
+                val newSport = profile.sports.find { it.name == selectedSport } ?:Sport(selectedSport, Skills.NEWBIE, 0,0, listOf(""))
                 newSport.skill = Skills.NEWBIE
                 newSports.add(newSport)
             } catch (e: java.lang.IllegalStateException) {
