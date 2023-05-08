@@ -2,7 +2,7 @@ package it.polito.mad.buddybench.persistence.dto
 
 import it.polito.mad.buddybench.persistence.entities.Court
 
-class CourtDTO(
+class CourtDTO (
     val name: String,
     val address: String,
     val location: String,

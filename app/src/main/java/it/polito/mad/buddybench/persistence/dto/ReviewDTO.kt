@@ -1,6 +1,5 @@
 package it.polito.mad.buddybench.persistence.dto
 
-import it.polito.mad.buddybench.persistence.entities.User
 import java.time.LocalDate
 
 class ReviewDTO (

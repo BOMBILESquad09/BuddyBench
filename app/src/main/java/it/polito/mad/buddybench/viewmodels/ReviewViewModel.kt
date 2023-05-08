@@ -4,40 +4,36 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.persistence.dto.ReviewDTO
-import it.polito.mad.buddybench.persistence.repositories.CourtTimeRepository
+import it.polito.mad.buddybench.persistence.repositories.CourtRepository
 import it.polito.mad.buddybench.persistence.repositories.ReviewRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class ReviewViewModel @Inject constructor(): ViewModel() {
 
-    private lateinit var court: CourtDTO
-
     @Inject
     lateinit var reviewRepository: ReviewRepository
 
-    private val _reviews: MutableLiveData<List<ReviewDTO>> = MutableLiveData(null)
-    val reviews: LiveData<List<ReviewDTO>> = _reviews
+    @Inject
+    lateinit var courtRepository: CourtRepository
 
-    private val _l: MutableLiveData<Boolean> = MutableLiveData(false)
-    private val l: LiveData<Boolean> = _l
+    private val _reviews: MutableLiveData<List<ReviewDTO>> = MutableLiveData(listOf())
+    val reviews: LiveData<List<ReviewDTO>> get() = _reviews
 
+    private val _l: MutableLiveData<Boolean> = MutableLiveData(true)
+    val l: LiveData<Boolean> = _l
 
-
-    fun setCourt(court: CourtDTO){
-        this.court = court
-    }
-
-
-    fun getCourtReviews(): LiveData<List<ReviewDTO>>{
+    fun getCourtReviews(name: String, sport: String): LiveData<List<ReviewDTO>>{
+        _l.postValue(true)
         Thread{
-            val reviewsList = reviewRepository.getAllByCourt(this.court)
+            val court = courtRepository.getByNameAndSports(name, Sports.valueOf(sport))
+            val reviewsList = reviewRepository.getAllByCourt(court)
+            Thread.sleep(3000)
             _reviews.postValue(reviewsList)
-
-
-
+            _l.postValue(false)
         }.start()
         return reviews
     }
