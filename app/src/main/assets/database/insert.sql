@@ -3,6 +3,8 @@ INSERT INTO user (id,name,surname,nickname,birthdate,location,email,reliability)
 VALUES (1,"Vittorio","Arpino","TheNextLayer","1999-09-30","Scafati","varpino@buddybench.it",70);
 INSERT INTO user (id,name,surname,nickname,birthdate,location,email,reliability)
 VALUES (2,"Jacopo","De Cristofaro","Jeff","1999-04-27","New York","jeff@buddybench.com",80);
+INSERT INTO user (id,name,surname,nickname,birthdate,location,email,reliability)
+VALUES (3,"Lorenzo","Pantano","ok","1997-09-17","New York","lore@buddybench.com",80);
 
 -- Sports Available
 INSERT INTO sport
@@ -218,11 +220,8 @@ INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALU
 (114, 20, 5, "10:00", "18:00"),
 (115, 20, 6, "10:00", "20:00");
 
-INSERT INTO review (review_id, court, user, description, date, rating) VALUES (
-    0,1,1,"One of the best court in town!", "2023-04-04", 5
-);
-
-INSERT INTO review (review_id, court, user, description, date, rating) VALUES (
-    1,1,2,"Cool dress room!", "2023-04-03", 4
-);
+INSERT INTO review (review_id, court, user, description, date, rating) VALUES
+(0,1,1,"One of the best court in town!", "2023-04-04", 5),
+(1,1,2,"Cool dress room!", "2023-04-03", 4),
+(2,6,3,"Ok", "2023-05-08", 3);
 

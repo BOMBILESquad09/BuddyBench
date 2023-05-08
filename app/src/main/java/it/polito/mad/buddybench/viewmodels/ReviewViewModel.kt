@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.enums.Sports
-import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.persistence.dto.ReviewDTO
 import it.polito.mad.buddybench.persistence.repositories.CourtRepository
 import it.polito.mad.buddybench.persistence.repositories.ReviewRepository
@@ -31,7 +30,6 @@ class ReviewViewModel @Inject constructor(): ViewModel() {
         Thread{
             val court = courtRepository.getByNameAndSports(name, Sports.valueOf(sport))
             val reviewsList = reviewRepository.getAllByCourt(court)
-            Thread.sleep(3000)
             _reviews.postValue(reviewsList)
             _l.postValue(false)
         }.start()
