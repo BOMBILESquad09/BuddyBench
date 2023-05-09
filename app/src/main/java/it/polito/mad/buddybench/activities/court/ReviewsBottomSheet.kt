@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ProgressBar
+import android.widget.RatingBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -33,17 +35,31 @@ class ReviewsBottomSheet : SuperBottomSheetFragment() {
 
     // ** UI Elements
     private lateinit var parent: View
+
+    // ** TextViews
     private lateinit var tvCourtName: TextView
+    private lateinit var tvNoReviews: TextView
+    private lateinit var tvCannotReview: TextView
+    private lateinit var tvYourReview: TextView
+    private lateinit var tvNumReviews: TextView
+    private lateinit var tvReviewTotal: TextView
+
+    // ** Buttons
+    private lateinit var btnEditReview: Button
+
+    // ** Rating bars
+    private lateinit var rbReviewTotal: RatingBar
+    private lateinit var rbYourReview: RatingBar
+
+    // ** Other
     private lateinit var rvReviews: RecyclerView
     private lateinit var backButton: ImageButton
     private lateinit var pbReviews: ProgressBar
-    private lateinit var tvNoReviews: TextView
 
     // ** Data
     private var courtName: String? = null
     private var courtSport: String? = null
     private var lastReviews: List<ReviewDTO> = listOf()
-
 
     // ** View Models
     private val reviewViewModel by viewModels<ReviewViewModel>()
@@ -78,6 +94,19 @@ class ReviewsBottomSheet : SuperBottomSheetFragment() {
         backButton = parent.findViewById(R.id.back_button_reviews)
         backButton.setOnClickListener { this.dismiss() }
 
+        // ** Review Total
+        tvReviewTotal = parent.findViewById(R.id.tv_review_total)
+        tvNumReviews = parent.findViewById(R.id.tv_num_reviews)
+        rbReviewTotal = parent.findViewById(R.id.rb_review_total)
+
+        // ** Cannot Review
+        tvCannotReview = parent.findViewById(R.id.tv_cannot_review)
+
+        // ** Review card (new and your)
+        btnEditReview = parent.findViewById(R.id.btn_edit_review)
+        tvYourReview = parent.findViewById(R.id.tv_your_review)
+        rbYourReview = parent.findViewById(R.id.rb_your_review)
+
         // ** Recycler View
         rvReviews = parent.findViewById(R.id.rv_reviews)
         rvReviews.layoutManager = LinearLayoutManager(context)
@@ -89,7 +118,6 @@ class ReviewsBottomSheet : SuperBottomSheetFragment() {
         // ** Loading state
         pbReviews = parent.findViewById(R.id.pb_reviews)
         reviewViewModel.l.observe(this) {
-            println("Loading $it")
             if (it) {
                 pbReviews.visibility = View.VISIBLE
                 rvReviews.visibility = View.GONE
