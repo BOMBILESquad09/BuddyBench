@@ -217,5 +217,6 @@
     <string name="cannot_review">You must have played in this court before leaving a review</string>
     <string name="info_icon">info_icon</string>
     <string name="your_review">Your review</string>
+    <string name="missing_rating">Missing rating</string>
 
 </resources>

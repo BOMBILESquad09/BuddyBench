@@ -144,7 +144,7 @@
 
 
     <androidx.cardview.widget.CardView
-        android:visibility="gone"
+        android:visibility="visible"
         android:id="@+id/card_new_review"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -167,13 +167,16 @@
                 android:text="@string/leave_a_review" />
 
             <RatingBar
+                android:id="@+id/rb_new_review"
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:paddingVertical="8dp"
+                android:isIndicator="false"
                 android:layout_height="wrap_content" />
 
 
             <EditText
+                android:id="@+id/et_new_review"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="top|start"
@@ -187,10 +190,23 @@
                 android:scrollbars="vertical"
                 tools:ignore="LabelFor" />
 
+            <TextView
+                android:id="@+id/tv_error_review"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/missing_rating"
+                android:layout_marginBottom="8dp"
+                android:textColor="@color/error"
+                android:drawablePadding="8dp"
+                app:drawableStartCompat="@drawable/round_error_24" />
+
+
 
             <Button
+                android:id="@+id/btn_new_review"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:background="@drawable/rounded_shape"
                 android:backgroundTint="@color/md_theme_light_primary"
                 android:textColor="@color/md_theme_light_background"
