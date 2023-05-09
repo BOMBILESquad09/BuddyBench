@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.persistence.dto.ReviewDTO
 import it.polito.mad.buddybench.persistence.repositories.CourtRepository
 import it.polito.mad.buddybench.persistence.repositories.ReviewRepository
@@ -20,7 +21,10 @@ class ReviewViewModel @Inject constructor(): ViewModel() {
     lateinit var courtRepository: CourtRepository
 
     private val _reviews: MutableLiveData<List<ReviewDTO>> = MutableLiveData(listOf())
+    private val _court: MutableLiveData<CourtDTO> = MutableLiveData()
+
     val reviews: LiveData<List<ReviewDTO>> get() = _reviews
+    val court: LiveData<CourtDTO> get() = _court
 
     private var _check: Boolean = false
     val check = _check
@@ -47,5 +51,15 @@ class ReviewViewModel @Inject constructor(): ViewModel() {
             val result = reviewRepository.saveReview(review)
             _l.postValue(false)
         }.start()
+    }
+
+    fun getCourt(name: String, sport: String): LiveData<CourtDTO> {
+        _l.postValue(true)
+        Thread {
+            val court = courtRepository.getByNameAndSports(name, Sports.valueOf(sport))
+            _court.postValue(court)
+            _l.postValue(false)
+        }.start()
+        return _court
     }
 }

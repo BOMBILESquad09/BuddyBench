@@ -18,6 +18,7 @@ import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.findcourt.ReviewsDiffUtils
+import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.persistence.dto.ReviewDTO
 import it.polito.mad.buddybench.viewmodels.ReviewViewModel
 
@@ -60,6 +61,7 @@ class ReviewsBottomSheet : SuperBottomSheetFragment() {
     private var courtName: String? = null
     private var courtSport: String? = null
     private var lastReviews: List<ReviewDTO> = listOf()
+    private var court: CourtDTO? = null
 
     // ** View Models
     private val reviewViewModel by viewModels<ReviewViewModel>()
@@ -102,7 +104,7 @@ class ReviewsBottomSheet : SuperBottomSheetFragment() {
         // ** Cannot Review
         tvCannotReview = parent.findViewById(R.id.tv_cannot_review)
 
-        // ** Review card (new and your)
+        // ** Review card
         btnEditReview = parent.findViewById(R.id.btn_edit_review)
         tvYourReview = parent.findViewById(R.id.tv_your_review)
         rbYourReview = parent.findViewById(R.id.rb_your_review)
@@ -144,7 +146,15 @@ class ReviewsBottomSheet : SuperBottomSheetFragment() {
             }
         }
 
+        // ** Update court data
+        reviewViewModel.court.observe(this) {
+            tvReviewTotal.text = it.rating.toString()
+            tvNumReviews.text = String.format(getString(R.string.num_ratings), it.nReviews)
+            rbReviewTotal.rating = it.rating.toFloat()
+        }
+
         reviewViewModel.getCourtReviews(courtName!!, courtSport!!)
+        reviewViewModel.getCourt(courtName!!, courtSport!!)
     }
 
     // ** Bottom Sheet is always expanded
