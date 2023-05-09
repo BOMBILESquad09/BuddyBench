@@ -209,5 +209,14 @@
     <string name="no_reviews">There are no reviews for this court</string>
     <string name="date">23/03/2023</string>
     <string name="leave_a_review">Leave a review</string>
+    <string name="review">Review</string>
+    <string name="num_ratings">based on %1$s reviews</string>
+    <string name="_5">5</string>
+    <string name="_2">2</string>
+    <string name="write_your_review">Write your review</string>
+    <string name="cannot_review">You must have played in this court before leaving a review</string>
+    <string name="info_icon">info_icon</string>
+    <string name="your_review">Your review</string>
+    <string name="missing_rating">Missing rating</string>
 
 </resources>

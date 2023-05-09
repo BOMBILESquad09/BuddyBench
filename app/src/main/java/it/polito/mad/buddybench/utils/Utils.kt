@@ -5,12 +5,14 @@ import android.animation.AnimatorSet
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.icu.text.DecimalFormat
 import android.view.View
 import android.widget.ImageView
 import androidx.core.animation.doOnEnd
 import androidx.core.graphics.drawable.DrawableCompat
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.myreservations.displayText
+import java.math.RoundingMode
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate
@@ -130,5 +132,10 @@ class Utils {
         }
 
 
+        fun roundOffDecimal(number: Double): Double {
+            val df = DecimalFormat("#.##")
+            df.roundingMode = RoundingMode.CEILING.ordinal
+            return df.format(number).toDouble()
+        }
     }
 }

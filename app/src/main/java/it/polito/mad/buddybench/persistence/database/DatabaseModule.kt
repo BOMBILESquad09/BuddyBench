@@ -49,7 +49,9 @@ object DatabaseModule {
     fun provideCourtRepo(appDatabase: CourtReservationDatabase): CourtRepository {
         return CourtRepository(
             appDatabase.courtDao(),
-            appDatabase.sportDao()
+            appDatabase.sportDao(),
+            appDatabase.reservationDao(),
+            appDatabase.userDao()
         )
     }
     @Singleton
