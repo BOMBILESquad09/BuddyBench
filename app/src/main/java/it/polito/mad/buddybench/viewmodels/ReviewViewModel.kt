@@ -22,6 +22,8 @@ class ReviewViewModel @Inject constructor(): ViewModel() {
     private val _reviews: MutableLiveData<List<ReviewDTO>> = MutableLiveData(listOf())
     val reviews: LiveData<List<ReviewDTO>> get() = _reviews
 
+    private var _check: Boolean = false
+    val check = _check
     private val _l: MutableLiveData<Boolean> = MutableLiveData(true)
     val l: LiveData<Boolean> = _l
 
@@ -30,6 +32,9 @@ class ReviewViewModel @Inject constructor(): ViewModel() {
         Thread{
             val court = courtRepository.getByNameAndSports(name, Sports.valueOf(sport))
             val reviewsList = reviewRepository.getAllByCourt(court)
+
+            //val playedFlag = courtRepository.checkIfPlayed(name, sport, profile.email )
+            //_check = playedFlag
             _reviews.postValue(reviewsList)
             _l.postValue(false)
         }.start()
