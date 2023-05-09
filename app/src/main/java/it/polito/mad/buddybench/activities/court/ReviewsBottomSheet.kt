@@ -9,6 +9,7 @@ import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DiffUtil
@@ -46,7 +47,12 @@ class ReviewsBottomSheet : SuperBottomSheetFragment() {
     private lateinit var tvReviewTotal: TextView
 
     // ** Buttons
-    private lateinit var btnEditReview: Button
+    private lateinit var btnEditReview: ImageButton
+    private lateinit var backButton: ImageButton
+
+    // ** Cards
+    private lateinit var cardNewReview: CardView
+    private lateinit var cardYourReview: CardView
 
     // ** Rating bars
     private lateinit var rbReviewTotal: RatingBar
@@ -54,14 +60,12 @@ class ReviewsBottomSheet : SuperBottomSheetFragment() {
 
     // ** Other
     private lateinit var rvReviews: RecyclerView
-    private lateinit var backButton: ImageButton
     private lateinit var pbReviews: ProgressBar
 
     // ** Data
     private var courtName: String? = null
     private var courtSport: String? = null
     private var lastReviews: List<ReviewDTO> = listOf()
-    private var court: CourtDTO? = null
 
     // ** View Models
     private val reviewViewModel by viewModels<ReviewViewModel>()
@@ -105,6 +109,8 @@ class ReviewsBottomSheet : SuperBottomSheetFragment() {
         tvCannotReview = parent.findViewById(R.id.tv_cannot_review)
 
         // ** Review card
+        cardNewReview = parent.findViewById(R.id.card_new_review)
+        cardYourReview = parent.findViewById(R.id.card_your_review)
         btnEditReview = parent.findViewById(R.id.btn_edit_review)
         tvYourReview = parent.findViewById(R.id.tv_your_review)
         rbYourReview = parent.findViewById(R.id.rb_your_review)
@@ -153,8 +159,21 @@ class ReviewsBottomSheet : SuperBottomSheetFragment() {
             rbReviewTotal.rating = it.rating.toFloat()
         }
 
+        reviewViewModel.canReview.observe(this) {
+            if (it) {
+                cardNewReview.visibility = View.VISIBLE
+                cardYourReview.visibility = View.GONE
+                tvCannotReview.visibility = View.GONE
+            } else {
+                cardNewReview.visibility = View.GONE
+                cardYourReview.visibility = View.GONE
+                tvCannotReview.visibility = View.VISIBLE
+            }
+        }
+
         reviewViewModel.getCourtReviews(courtName!!, courtSport!!)
         reviewViewModel.getCourt(courtName!!, courtSport!!)
+        reviewViewModel.userCanReview(courtName!!, courtSport!!, requireContext())
     }
 
     // ** Bottom Sheet is always expanded

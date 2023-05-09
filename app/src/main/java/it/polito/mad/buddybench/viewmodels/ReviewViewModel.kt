@@ -1,14 +1,17 @@
 package it.polito.mad.buddybench.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.persistence.dto.ReviewDTO
 import it.polito.mad.buddybench.persistence.repositories.CourtRepository
 import it.polito.mad.buddybench.persistence.repositories.ReviewRepository
+import it.polito.mad.buddybench.persistence.repositories.UserRepository
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,11 +23,16 @@ class ReviewViewModel @Inject constructor(): ViewModel() {
     @Inject
     lateinit var courtRepository: CourtRepository
 
+    @Inject
+    lateinit var userRepository: UserRepository
+
     private val _reviews: MutableLiveData<List<ReviewDTO>> = MutableLiveData(listOf())
     private val _court: MutableLiveData<CourtDTO> = MutableLiveData()
+    private val _canReview: MutableLiveData<Boolean> = MutableLiveData()
 
     val reviews: LiveData<List<ReviewDTO>> get() = _reviews
     val court: LiveData<CourtDTO> get() = _court
+    val canReview: LiveData<Boolean> get() = _canReview
 
     private var _check: Boolean = false
     val check = _check
@@ -61,5 +69,17 @@ class ReviewViewModel @Inject constructor(): ViewModel() {
             _l.postValue(false)
         }.start()
         return _court
+    }
+
+    fun userCanReview(name: String, sport: String, context: Context): LiveData<Boolean> {
+        _l.postValue(true)
+        val sharedPreferences = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        val currentUser = userRepository.getCurrentUser(sharedPreferences)
+        Thread {
+            val can = courtRepository.checkIfPlayed(name, sport, currentUser.email)
+            _canReview.postValue(can)
+            _l.postValue(false)
+        }.start()
+        return _canReview
     }
 }
