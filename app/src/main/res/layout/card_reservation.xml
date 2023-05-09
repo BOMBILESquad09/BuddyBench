@@ -59,6 +59,7 @@
                 card_view:layout_constraintTop_toBottomOf="@+id/textView6">
 
                 <ImageView
+                    android:id="@+id/position"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:src="@drawable/location"
@@ -91,6 +92,7 @@
                 >
 
                 <ImageView
+                    android:id="@+id/telephone"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:src="@drawable/phone"
