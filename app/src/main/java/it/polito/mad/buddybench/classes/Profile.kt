@@ -160,18 +160,20 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
             val sportCard = LayoutInflater.from(context).inflate(layout, sportContainer, false)
 
             val achievementButton = sportCard.findViewById<ImageView>(R.id.achievements)
+            val popup = context.findViewById<CardView>(R.id.sport_card_expanded)
 
-            val cardView = sportCard.findViewById<CardView>(R.id.sport_card_view)
-            val screen = context.findViewById<LinearLayout>(R.id.profile_page)
-
-            val smallLayout = Scene.getSceneForLayout(cardView, R.layout.card_sport, context)
-            val largeLayout = Scene.getSceneForLayout(screen, R.layout.card_sport_expanded, context)
-
-            val inflater = TransitionInflater.from(context)
-            val transition = inflater.inflateTransition(R.transition.card_expand_transition)
+            //val cardView = sportCard.findViewById<CardView>(R.id.sport_card_view)
+            //val screen = context.findViewById<LinearLayout>(R.id.profile_page)
+            //val inflater = TransitionInflater.from(context)
+            //val transition = inflater.inflateTransition(R.transition.card_expand_transition)
 
             achievementButton.setOnClickListener{
-                TransitionManager.go(largeLayout, transition)
+                popup.visibility = View.VISIBLE
+                popup.animate().apply {
+                    duration = 500
+                    scaleX(1f)
+                    scaleY(1f)
+                }.start()
             }
 
 

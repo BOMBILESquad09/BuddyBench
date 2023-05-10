@@ -9,9 +9,8 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_margin="3dp"
-    app:cardBackgroundColor="@android:color/transparent"
     app:cardCornerRadius="25dp"
-    app:cardElevation="3dp">
+    app:cardElevation="2dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/sport_card_linear_layout"
