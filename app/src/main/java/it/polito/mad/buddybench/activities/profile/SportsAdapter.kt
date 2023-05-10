@@ -12,12 +12,14 @@ import it.polito.mad.buddybench.enums.Sports
 
 class SportsAdapter(private val sports: LiveData<MutableList<Sport>>, private val edit: Boolean,
     private val sportRemoveCallback: (Sport) -> Unit = {},
-    private val sportSkillCallback: (Sport, View) -> Unit = { s, v -> {}}
+    private val sportSkillCallback: (Sport, View) -> Unit = { s, v -> {}},
+                    private val achievementRemoveCallback: (Sport, String) -> Unit = {s,v -> {}},
+                    private val achievementAddCallback: (Sport, String) -> Unit = {s,v -> {}}
 ): RecyclerView.Adapter<SportsViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SportsViewHolder {
         val v = LayoutInflater.from(parent.context)
             .inflate(if (edit) R.layout.card_sport_edit else R.layout.card_sport, parent, false)
-        return SportsViewHolder(v, edit, sportRemoveCallback, sportSkillCallback)
+        return SportsViewHolder(v, edit, sportRemoveCallback, sportSkillCallback,achievementRemoveCallback, achievementAddCallback)
     }
 
     override fun getItemCount(): Int {

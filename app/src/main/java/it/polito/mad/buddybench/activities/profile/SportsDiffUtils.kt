@@ -19,12 +19,13 @@ class SportsDiffUtils(
     }
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return lastSports[oldItemPosition].name == lastSports[newItemPosition].name
+        return lastSports[oldItemPosition].name == newSports[newItemPosition].name
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return lastSports[oldItemPosition].skill == newSports[newItemPosition].skill &&
-                newSports[oldItemPosition].name == lastSports[newItemPosition].name
+                lastSports[oldItemPosition].name == newSports[newItemPosition].name &&
+                lastSports[oldItemPosition].achievements.size == newSports[newItemPosition].achievements.size
 
     }
 

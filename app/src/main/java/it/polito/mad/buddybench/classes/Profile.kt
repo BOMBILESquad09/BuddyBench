@@ -143,7 +143,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
                            popupOpened:PopupMenu?  = null
     ) {
         return
-        sportContainer.removeAllViews()
+       /* sportContainer.removeAllViews()
         if (this.sports.filter { it.skill != Skills.NULL }.isEmpty()) {
             val emptySportsText = TextView(context)
             emptySportsText.text = context.getString(R.string.no_sports)
@@ -222,7 +222,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
                 }
             }
             sportContainer.addView(sportCard)
-        }
+        }*/
     }
 
     fun refreshSportsCard(context: AppCompatActivity, sportContainer: LinearLayout, sport: Sport){

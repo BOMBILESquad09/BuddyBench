@@ -114,18 +114,13 @@ class UserViewModel @Inject constructor() : ViewModel() {
 
     fun updateSport(sport: Sport):  LiveData<MutableList<Sport>>{
         oldSports = _sports.value!!.map { it.copy() }
-        println("-------------updateeee-------------------------------")
-        oldSports.forEach { println(it) }
 
         _sports.value = _sports.value!!.map {
             if(it.name == sport.name){sport}
             else
             it
         }.toMutableList()
-        println()
-        oldSports.forEach { println(it) }
-        _sports.value!!.forEach { println(it) }
-        println("------------------")
+
 
         return sports
     }
@@ -139,9 +134,32 @@ class UserViewModel @Inject constructor() : ViewModel() {
         } else {
             _sports.value = _sports.value!!.plus(sport).toMutableList()
         }
-        println(sports.value!!.size)
 
         return sports
+    }
+
+    fun addAchievement(sport: Sport,achievement: String){
+        oldSports = _sports.value!!.map { it.copy() }
+        _sports.value = _sports.value!!.map {
+            if (it.name == sport.name){
+                it.copy(achievements = it.achievements.plusElement(achievement))
+            }
+            it
+        }.toMutableList()
+
+        println("adddingee...........")
+
+
+    }
+
+    fun removeAchievement(sport: Sport, achievement: String){
+        oldSports = _sports.value!!.map { it.copy() }
+        _sports.value = _sports.value!!.map {
+            if (it.name == sport.name){
+                it.copy(achievements = it.achievements.filter { a -> a != achievement })
+            }
+            it
+        }.toMutableList()
     }
 
 }

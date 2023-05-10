@@ -184,7 +184,18 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             popup.show()
         }
 
-        sportsRecyclerView.adapter = SportsAdapter(userViewModel.sports, true, sportRemoveCallback, sportSkillCallback)
+        val achievementAddCallback: (Sport, String) -> Unit = {
+            sport, achievement ->
+            println("add achievement")
+            userViewModel.addAchievement(sport, achievement)
+        }
+
+        val achievementRemoveCallback: (Sport, String) -> Unit = {
+                sport, achievement ->
+            userViewModel.removeAchievement(sport, achievement)
+        }
+
+        sportsRecyclerView.adapter = SportsAdapter(userViewModel.sports, true, sportRemoveCallback, sportSkillCallback, achievementRemoveCallback, achievementAddCallback)
 
         userViewModel.sports.observe(this){
 
