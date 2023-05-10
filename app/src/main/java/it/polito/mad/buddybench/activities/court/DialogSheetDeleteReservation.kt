@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.viewModels
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
+import com.kusu.library.LoadingButton
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.enums.Sports
@@ -37,17 +37,18 @@ class DialogSheetDeleteReservation(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val button = view.findViewById<Button>(R.id.confirm_cancel)
+        val button = view.findViewById<LoadingButton>(R.id.confirm_cancel)
         button.setOnClickListener {
             reservationViewModel.deleteReservation(
+                button,
                 courtName,
                 sport,
                 oldStartTime,
                 oldDate,
-                email
+                email,
+                this,
+                callback
             )
-            dismiss()
-            callback()
         }
     }
 

@@ -319,12 +319,14 @@
         <!-- Invite Buddies Card (?) -->
 
         <!-- Confirm Button -->
-        <Button
+        <com.kusu.library.LoadingButton
             android:id="@+id/confirmPrenotation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="16dp"
             android:background="@drawable/rounded_shape"
+            app:lb_isCircular="true"
+
             android:backgroundTint="@color/md_theme_light_primary"
             android:text="@string/confirm"
             android:textAllCaps="false"
