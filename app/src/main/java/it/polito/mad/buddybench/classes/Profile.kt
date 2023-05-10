@@ -36,7 +36,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 
-class Profile(var name: String?, var surname: String?, var nickname: String?, var email: String, var location: String?, var birthdate: LocalDate, var reliability: Int, var imageUri: Uri?, var sports: List<Sport> ) {
+class Profile(var name: String?, var surname: String?, var nickname: String?, var email: String, var location: String?, var birthdate: LocalDate, var reliability: Int, var imageUri: Uri?, var sports: MutableList<Sport> ) {
     var matchesPlayed:Int = sports.filter { it.skill != Skills.NULL  }.fold(0){a: Int, b: Sport -> a + b.matchesPlayed }
     var age:Int = ChronoUnit.YEARS.between(birthdate, LocalDate.now()).toInt()
     var matchesOrganized: Int = sports.filter { it.skill != Skills.NULL }.fold(0){ a:Int, b: Sport -> a + b.matchesOrganized}
@@ -71,7 +71,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
         fun mockJSON(): String {
             return Profile("Vittorio", "Arpino","TheNextLayer", "varpino@buddybench.it", "Scafati", LocalDate.parse("27/04/1999", DateTimeFormatter.ofPattern("dd/MM/yyyy")), 70,
                 null,
-                listOf(
+                mutableListOf(
                     Sport(Sports.TENNIS, Skills.SKILLED, 3, 2, listOf("Coppa del Nonno")),
                     Sport(Sports.FOOTBALL, Skills.NEWBIE, 7, 6, listOf(""))
                 )).toJSON().toString()
@@ -208,7 +208,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
                         it.skill = Skills.NULL
                     it
                 }
-                this.sports = newSports
+                this.sports = newSports.toMutableList()
                 onDeleteSport()
                 this.populateSportCards(context, sportContainer, edit = true, onSkillSelected = onSkillSelected)
             }

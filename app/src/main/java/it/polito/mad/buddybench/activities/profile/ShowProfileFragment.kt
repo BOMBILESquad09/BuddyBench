@@ -13,6 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.classes.Sport
+import it.polito.mad.buddybench.enums.Skills
 
 @AndroidEntryPoint
 class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_profile) {
@@ -73,14 +74,21 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_pro
             it
         }
 
-        if(profile.sports.isEmpty()){
+        context.userViewModel.setSports(profile.sports)
+
+        sportsRecyclerView.adapter = SportsAdapter(context.userViewModel.sports, false)
+        context.userViewModel.sports.observe(this){
+            if (it == null) return@observe
+            println(it.size)
+
+        }
+        println(profile.sports.filter { it.skill != Skills.NULL }.isEmpty())
+        if(profile.sports.filter { it.skill != Skills.NULL }.isEmpty()){
+            println("empty")
             thisView.findViewById<TextView>(R.id.empty_sports).visibility= View.VISIBLE
         } else{
             thisView.findViewById<TextView>(R.id.empty_sports).visibility= View.GONE
-
         }
-
-        sportsRecyclerView.adapter = SportsAdapter(profile.sports, false)
 
 
 

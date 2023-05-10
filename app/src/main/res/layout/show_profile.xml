@@ -364,9 +364,11 @@
 
             <TextView
                 android:id="@+id/textView20"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Favourite Sports"
+                android:layout_marginLeft="3dp"
+
                 android:textColor="@color/md_theme_light_text"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -377,7 +379,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         >
@@ -391,13 +393,20 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             android:orientation="vertical"
+                            android:layout_marginLeft="3dp"
+
                             >
+                            <View
+                                android:layout_width="wrap_content"
+                                android:layout_height="10dp"/>
+
                             <TextView
                                 android:id="@+id/empty_sports"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="No sports yet"
-                                android:textColor="@color/disabled"/>
+                                android:textSize="20sp"
+                                android:textColor="@color/disabled" />
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/sports_container"
                                 android:layout_width="wrap_content"
