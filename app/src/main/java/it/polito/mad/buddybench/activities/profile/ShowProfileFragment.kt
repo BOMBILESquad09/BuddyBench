@@ -7,9 +7,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
+import it.polito.mad.buddybench.classes.Sport
 
 @AndroidEntryPoint
 class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_profile) {
@@ -64,11 +67,25 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_pro
             iv.setImageResource(R.drawable.person)
         }
 
-        val sportContainer = thisView.findViewById<LinearLayout>(R.id.sportsContainerEdit)
-        sportContainer.removeAllViews()
+        val sportsRecyclerView = thisView.findViewById<RecyclerView>(R.id.sports_container)
+        sportsRecyclerView.layoutManager = LinearLayoutManager(context).let {
+            it.orientation = RecyclerView.HORIZONTAL
+            it
+        }
+
+        if(profile.sports.isEmpty()){
+            thisView.findViewById<TextView>(R.id.empty_sports).visibility= View.VISIBLE
+        } else{
+            thisView.findViewById<TextView>(R.id.empty_sports).visibility= View.GONE
+
+        }
+
+        sportsRecyclerView.adapter = SportsAdapter(profile.sports, false)
+
+
 
         // ** Populate sport cards
-        profile.populateSportCards(context, sportContainer)
+        //profile.populateSportCards(context, sportContainer)
 
     }
 
