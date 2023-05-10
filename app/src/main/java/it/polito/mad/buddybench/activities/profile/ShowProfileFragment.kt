@@ -64,11 +64,11 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_pro
             iv.setImageResource(R.drawable.person)
         }
 
-        //val sportContainer = thisView.findViewById<LinearLayout>(R.id.sportsContainerEdit)
-        //sportContainer.removeAllViews()
+        val sportContainer = thisView.findViewById<LinearLayout>(R.id.sportsContainerEdit)
+        sportContainer.removeAllViews()
 
         // ** Populate sport cards
-        //profile.populateSportCards(context, sportContainer)
+        profile.populateSportCards(context, sportContainer)
 
     }
 

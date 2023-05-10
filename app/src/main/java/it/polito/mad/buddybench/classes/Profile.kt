@@ -2,15 +2,13 @@ package it.polito.mad.buddybench.classes
 
 
 
-import android.animation.Animator
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
-import android.animation.ValueAnimator
+import android.animation.*
 import android.content.Context
 import android.net.Uri
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewAnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -18,6 +16,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.view.children
 import androidx.core.view.size
+import androidx.transition.Scene
+import androidx.transition.TransitionInflater
+import androidx.transition.TransitionManager
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getInt
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getJSONArray
@@ -29,6 +30,7 @@ import it.polito.mad.buddybench.utils.Utils
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.lang.Math.hypot
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -156,10 +158,27 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
 
             val sportCard = LayoutInflater.from(context).inflate(layout, sportContainer, false)
 
+            val achievementButton = sportCard.findViewById<ImageView>(R.id.achievements)
 
-            sportCard.setOnClickListener {
-                flipCard(context, it)
+            val cardView = sportCard.findViewById<CardView>(R.id.sport_card_view)
+            val screen = context.findViewById<LinearLayout>(R.id.profile_page)
+
+            val smallLayout = Scene.getSceneForLayout(cardView, R.layout.card_sport, context)
+            val largeLayout = Scene.getSceneForLayout(screen, R.layout.card_sport_expanded, context)
+
+            val inflater = TransitionInflater.from(context)
+            val transition = inflater.inflateTransition(R.transition.card_expand_transition)
+
+            achievementButton.setOnClickListener{
+                TransitionManager.go(largeLayout, transition)
             }
+
+
+
+
+            /*sportCard.setOnClickListener {
+                flipCard(context, it)
+            }*/
 
             // ** Sport card dynamic values
 
@@ -213,7 +232,11 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
         }
     }
 
-    fun flipCard(context: Context, view: View) {
+    fun expandCard(cardView: View, context: Context){
+
+
+    }
+    /*fun flipCard(context: Context, view: View) {
         val front = view.findViewById<ConstraintLayout>(R.id.sport_card_linear_layout)
         val back = view.findViewById<ConstraintLayout>(R.id.sport_card_back)
         if(front.visibility == View.VISIBLE){
@@ -252,7 +275,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
 
         }
 
-    }
+    }*/
 
 
 }

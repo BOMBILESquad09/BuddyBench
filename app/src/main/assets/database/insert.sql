@@ -1,8 +1,17 @@
 --- User informations
 INSERT INTO user (id,name,surname,nickname,birthdate,location,email,reliability)
-VALUES (1,"Vittorio","Arpino","TheNextLayer","1999-09-30","Scafati","varpino@buddybench.it",70);
-INSERT INTO user (id,name,surname,nickname,birthdate,location,email,reliability)
-VALUES (2,"Jacopo","De Cristofaro","Jeff","1999-04-27","New York","jeff@buddybench.com",80);
+VALUES
+(1,"Vittorio","Arpino","TheNextLayer","1999-09-30","Scafati","varpino@buddybench.it",70),
+(2,"Jacopo","De Cristofaro","Jeff","1999-04-27","New York","jeff@buddybench.com",80),
+(3,"Giacomo","Maggio","Gerry","1998-06-30","Boston","gerry@buddybench.com",77),
+(4,"Lorenzo","Pantano","lorenzopantano","1997-01-21","Los Angeles","lore97@buddybench.com",99),
+(5,"Francesco","Rossi","Cecco97","1996-12-10","Milano","cecco@buddybench.it",85),
+(6,"Chiara","Verdi","Kia","1995-07-15","Roma","kia95@buddybench.it",92),
+(7,"Mario","Bianchi","Marione1","1994-02-05","Firenze","mari1@buddybench.com",70),
+(8,"Sofia","Neri","Sofu","1993-11-20","Napoli","sofu93@buddybench.com",88),
+(9,"Alessandro","Russo","Alexander","1992-09-01","Palermo","ale@buddybench.com",75),
+(10,"Valentina","Ferrara","Tita","1991-03-25","Bari","tita@buddybench.it",95);
+
 
 -- Sports Available
 INSERT INTO sport
