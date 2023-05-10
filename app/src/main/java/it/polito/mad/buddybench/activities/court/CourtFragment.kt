@@ -6,19 +6,21 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.res.ResourcesCompat
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.WeekDayPosition
 import com.kizitonwose.calendar.view.WeekCalendarView
@@ -28,7 +30,6 @@ import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.databinding.FragmentCourtBinding
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
-import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.persistence.dto.UserDTO
 import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.CourtViewModel
@@ -83,8 +84,10 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
     private lateinit var weeklyDays: MutableList<Pair<LocalDate, Boolean>>
     private lateinit var switch: Switch
 
-     private var oldDate: LocalDate? = null
-     private var oldStartTime: LocalTime? = null
+    private lateinit var progressDialog: AlertDialog
+    private var oldDate: LocalDate? = null
+    private var oldStartTime: LocalTime? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -104,6 +107,9 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
     @SuppressLint("StringFormatInvalid", "NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        progressDialog = Utils.openProgressDialgo(requireContext())
+
 
         // ** View Model
         courtName = activity?.intent?.getStringExtra("courtName") ?: "Central Park Tennis"
@@ -177,7 +183,9 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
             updateView(it.court)
             courtViewModel.getTimeSlotsAvailable(it.court, selectedDate, reservationDate)
                 .observe(viewLifecycleOwner) { timeSlots ->
+
                     if (timeSlots == null) return@observe
+                    progressDialog.dismiss()
                     if (timeSlots.isEmpty()) {
                         binding.root.findViewById<ConstraintLayout>(R.id.empty_timeslots).visibility =
                             View.VISIBLE
