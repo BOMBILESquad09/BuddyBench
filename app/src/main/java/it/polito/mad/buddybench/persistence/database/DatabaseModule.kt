@@ -8,8 +8,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import it.polito.mad.buddybench.persistence.database.CourtReservationDatabase
-import it.polito.mad.buddybench.persistence.entities.Review
 import it.polito.mad.buddybench.persistence.repositories.CourtRepository
 import it.polito.mad.buddybench.persistence.repositories.CourtTimeRepository
 import it.polito.mad.buddybench.persistence.repositories.InvitationRepository
@@ -51,7 +49,9 @@ object DatabaseModule {
     fun provideCourtRepo(appDatabase: CourtReservationDatabase): CourtRepository {
         return CourtRepository(
             appDatabase.courtDao(),
-            appDatabase.sportDao()
+            appDatabase.sportDao(),
+            appDatabase.reservationDao(),
+            appDatabase.userDao()
         )
     }
     @Singleton
@@ -67,15 +67,13 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideReservationRepo(appDatabase: CourtReservationDatabase): ReservationRepository {
-
-        val x =  ReservationRepository(
+        return ReservationRepository(
             appDatabase.reservationDao(),
             appDatabase.userDao(),
             appDatabase.courtDao(),
             appDatabase.courtTimeDao(),
             appDatabase.unavailableDayCourtDao()
         )
-        return x
     }
     @Singleton
     @Provides
@@ -102,7 +100,6 @@ object DatabaseModule {
     @Provides
     fun provideReviewRepo(appDatabase: CourtReservationDatabase): ReviewRepository {
         return ReviewRepository(
-
             appDatabase.reviewDao(),
             appDatabase.userDao(),
             appDatabase.courtDao()

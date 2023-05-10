@@ -80,7 +80,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_edit_profile)
+        setContentView(R.layout.edit_profile)
         // ** Toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.title = "Profile"
@@ -142,15 +142,22 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         } catch (_: Exception){
             imageEdit.setImageResource(R.drawable.person)
         }
-        resizeImageView()
-        val cardViewImage = findViewById<CardView>(R.id.cardView)
-        registerForContextMenu(cardViewImage)
+        //resizeImageView()
+        val cardViewImage = findViewById<ImageView>(R.id.camera_button)
+        cardViewImage.setOnClickListener {
+            val popup = PopupMenu(this, it)
+            popup.menuInflater.inflate(R.menu.menu_camera_edit, popup.menu)
+            popup.setOnMenuItemClickListener {
+                onContextItemSelected(it)
+            }
+            popup.show()
+        }
 
-        sportContainer = findViewById(R.id.sportsContainerEdit)
-        sportContainer.removeAllViews()
+        //sportContainer = findViewById(R.id.sportsContainerEdit)
+        //sportContainer.removeAllViews()
 
         // ** Populate sport cards
-        profile.populateSportCards(this, sportContainer,
+        /*profile.populateSportCards(this, sportContainer,
             edit = true,
             onSkillSelected = { sportSkillLevel, sport ->
 
@@ -163,7 +170,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
                 }
                 popupOpened = popup
                 popup.show()
-            })
+            })*/
 
 
 
@@ -174,8 +181,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
 
         // ** Add Sports Button
-        addSportButton = findViewById(R.id.add_sport_button)
-        addSportButton.setOnClickListener { openSportSelectionDialog() }
+        //addSportButton = findViewById(R.id.add_sport_button)
+        //addSportButton.setOnClickListener { openSportSelectionDialog() }
         checkCameraPermission()
 
 

@@ -1,5 +1,10 @@
 package it.polito.mad.buddybench.persistence.repositories
 
+import android.content.Context
+import android.content.SharedPreferences
+import android.provider.Settings.Global.getString
+import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.classes.Sport
 import it.polito.mad.buddybench.persistence.dao.UserDao
 import it.polito.mad.buddybench.persistence.dao.UserSportDao
@@ -13,15 +18,13 @@ import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.entities.User
 import it.polito.mad.buddybench.persistence.entities.UserWithSports
+import org.json.JSONObject
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
     private val userDao: UserDao,
     private val userSportDao: UserSportDao,
-
-
     ) {
-
     fun getUser(email: String): UserWithSportsDTO{
         return userDao.getUserByEmail(email)!!.toUserSportDTO()
     }
@@ -74,17 +77,25 @@ class UserRepository @Inject constructor(
 
                 userSportDao.update(convertedSport)
             }
-
-
         }
-
-
-
-
-
-
     }
 
     fun delete(user: UserDTO) = userDao.save(user.toEntity())
 
+    /**
+     * TODO: Update with user session (auth)
+     * Get current user from shared preferences (if any)
+     */
+    fun getCurrentUser(sharedPreferences: SharedPreferences): UserDTO {
+        val profile = Profile.fromJSON(JSONObject( sharedPreferences.getString("profile", Profile.mockJSON())!!))
+        val name = profile.name ?: "Name"
+        val surname = profile.surname ?: "Surname"
+        val email = profile.email
+        val nickname = profile.nickname ?: "Nickname"
+        val location = profile.location ?: "Roma"
+        val reliability = profile.reliability
+        val imagePath = profile.imageUri.toString()
+        val birthdate = profile.birthdate
+        return UserDTO(name, surname, nickname, birthdate, location, email, reliability, imagePath)
+    }
 }

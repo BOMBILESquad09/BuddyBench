@@ -14,15 +14,16 @@ import it.polito.mad.buddybench.persistence.entities.toUserDTO
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class ReviewRepository @Inject constructor(
+@Singleton
+class ReviewRepository @Inject constructor (
     private val reviewDao: ReviewDao,
     private val userDao: UserDao,
     private val courtDao: CourtDao
 ) {
 
     fun getAllByCourt(courtDTO: CourtDTO): List<ReviewDTO>{
-
         val reviews = reviewDao.getAllByCourt(courtDTO.name, courtDTO.sport)
         return reviews.map {
             ReviewDTO(

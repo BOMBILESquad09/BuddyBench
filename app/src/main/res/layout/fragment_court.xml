@@ -1,400 +1,420 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    android:id="@+id/parent_scroll_view"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout
+    android:id="@+id/display"
     android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
-    >
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ScrollView
+        android:id="@+id/parent_scroll_view"
 
-    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        >
 
-        <!-- Image with back button -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/backgroundImage"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:contentDescription="@string/court_image"
-                android:scaleType="centerCrop"
-                android:src="@drawable/court_sample"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
-            <ImageButton
-                android:id="@+id/back_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:background="@drawable/rounded_shape"
-                android:backgroundTint="@color/md_theme_light_background"
-                android:contentDescription="@string/close"
-                android:padding="16dp"
-                android:src="@drawable/round_arrow_back_24_primary"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- Court Details -->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
-            <!-- Name and price -->
+            <!-- Image with back button -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/backgroundImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:contentDescription="@string/court_image"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/court_sample"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <ImageButton
+                    android:id="@+id/back_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:background="@drawable/rounded_shape"
+                    android:backgroundTint="@color/md_theme_light_background"
+                    android:contentDescription="@string/close"
+                    android:padding="16dp"
+                    android:src="@drawable/round_arrow_back_24_primary"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Court Details -->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:padding="16dp">
 
-                <TextView
-                    android:id="@+id/court_name_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold_700"
-                    android:text="@string/court_name"
-                    android:textSize="22sp" />
-
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
-
-            </LinearLayout>
-
-            <!-- Rating -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingVertical="16dp">
-
-                <TextView
-                    android:id="@+id/rating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_semibold_600"
-                    android:text="@string/rating_default_value"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/rating_bar"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <RatingBar
-                    android:id="@+id/rating_bar"
-                    style="@style/Widget.AppCompat.RatingBar.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="8dp"
-                    android:indeterminate="false"
-                    android:isIndicator="true"
-                    android:numStars="5"
-                    android:rating="4.5"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/n_reviews"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/rating"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/n_reviews"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:fontFamily="@font/montserrat_medium_500"
-                    android:text="@string/reviews_number"
-                    android:textSize="12sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/rating_bar"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/fee_card"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/md_theme_light_primary"
-                    android:shape="oval"
-                    app:cardCornerRadius="99dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:id="@+id/court_fee_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="16dp"
-                        android:layout_marginVertical="8dp"
-                        android:fontFamily="@font/montserrat_semibold_600"
-                        android:text="@string/price_text"
-                        android:textColor="@color/md_theme_light_background"
-                        android:textSize="18sp" />
-
-                </androidx.cardview.widget.CardView>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!-- Court Information -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:textStyle="bold"
-                android:text="@string/court_information"
-                android:textSize="18sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/court_address_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="8dp"
-                    android:drawablePadding="8dp"
-                    android:fontFamily="@font/montserrat_medium_500"
-                    android:gravity="center_vertical"
-                    android:text="@string/via_roma_16_torino"
-                    android:textSize="16sp"
-                    android:drawableTint="@color/md_theme_light_text"
-                    android:textColor="@color/md_theme_light_text"
-                    app:drawableStartCompat="@drawable/location" />
-
-
-            </LinearLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="8dp">
-
-                <ImageView
-                    android:id="@+id/icon_hour"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:tint="@color/md_theme_light_text"
-                    android:src="@drawable/round_access_time_24"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    />
-
-                <TextView
-                    android:id="@+id/court_opening_hours_tv"
-                    android:layout_width="wrap_content"
-                    android:paddingStart="8dp"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/md_theme_light_text"
-                    android:fontFamily="@font/montserrat_medium_500"
-                    android:gravity="center_vertical"
-                    android:text="@string/opening_hours_default"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toEndOf="@+id/icon_hour"
-                    app:layout_constraintTop_toTopOf="parent" />
-                <TextView
-                    android:id="@+id/court_hours"
-                    android:layout_width="wrap_content"
-                    android:paddingStart="8dp"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/md_theme_light_text"
-                    android:fontFamily="@font/montserrat_medium_500"
-                    android:gravity="center_vertical"
-                    android:text="@string/opening_hours_default"
-                    android:textSize="16sp"
-                    android:layout_marginLeft="15dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toEndOf="@+id/court_opening_hours_tv"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="8dp">
-
-                <ImageView
-                    android:id="@+id/icon_phone_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:tint="@color/md_theme_light_text"
-                    android:src="@drawable/phone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    />
-
-                <TextView
-                    android:id="@+id/court_phone_number"
-                    android:layout_width="wrap_content"
-                    android:paddingStart="8dp"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/md_theme_light_text"
-                    android:fontFamily="@font/montserrat_medium_500"
-                    android:gravity="center_vertical"
-                    android:text="@string/phone_number"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toEndOf="@+id/icon_phone_number"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="8dp">
-
-                <ImageView
-                    android:id="@+id/sport_icon_equipment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:tint="@color/md_theme_light_text"
-                    android:src="@drawable/baseline_shopping_bag_24"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    />
-
-                <TextView
-                    android:id="@+id/equipment_cost"
-                    android:layout_width="wrap_content"
-                    android:paddingStart="8dp"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/md_theme_light_text"
-                    android:fontFamily="@font/montserrat_medium_500"
-                    android:gravity="center_vertical"
-                    android:text="@string/equipment_phrase"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toEndOf="@+id/sport_icon_equipment"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            <!-- Date and Time Selection -->
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingVertical="16dp"
-                android:textStyle="bold"
-                android:text="@string/reservation"
-                android:textSize="18sp" />
-
-            <com.kizitonwose.calendar.view.WeekCalendarView
-
-                android:id="@+id/calendar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cv_dayViewResource="@layout/datepicker_scroll_item"
-                app:cv_monthHeaderResource="@layout/calendar_header"
-                app:cv_daySize="rectangle"
-                />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/weekly_calendar_adapter"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                />
-
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="10dp"
-                android:text="Available Timeslots (1h each)"
-                android:fontFamily="@font/montserrat_semibold_600"
-                android:textSize="16sp"
-                 />
-            <include layout="@layout/time_slots_not_available"/>
-
-            <androidx.core.widget.NestedScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="15dp"
-                >
+                <!-- Name and price -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    >
-                    <include layout="@layout/grid_times_slots" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/court_name_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold_700"
+                        android:text="@string/court_name"
+                        android:maxLines="3"
+                        android:textSize="22sp" />
+
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+
                 </LinearLayout>
 
+                <!-- Rating -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
 
-            </androidx.core.widget.NestedScrollView>
+                    <TextView
+                        android:id="@+id/rating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_semibold_600"
+                        android:text="@string/rating_default_value"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/rating_bar"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <RatingBar
+                        android:id="@+id/rating_bar"
+                        style="@style/Widget.AppCompat.RatingBar.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="8dp"
+                        android:indeterminate="false"
+                        android:isIndicator="true"
+                        android:numStars="5"
+                        android:rating="4.5"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/n_reviews"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/rating"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/n_reviews"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/montserrat_medium_500"
+                        android:text="@string/reviews_number"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/rating_bar"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/fee_card"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/md_theme_light_primary"
+                        android:shape="oval"
+                        app:cardCornerRadius="99dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/court_fee_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="16dp"
+                            android:layout_marginVertical="8dp"
+                            android:fontFamily="@font/montserrat_semibold_600"
+                            android:text="@string/price_text"
+                            android:textColor="@color/md_theme_light_background"
+                            android:textSize="18sp" />
+
+                    </androidx.cardview.widget.CardView>
 
 
+                    <TextView
+                        android:id="@+id/see_all_reviews"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:text="@string/see_all"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/rating" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingBottom="30dp"
-                >
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <Button
-                    android:id="@+id/button_first"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                <!-- Court Information -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:textStyle="bold"
+                    android:text="@string/court_information"
+                    android:textSize="18sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/rounded_shape"
-                    android:backgroundTint="@color/md_theme_light_primary"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/court_address_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="8dp"
+                        android:drawablePadding="8dp"
+                        android:fontFamily="@font/montserrat_medium_500"
+                        android:gravity="center_vertical"
+                        android:text="@string/via_roma_16_torino"
+                        android:textSize="16sp"
+                        android:drawableTint="@color/md_theme_light_text"
+                        android:textColor="@color/md_theme_light_text"
+                        app:drawableStartCompat="@drawable/location" />
+
+
+                </LinearLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp">
+
+                    <ImageView
+                        android:id="@+id/icon_hour"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:tint="@color/md_theme_light_text"
+                        android:src="@drawable/round_access_time_24"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+
+                    <TextView
+                        android:id="@+id/court_opening_hours_tv"
+                        android:layout_width="wrap_content"
+                        android:paddingStart="8dp"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/md_theme_light_text"
+                        android:fontFamily="@font/montserrat_medium_500"
+                        android:gravity="center_vertical"
+                        android:text="@string/opening_hours_default"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/icon_hour"
+                        app:layout_constraintTop_toTopOf="parent" />
+                    <TextView
+                        android:id="@+id/court_hours"
+                        android:layout_width="wrap_content"
+                        android:paddingStart="8dp"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/md_theme_light_text"
+                        android:fontFamily="@font/montserrat_medium_500"
+                        android:gravity="center_vertical"
+                        android:text="@string/opening_hours_default"
+                        android:textSize="16sp"
+                        android:layout_marginLeft="15dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/court_opening_hours_tv"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp">
+
+                    <ImageView
+                        android:id="@+id/icon_phone_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:tint="@color/md_theme_light_text"
+                        android:src="@drawable/phone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+
+                    <TextView
+                        android:id="@+id/court_phone_number"
+                        android:layout_width="wrap_content"
+                        android:paddingStart="8dp"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/md_theme_light_text"
+                        android:fontFamily="@font/montserrat_medium_500"
+                        android:gravity="center_vertical"
+                        android:text="@string/phone_number"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/icon_phone_number"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp">
+
+                    <ImageView
+                        android:id="@+id/sport_icon_equipment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:tint="@color/md_theme_light_text"
+                        android:src="@drawable/baseline_shopping_bag_24"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+
+                    <TextView
+                        android:id="@+id/equipment_cost"
+                        android:layout_width="wrap_content"
+                        android:paddingStart="8dp"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/md_theme_light_text"
+                        android:fontFamily="@font/montserrat_medium_500"
+                        android:gravity="center_vertical"
+                        android:text="@string/equipment_phrase"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/sport_icon_equipment"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <!-- Date and Time Selection -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="16dp"
+                    android:textStyle="bold"
+                    android:text="@string/reservation"
+                    android:textSize="18sp" />
+
+                <com.kizitonwose.calendar.view.WeekCalendarView
+
+                    android:id="@+id/calendar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cv_dayViewResource="@layout/datepicker_scroll_item"
+                    app:cv_monthHeaderResource="@layout/calendar_header"
+                    app:cv_daySize="rectangle"
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/weekly_calendar_adapter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    />
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:text="Available Timeslots (1h each)"
                     android:fontFamily="@font/montserrat_semibold_600"
-                    android:text="@string/book"
-                    android:layout_marginRight="5dp"
-                    android:textAllCaps="false"
+                    android:textSize="16sp"
+                    />
+                <include layout="@layout/time_slots_not_available"/>
 
-                    android:textColor="@color/md_theme_light_background" />
+                <androidx.core.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="15dp"
+                    >
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        >
+                        <include layout="@layout/grid_times_slots" />
+                    </LinearLayout>
 
-                <Button
-                    android:id="@+id/cancel_button"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/rounded_shape"
-                    android:backgroundTint="@color/error"
-                    android:layout_marginLeft="5dp"
-                    android:fontFamily="@font/montserrat_semibold_600"
-                    android:text="@string/delete"
-                    android:textAllCaps="false"
-                    android:textColor="@color/md_theme_light_background" />
 
+                </androidx.core.widget.NestedScrollView>
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="30dp"
+                    >
+
+                    <Button
+                        android:id="@+id/button_first"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/rounded_shape"
+                        android:backgroundTint="@color/md_theme_light_primary"
+                        android:fontFamily="@font/montserrat_semibold_600"
+                        android:text="@string/book"
+                        android:layout_marginRight="5dp"
+                        android:textAllCaps="false"
+
+                        android:textColor="@color/md_theme_light_background" />
+
+                    <Button
+                        android:id="@+id/cancel_button"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/rounded_shape"
+                        android:backgroundTint="@color/error"
+                        android:layout_marginLeft="5dp"
+                        android:fontFamily="@font/montserrat_semibold_600"
+                        android:text="@string/delete"
+                        android:textAllCaps="false"
+                        android:textColor="@color/md_theme_light_background" />
+
+
+                </LinearLayout>
 
             </LinearLayout>
+
 
         </LinearLayout>
 
 
-    </LinearLayout>
-
-
-</ScrollView>
+    </ScrollView>
+</RelativeLayout>

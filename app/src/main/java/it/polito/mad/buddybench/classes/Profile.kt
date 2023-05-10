@@ -142,6 +142,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
                            edit: Boolean = false,
                            popupOpened:PopupMenu?  = null
     ) {
+        return
         sportContainer.removeAllViews()
         if (this.sports.filter { it.skill != Skills.NULL }.isEmpty()) {
             val emptySportsText = TextView(context)
