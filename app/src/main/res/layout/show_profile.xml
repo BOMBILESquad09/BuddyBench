@@ -413,9 +413,16 @@
 
                             <include layout="@layout/card_sport" />
                         </LinearLayout>
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
             </androidx.cardview.widget.CardView>
+
+            <include
+                android:id="@+id/sport_card_expanded"
+                layout="@layout/card_sport_expanded"
+                android:visibility="gone">
+            </include>
         </LinearLayout>
 
 
