@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.buddybench.R
@@ -79,7 +80,7 @@ class SportsViewHolder(val v: View,
         val sportGamesPlayed = view.findViewById<TextView>(R.id.games_played_text)
         val addButton = view.findViewById<TextView>(R.id.add_achievements)
         val newAchievement = view.findViewById<EditText>(R.id.new_achievement)
-        sportName.text = Utils.formatString(sport.name.toString())
+        sportName.text = sport.achievements.joinToString(";")//Utils.formatString(sport.name.toString())
         sportIcon?.setImageResource(Sports.sportToIconDrawable(sport.name))
         // TODO: Doesn't work
         //sportSkillLevelText.setBackgroundColor(Skills.skillToColor(sport.skill))
@@ -88,17 +89,34 @@ class SportsViewHolder(val v: View,
             v.context.resources.getString(R.string.games_played),
             sport.matchesPlayed
         )
-        addButton.setOnClickListener {
-            achievementAddCallback(sport, newAchievement.text.toString())
-        }
 
 
+        println("-----------achievements-------------------")
+        println(sport.achievements.size)
+        println("--------------------------------------------------")
 
         val achievementsRecyclerView = view.findViewById<RecyclerView>(R.id.achievements)
         achievementsRecyclerView.adapter = AchievementsAdapter(sport, 0, edit, achievementAddCallback, achievementRemoveCallback)
         achievementsRecyclerView.layoutManager = LinearLayoutManager(v.context).let {
-            it.orientation = RecyclerView.HORIZONTAL
+            it.orientation = RecyclerView.VERTICAL
             it
+        }
+
+        addButton.setOnClickListener {
+            if (newAchievement.text.toString().trim().isNotEmpty()){
+                val lastAchievement = sport.achievements.map { it }
+                achievementAddCallback(sport, newAchievement.text.toString())
+                val diffUtils = AchievementDiffUtils(lastAchievement, sport.achievements)
+                val diffResult = DiffUtil.calculateDiff(diffUtils)
+                diffResult.dispatchUpdatesTo(achievementsRecyclerView.adapter!!)
+                newAchievement.setText("")
+
+            }
+        }
+
+        if(!edit){
+            newAchievement.visibility = View.GONE
+            addButton.visibility = View.GONE
         }
 
     }

@@ -54,6 +54,16 @@ class HomeActivity: AppCompatActivity() {
             }
             it
         }
+
+        profile.sports.forEach {
+            it.achievements.forEach{
+
+                a ->
+                println("-----aa----")
+                println(a)
+                println("..........---------------")
+            }
+        }
         reservationViewModel.email = profile.email
         bottomBar.setup()
     }

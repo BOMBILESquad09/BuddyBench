@@ -479,7 +479,9 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         for (selectedSport in selectedItems) {
             try {
                 checkNotNull(selectedSport)
-                val newSport = profile.sports.find { it.name == selectedSport } ?:Sport(selectedSport, Skills.NEWBIE, 0,0, listOf(""))
+                val newSport = profile.sports.find { it.name == selectedSport } ?:Sport(selectedSport, Skills.NEWBIE, 0,0,
+                    listOf("") as MutableList<String>
+                )
                 newSport.skill = Skills.NEWBIE
                 newSports.add(newSport)
             } catch (e: java.lang.IllegalStateException) {

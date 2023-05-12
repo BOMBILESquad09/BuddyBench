@@ -27,7 +27,7 @@ fun UserWithSports.toUserSportDTO(): UserWithSportsDTO {
                 Skills.valueOf(it.skill.uppercase()),
                 it.gamesPlayed,
                 it.gamesOrganized,
-                it.achievements.split(";")
+                it.achievements.split(";").toMutableList()
             )
         }
         )

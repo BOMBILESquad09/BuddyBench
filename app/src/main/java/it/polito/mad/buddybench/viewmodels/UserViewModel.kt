@@ -34,6 +34,7 @@ class UserViewModel @Inject constructor() : ViewModel() {
     private var _invisibleSports: MutableList<Sport> = mutableListOf()
     private val _sports: MutableLiveData<MutableList<Sport>> = MutableLiveData(null)
 
+    var oldAchievements:List<String> = listOf()
 
     val sports: LiveData<MutableList<Sport>> = _sports
 
@@ -126,6 +127,8 @@ class UserViewModel @Inject constructor() : ViewModel() {
     }
 
     fun addSport(sport: Sport):  LiveData<MutableList<Sport>>{
+        oldAchievements = _sports.value!!.find { it.name == sport.name }!!.achievements
+
         oldSports = _sports.value!!.map { it.copy() }
         val exists = _invisibleSports!!.find{ it.name == sport.name}
         _invisibleSports.remove(exists)
@@ -139,12 +142,14 @@ class UserViewModel @Inject constructor() : ViewModel() {
     }
 
     fun addAchievement(sport: Sport,achievement: String){
+        oldAchievements = _sports.value!!.find { it.name == sport.name }!!.achievements
         oldSports = _sports.value!!.map { it.copy() }
         _sports.value = _sports.value!!.map {
             if (it.name == sport.name){
-                it.copy(achievements = it.achievements.plusElement(achievement))
-            }
-            it
+                it.achievements.add(achievement)
+                it
+            } else  {
+            it}
         }.toMutableList()
 
         println("adddingee...........")
@@ -156,10 +161,15 @@ class UserViewModel @Inject constructor() : ViewModel() {
         oldSports = _sports.value!!.map { it.copy() }
         _sports.value = _sports.value!!.map {
             if (it.name == sport.name){
-                it.copy(achievements = it.achievements.filter { a -> a != achievement })
-            }
+                it.achievements.remove(achievement)
+                it
+            } else {
             it
+            }
         }.toMutableList()
+        println(achievement)
+        println(_sports.value!![0].achievements.size)
+        println("-------------------removig----------------------")
     }
 
 }
