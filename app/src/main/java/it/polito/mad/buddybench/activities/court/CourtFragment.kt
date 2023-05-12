@@ -3,6 +3,7 @@ package it.polito.mad.buddybench.activities.court
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
@@ -199,8 +200,10 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
 
         // ** Show reviews
         binding.seeAllReviews.setOnClickListener {
-            val reviewsBottomSheet = ReviewsBottomSheet.newInstance(courtName, sport.toString())
-            reviewsBottomSheet.show(parentFragmentManager, "ReviewsBottomSheet")
+            val intent = Intent(context, ReviewsActivity::class.java)
+            intent.putExtra("court_name", courtName)
+            intent.putExtra("court_sport",sport)
+            this.startActivity(intent)
         }
 
         // ** Navigate to court reservation

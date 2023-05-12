@@ -1,22 +1,14 @@
 package it.polito.mad.buddybench.activities.findcourt.sportselection
 
-import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContentProviderCompat
-import androidx.core.content.ContextCompat.startActivity
-import androidx.fragment.app.findFragment
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.buddybench.R
-import it.polito.mad.buddybench.activities.HomeActivity
-import it.polito.mad.buddybench.activities.court.CourtActivity
-import it.polito.mad.buddybench.activities.court.ReviewsBottomSheet
-import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import java.io.FileNotFoundException
 import java.text.DecimalFormat
 

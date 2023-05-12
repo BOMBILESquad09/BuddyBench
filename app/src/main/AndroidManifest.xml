@@ -21,6 +21,11 @@
         android:theme="@style/AppTheme"
         tools:targetApi="33">
         <activity
+            android:name=".activities.court.ReviewsActivity"
+            android:exported="true"
+            android:screenOrientation="sensorPortrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
             android:name=".activities.HomeActivity"
             android:exported="true"
             android:screenOrientation="sensorPortrait"
