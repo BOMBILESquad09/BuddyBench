@@ -25,6 +25,7 @@ class ReviewRepository @Inject constructor (
 
     fun getAllByCourt(courtDTO: CourtDTO): List<ReviewDTO>{
         val reviews = reviewDao.getAllByCourt(courtDTO.name, courtDTO.sport)
+        reviews.map { println("Repository reviews: id ${it.review.id} rating ${it.review.rating}") }
         return reviews.map {
             ReviewDTO(
                 it.user.toUserDTO(),
@@ -40,6 +41,13 @@ class ReviewRepository @Inject constructor (
         val user = userDao.getUserByEmail(reviewDTO.user.email)!!.user
         val court = courtDao.getByNameAndSport(reviewDTO.courtDTO.name, reviewDTO.courtDTO.sport).court
         val review = reviewDao.getReview(court.id,user.id)
+
+        println("Save review USER: ${user.id} ${user.email}")
+        println("Save review COURT: ${court.id} ${court.name}")
+        println("Save review EXISTING REVIEW: ${review?.id} ${review?.description} ${review?.rating}")
+        println("Save review NEW REVIEW: ${reviewDTO.user.email} ${reviewDTO.description} ${reviewDTO.rating}")
+
+        // ** Insert new review
         if(review == null){
             reviewDao.save(
                 Review(
@@ -52,6 +60,10 @@ class ReviewRepository @Inject constructor (
             )
             reviewDao.updateRating(court.id, (court.nReviews + 1), (court.rating * court.nReviews + reviewDTO.rating) / (court.nReviews + 1))
         } else {
+
+            // ** Update existing review
+
+            println("Updating existing review id ${review.id} with rating ${reviewDTO.rating}")
             reviewDao.update(
                 review.copy(
                     description = reviewDTO.description,
@@ -61,9 +73,7 @@ class ReviewRepository @Inject constructor (
             )
             val updatedSumOfRatings = (court.rating * court.nReviews - review.rating)
             reviewDao.updateRating(court.id, (court.nReviews), (updatedSumOfRatings + reviewDTO.rating) / (court.nReviews))
-
         }
         return true
     }
-
 }

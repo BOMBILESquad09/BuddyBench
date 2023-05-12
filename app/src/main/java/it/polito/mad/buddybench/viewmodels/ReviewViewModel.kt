@@ -48,33 +48,30 @@ class ReviewViewModel @Inject constructor(): ViewModel() {
         val currentUser = userRepository.getCurrentUser(sharedPreferences)
         Thread{
             val court = courtRepository.getByNameAndSports(name, Sports.valueOf(sport))
-            val reviewsList = reviewRepository.getAllByCourt(court).filter { it.user.email != currentUser.email }
-            _reviews.postValue(reviewsList)
+            _court.postValue(court)
+            val reviewsList = reviewRepository.getAllByCourt(court)
+            if (reviewsList.any { it.user.email == currentUser.email}) {
+                val userReview = reviewsList.first { it.user.email == currentUser.email }
+                _userReview.postValue(userReview)
+            }
+            val reviews = reviewsList.filter { it.user.email != currentUser.email }
+            _reviews.postValue(reviews)
             _l.postValue(false)
         }.start()
         return reviews
     }
 
-    fun insertReview(courtDTO: CourtDTO, description: String, rating: Int, context: Context) {
+    fun insertReview(description: String, rating: Int, context: Context): LiveData<ReviewDTO> {
         _l.value = true
         Thread{
             val sharedPreferences = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
             val currentUser = userRepository.getCurrentUser(sharedPreferences)
-            val review = ReviewDTO(currentUser, LocalDate.now(), rating, description, courtDTO)
+            val review = ReviewDTO(currentUser, LocalDate.now(), rating, description, court.value!!)
             reviewRepository.saveReview(review)
             _userReview.postValue(review)
             _l.postValue(false)
         }.start()
-    }
-
-    fun getCourt(name: String, sport: String): LiveData<CourtDTO> {
-        _l.postValue(true)
-        Thread {
-            val court = courtRepository.getByNameAndSports(name, Sports.valueOf(sport))
-            _court.postValue(court)
-            _l.postValue(false)
-        }.start()
-        return _court
+        return _userReview
     }
 
     fun userCanReview(name: String, sport: String, context: Context): LiveData<Boolean> {
@@ -87,25 +84,5 @@ class ReviewViewModel @Inject constructor(): ViewModel() {
             _l.postValue(false)
         }.start()
         return _canReview
-    }
-
-    fun getUserReview(name: String, sport: String, context: Context): LiveData<ReviewDTO> {
-        _l.postValue(true)
-        val sharedPreferences = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        val currentUser = userRepository.getCurrentUser(sharedPreferences)
-        Thread {
-            // ** Fetching again for type safety (forse meglio di no?)
-            val court = courtRepository.getByNameAndSports(name, Sports.valueOf(sport))
-            val reviews = reviewRepository.getAllByCourt(court)
-            val has = reviews.any {
-                it.user.email == currentUser.email
-            }
-            if (has) {
-                val userReview = reviews.first { it.user.email == currentUser.email }
-                _userReview.postValue(userReview)
-            }
-            _l.postValue(false)
-        }.start()
-        return _userReview
     }
 }
