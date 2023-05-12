@@ -63,6 +63,7 @@ class ReviewViewModel @Inject constructor(): ViewModel() {
 
     fun insertReview(description: String, rating: Int, context: Context): LiveData<ReviewDTO> {
         _l.value = true
+        println("INSERTINGGG")
         Thread{
             val sharedPreferences = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
             val currentUser = userRepository.getCurrentUser(sharedPreferences)

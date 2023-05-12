@@ -23,8 +23,9 @@ interface ReviewDao {
     @Insert
     fun save(reservation: Review)
 
+
     @Update(entity = Review::class, onConflict = OnConflictStrategy.REPLACE)
-    fun update(reservation: Review)
+    fun update(reservation: Review): Int
 
     @Query("UPDATE Court SET n_reviews = :nReviews, rating = :rating WHERE id = :courtId")
     fun updateRating(courtId: Int, nReviews: Int, rating: Double)
