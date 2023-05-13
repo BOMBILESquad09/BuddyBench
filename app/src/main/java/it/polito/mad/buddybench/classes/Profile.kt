@@ -142,8 +142,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
                            edit: Boolean = false,
                            popupOpened:PopupMenu?  = null
     ) {
-        return
-       /* sportContainer.removeAllViews()
+        sportContainer.removeAllViews()
         if (this.sports.filter { it.skill != Skills.NULL }.isEmpty()) {
             val emptySportsText = TextView(context)
             emptySportsText.text = context.getString(R.string.no_sports)
@@ -154,27 +153,19 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
         this.sports.sortedBy {
             it.name
         }
-        for (sport in this.sports.filter { it.skill != Skills.NULL }) {
+        return
+        /*for (sport in this.sports.filter { it.skill != Skills.NULL }) {
             val layout = if (!edit) R.layout.card_sport else R.layout.card_sport_edit
 
             val sportCard = LayoutInflater.from(context).inflate(layout, sportContainer, false)
 
-            val achievementButton = sportCard.findViewById<ImageView>(R.id.achievements)
+            val achievementButton = sportCard.findViewById<ImageView>(R.id.achievements_button)
             val popup = context.findViewById<CardView>(R.id.sport_card_expanded)
 
             //val cardView = sportCard.findViewById<CardView>(R.id.sport_card_view)
             //val screen = context.findViewById<LinearLayout>(R.id.profile_page)
             //val inflater = TransitionInflater.from(context)
             //val transition = inflater.inflateTransition(R.transition.card_expand_transition)
-
-            achievementButton.setOnClickListener{
-                popup.visibility = View.VISIBLE
-                popup.animate().apply {
-                    duration = 500
-                    scaleX(1f)
-                    scaleY(1f)
-                }.start()
-            }
 
 
 
@@ -233,11 +224,6 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
                 child.findViewById<TextView>(R.id.skill_level_card_text).text = Utils.formatString(sport.skill.toString())
             }
         }
-    }
-
-    fun expandCard(cardView: View, context: Context){
-
-
     }
     /*fun flipCard(context: Context, view: View) {
         val front = view.findViewById<ConstraintLayout>(R.id.sport_card_linear_layout)

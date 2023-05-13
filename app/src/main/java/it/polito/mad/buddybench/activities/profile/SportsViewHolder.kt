@@ -45,7 +45,7 @@ class SportsViewHolder(val v: View,
             v.context.resources.getString(R.string.games_played),
             sport.matchesPlayed
         )
-        val achievementButton = v.findViewById<ImageView>(R.id.achievements)
+        val achievementButton = v.findViewById<ImageView>(R.id.achievements_button)
         achievementButton.setOnClickListener {
             val builder: AlertDialog.Builder = AlertDialog.Builder(v.context)
             val dialogCard = LayoutInflater.from(v.context).inflate(R.layout.card_sport_expanded, null);
@@ -80,7 +80,8 @@ class SportsViewHolder(val v: View,
         val sportGamesPlayed = view.findViewById<TextView>(R.id.games_played_text)
         val addButton = view.findViewById<TextView>(R.id.add_achievements)
         val newAchievement = view.findViewById<EditText>(R.id.new_achievement)
-        sportName.text = sport.achievements.joinToString(";")//Utils.formatString(sport.name.toString())
+        val closeButton = view.findViewById<ImageView>(R.id.close)
+        sportName.text = Utils.formatString(sport.name.toString())
         sportIcon?.setImageResource(Sports.sportToIconDrawable(sport.name))
         // TODO: Doesn't work
         //sportSkillLevelText.setBackgroundColor(Skills.skillToColor(sport.skill))
@@ -89,6 +90,10 @@ class SportsViewHolder(val v: View,
             v.context.resources.getString(R.string.games_played),
             sport.matchesPlayed
         )
+
+        closeButton.setOnClickListener{
+
+        }
 
 
         println("-----------achievements-------------------")
