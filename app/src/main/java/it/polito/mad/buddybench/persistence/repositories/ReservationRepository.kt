@@ -87,6 +87,7 @@ class ReservationRepository @Inject constructor(
         reservationDao.update(newReservation)
         updateUnavailableDayCourt(reservationDTO, courtWithSport)
         confirmButton.hideLoading()
+
         callback()
     }
 
