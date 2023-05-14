@@ -112,7 +112,7 @@
                     app:layout_constraintVertical_bias="0.0" />
 
                 <ImageView
-                    android:id="@+id/achievements"
+                    android:id="@+id/achievements_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/trophy_button"

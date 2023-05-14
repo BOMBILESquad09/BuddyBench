@@ -77,24 +77,13 @@ class SportsViewHolder(val v: View,
         val sportName = view.findViewById<TextView>(R.id.sport_card_name)
         val sportIcon = view.findViewById<ImageView>(R.id.sport_card_icon)
         val sportSkillLevelText = view.findViewById<TextView>(R.id.skill_level_card_text)
-        val sportGamesPlayed = view.findViewById<TextView>(R.id.games_played_text)
         val addButton = view.findViewById<TextView>(R.id.add_achievements)
         val newAchievement = view.findViewById<EditText>(R.id.new_achievement)
-        val closeButton = view.findViewById<ImageView>(R.id.close)
         sportName.text = Utils.formatString(sport.name.toString())
         sportIcon?.setImageResource(Sports.sportToIconDrawable(sport.name))
         // TODO: Doesn't work
         //sportSkillLevelText.setBackgroundColor(Skills.skillToColor(sport.skill))
         sportSkillLevelText.text = Utils.formatString(sport.skill.toString())
-        sportGamesPlayed.text = String.format(
-            v.context.resources.getString(R.string.games_played),
-            sport.matchesPlayed
-        )
-
-        closeButton.setOnClickListener{
-
-        }
-
 
         println("-----------achievements-------------------")
         println(sport.achievements.size)

@@ -5,13 +5,18 @@
     <TextView
         android:id="@+id/achievement_name"
         android:text="Achievement"
+        android:layout_gravity="center"
+        android:textColor="@color/md_theme_light_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-    <Button
+    <ImageView
         android:id="@+id/remove_achievement"
+        android:layout_marginStart="8dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Remove"/>
+        android:layout_height="20dp"
+        android:src="@drawable/close"
+        android:background="@drawable/rounded_shape"
+        android:backgroundTint="@color/error"/>
 
 
 </LinearLayout>
