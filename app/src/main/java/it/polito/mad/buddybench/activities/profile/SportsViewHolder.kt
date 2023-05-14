@@ -1,9 +1,19 @@
 package it.polito.mad.buddybench.activities.profile
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.OvalShape
+import android.util.DisplayMetrics
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -29,7 +39,6 @@ class SportsViewHolder(val v: View,
 
 ): RecyclerView.ViewHolder(v) {
     fun bind(sport: Sport){
-        println("refreshhhhh")
         v.visibility = View.VISIBLE
         val sportName = v.findViewById<TextView>(R.id.sport_card_name)
         val sportIcon = v.findViewById<ImageView>(R.id.sport_card_icon)
@@ -46,21 +55,39 @@ class SportsViewHolder(val v: View,
             sport.matchesPlayed
         )
         val achievementButton = v.findViewById<ImageView>(R.id.achievements_button)
+
+        // Creazione di un nuovo oggetto GradientDrawable per il colore di sfondo
+        val backgroundDrawable = GradientDrawable()
+        backgroundDrawable.setColor(Sports.getSportColor(sport.name, v.context))
+        backgroundDrawable.shape = GradientDrawable.OVAL
+
+        val shapeDrawable = ShapeDrawable(OvalShape())
+        shapeDrawable.paint.color = Color.TRANSPARENT
+        shapeDrawable.paint.style = Paint.Style.STROKE
+        shapeDrawable.paint.strokeWidth = 2f
+        shapeDrawable.paint.isAntiAlias = true
+
+        val layerDrawable = LayerDrawable(arrayOf(backgroundDrawable, shapeDrawable))
+        layerDrawable.setLayerInset(1, 0, 0, 0, 0)
+
+        achievementButton.background = layerDrawable
+
         achievementButton.setOnClickListener {
             val builder: AlertDialog.Builder = AlertDialog.Builder(v.context)
-            val dialogCard = LayoutInflater.from(v.context).inflate(R.layout.card_sport_expanded, null);
+            val dialogCard = LayoutInflater.from(v.context).inflate(R.layout.card_sport_expanded, null)
             setAchievementCard(dialogCard, sport, edit, )
             builder.setView(dialogCard)
             val dialog: AlertDialog = builder.create()
             dialog.setCancelable(true)
             dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+
             dialog.show()
+
         }
 
 
         if(edit){
-            v.findViewById<LinearLayout>(R.id.close_button).setOnClickListener {
-                println("okkkk")
+            v.findViewById<ImageView>(R.id.close_button).setOnClickListener {
                 sportRemoveCallback(sport)
             }
             val sportSkillLevel = v.findViewById<CardView>(R.id.skill_level_card)
@@ -74,16 +101,18 @@ class SportsViewHolder(val v: View,
 
 
     private fun setAchievementCard(view: View, sport: Sport, edit: Boolean){
-        val sportName = view.findViewById<TextView>(R.id.sport_card_name)
+
+        val cardLayout = view.findViewById<LinearLayout>(R.id.card_layout)
         val sportIcon = view.findViewById<ImageView>(R.id.sport_card_icon)
-        val sportSkillLevelText = view.findViewById<TextView>(R.id.skill_level_card_text)
         val addButton = view.findViewById<TextView>(R.id.add_achievements)
         val newAchievement = view.findViewById<EditText>(R.id.new_achievement)
-        sportName.text = Utils.formatString(sport.name.toString())
+
+        cardLayout.setBackgroundColor(Sports.getSportColor(sport.name, v.context))
+        //sportName.text = Utils.formatString(sport.name.toString())
         sportIcon?.setImageResource(Sports.sportToIconDrawable(sport.name))
         // TODO: Doesn't work
         //sportSkillLevelText.setBackgroundColor(Skills.skillToColor(sport.skill))
-        sportSkillLevelText.text = Utils.formatString(sport.skill.toString())
+        //sportSkillLevelText.text = Utils.formatString(sport.skill.toString())
 
         println("-----------achievements-------------------")
         println(sport.achievements.size)
