@@ -1,10 +1,7 @@
 package it.polito.mad.buddybench.persistence.repositories
 
 import it.polito.mad.buddybench.persistence.dao.CourtDao
-import it.polito.mad.buddybench.persistence.dao.CourtTimeDao
-import it.polito.mad.buddybench.persistence.dao.ReservationDao
 import it.polito.mad.buddybench.persistence.dao.ReviewDao
-import it.polito.mad.buddybench.persistence.dao.SportDao
 import it.polito.mad.buddybench.persistence.dao.UserDao
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.persistence.dto.ReviewDTO
@@ -42,13 +39,17 @@ class ReviewRepository @Inject constructor (
         val court = courtDao.getByNameAndSport(reviewDTO.courtDTO.name, reviewDTO.courtDTO.sport).court
         val review = reviewDao.getReview(court.id,user.id)
 
-        println("Save review USER: ${user.id} ${user.email}")
-        println("Save review COURT: ${court.id} ${court.name}")
-        println("Save review EXISTING REVIEW: ${review?.id} ${review?.description} ${review?.rating}")
-        println("Save review NEW REVIEW: ${reviewDTO.user.email} ${reviewDTO.description} ${reviewDTO.rating}")
 
         // ** Insert new review
         if(review == null){
+            println("INSERTING:")
+            println(Review(
+                description = reviewDTO.description,
+                date = reviewDTO.date.format(DateTimeFormatter.ISO_LOCAL_DATE),
+                rating = reviewDTO.rating,
+                userId = user.id,
+                courtId = court.id
+            ))
             reviewDao.save(
                 Review(
                     description = reviewDTO.description,
@@ -62,18 +63,31 @@ class ReviewRepository @Inject constructor (
         } else {
 
             // ** Update existing review
-
-            println("Updating existing review id ${review.id} with rating ${reviewDTO.rating}")
+            println(review.copy(
+                description = reviewDTO.description,
+                date = reviewDTO.date.format(DateTimeFormatter.ISO_LOCAL_DATE),
+                rating = reviewDTO.rating
+            ))
             reviewDao.update(
                 review.copy(
+                    id = review.id,
                     description = reviewDTO.description,
                     date = reviewDTO.date.format(DateTimeFormatter.ISO_LOCAL_DATE),
-                    rating = reviewDTO.rating
+                    rating = reviewDTO.rating,
+
                 )
-            )
+            ).let {
+                println("updated $it")
+                println(review.copy(
+                    description = reviewDTO.description,
+                    date = reviewDTO.date.format(DateTimeFormatter.ISO_LOCAL_DATE),
+                    rating = reviewDTO.rating,
+                ))
+            }
             val updatedSumOfRatings = (court.rating * court.nReviews - review.rating)
-            reviewDao.updateRating(court.id, (court.nReviews), (updatedSumOfRatings + reviewDTO.rating) / (court.nReviews))
+            //reviewDao.updateRating(court.id, (court.nReviews), (updatedSumOfRatings + reviewDTO.rating) / (court.nReviews))
         }
+        println(reviewDao.getAllByCourt(reviewDTO.courtDTO.name, reviewDTO.courtDTO.sport))
         return true
     }
 }

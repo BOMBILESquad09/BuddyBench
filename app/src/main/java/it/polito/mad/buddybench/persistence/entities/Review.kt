@@ -33,7 +33,7 @@ data class Review(
     @ColumnInfo(name="date")
     val date: String = "",
 
-    @ColumnInfo(name = "rating")
+    @ColumnInfo(name = "review_rating")
     val rating: Int = 0,
 
     @ColumnInfo(name = "user")
