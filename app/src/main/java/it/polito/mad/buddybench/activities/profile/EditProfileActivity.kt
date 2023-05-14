@@ -22,8 +22,12 @@ import androidx.cardview.widget.CardView
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.activities.findcourt.CourtsDiffUtils
 import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.classes.Sport
@@ -59,6 +63,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     private var popupOpened: PopupMenu? = null
     private var tempSelectedSport: ArrayList<Sports>? = null
     private var oldEmail: String? = null
+    private lateinit var sportsRecyclerView: RecyclerView
     // ** Profile Image
     private val launcherCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -153,6 +158,60 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             popup.show()
         }
 
+
+        sportsRecyclerView = findViewById<RecyclerView>(R.id.sports_container)
+        sportsRecyclerView.layoutManager = LinearLayoutManager(this).let {
+            it.orientation = RecyclerView.HORIZONTAL
+            it
+        }
+
+
+        userViewModel.setSports(profile.sports)
+        val sportRemoveCallback:(Sport) -> Unit =   { sport: Sport ->
+            userViewModel.removeSport(sport)
+
+        }
+        val sportSkillCallback:(Sport, View) -> Unit =   { sport: Sport, sportSkill: View ->
+            val popup = PopupMenu(this, sportSkill)
+            popup.menuInflater.inflate(R.menu.skill_level_edit, popup.menu)
+            popup.setOnMenuItemClickListener {
+                sport.skill =  Skills.fromJSON(it.title.toString().uppercase())!!
+                userViewModel.updateSport(sport)
+                popup.dismiss()
+                true
+            }
+            popupOpened = popup
+            popup.show()
+        }
+
+        val achievementAddCallback: (Sport, String) -> Unit = {
+            sport, achievement ->
+            println("add achievement")
+            userViewModel.addAchievement(sport, achievement)
+        }
+
+        val achievementRemoveCallback: (Sport, String) -> Unit = {
+                sport, achievement ->
+            userViewModel.removeAchievement(sport, achievement)
+        }
+
+        sportsRecyclerView.adapter = SportsAdapter(userViewModel.sports, true, sportRemoveCallback, sportSkillCallback, achievementRemoveCallback, achievementAddCallback)
+
+        userViewModel.sports.observe(this){
+
+            val diff = SportsDiffUtils(userViewModel.oldSports, it)
+            val diffResult = DiffUtil.calculateDiff(diff)
+            diffResult.dispatchUpdatesTo(sportsRecyclerView.adapter!!)
+            profile.sports = it
+
+            if(it.isEmpty()){
+                findViewById<TextView>(R.id.empty_sports).visibility= View.VISIBLE
+            } else{
+                findViewById<TextView>(R.id.empty_sports).visibility= View.GONE
+
+            }
+        }
+
         //sportContainer = findViewById(R.id.sportsContainerEdit)
         //sportContainer.removeAllViews()
 
@@ -181,8 +240,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
 
         // ** Add Sports Button
-        //addSportButton = findViewById(R.id.add_sport_button)
-        //addSportButton.setOnClickListener { openSportSelectionDialog() }
+        addSportButton = findViewById(R.id.add_sport_button)
+        addSportButton.setOnClickListener { openSportSelectionDialog() }
         checkCameraPermission()
 
 
@@ -415,34 +474,23 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
     override fun onDialogPositiveClick(dialog: DialogFragment, selectedItems: ArrayList<Sports>) {
         // ** Add new selected sports to user profile (and save to shared preferences)
-        val newSports = mutableListOf<Sport>()
-        val alreadySelectedSports = profile.sports.filter { it.skill != Skills.NULL }
+        var newSports = mutableListOf<Sport>()
+        val alreadySelectedSports = userViewModel.sports.value!!.filter { it.skill != Skills.NULL }
         for (selectedSport in selectedItems) {
             try {
                 checkNotNull(selectedSport)
-                val newSport = profile.sports.find { it.name == selectedSport } ?:Sport(selectedSport, Skills.NEWBIE, 0,0, listOf(""))
+                val newSport = profile.sports.find { it.name == selectedSport } ?:Sport(selectedSport, Skills.NEWBIE, 0,0,
+                    listOf("") as MutableList<String>
+                )
                 newSport.skill = Skills.NEWBIE
                 newSports.add(newSport)
             } catch (e: java.lang.IllegalStateException) {
                 continue
             }
         }
+        newSports.forEach {    userViewModel.addSport(it) }
 
-        profile.sports = newSports.plus(alreadySelectedSports)
-        profile.populateSportCards(this, sportContainer,
-            edit = true,
-            onSkillSelected = { sportSkillLevel, sport ->
 
-                val popup = PopupMenu(this, sportSkillLevel)
-                popup.menuInflater.inflate(R.menu.skill_level_edit, popup.menu)
-                popup.setOnMenuItemClickListener {
-                    profile.updateSkillLevel(sport, Skills.fromJSON(it.title.toString().uppercase())!!)
-
-                    true
-                }
-                popupOpened = popup
-                popup.show()
-            })
         dialog.dismiss()
         editSportDialog = null
     }

@@ -22,12 +22,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
+
         >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dp"
+            >
             <!-- Profile image and personal information-->
             <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
@@ -291,7 +294,81 @@
 
                 </androidx.cardview.widget.CardView>
             </androidx.cardview.widget.CardView>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:orientation="horizontal"
+                >
 
+                <TextView
+                    android:id="@+id/textView20"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Favourite Sports"
+                    android:textColor="@color/md_theme_light_text"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <ImageButton
+                    android:id="@+id/add_sport_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_shape"
+                    android:layout_gravity="center_vertical"
+                    android:backgroundTint="@color/md_theme_light_primary"
+                    android:contentDescription="@string/add"
+                    android:src="@drawable/round_add_24_white"
+                    android:layout_marginLeft="5dp"/>
+            </LinearLayout>
+
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+
+
+                <LinearLayout
+                    android:id="@+id/linearLayout4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="3dp"
+
+                    >
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="10dp"/>
+
+                    <TextView
+                        android:id="@+id/empty_sports"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No sports yet"
+                        android:textSize="20sp"
+
+                        android:textColor="@color/disabled" />
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/sports_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible" />
+
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
+
     </ScrollView>
 </LinearLayout>

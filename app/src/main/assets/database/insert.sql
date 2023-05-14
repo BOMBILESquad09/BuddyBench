@@ -75,11 +75,11 @@ VALUES
 
 -- Some UserSports Rows
 INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized, achievements) VALUES
-(0,0,"VOLLEYBALL","NEWBIE",9,10, "");
+(0,0,"VOLLEYBALL","NEWBIE",9,10, "coppa del nonno; coppa australia");
 INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized, achievements) VALUES
-(1,0,"BASKETBALL","NEWBIE",10,10, "");
+(1,0,"BASKETBALL","NEWBIE",10,10, "coppa del nonno; coppa australia");
 INSERT INTO user_sport (id,user,sport,skill,games_played,games_organized, achievements) VALUES
-(2,0,"FOOTBALL","NEWBIE",11,10, "");
+(2,0,"FOOTBALL","NEWBIE",11,10, "coppa del nonno; coppa australia");
 
 
 --- Inserted Court Time Table

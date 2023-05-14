@@ -56,6 +56,16 @@ class HomeActivity: AppCompatActivity() {
                 profile
             }
         }
+
+        profile.sports.forEach {
+            it.achievements.forEach{
+
+                a ->
+                println("-----aa----")
+                println(a)
+                println("..........---------------")
+            }
+        }
         reservationViewModel.email = profile.email
         bottomBar.setup()
     }
@@ -102,6 +112,7 @@ class HomeActivity: AppCompatActivity() {
 
                 putString("profile", profile.toJSON().toString())
                 apply()
+                userViewModel.setSports(profile.sports)
                 userViewModel.updateUserInfo(profile, oldEmail)
                 supportFragmentManager.findFragmentByTag(Tabs.PROFILE.name).let {
                     if (it != null){
