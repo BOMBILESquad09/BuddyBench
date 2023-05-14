@@ -3,6 +3,7 @@ package it.polito.mad.buddybench.activities.court
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
@@ -24,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.WeekDayPosition
 import com.kizitonwose.calendar.view.WeekCalendarView
+import com.kusu.library.LoadingButton
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Profile
@@ -82,7 +84,6 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
     private lateinit var recyclerView: RecyclerView
 
     private lateinit var weeklyDays: MutableList<Pair<LocalDate, Boolean>>
-    private lateinit var switch: Switch
 
     private lateinit var progressDialog: AlertDialog
     private var oldDate: LocalDate? = null
@@ -199,8 +200,17 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
 
         // ** Show reviews
         binding.seeAllReviews.setOnClickListener {
-            val reviewsBottomSheet = ReviewsBottomSheet.newInstance(courtName, sport.toString())
-            reviewsBottomSheet.show(parentFragmentManager, "ReviewsBottomSheet")
+            val intent = Intent(context, ReviewsActivity::class.java)
+            intent.putExtra("court_name", courtName)
+            intent.putExtra("court_sport",sport.toString())
+            this.startActivity(intent)
+        }
+
+        binding.seeAllReviewsArrow.setOnClickListener {
+            val intent = Intent(context, ReviewsActivity::class.java)
+            intent.putExtra("court_name", courtName)
+            intent.putExtra("court_sport",sport.toString())
+            this.startActivity(intent)
         }
 
         // ** Navigate to court reservation
@@ -252,11 +262,12 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
             getString(R.string.equipment_phrase),
             court.feeEquipment
         )
+
         if(!editMode) {
-            val b : Button? = view?.findViewById(R.id.cancel_button)
+            val b : LoadingButton? = view?.findViewById(R.id.cancel_button)
             b?.visibility = View.GONE
         } else {
-            val b : Button? = view?.findViewById(R.id.cancel_button)
+            val b : LoadingButton? = view?.findViewById(R.id.cancel_button)
             b?.setOnClickListener {
                 val deleteSheet = DialogSheetDeleteReservation(
                     courtName,

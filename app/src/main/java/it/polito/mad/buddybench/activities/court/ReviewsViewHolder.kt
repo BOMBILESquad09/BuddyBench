@@ -27,7 +27,7 @@ class ReviewsViewHolder(private val v: View): RecyclerView.ViewHolder(v) {
 
         // ** Date
         tvReviewDate = v.findViewById(R.id.tv_review_date)
-        tvReviewDate.text = review.date.format(DateTimeFormatter.ISO_LOCAL_DATE)
+        tvReviewDate.text = review.date.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
 
         // ** User profile picture
         // TODO: Add user profile picture

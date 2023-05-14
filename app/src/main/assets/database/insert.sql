@@ -220,8 +220,8 @@ INSERT INTO court_time (id, court, day_of_week, opening_time, closing_time) VALU
 (114, 20, 5, "10:00", "18:00"),
 (115, 20, 6, "10:00", "20:00");
 
-INSERT INTO review (review_id, court, user, description, date, rating) VALUES
-(0,1,1,"One of the best court in town!", "2023-04-04", 5),
-(1,1,2,"Cool dress room!", "2023-04-03", 4),
-(2,6,3,"Ok", "2023-05-08", 3);
+INSERT INTO review (review_id, court, user, description, date, review_rating) VALUES
+(1,1,2,"Cool dress room!", "2023-04-03", 4);
+
+
 

@@ -22,11 +22,11 @@ import com.kizitonwose.calendar.view.WeekCalendarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.court.CourtActivity
-import it.polito.mad.buddybench.activities.court.ReviewsBottomSheet
+import it.polito.mad.buddybench.activities.court.ReviewsActivity
 import it.polito.mad.buddybench.activities.court.WeeklyCalendarDayBinder
 import it.polito.mad.buddybench.activities.findcourt.sportselection.CourtSearchAdapter
-import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.utils.Utils
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -74,8 +74,10 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         val reviewsCallback: (String, Sports) -> Unit = {
             name, sport ->
             run {
-                val reviewsBottomSheet = ReviewsBottomSheet.newInstance(name, sport.toString())
-                reviewsBottomSheet.show(parentFragmentManager, "ReviewsBottomSheet")
+                val intent = Intent(context, ReviewsActivity::class.java)
+                intent.putExtra("court_name", name)
+                intent.putExtra("court_sport",sport.toString())
+                parent.context.launcherReviews.launch(intent)
             }
         }
 

@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.persistence.repositories
 
+import com.kusu.library.LoadingButton
 import it.polito.mad.buddybench.persistence.dao.CourtDao
 import it.polito.mad.buddybench.persistence.dao.CourtTimeDao
 import it.polito.mad.buddybench.persistence.dao.ReservationDao
@@ -9,7 +10,6 @@ import it.polito.mad.buddybench.persistence.dao.UserDao
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.persistence.entities.CourtWithSport
 import it.polito.mad.buddybench.persistence.entities.Reservation
-import it.polito.mad.buddybench.persistence.entities.Sport
 import it.polito.mad.buddybench.persistence.entities.UnavailableDayCourt
 import it.polito.mad.buddybench.persistence.entities.toReservationDTO
 import it.polito.mad.buddybench.enums.Sports
@@ -35,22 +35,42 @@ class ReservationRepository @Inject constructor(
     }
 
     fun getAllByUser(email: String): HashMap<LocalDate, List<ReservationDTO>> {
-        return ReservationDTO.toHashmap(reservationDao.getAllByUser(email).map { it.toReservationDTO() })
+        return ReservationDTO.toHashmap(
+            reservationDao.getAllByUser(email).map { it.toReservationDTO() })
     }
 
-    fun save(reservationDTO: ReservationDTO) {
+    fun save(reservationDTO: ReservationDTO, callback: () -> Unit, confirmButton: LoadingButton) {
         val user = userDao.getUserByEmail(reservationDTO.userOrganizer.email)!!
-        val courtWithSport = courtDao.getByNameAndSport(reservationDTO.court.name, reservationDTO.court.sport)
+        val courtWithSport =
+            courtDao.getByNameAndSport(reservationDTO.court.name, reservationDTO.court.sport)
 
-        reservationDao.save(reservationDTO.toEntity(user.user.id, courtWithSport.court.id, reservationDTO.equipment))
+        reservationDao.save(
+            reservationDTO.toEntity(
+                user.user.id,
+                courtWithSport.court.id,
+                reservationDTO.equipment
+            )
+        )
         updateUnavailableDayCourt(reservationDTO, courtWithSport)
+        confirmButton.hideLoading()
+        callback()
     }
 
-    fun update(reservationDTO: ReservationDTO, oldDate: LocalDate, oldStartTime: Int){
+    fun update(
+        reservationDTO: ReservationDTO,
+        oldDate: LocalDate,
+        oldStartTime: Int,
+        callback: () -> Unit,
+        confirmButton: LoadingButton
+    ) {
+        Thread.sleep(5000)
         val user = userDao.getUserByEmail(reservationDTO.userOrganizer.email)!!
-        val courtWithSport = courtDao.getByNameAndSport(reservationDTO.court.name, reservationDTO.court.sport)
-        var oldReservation_ = reservationDao.getReservationPlain(user.user.id, courtWithSport.court.id,
-            oldDate.format(DateTimeFormatter.ISO_LOCAL_DATE), oldStartTime)
+        val courtWithSport =
+            courtDao.getByNameAndSport(reservationDTO.court.name, reservationDTO.court.sport)
+        val oldReservation_ = reservationDao.getReservationPlain(
+            user.user.id, courtWithSport.court.id,
+            oldDate.format(DateTimeFormatter.ISO_LOCAL_DATE), oldStartTime
+        )
 
         val oldReservation = reservationDao.get(oldReservation_.id)
 
@@ -66,43 +86,78 @@ class ReservationRepository @Inject constructor(
 
         reservationDao.update(newReservation)
         updateUnavailableDayCourt(reservationDTO, courtWithSport)
+        confirmButton.hideLoading()
+        callback()
     }
 
 
-
-    private fun updateUnavailableDayCourt(reservationDTO: ReservationDTO, courtWithSport: CourtWithSport){
-        val reservations = reservationDao.getAllByCourtAndDate(courtWithSport.court.id, reservationDTO.date.format(
-            DateTimeFormatter.ISO_LOCAL_DATE))
-        reservations.map { it.reservation.endTime - it.reservation.startTime }.reduce{
-                a,b -> a+b
+    private fun updateUnavailableDayCourt(
+        reservationDTO: ReservationDTO,
+        courtWithSport: CourtWithSport
+    ) {
+        val reservations = reservationDao.getAllByCourtAndDate(
+            courtWithSport.court.id, reservationDTO.date.format(
+                DateTimeFormatter.ISO_LOCAL_DATE
+            )
+        )
+        reservations.map { it.reservation.endTime - it.reservation.startTime }.reduce { a, b ->
+            a + b
         }.let {
-            val time = courtTimeDao.getDayTimeByCourt(courtWithSport.court.id, reservationDTO.date.dayOfWeek.value)!!
-            if ((time.courtTime.closingTime - time.courtTime.openingTime) <= it){
-                unavailableDayCourtDao.save(UnavailableDayCourt(courtWithSport.court.id, reservationDTO.date.format(
-                    DateTimeFormatter.ISO_LOCAL_DATE)))
-            } else{
-                unavailableDayCourtDao.delete(UnavailableDayCourt(courtWithSport.court.id, reservationDTO.date.format(
-                    DateTimeFormatter.ISO_LOCAL_DATE)))
+            val time = courtTimeDao.getDayTimeByCourt(
+                courtWithSport.court.id,
+                reservationDTO.date.dayOfWeek.value
+            )!!
+            if ((time.courtTime.closingTime - time.courtTime.openingTime) <= it) {
+                unavailableDayCourtDao.save(
+                    UnavailableDayCourt(
+                        courtWithSport.court.id, reservationDTO.date.format(
+                            DateTimeFormatter.ISO_LOCAL_DATE
+                        )
+                    )
+                )
+            } else {
+                unavailableDayCourtDao.delete(
+                    UnavailableDayCourt(
+                        courtWithSport.court.id, reservationDTO.date.format(
+                            DateTimeFormatter.ISO_LOCAL_DATE
+                        )
+                    )
+                )
             }
         }
     }
 
-    fun delete(courtName: String, sport: Sports, startTime: LocalTime, email: String, date: LocalDate) {
+    fun delete(
+        courtName: String,
+        sport: Sports,
+        startTime: LocalTime,
+        email: String,
+        date: LocalDate,
+        button: LoadingButton?,
+        callback: () -> Unit
+    ) {
 
         val user = userDao.getUserByEmail(email)!!
 
-
-
-
         val court = courtDao.getByNameAndSportPlain(courtName, sport.toString().uppercase())
 
-        val reservation = reservationDao.getReservationPlain(user.user.id, court.id,
-            date.format(DateTimeFormatter.ISO_LOCAL_DATE), startTime.hour)
-
+        val reservation = reservationDao.getReservationPlain(
+            user.user.id, court.id,
+            date.format(DateTimeFormatter.ISO_LOCAL_DATE), startTime.hour
+        )
 
         reservationDao.delete(reservation)
-        unavailableDayCourtDao.delete(UnavailableDayCourt(court.id, reservation.date.format(
-            DateTimeFormatter.ISO_LOCAL_DATE)))
+        unavailableDayCourtDao.delete(
+            UnavailableDayCourt(
+                court.id, reservation.date.format(
+                    DateTimeFormatter.ISO_LOCAL_DATE
+                )
+            )
+        )
+        if (button != null) {
+            button.hideLoading()
+            callback()
+        }
     }
 
     fun getTimeSlotsOccupiedForCourtAndDate(court: CourtDTO, date: LocalDate): List<LocalTime> {
@@ -112,12 +167,21 @@ class ReservationRepository @Inject constructor(
             date = date.toString()
         )
         val timeSlots = reservations.map {
-            Utils.getTimeSlots(LocalTime.of(it.reservation.startTime,0), LocalTime.of(it.reservation.endTime, 0))
+            Utils.getTimeSlots(
+                LocalTime.of(it.reservation.startTime, 0),
+                LocalTime.of(it.reservation.endTime, 0)
+            )
         }.flatten().toList()
         return timeSlots
     }
 
-    fun getReservation(courtName: String, sportInCourt: String, email: String, date: LocalDate, startTime: Int): ReservationDTO {
+    fun getReservation(
+        courtName: String,
+        sportInCourt: String,
+        email: String,
+        date: LocalDate,
+        startTime: Int
+    ): ReservationDTO {
         val court = courtDao.getByNameAndSport(courtName, sportInCourt.uppercase())
         val user = userDao.getUserByEmail(email)
 
@@ -131,8 +195,6 @@ class ReservationRepository @Inject constructor(
         return reservation.toReservationDTO()
 
     }
-
-
 
 
 }

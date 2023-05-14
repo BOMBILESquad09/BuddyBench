@@ -1,11 +1,11 @@
 package it.polito.mad.buddybench.viewmodels
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SAVED_STATE_REGISTRY_OWNER_KEY
 import androidx.lifecycle.ViewModel
+import com.kusu.library.LoadingButton
 import dagger.hilt.android.lifecycle.HiltViewModel
+import it.polito.mad.buddybench.activities.court.DialogSheetDeleteReservation
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 
 import it.polito.mad.buddybench.enums.Sports
@@ -23,12 +23,12 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     val selectedDate: LiveData<LocalDate> = _selectedDate
     var oldDate: LocalDate? = _selectedDate.value
 
-        private val _currentReservation: MutableLiveData<ReservationDTO?> = MutableLiveData(null)
+    private val _currentReservation: MutableLiveData<ReservationDTO?> = MutableLiveData(null)
     val currentReservation: LiveData<ReservationDTO?> get() = _currentReservation
     val loading = MutableLiveData(false)
 
     var refresh: Boolean = false
-    var email:String = ""
+    var email: String = ""
 
     @Inject
     lateinit var reservationRepository: ReservationRepository
@@ -62,16 +62,21 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         reservation: ReservationDTO,
         edit: Boolean,
         oldDate: LocalDate?,
-        oldStartTime: LocalTime?
+        oldStartTime: LocalTime?,
+        callback: () -> Unit,
+        confirmButton: LoadingButton
     ) {
-        /*In a thread or not?*/
 
-
-
-        if (edit)
-            reservationRepository.update(reservation,oldDate!!, oldStartTime!!.hour)
+        if (edit) {
+            Thread {
+                Thread.sleep(5000)
+                reservationRepository.update(reservation, oldDate!!, oldStartTime!!.hour, callback, confirmButton)
+            }.start()
+        }
         else
-            reservationRepository.save(reservation)
+            Thread {
+                reservationRepository.save(reservation, callback, confirmButton)
+            }.start()
     }
 
 
@@ -85,7 +90,13 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         return reservations.value?.get(selectedDate.value ?: LocalDate.now())
     }
 
-    fun getReservation(courtName: String, sport: Sports, email: String, date: LocalDate, startTime: Int): MutableLiveData<ReservationDTO?> {
+    fun getReservation(
+        courtName: String,
+        sport: Sports,
+        email: String,
+        date: LocalDate,
+        startTime: Int
+    ): MutableLiveData<ReservationDTO?> {
         Thread {
             val sportName = Sports.toJSON(sport)
             val reservationDTO =
@@ -101,16 +112,30 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         return _currentReservation
     }
 
-    fun deleteReservation(courtName: String, sport: Sports, startTime: LocalTime, date: LocalDate, email: String) {
-        reservationRepository.delete(
-            courtName,
-            sport,
-            startTime,
-            email,
-            date
-        )
+    fun deleteReservation(
+        button: LoadingButton,
+        courtName: String,
+        sport: Sports,
+        startTime: LocalTime,
+        date: LocalDate,
+        email: String,
+        dialogSheetDeleteReservation: DialogSheetDeleteReservation,
+        callback: () -> Unit
+    ) {
+        dialogSheetDeleteReservation.isCancelable = false
+        button.showLoading()
+        Thread {
+            reservationRepository.delete(
+                courtName,
+                sport,
+                startTime,
+                email,
+                date,
+                button,
+                callback
+            )
+        }.start()
     }
-
 
 
 }

@@ -1,20 +1,25 @@
 package it.polito.mad.buddybench.activities.court
 
 import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.view.WindowManager
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.Switch
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.widget.NestedScrollView
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.kusu.library.LoadingButton
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
@@ -37,9 +42,10 @@ class EditConfirmDialogSheet(
     private var oldDate: LocalDate?,
     private val oldStartTime: LocalTime?,
     private val callback: () -> Unit
-): SuperBottomSheetFragment() {
+) : SuperBottomSheetFragment() {
 
     private lateinit var switch: Switch
+    private lateinit var sheet: NestedScrollView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,6 +60,7 @@ class EditConfirmDialogSheet(
         super.onViewCreated(view, savedInstanceState)
         // Take the reference for the switch of equipment
         switch = view.findViewById(R.id.switch_equipment)
+        sheet = view.findViewById(R.id.bottom_sheet_scroll_view)
 
         // Setting up the three card
         // Setting the values for the first Card in dialog
@@ -66,7 +73,7 @@ class EditConfirmDialogSheet(
         // CheckBox inside the Additional Information Card
         val checkboxAccept = view.findViewById<CheckBox>(R.id.accept_checkbox)
         // Take the reference of the confirm button
-        val confirmButton = view.findViewById<Button>(R.id.confirmPrenotation)
+        val confirmButton = view.findViewById<LoadingButton>(R.id.confirmPrenotation)
         confirmButton?.setOnClickListener {
             if (!checkboxAccept!!.isChecked) {
                 val textError = String.format(getString(R.string.error_info), courtToReserve.name)
@@ -85,16 +92,25 @@ class EditConfirmDialogSheet(
                     equipment = switch.isChecked
                 )
 
+                this.isCancelable = false
+                switch.isEnabled = false
+                checkboxAccept.isEnabled = false
 
-                reservationViewModel.saveReservation(reservation, editMode, oldDate, oldStartTime)
-                callback()
-                dismiss()
+
+                confirmButton.showLoading()
+                reservationViewModel.saveReservation(
+                    reservation,
+                    editMode,
+                    oldDate,
+                    oldStartTime,
+                    callback,
+                    confirmButton
+                )
             }
         }
 
-
-
     }
+
 
     private fun setFirstCard(bottomSheetDialog: View) {
 
@@ -125,7 +141,7 @@ class EditConfirmDialogSheet(
                 null
             )
         )
-        if(editMode) {
+        if (editMode) {
             switch.isChecked = equipment!!
         }
     }
@@ -162,9 +178,10 @@ class EditConfirmDialogSheet(
 
         // In Edit Mode if the switch is enabled means that the reservation
         // has equipment selected previously
-        if(editMode && switch.isChecked) {
+        if (editMode && switch.isChecked) {
             val feeEquipment = courtToReserve.feeEquipment
-            equipmentField?.text = String.format(getString(R.string.cost_example, feeEquipment * nHours))
+            equipmentField?.text =
+                String.format(getString(R.string.cost_example, feeEquipment * nHours))
             totalCost = (feeHour + feeEquipment) * nHours
             totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
         }
@@ -174,7 +191,8 @@ class EditConfirmDialogSheet(
             // Else it's visible
             if (isChecked) {
                 val feeEquipment = courtToReserve.feeEquipment
-                equipmentField?.text = String.format(getString(R.string.cost_example, feeEquipment * nHours))
+                equipmentField?.text =
+                    String.format(getString(R.string.cost_example, feeEquipment * nHours))
                 totalCost = (feeHour + feeEquipment) * nHours
                 totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
             } else {

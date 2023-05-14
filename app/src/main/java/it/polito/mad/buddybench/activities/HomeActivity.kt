@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -33,6 +34,8 @@ class HomeActivity: AppCompatActivity() {
     private val bottomBar = BottomBar(this)
     private val launcherEdit = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onEditReturn(it)}
     val launcherReservation = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onReservationReturn(it)}
+    val launcherReviews = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { onReviewsReturn(it) }
+
     lateinit var profile: Profile
     private lateinit var sharedPref: SharedPreferences
     val userViewModel by viewModels<UserViewModel>()
@@ -52,7 +55,6 @@ class HomeActivity: AppCompatActivity() {
             if (it == null){
                 profile
             }
-            it
         }
 
         profile.sports.forEach {
@@ -131,6 +133,13 @@ class HomeActivity: AppCompatActivity() {
             bottomBar.replaceFragment(bottomBar.currentTab, Tabs.RESERVATIONS)
             bottomBar.currentTab = Tabs.RESERVATIONS
             bottomBar.bottomBar.selectTabAt(tabIndex = bottomBar.currentTab.getId())
+        }
+    }
+
+    private fun onReviewsReturn(response: ActivityResult) {
+        if (response.resultCode  == Activity.RESULT_OK){
+           // TODO: Maybe update
+           println("Returned from reviews activity")
         }
     }
 }

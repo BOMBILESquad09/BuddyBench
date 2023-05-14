@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import it.polito.mad.buddybench.persistence.entities.Reservation
 import it.polito.mad.buddybench.persistence.entities.Review
 import it.polito.mad.buddybench.persistence.entities.ReviewWithUser
 
@@ -24,8 +23,9 @@ interface ReviewDao {
     @Insert
     fun save(reservation: Review)
 
+
     @Update(entity = Review::class, onConflict = OnConflictStrategy.REPLACE)
-    fun update(reservation: Review)
+    fun update(reservation: Review): Int
 
     @Query("UPDATE Court SET n_reviews = :nReviews, rating = :rating WHERE id = :courtId")
     fun updateRating(courtId: Int, nReviews: Int, rating: Double)

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.court.ReviewsBottomSheet"
+    tools:context=".activities.court.ReviewsActivity"
     android:orientation="vertical">
 
     <LinearLayout
@@ -168,10 +168,11 @@
 
             <RatingBar
                 android:id="@+id/rb_new_review"
-                style="@style/Widget.AppCompat.RatingBar.Small"
+                style="@style/Widget.AppCompat.RatingBar.Indicator"
                 android:layout_width="wrap_content"
                 android:paddingVertical="8dp"
                 android:isIndicator="false"
+                android:stepSize="1"
                 android:layout_height="wrap_content" />
 
 

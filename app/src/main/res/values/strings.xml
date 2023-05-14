@@ -112,7 +112,8 @@
     <string name="no_reservation">No reservations for this day</string>
     <string name="phone_number">+391231231212</string>
     <string name="sport_basketball">basketball</string>
-    <string name="see_all"><u>See all</u></string>
+    <string name="see_all">See all reviews</string>
+
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
