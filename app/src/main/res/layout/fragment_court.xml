@@ -60,38 +60,23 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <!-- Name and price -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/court_name_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat_bold_700"
-                        android:text="@string/court_name"
-                        android:maxLines="3"
-                        android:textSize="22sp" />
-
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-
-                </LinearLayout>
-
-                <!-- Rating -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingVertical="16dp">
+
+                    <TextView
+                        android:id="@+id/court_name_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold_700"
+                        android:maxLines="3"
+                        android:text="@string/court_name"
+                        android:textSize="22sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/rating"
@@ -158,6 +143,15 @@
 
                     </androidx.cardview.widget.CardView>
 
+                    <View
+                        android:id="@+id/spacer_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@color/md_theme_light_primary"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/fee_card" />
 
                     <TextView
                         android:id="@+id/see_all_reviews"
@@ -165,9 +159,31 @@
                         android:layout_height="wrap_content"
                         android:clickable="true"
                         android:text="@string/see_all"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginVertical="8dp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/fee_card" />
+                        app:layout_constraintBottom_toTopOf="@+id/spacer_2"
+                        app:layout_constraintTop_toBottomOf="@+id/spacer_1" />
+
+                    <ImageButton
+                        android:id="@+id/see_all_reviews_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/round_arrow_back_24_primary"
+                        android:rotation="180"
+                        app:layout_constraintBottom_toTopOf="@+id/spacer_2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/spacer_1"
+                        android:contentDescription="@string/write_your_review" />
+
+
+                    <View
+                        android:id="@+id/spacer_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/md_theme_light_primary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
