@@ -202,7 +202,14 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
         binding.seeAllReviews.setOnClickListener {
             val intent = Intent(context, ReviewsActivity::class.java)
             intent.putExtra("court_name", courtName)
-            intent.putExtra("court_sport",sport)
+            intent.putExtra("court_sport",sport.toString())
+            this.startActivity(intent)
+        }
+
+        binding.seeAllReviewsArrow.setOnClickListener {
+            val intent = Intent(context, ReviewsActivity::class.java)
+            intent.putExtra("court_name", courtName)
+            intent.putExtra("court_sport",sport.toString())
             this.startActivity(intent)
         }
 

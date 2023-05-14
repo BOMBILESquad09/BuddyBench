@@ -59,6 +59,10 @@ class ReviewsActivity : AppCompatActivity() {
         binding.rvReviews.layoutManager = LinearLayoutManager(this)
         binding.rvReviews.adapter = ReviewsAdapter(reviewViewModel.reviews)
 
+        // ** Rating bars
+        binding.rbYourReview.stepSize = 1F
+        binding.rbNewReview.stepSize = 1F
+
 
         reviewViewModel.l.observe(this) {
             if (it) {
@@ -131,7 +135,7 @@ class ReviewsActivity : AppCompatActivity() {
 
         binding.tvErrorReview.visibility = View.GONE
         reviewViewModel.insertReview(binding.etNewReview.text.toString(), binding.rbNewReview.rating.toInt(), this)
-        //reviewViewModel.getCourtReviews(courtName!!, courtSport!!, this)
+        reviewViewModel.getCourtReviews(courtName!!, courtSport!!, this)
     }
 
     private fun editReviewUI() {
