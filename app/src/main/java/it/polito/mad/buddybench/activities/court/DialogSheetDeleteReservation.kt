@@ -1,12 +1,14 @@
 package it.polito.mad.buddybench.activities.court
 
+import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
-import com.kusu.library.LoadingButton
+import com.apachat.loadingbutton.core.customViews.CircularProgressButton
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.enums.Sports
@@ -37,19 +39,27 @@ class DialogSheetDeleteReservation(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val button = view.findViewById<LoadingButton>(R.id.confirm_cancel)
+        val button = view.findViewById<CircularProgressButton>(R.id.confirm_cancel)
         button.setOnClickListener {
-            reservationViewModel.deleteReservation(
-                button,
-                courtName,
-                sport,
-                oldStartTime,
-                oldDate,
-                email,
-                this,
-                callback
-            )
+            button.startAnimation {
+                reservationViewModel.deleteReservation(
+                    courtName,
+                    sport,
+                    oldStartTime,
+                    oldDate,
+                    email,
+                    this,
+                )
+            }
+            reservationViewModel.loading.observe(viewLifecycleOwner) {
+                // confirmButton.doneLoadingAnimation(fillColor: Int, bitmap: Bitmap)
+                button.revertAnimation()
+                callback()
+            }
         }
+
+
+
     }
 
 

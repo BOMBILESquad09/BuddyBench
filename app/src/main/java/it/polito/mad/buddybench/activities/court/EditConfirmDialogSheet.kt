@@ -18,8 +18,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.NestedScrollView
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
+import com.apachat.loadingbutton.core.customViews.CircularProgressButton
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.kusu.library.LoadingButton
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
@@ -73,7 +73,7 @@ class EditConfirmDialogSheet(
         // CheckBox inside the Additional Information Card
         val checkboxAccept = view.findViewById<CheckBox>(R.id.accept_checkbox)
         // Take the reference of the confirm button
-        val confirmButton = view.findViewById<LoadingButton>(R.id.confirmPrenotation)
+        val confirmButton = view.findViewById<CircularProgressButton>(R.id.confirmPrenotation)
         confirmButton?.setOnClickListener {
             if (!checkboxAccept!!.isChecked) {
                 val textError = String.format(getString(R.string.error_info), courtToReserve.name)
@@ -83,30 +83,32 @@ class EditConfirmDialogSheet(
                     view.context
                 ).show()
             } else {
-                val reservation = ReservationDTO(
-                    userOrganizer = user,
-                    court = courtToReserve,
-                    date = selectedDate,
-                    startTime = courtViewModel.selectedTimes.first(),
-                    endTime = courtViewModel.selectedTimes.last().plusHours(1),
-                    equipment = switch.isChecked
-                )
+                confirmButton.startAnimation {
+                    val reservation = ReservationDTO(
+                        userOrganizer = user,
+                        court = courtToReserve,
+                        date = selectedDate,
+                        startTime = courtViewModel.selectedTimes.first(),
+                        endTime = courtViewModel.selectedTimes.last().plusHours(1),
+                        equipment = switch.isChecked
+                    )
 
-                this.isCancelable = false
-                switch.isEnabled = false
-                checkboxAccept.isEnabled = false
+                    this.isCancelable = false
+                    switch.isEnabled = false
+                    checkboxAccept.isEnabled = false
 
-
-                confirmButton.showLoading()
-                reservationViewModel.saveReservation(
-                    reservation,
-                    editMode,
-                    oldDate,
-                    oldStartTime,
-                    callback,
-                    confirmButton
-                )
-
+                    reservationViewModel.saveReservation(
+                        reservation,
+                        editMode,
+                        oldDate,
+                        oldStartTime
+                    )
+                }
+                reservationViewModel.loading.observe(viewLifecycleOwner) {
+                    // confirmButton.doneLoadingAnimation(fillColor: Int, bitmap: Bitmap)
+                    confirmButton.revertAnimation()
+                    callback()
+                }
             }
         }
 

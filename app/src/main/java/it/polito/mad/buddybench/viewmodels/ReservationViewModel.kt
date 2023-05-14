@@ -3,7 +3,6 @@ package it.polito.mad.buddybench.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.kusu.library.LoadingButton
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.activities.court.DialogSheetDeleteReservation
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
@@ -63,19 +62,18 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         edit: Boolean,
         oldDate: LocalDate?,
         oldStartTime: LocalTime?,
-        callback: () -> Unit,
-        confirmButton: LoadingButton
     ) {
-
+        loading.postValue(true)
         if (edit) {
             Thread {
-                Thread.sleep(5000)
-                reservationRepository.update(reservation, oldDate!!, oldStartTime!!.hour, callback, confirmButton)
+                reservationRepository.update(reservation, oldDate!!, oldStartTime!!.hour)
+                loading.postValue(false)
             }.start()
         }
         else
             Thread {
-                reservationRepository.save(reservation, callback, confirmButton)
+                reservationRepository.save(reservation)
+                loading.postValue(false)
             }.start()
     }
 
@@ -113,27 +111,24 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     }
 
     fun deleteReservation(
-        button: LoadingButton,
         courtName: String,
         sport: Sports,
         startTime: LocalTime,
         date: LocalDate,
         email: String,
         dialogSheetDeleteReservation: DialogSheetDeleteReservation,
-        callback: () -> Unit
     ) {
         dialogSheetDeleteReservation.isCancelable = false
-        button.showLoading()
+        loading.postValue(true)
         Thread {
             reservationRepository.delete(
                 courtName,
                 sport,
                 startTime,
                 email,
-                date,
-                button,
-                callback
+                date
             )
+            loading.postValue(false)
         }.start()
     }
 

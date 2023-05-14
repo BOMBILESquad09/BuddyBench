@@ -22,10 +22,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.apachat.loadingbutton.core.customViews.ProgressButton
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.WeekDayPosition
 import com.kizitonwose.calendar.view.WeekCalendarView
-import com.kusu.library.LoadingButton
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Profile
@@ -262,12 +262,19 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
             getString(R.string.equipment_phrase),
             court.feeEquipment
         )
+        if(court.facilities!!.isEmpty()) {
+            binding.facility.text = getString(R.string.facility_list) + " Not Available"
+        } else {
+            binding.facility.text = getString(R.string.facility_list) + " " + court.facilities.joinToString(", ")
+        }
+
+
 
         if(!editMode) {
-            val b : LoadingButton? = view?.findViewById(R.id.cancel_button)
+            val b : Button? = view?.findViewById(R.id.cancel_button)
             b?.visibility = View.GONE
         } else {
-            val b : LoadingButton? = view?.findViewById(R.id.cancel_button)
+            val b : Button? = view?.findViewById(R.id.cancel_button)
             b?.setOnClickListener {
                 val deleteSheet = DialogSheetDeleteReservation(
                     courtName,
