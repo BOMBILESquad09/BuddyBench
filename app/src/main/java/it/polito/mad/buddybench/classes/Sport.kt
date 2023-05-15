@@ -29,7 +29,8 @@ data class Sport(val name: Sports, var skill: Skills, val matchesPlayed: Int, va
             val matchesOrganized = jsonSport.getInt("matchesOrganized",0)
             val achievements = jsonSport.getString("achievements", "Coppa del nonno")
 
-            return Sport(sportName, skillName, matchesPlayed, matchesOrganized, achievements.split(";").toMutableList())
+            return Sport(sportName, skillName, matchesPlayed, matchesOrganized, achievements.split(";")
+                .filter { it.isNotEmpty() || it.isNotBlank() }.toMutableList())
         }
     }
 
