@@ -56,20 +56,20 @@ class SportsViewHolder(val v: View,
         )
         val achievementButton = v.findViewById<ImageView>(R.id.achievements_button)
 
-        // Creazione di un nuovo oggetto GradientDrawable per il colore di sfondo
+        if (!edit && sport.achievements.size == 0){
+            achievementButton.visibility = View.GONE
+        }
+
         val backgroundDrawable = GradientDrawable()
         backgroundDrawable.setColor(Sports.getSportColor(sport.name, v.context))
         backgroundDrawable.shape = GradientDrawable.OVAL
-
         val shapeDrawable = ShapeDrawable(OvalShape())
         shapeDrawable.paint.color = Color.TRANSPARENT
         shapeDrawable.paint.style = Paint.Style.STROKE
         shapeDrawable.paint.strokeWidth = 2f
         shapeDrawable.paint.isAntiAlias = true
-
         val layerDrawable = LayerDrawable(arrayOf(backgroundDrawable, shapeDrawable))
         layerDrawable.setLayerInset(1, 0, 0, 0, 0)
-
         achievementButton.background = layerDrawable
 
         achievementButton.setOnClickListener {
@@ -108,8 +108,7 @@ class SportsViewHolder(val v: View,
         val newAchievement = view.findViewById<EditText>(R.id.new_achievement)
 
         cardLayout.setBackgroundColor(Sports.getSportColor(sport.name, v.context))
-        //sportName.text = Utils.formatString(sport.name.toString())
-        sportIcon?.setImageResource(Sports.sportToIconDrawable(sport.name))
+        sportIcon?.setImageResource(Sports.sportToIconDrawableAlternative(sport.name))
         // TODO: Doesn't work
         //sportSkillLevelText.setBackgroundColor(Skills.skillToColor(sport.skill))
         //sportSkillLevelText.text = Utils.formatString(sport.skill.toString())
