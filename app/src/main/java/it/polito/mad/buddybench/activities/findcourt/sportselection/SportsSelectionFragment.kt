@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.findcourt.FindCourtFragment
+import it.polito.mad.buddybench.activities.findcourt.SearchFragment
 import it.polito.mad.buddybench.activities.findcourt.States
 
 @AndroidEntryPoint
@@ -30,14 +31,22 @@ class SportsSelectionFragment(val parent: FindCourtFragment): Fragment(R.layout.
             else
                 it.visibility = View.VISIBLE
             it.setOnClickListener {
-                parent.fragmentManager.switchFragment(States.SEARCH)
+                val fragmentTransaction = parent.parentFragmentManager.beginTransaction()
+                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                fragmentTransaction.replace(R.id.find_court, SearchFragment(parent))
+                fragmentTransaction.addToBackStack(null)
+                fragmentTransaction.commit()
             }
 
             parent.viewModel.getAllSports().observe(viewLifecycleOwner) {
                 sportsRecyclerView.adapter = SportsSelectionAdapter(it) { sport ->
                     parent.viewModel.loading.postValue(true)
                     parent.viewModel.setSport(sport)
-                    parent.fragmentManager.switchFragment(States.SEARCH)
+                    val fragmentTransaction = parent.parentFragmentManager.beginTransaction()
+                    fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    fragmentTransaction.replace(R.id.find_court, SearchFragment(parent))
+                    fragmentTransaction.addToBackStack(null)
+                    fragmentTransaction.commit()
                 }
             }
         }
