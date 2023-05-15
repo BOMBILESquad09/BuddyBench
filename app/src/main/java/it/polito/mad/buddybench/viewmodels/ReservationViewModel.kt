@@ -66,12 +66,14 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         loading.postValue(true)
         if (edit) {
             Thread {
+                loading.postValue(true)
                 reservationRepository.update(reservation, oldDate!!, oldStartTime!!.hour)
                 loading.postValue(false)
             }.start()
         }
         else
             Thread {
+                loading.postValue(true)
                 reservationRepository.save(reservation)
                 loading.postValue(false)
             }.start()
@@ -119,8 +121,8 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         dialogSheetDeleteReservation: DialogSheetDeleteReservation,
     ) {
         dialogSheetDeleteReservation.isCancelable = false
-        loading.postValue(true)
         Thread {
+            loading.postValue(true)
             reservationRepository.delete(
                 courtName,
                 sport,
