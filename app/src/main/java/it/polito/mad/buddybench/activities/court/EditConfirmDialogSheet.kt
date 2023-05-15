@@ -3,6 +3,7 @@ package it.polito.mad.buddybench.activities.court
 import android.annotation.SuppressLint
 import android.app.ActivityOptions
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,7 +16,9 @@ import android.widget.Switch
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.NestedScrollView
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
 import com.apachat.loadingbutton.core.customViews.CircularProgressButton
@@ -83,31 +86,42 @@ class EditConfirmDialogSheet(
                     view.context
                 ).show()
             } else {
-                confirmButton.startAnimation {
-                    val reservation = ReservationDTO(
-                        userOrganizer = user,
-                        court = courtToReserve,
-                        date = selectedDate,
-                        startTime = courtViewModel.selectedTimes.first(),
-                        endTime = courtViewModel.selectedTimes.last().plusHours(1),
-                        equipment = switch.isChecked
-                    )
+                val reservation = ReservationDTO(
+                    userOrganizer = user,
+                    court = courtToReserve,
+                    date = selectedDate,
+                    startTime = courtViewModel.selectedTimes.first(),
+                    endTime = courtViewModel.selectedTimes.last().plusHours(1),
+                    equipment = switch.isChecked
+                )
 
-                    this.isCancelable = false
-                    switch.isEnabled = false
-                    checkboxAccept.isEnabled = false
+                this.isCancelable = false
+                switch.isEnabled = false
+                checkboxAccept.isEnabled = false
 
-                    reservationViewModel.saveReservation(
-                        reservation,
-                        editMode,
-                        oldDate,
-                        oldStartTime
-                    )
-                }
+                reservationViewModel.saveReservation(
+                    reservation,
+                    editMode,
+                    oldDate,
+                    oldStartTime
+                )
+
                 reservationViewModel.loading.observe(viewLifecycleOwner) {
-                    // confirmButton.doneLoadingAnimation(fillColor: Int, bitmap: Bitmap)
-                    confirmButton.revertAnimation()
-                    callback()
+                    if (it) {
+                        val bitmap =
+                            AppCompatResources.getDrawable(
+                                requireContext(),
+                                R.drawable.done_foreground
+                            )!!
+                                .toBitmap()
+                        confirmButton.doneLoadingAnimation(Color.BLUE, bitmap)
+                        Thread {
+                            Thread.sleep(700)
+                            callback()
+                        }.start()
+                    } else {
+                        confirmButton.startAnimation()
+                    }
                 }
             }
         }

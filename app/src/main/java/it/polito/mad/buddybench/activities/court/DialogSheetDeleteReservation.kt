@@ -6,9 +6,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.viewModels
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
 import com.apachat.loadingbutton.core.customViews.CircularProgressButton
+import com.apachat.loadingbutton.core.presentation.State
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.enums.Sports
@@ -41,25 +44,32 @@ class DialogSheetDeleteReservation(
         super.onViewCreated(view, savedInstanceState)
         val button = view.findViewById<CircularProgressButton>(R.id.confirm_cancel)
         button.setOnClickListener {
-            button.startAnimation {
-                reservationViewModel.deleteReservation(
-                    courtName,
-                    sport,
-                    oldStartTime,
-                    oldDate,
-                    email,
-                    this,
-                )
-            }
             reservationViewModel.loading.observe(viewLifecycleOwner) {
-                // confirmButton.doneLoadingAnimation(fillColor: Int, bitmap: Bitmap)
-                button.revertAnimation()
-                callback()
+                if (it) {
+                    val bitmap =
+                        AppCompatResources.getDrawable(
+                            requireContext(),
+                            R.drawable.done_foreground
+                        )!!
+                            .toBitmap()
+                    button.doneLoadingAnimation(Color.RED, bitmap)
+                    Thread {
+                        Thread.sleep(700)
+                        callback()
+                    }.start()
+                } else {
+                    button.startAnimation()
+                }
             }
+            reservationViewModel.deleteReservation(
+                courtName,
+                sport,
+                oldStartTime,
+                oldDate,
+                email,
+                this,
+            )
         }
-
-
-
     }
 
 
