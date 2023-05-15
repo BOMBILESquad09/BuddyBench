@@ -135,7 +135,6 @@ class ReviewsActivity : AppCompatActivity() {
 
         binding.tvErrorReview.visibility = View.GONE
         reviewViewModel.insertReview(binding.etNewReview.text.toString(), binding.rbNewReview.rating.toInt(), this)
-        reviewViewModel.getCourtReviews(courtName!!, courtSport!!, this)
     }
 
     private fun editReviewUI() {
