@@ -14,7 +14,7 @@
     <string name="played">Played</string>
     <string name="organized">Organized</string>
     <string name="sport_tennis">Tennis</string>
-    <string name="games_played_default">1000 games played</string>
+    <string name="games_played_default">100 games played</string>
     <string name="profile_photo_cd">profile_photo_cd</string>
     <string name="games_played">%1$s games played</string>
     <string name="turin">Turin</string>
@@ -90,6 +90,7 @@
     <string name="price">Price</string>
     <string name="total_price">Total Price: %1$s</string>
     <string name="equipment_phrase">Equipment: %1$d €/h</string>
+    <string name="facility_list">Facilities: </string>
     <string name="additional_information">Additional Informations</string>
     <string name="informations_body">\nTo access the court %1$s, the following rules must be respected:\n\n- Maintain appropriate behavior\n- Respect the practical rules of the %2$s\n- Respect others, especially regarding noise pollution\n\n\n</string>
     <string name="informations_body_edit">\nTo access the court %1$s, the following rules must be respected:\n\n- Maintain appropriate behavior\n- Respect the practical rules of the %2$s\n- Respect others, especially regarding noise pollution\n- The refund will be given to the court before the start of the reservation\n\n\n </string>
@@ -111,7 +112,9 @@
     <string name="no_courts">No courts found based on the search criteria</string>
     <string name="no_reservation">No reservations for this day</string>
     <string name="phone_number">+391231231212</string>
+    <string name="sport_basketball">basketball</string>
     <string name="see_all">See all reviews</string>
+
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
@@ -218,5 +221,6 @@
     <string name="info_icon">info_icon</string>
     <string name="your_review">Your review</string>
     <string name="missing_rating">Missing rating</string>
+    <string name="new_achievement">New Achievement</string>
 
 </resources>

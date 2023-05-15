@@ -7,9 +7,13 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
+import it.polito.mad.buddybench.classes.Sport
+import it.polito.mad.buddybench.enums.Skills
 
 @AndroidEntryPoint
 class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_profile) {
@@ -64,8 +68,29 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_pro
             iv.setImageResource(R.drawable.person)
         }
 
-        //val sportContainer = thisView.findViewById<LinearLayout>(R.id.sportsContainerEdit)
-        //sportContainer.removeAllViews()
+        val sportsRecyclerView = thisView.findViewById<RecyclerView>(R.id.sports_container)
+        sportsRecyclerView.layoutManager = LinearLayoutManager(context).let {
+            it.orientation = RecyclerView.HORIZONTAL
+            it
+        }
+
+        context.userViewModel.setSports(profile.sports)
+
+        sportsRecyclerView.adapter = SportsAdapter(context.userViewModel.sports, false)
+        context.userViewModel.sports.observe(this){
+            if (it == null) return@observe
+            println(it.size)
+
+        }
+        println(profile.sports.filter { it.skill != Skills.NULL }.isEmpty())
+        if(profile.sports.filter { it.skill != Skills.NULL }.isEmpty()){
+            println("empty")
+            thisView.findViewById<TextView>(R.id.empty_sports).visibility= View.VISIBLE
+        } else{
+            thisView.findViewById<TextView>(R.id.empty_sports).visibility= View.GONE
+        }
+
+
 
         // ** Populate sport cards
         //profile.populateSportCards(context, sportContainer)

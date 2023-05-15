@@ -2,15 +2,13 @@ package it.polito.mad.buddybench.classes
 
 
 
-import android.animation.Animator
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
-import android.animation.ValueAnimator
+import android.animation.*
 import android.content.Context
 import android.net.Uri
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewAnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -18,6 +16,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.view.children
 import androidx.core.view.size
+import androidx.transition.Scene
+import androidx.transition.TransitionInflater
+import androidx.transition.TransitionManager
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getInt
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getJSONArray
@@ -29,12 +30,13 @@ import it.polito.mad.buddybench.utils.Utils
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.lang.Math.hypot
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 
-class Profile(var name: String?, var surname: String?, var nickname: String?, var email: String, var location: String?, var birthdate: LocalDate, var reliability: Int, var imageUri: Uri?, var sports: List<Sport> ) {
+class Profile(var name: String?, var surname: String?, var nickname: String?, var email: String, var location: String?, var birthdate: LocalDate, var reliability: Int, var imageUri: Uri?, var sports: MutableList<Sport> ) {
     var matchesPlayed:Int = sports.filter { it.skill != Skills.NULL  }.fold(0){a: Int, b: Sport -> a + b.matchesPlayed }
     var age:Int = ChronoUnit.YEARS.between(birthdate, LocalDate.now()).toInt()
     var matchesOrganized: Int = sports.filter { it.skill != Skills.NULL }.fold(0){ a:Int, b: Sport -> a + b.matchesOrganized}
@@ -69,9 +71,9 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
         fun mockJSON(): String {
             return Profile("Vittorio", "Arpino","TheNextLayer", "varpino@buddybench.it", "Scafati", LocalDate.parse("27/04/1999", DateTimeFormatter.ofPattern("dd/MM/yyyy")), 70,
                 null,
-                listOf(
-                    Sport(Sports.TENNIS, Skills.SKILLED, 3, 2, listOf("Coppa del Nonno")),
-                    Sport(Sports.FOOTBALL, Skills.NEWBIE, 7, 6, listOf(""))
+                mutableListOf(
+                    Sport(Sports.TENNIS, Skills.SKILLED, 3, 2, mutableListOf("Coppa del Nonno")),
+                    Sport(Sports.FOOTBALL, Skills.NEWBIE, 7, 6, mutableListOf("Coppa Campionii"))
                 )).toJSON().toString()
         }
 
@@ -140,7 +142,6 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
                            edit: Boolean = false,
                            popupOpened:PopupMenu?  = null
     ) {
-        return
         sportContainer.removeAllViews()
         if (this.sports.filter { it.skill != Skills.NULL }.isEmpty()) {
             val emptySportsText = TextView(context)
@@ -152,15 +153,26 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
         this.sports.sortedBy {
             it.name
         }
-        for (sport in this.sports.filter { it.skill != Skills.NULL }) {
+        return
+        /*for (sport in this.sports.filter { it.skill != Skills.NULL }) {
             val layout = if (!edit) R.layout.card_sport else R.layout.card_sport_edit
 
             val sportCard = LayoutInflater.from(context).inflate(layout, sportContainer, false)
 
+            val achievementButton = sportCard.findViewById<ImageView>(R.id.achievements_button)
+            val popup = context.findViewById<CardView>(R.id.sport_card_expanded)
 
-            sportCard.setOnClickListener {
+            //val cardView = sportCard.findViewById<CardView>(R.id.sport_card_view)
+            //val screen = context.findViewById<LinearLayout>(R.id.profile_page)
+            //val inflater = TransitionInflater.from(context)
+            //val transition = inflater.inflateTransition(R.transition.card_expand_transition)
+
+
+
+
+            /*sportCard.setOnClickListener {
                 flipCard(context, it)
-            }
+            }*/
 
             // ** Sport card dynamic values
 
@@ -189,7 +201,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
                         it.skill = Skills.NULL
                     it
                 }
-                this.sports = newSports
+                this.sports = newSports.toMutableList()
                 onDeleteSport()
                 this.populateSportCards(context, sportContainer, edit = true, onSkillSelected = onSkillSelected)
             }
@@ -201,7 +213,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
                 }
             }
             sportContainer.addView(sportCard)
-        }
+        }*/
     }
 
     fun refreshSportsCard(context: AppCompatActivity, sportContainer: LinearLayout, sport: Sport){
@@ -213,8 +225,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
             }
         }
     }
-
-    fun flipCard(context: Context, view: View) {
+    /*fun flipCard(context: Context, view: View) {
         val front = view.findViewById<ConstraintLayout>(R.id.sport_card_linear_layout)
         val back = view.findViewById<ConstraintLayout>(R.id.sport_card_back)
         if(front.visibility == View.VISIBLE){
@@ -253,7 +264,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
 
         }
 
-    }
+    }*/
 
 
 }

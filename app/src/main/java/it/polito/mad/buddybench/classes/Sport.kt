@@ -6,8 +6,8 @@ import org.json.JSONObject
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getInt
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getString
 
-class Sport(val name: Sports, var skill: Skills, val matchesPlayed: Int, val matchesOrganized: Int = 0,
-    val achievements: List<String>
+data class Sport(val name: Sports, var skill: Skills, val matchesPlayed: Int, val matchesOrganized: Int = 0,
+    val achievements: MutableList<String>
 ): java.io.Serializable {
     companion object{
         fun fromJSON(jsonSport: JSONObject): Sport {
@@ -27,9 +27,9 @@ class Sport(val name: Sports, var skill: Skills, val matchesPlayed: Int, val mat
 
             val matchesPlayed = jsonSport.getInt("matchesPlayed")
             val matchesOrganized = jsonSport.getInt("matchesOrganized",0)
-            val achievements = jsonSport.getString("achievements", "")
+            val achievements = jsonSport.getString("achievements", "Coppa del nonno")
 
-            return Sport(sportName, skillName, matchesPlayed, matchesOrganized, achievements.split(";"))
+            return Sport(sportName, skillName, matchesPlayed, matchesOrganized, achievements.split(";").toMutableList())
         }
     }
 
@@ -43,6 +43,7 @@ class Sport(val name: Sports, var skill: Skills, val matchesPlayed: Int, val mat
         json.put("skill", Skills.toJSON(skill))
         json.put("matchesPlayed", matchesPlayed)
         json.put("matchesOrganized", matchesOrganized)
+        json.put("achievements", achievements.joinToString(";"))
         return json
     }
 }

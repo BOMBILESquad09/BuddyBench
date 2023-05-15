@@ -13,8 +13,10 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.court.CourtActivity
+import it.polito.mad.buddybench.activities.court.ReviewsActivity
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
+import it.polito.mad.buddybench.persistence.entities.Court
 import java.lang.String
 import java.time.LocalDate
 import java.time.LocalTime
@@ -68,15 +70,24 @@ class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent
         iconSport.setImageDrawable(wrappedDrawable)
         slot.text = "${reservation.startTime.format(formatter)} - ${reservation.endTime.format(formatter)}"
         if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime))
-            manageBtn.visibility = View.INVISIBLE
+            manageBtn.text = "Review it"
         manageBtn.setTextColor(Sports.getSportColor(Sports.valueOf(reservation.court.sport), view.context))
         manageBtn.setOnClickListener {
             if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime)){
-                return@setOnClickListener
+                launchReview(reservation)
+            } else {
+                launchEditReservation(reservation)
             }
-            launchEditReservation(reservation)
         }
 
+    }
+
+
+    private fun launchReview(reservation: ReservationDTO){
+        val intent = Intent(view.context, ReviewsActivity::class.java)
+        intent.putExtra("court_name", reservation.court.name)
+        intent.putExtra("court_sport", reservation.court.sport)
+        launcher.launch(intent)
     }
 
     private fun launchEditReservation(reservation: ReservationDTO) {
@@ -89,7 +100,6 @@ class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent
         intent.putExtra("startTime", reservation.startTime.hour)
         intent.putExtra("endTime", reservation.endTime.hour)
         intent.putExtra("equipment", reservation.equipment)
-
         launcher.launch(intent)
     }
 

@@ -4,6 +4,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profile_page"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -339,43 +340,51 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="20dp"/>
-            <!-- Favourite sports -->
 
-
-            <androidx.cardview.widget.CardView
+            <HorizontalScrollView
+                android:id="@+id/sports_horizontal_scroll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="3dp"
-                app:cardBackgroundColor="@android:color/transparent"
-                app:cardCornerRadius="25dp"
-                android:visibility="gone"
-                app:cardElevation="3dp">
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/favourite_sports"
-                    android:layout_width="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView">
+
+                <LinearLayout
+                    android:id="@+id/sportsContainerEdit"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center">
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+                </LinearLayout>
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
+
+            </HorizontalScrollView>
+            <!-- Favourite sports -->
+
+            <TextView
+                android:id="@+id/textView20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Favourite Sports"
+                android:layout_marginLeft="3dp"
+
+                android:textColor="@color/md_theme_light_text"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="20dp">
+                        >
 
-                        <TextView
-                            android:id="@+id/textView20"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Favourite Sports"
-                            android:textColor="@color/md_theme_light_text"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+
 
                         <LinearLayout
                             android:id="@+id/linearLayout4"
@@ -383,18 +392,30 @@
                             android:layout_height="wrap_content"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/textView20">
+                            android:orientation="vertical"
+                            android:layout_marginLeft="3dp"
 
-                            <androidx.recyclerview.widget.RecyclerView
+                            >
+                            <View
+                                android:layout_width="wrap_content"
+                                android:layout_height="10dp"/>
+
+                            <TextView
+                                android:id="@+id/empty_sports"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:visibility="gone" />
+                                android:text="No sports yet"
+                                android:textSize="20sp"
+                                android:textColor="@color/disabled" />
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/sports_container"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:visibility="visible" />
 
-                            <include layout="@layout/card_sport" />
                         </LinearLayout>
                     </androidx.constraintlayout.widget.ConstraintLayout>
-                </androidx.cardview.widget.CardView>
-            </androidx.cardview.widget.CardView>
+
         </LinearLayout>
 
 

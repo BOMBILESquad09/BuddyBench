@@ -25,6 +25,7 @@ import it.polito.mad.buddybench.activities.court.CourtActivity
 import it.polito.mad.buddybench.activities.court.ReviewsActivity
 import it.polito.mad.buddybench.activities.court.WeeklyCalendarDayBinder
 import it.polito.mad.buddybench.activities.findcourt.sportselection.CourtSearchAdapter
+import it.polito.mad.buddybench.activities.findcourt.sportselection.SportsSelectionFragment
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.utils.Utils
@@ -106,7 +107,14 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         }
 
         b.setOnClickListener{
-            parent.fragmentManager.switchFragment(States.SPORTS_SELECTION)
+            //parent.fragmentManager.switchFragment(States.SPORTS_SELECTION)
+            val fragmentTransaction = parent.parentFragmentManager.beginTransaction()
+            val sportsSelectionFragment = SportsSelectionFragment(parent)
+            fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+            fragmentTransaction.replace(R.id.find_court, sportsSelectionFragment)
+            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.commit()
+
             textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
             // When I return to sport selection, clear filter
             parent.context.findCourtViewModel.clearFilters()

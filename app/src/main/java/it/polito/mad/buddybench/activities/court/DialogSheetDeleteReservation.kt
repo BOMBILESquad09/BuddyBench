@@ -1,12 +1,17 @@
 package it.polito.mad.buddybench.activities.court
 
+import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.viewModels
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
-import com.kusu.library.LoadingButton
+import com.apachat.loadingbutton.core.customViews.CircularProgressButton
+import com.apachat.loadingbutton.core.presentation.State
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.enums.Sports
@@ -37,17 +42,32 @@ class DialogSheetDeleteReservation(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val button = view.findViewById<LoadingButton>(R.id.confirm_cancel)
+        val button = view.findViewById<CircularProgressButton>(R.id.confirm_cancel)
         button.setOnClickListener {
+            reservationViewModel.loading.observe(viewLifecycleOwner) {
+                if (it) {
+                    val bitmap =
+                        AppCompatResources.getDrawable(
+                            requireContext(),
+                            R.drawable.done_foreground
+                        )!!
+                            .toBitmap()
+                    button.doneLoadingAnimation(Color.RED, bitmap)
+                    Thread {
+                        Thread.sleep(700)
+                        callback()
+                    }.start()
+                } else {
+                    button.startAnimation()
+                }
+            }
             reservationViewModel.deleteReservation(
-                button,
                 courtName,
                 sport,
                 oldStartTime,
                 oldDate,
                 email,
                 this,
-                callback
             )
         }
     }
