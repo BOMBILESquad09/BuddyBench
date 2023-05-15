@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "893031240238",
+    "project_id": "buddybench-bdd18",
+    "storage_bucket": "buddybench-bdd18.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:893031240238:android:2e0d42446b3578f82505bf",
+        "android_client_info": {
+          "package_name": "it.polito.mad.buddybench"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "893031240238-jngciu691j4au0lbgvvpa0dkmfrorbs8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.polito.mad.buddybench",
+            "certificate_hash": "0dbd18466ade952540bb59f2ef715926a2181a8d"
+          }
+        },
+        {
+          "client_id": "893031240238-c2n5hi4k3uo50pdr2fd69rp3vpsguvr3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzJ_4SXTvor1kUwHmtbKhegkj0WGaSNRU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "893031240238-c2n5hi4k3uo50pdr2fd69rp3vpsguvr3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
