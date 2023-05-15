@@ -85,9 +85,8 @@ class ReviewRepository @Inject constructor (
                 ))
             }
             val updatedSumOfRatings = (court.rating * court.nReviews - review.rating)
-            //reviewDao.updateRating(court.id, (court.nReviews), (updatedSumOfRatings + reviewDTO.rating) / (court.nReviews))
+            reviewDao.updateRating(court.id, (court.nReviews), (updatedSumOfRatings + reviewDTO.rating) / (court.nReviews))
         }
-        println(reviewDao.getAllByCourt(reviewDTO.courtDTO.name, reviewDTO.courtDTO.sport))
         return true
     }
 }

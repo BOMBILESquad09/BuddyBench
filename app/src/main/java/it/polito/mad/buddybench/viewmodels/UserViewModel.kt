@@ -109,6 +109,7 @@ class UserViewModel @Inject constructor() : ViewModel() {
         _sports.value = _sports.value!!.filter {
             (it.name != sport.name)
         }.toMutableList()
+
         _invisibleSports.add(sport)
         return sports
     }
@@ -127,7 +128,6 @@ class UserViewModel @Inject constructor() : ViewModel() {
     }
 
     fun addSport(sport: Sport):  LiveData<MutableList<Sport>>{
-        oldAchievements = _sports.value!!.find { it.name == sport.name }!!.achievements
 
         oldSports = _sports.value!!.map { it.copy() }
         val exists = _invisibleSports!!.find{ it.name == sport.name}

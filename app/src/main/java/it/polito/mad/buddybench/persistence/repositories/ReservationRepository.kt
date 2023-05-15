@@ -1,6 +1,5 @@
 package it.polito.mad.buddybench.persistence.repositories
 
-import com.kusu.library.LoadingButton
 import it.polito.mad.buddybench.persistence.dao.CourtDao
 import it.polito.mad.buddybench.persistence.dao.CourtTimeDao
 import it.polito.mad.buddybench.persistence.dao.ReservationDao
@@ -39,7 +38,7 @@ class ReservationRepository @Inject constructor(
             reservationDao.getAllByUser(email).map { it.toReservationDTO() })
     }
 
-    fun save(reservationDTO: ReservationDTO, callback: () -> Unit, confirmButton: LoadingButton) {
+    fun save(reservationDTO: ReservationDTO) {
         val user = userDao.getUserByEmail(reservationDTO.userOrganizer.email)!!
         val courtWithSport =
             courtDao.getByNameAndSport(reservationDTO.court.name, reservationDTO.court.sport)
@@ -52,16 +51,12 @@ class ReservationRepository @Inject constructor(
             )
         )
         updateUnavailableDayCourt(reservationDTO, courtWithSport)
-        confirmButton.hideLoading()
-        callback()
     }
 
     fun update(
         reservationDTO: ReservationDTO,
         oldDate: LocalDate,
         oldStartTime: Int,
-        callback: () -> Unit,
-        confirmButton: LoadingButton
     ) {
         Thread.sleep(5000)
         val user = userDao.getUserByEmail(reservationDTO.userOrganizer.email)!!
@@ -86,8 +81,7 @@ class ReservationRepository @Inject constructor(
 
         reservationDao.update(newReservation)
         updateUnavailableDayCourt(reservationDTO, courtWithSport)
-        confirmButton.hideLoading()
-        callback()
+
     }
 
 
@@ -132,9 +126,7 @@ class ReservationRepository @Inject constructor(
         sport: Sports,
         startTime: LocalTime,
         email: String,
-        date: LocalDate,
-        button: LoadingButton?,
-        callback: () -> Unit
+        date: LocalDate
     ) {
 
         val user = userDao.getUserByEmail(email)!!
@@ -154,10 +146,6 @@ class ReservationRepository @Inject constructor(
                 )
             )
         )
-        if (button != null) {
-            button.hideLoading()
-            callback()
-        }
     }
 
     fun getTimeSlotsOccupiedForCourtAndDate(court: CourtDTO, date: LocalDate): List<LocalTime> {

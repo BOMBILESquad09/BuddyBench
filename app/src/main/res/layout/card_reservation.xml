@@ -60,13 +60,15 @@
 
                 <ImageView
                     android:id="@+id/position"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="5dp"
                     android:src="@drawable/location"
                     card_view:tint="@color/md_theme_light_background"
                     android:layout_marginEnd="4dp"/>
 
                 <TextView
+                    android:paddingTop="5dp"
                     android:id="@+id/card_reservation_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -74,7 +76,7 @@
                     android:fontFamily="@font/montserrat_medium_500"
                     android:text="@string/court_address"
                     android:textColor="@color/md_theme_light_background"
-                    android:textSize="13sp">
+                    android:textSize="17sp">
 
                 </TextView>
 
@@ -93,8 +95,8 @@
 
                 <ImageView
                     android:id="@+id/telephone"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:src="@drawable/phone"
                     card_view:tint="@color/md_theme_light_background"
                     android:layout_marginEnd="4dp"/>
@@ -107,7 +109,7 @@
                     android:fontFamily="@font/montserrat_medium_500"
                     android:text="@string/phone_number"
                     android:textColor="@color/md_theme_light_background"
-                    android:textSize="13sp">
+                    android:textSize="17sp">
 
                 </TextView>
 
@@ -123,7 +125,7 @@
                 android:fontFamily="@font/montserrat_medium_500"
                 android:text="16:00 - 17:00"
                 android:textColor="@color/md_theme_light_background"
-                android:textSize="14sp"
+                android:textSize="17sp"
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintEnd_toStartOf="@+id/manage_btn"
                 card_view:layout_constraintHorizontal_bias="0.5"

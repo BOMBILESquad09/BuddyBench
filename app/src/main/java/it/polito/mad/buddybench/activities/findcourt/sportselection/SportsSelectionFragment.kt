@@ -27,7 +27,7 @@ class SportsSelectionFragment(val parent: FindCourtFragment): Fragment(R.layout.
 
         view.findViewById<ImageView>(R.id.close_selection).let {
             if (parent.viewModel.selectedSport.value == null)
-                it.visibility = View.GONE
+                it.visibility = View.INVISIBLE
             else
                 it.visibility = View.VISIBLE
             it.setOnClickListener {

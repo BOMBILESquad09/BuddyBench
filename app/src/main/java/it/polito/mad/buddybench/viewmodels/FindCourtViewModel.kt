@@ -18,7 +18,7 @@ import javax.inject.Inject
 class FindCourtViewModel @Inject constructor(): ViewModel() {
     private var _sports: MutableLiveData<List<Sports>> = MutableLiveData(listOf())
     var sports: LiveData<List<Sports>> = _sports
-    var selectedSport: MutableLiveData<Sports> = MutableLiveData(Sports.TENNIS) // Added default value
+    var selectedSport: MutableLiveData<Sports> = MutableLiveData(null) // Added default value
 
     private var _courts: List<CourtDTO> = listOf()
     private val _currentCourts: MutableLiveData<List<CourtDTO>> = MutableLiveData(listOf())

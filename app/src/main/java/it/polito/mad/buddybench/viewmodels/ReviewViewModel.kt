@@ -44,7 +44,6 @@ class ReviewViewModel @Inject constructor(): ViewModel() {
 
     fun getCourtReviews(name: String, sport: String, context: Context): LiveData<List<ReviewDTO>>{
         _l.postValue(true)
-        println("Updating")
         val sharedPreferences = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         val currentUser = userRepository.getCurrentUser(sharedPreferences)
         Thread{
@@ -70,6 +69,8 @@ class ReviewViewModel @Inject constructor(): ViewModel() {
             val review = ReviewDTO(currentUser, LocalDate.now(), rating, description, court.value!!)
             reviewRepository.saveReview(review)
             _userReview.postValue(review)
+            val court = courtRepository.getByNameAndSports(_court.value!!.name, Sports.valueOf(_court.value!!.sport))
+            _court.postValue(court)
             _l.postValue(false)
         }.start()
         return _userReview

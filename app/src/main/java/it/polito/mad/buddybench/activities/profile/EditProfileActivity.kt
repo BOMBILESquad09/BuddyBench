@@ -480,7 +480,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             try {
                 checkNotNull(selectedSport)
                 val newSport = profile.sports.find { it.name == selectedSport } ?:Sport(selectedSport, Skills.NEWBIE, 0,0,
-                    listOf("") as MutableList<String>
+                    mutableListOf<String>()
                 )
                 newSport.skill = Skills.NEWBIE
                 newSports.add(newSport)

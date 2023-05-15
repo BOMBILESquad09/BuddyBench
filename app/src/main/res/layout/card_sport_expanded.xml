@@ -101,10 +101,25 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/achievements"
+                    android:visibility="visible"
                     android:layout_width="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="12dp"/>
+
+                <TextView
+                    android:id="@+id/no_achivements"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="No achievements available"
+                    android:textSize="15sp"
+                    android:layout_marginVertical="10dp"
+                    android:visibility="gone"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:textColor="@color/md_theme_light_background"
+                    android:textStyle="bold"
+                    />
 
             </LinearLayout>
 

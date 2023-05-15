@@ -3,6 +3,7 @@ package it.polito.mad.buddybench.activities.court
 import android.annotation.SuppressLint
 import android.app.ActivityOptions
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,11 +16,13 @@ import android.widget.Switch
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.NestedScrollView
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
+import com.apachat.loadingbutton.core.customViews.CircularProgressButton
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.kusu.library.LoadingButton
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
@@ -73,7 +76,7 @@ class EditConfirmDialogSheet(
         // CheckBox inside the Additional Information Card
         val checkboxAccept = view.findViewById<CheckBox>(R.id.accept_checkbox)
         // Take the reference of the confirm button
-        val confirmButton = view.findViewById<LoadingButton>(R.id.confirmPrenotation)
+        val confirmButton = view.findViewById<CircularProgressButton>(R.id.confirmPrenotation)
         confirmButton?.setOnClickListener {
             if (!checkboxAccept!!.isChecked) {
                 val textError = String.format(getString(R.string.error_info), courtToReserve.name)
@@ -96,16 +99,30 @@ class EditConfirmDialogSheet(
                 switch.isEnabled = false
                 checkboxAccept.isEnabled = false
 
-
-                confirmButton.showLoading()
                 reservationViewModel.saveReservation(
                     reservation,
                     editMode,
                     oldDate,
-                    oldStartTime,
-                    callback,
-                    confirmButton
+                    oldStartTime
                 )
+
+                reservationViewModel.loading.observe(viewLifecycleOwner) {
+                    if (it) {
+                        val bitmap =
+                            AppCompatResources.getDrawable(
+                                requireContext(),
+                                R.drawable.done_foreground
+                            )!!
+                                .toBitmap()
+                        confirmButton.doneLoadingAnimation(Color.BLUE, bitmap)
+                        Thread {
+                            Thread.sleep(700)
+                            callback()
+                        }.start()
+                    } else {
+                        confirmButton.startAnimation()
+                    }
+                }
             }
         }
 

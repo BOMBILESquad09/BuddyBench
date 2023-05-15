@@ -128,14 +128,13 @@ class ReviewsActivity : AppCompatActivity() {
     }
 
     private fun addReview() {
-        if (binding.rbNewReview.rating.equals(0.0f)) {
+        if (binding.rbNewReview.rating.equals(0.0f) || binding.etNewReview.text.isBlank()) {
             binding.tvErrorReview.visibility = View.VISIBLE
             return
         }
 
         binding.tvErrorReview.visibility = View.GONE
         reviewViewModel.insertReview(binding.etNewReview.text.toString(), binding.rbNewReview.rating.toInt(), this)
-        reviewViewModel.getCourtReviews(courtName!!, courtSport!!, this)
     }
 
     private fun editReviewUI() {
