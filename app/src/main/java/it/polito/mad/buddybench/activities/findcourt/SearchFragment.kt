@@ -110,7 +110,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             //parent.fragmentManager.switchFragment(States.SPORTS_SELECTION)
             val fragmentTransaction = parent.parentFragmentManager.beginTransaction()
             val sportsSelectionFragment = SportsSelectionFragment(parent)
-            fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+            fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
             fragmentTransaction.replace(R.id.find_court, sportsSelectionFragment)
             fragmentTransaction.addToBackStack(null)
             fragmentTransaction.commit()
