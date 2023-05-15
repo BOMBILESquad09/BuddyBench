@@ -32,7 +32,7 @@ class SportsSelectionFragment(val parent: FindCourtFragment): Fragment(R.layout.
                 it.visibility = View.VISIBLE
             it.setOnClickListener {
                 val fragmentTransaction = parent.parentFragmentManager.beginTransaction()
-                fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
                 fragmentTransaction.replace(R.id.find_court, SearchFragment(parent))
                 fragmentTransaction.addToBackStack(null)
                 fragmentTransaction.commit()
@@ -43,7 +43,7 @@ class SportsSelectionFragment(val parent: FindCourtFragment): Fragment(R.layout.
                     parent.viewModel.loading.postValue(true)
                     parent.viewModel.setSport(sport)
                     val fragmentTransaction = parent.parentFragmentManager.beginTransaction()
-                    fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                    fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
                     fragmentTransaction.replace(R.id.find_court, SearchFragment(parent))
                     fragmentTransaction.addToBackStack(null)
                     fragmentTransaction.commit()
