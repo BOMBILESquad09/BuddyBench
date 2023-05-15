@@ -108,8 +108,7 @@ class SportsViewHolder(val v: View,
         val newAchievement = view.findViewById<EditText>(R.id.new_achievement)
 
         cardLayout.setBackgroundColor(Sports.getSportColor(sport.name, v.context))
-        //sportName.text = Utils.formatString(sport.name.toString())
-        sportIcon?.setImageResource(Sports.sportToIconDrawable(sport.name))
+        sportIcon?.setImageResource(Sports.sportToIconDrawableAlternative(sport.name))
         // TODO: Doesn't work
         //sportSkillLevelText.setBackgroundColor(Skills.skillToColor(sport.skill))
         //sportSkillLevelText.text = Utils.formatString(sport.skill.toString())
