@@ -56,9 +56,6 @@ class SportsViewHolder(val v: View,
         )
         val achievementButton = v.findViewById<ImageView>(R.id.achievements_button)
 
-        if (!edit && sport.achievements.size == 0){
-            achievementButton.visibility = View.GONE
-        }
 
         val backgroundDrawable = GradientDrawable()
         backgroundDrawable.setColor(Sports.getSportColor(sport.name, v.context))
@@ -106,6 +103,7 @@ class SportsViewHolder(val v: View,
         val sportIcon = view.findViewById<ImageView>(R.id.sport_card_icon)
         val addButton = view.findViewById<TextView>(R.id.add_achievements)
         val newAchievement = view.findViewById<EditText>(R.id.new_achievement)
+        val noAchivements = view.findViewById<TextView>(R.id.no_achivements)
 
         cardLayout.setBackgroundColor(Sports.getSportColor(sport.name, v.context))
         sportIcon?.setImageResource(Sports.sportToIconDrawableAlternative(sport.name))
@@ -122,6 +120,16 @@ class SportsViewHolder(val v: View,
         achievementsRecyclerView.layoutManager = LinearLayoutManager(v.context).let {
             it.orientation = RecyclerView.VERTICAL
             it
+        }
+
+        if(sport.achievements.isEmpty() && !edit) {
+            achievementsRecyclerView.visibility = View.GONE
+            noAchivements.visibility = View.VISIBLE
+        }
+
+        if(sport.achievements.isNotEmpty() && !edit) {
+            achievementsRecyclerView.visibility = View.VISIBLE
+            noAchivements.visibility = View.GONE
         }
 
         addButton.setOnClickListener {
