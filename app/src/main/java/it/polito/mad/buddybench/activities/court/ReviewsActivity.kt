@@ -128,7 +128,7 @@ class ReviewsActivity : AppCompatActivity() {
     }
 
     private fun addReview() {
-        if (binding.rbNewReview.rating.equals(0.0f)) {
+        if (binding.rbNewReview.rating.equals(0.0f) || binding.etNewReview.text.isBlank()) {
             binding.tvErrorReview.visibility = View.VISIBLE
             return
         }
