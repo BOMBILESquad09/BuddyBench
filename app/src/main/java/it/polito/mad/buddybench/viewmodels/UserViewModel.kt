@@ -24,11 +24,13 @@ class UserViewModel @Inject constructor() : ViewModel() {
 
     @Inject
     lateinit var userRepository: UserRepository
+
+    private val userRepositoryFirebase = it.polito.mad.buddybench.persistence.firebaseRepositories.UserRepository()
     private val _initName: String = ""
 
     private val _userName: MutableLiveData<String> = MutableLiveData(_initName)
     private val _user: MutableLiveData<Profile> = MutableLiveData(null)
-    private val user: LiveData<Profile> = _user
+    val user: LiveData<Profile> = _user
 
     var oldSports: List<Sport> = listOf()
     private var _invisibleSports: MutableList<Sport> = mutableListOf()
@@ -49,7 +51,9 @@ class UserViewModel @Inject constructor() : ViewModel() {
 
 
     fun getUser(email: String): LiveData<Profile> {
-        Thread {
+        userRepositoryFirebase.getUser(email, _user)
+
+        /*Thread {
             val u = userRepository.getUser(email);
             val uri =
                 if (u.user.imagePath == null || u.user.imagePath == "null" || u.user.imagePath == "")
@@ -68,12 +72,15 @@ class UserViewModel @Inject constructor() : ViewModel() {
                     u.sports.toMutableList()
                 )
             )
-        }.start()
+        }.start()*/
 
         return user
     }
 
     fun updateUserInfo(profile: Profile, oldEmail: String) {
+        userRepositoryFirebase.update(profile, _user)
+
+        /*
         _user.value = profile
         _userName.value = profile.name!!
         Thread {
@@ -83,7 +90,7 @@ class UserViewModel @Inject constructor() : ViewModel() {
                     profile.sports
                 ), oldEmail
             )
-        }.start()
+        }.start()*/
 
     }
 

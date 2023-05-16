@@ -31,6 +31,8 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     @Inject
     lateinit var courtRepository: CourtRepository
 
+    var courtRepositoryFirebase = it.polito.mad.buddybench.persistence.firebaseRepositories.CourtRepository()
+
     @Inject
     lateinit var reservationRepository: ReservationRepository
 
@@ -151,11 +153,18 @@ class CourtViewModel @Inject constructor() : ViewModel() {
 
 
     fun getTimeTables(name: String, sport: Sports): LiveData<CourtTimeTableDTO> {
+        courtRepositoryFirebase.getCourtTimeTable(name, sport){
+            courtRepositoryFirebase.addTimetable(it)
+            _timetable.postValue(it)
+            _court.postValue( it.court)
+        }
+        /*
         Thread{
             val tt = courtTimeRepository.getCourtTimeTable(name, sport)
+            courtRepositoryFirebase.addTimetable(tt)
             _timetable.postValue(tt)
             _court.postValue( tt.court)
-        }.start()
+        }.start()*/
         return _timetable
     }
 

@@ -3,18 +3,36 @@ package it.polito.mad.buddybench.persistence.dto
 import it.polito.mad.buddybench.persistence.entities.Court
 
 class CourtDTO (
-    val name: String,
-    val address: String,
-    val location: String,
-    val feeHour: Int,
-    val sport: String,
-    val phoneNumber: String,
-    val path: String,
-    val feeEquipment: Int,
-    val rating: Double,
-    val nReviews: Int,
-    val facilities: List<String>? = null
+
 ) {
+
+    constructor(name: String, address: String, location: String, feeHour: Int, sport: String, phoneNumber: String,
+                path: String, feeEquipment: Int, rating: Double, nReviews: Int, facilities: List<String>?
+                ) : this() {
+        this.name = name
+        this.address = address
+        this.location = location
+        this.feeHour = feeHour
+        this.sport = sport
+        this.phoneNumber = phoneNumber
+        this.path = path
+        this.feeEquipment = feeEquipment
+        this.rating = rating
+        this.nReviews = nReviews
+        this.facilities = facilities
+    }
+
+    lateinit var  name: String
+    lateinit var address: String
+    lateinit var location: String
+    var feeHour: Int = 0
+    lateinit var sport: String
+    lateinit var phoneNumber: String
+    lateinit var path: String
+    var feeEquipment: Int = 0
+    var rating: Double = 0.0
+    var nReviews: Int = 0
+    var facilities: List<String>? = null
     fun toEntity(): Court {
         return Court(
 

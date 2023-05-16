@@ -13,6 +13,8 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.profile.EditProfileActivity
@@ -46,27 +48,16 @@ class HomeActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home)
         sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        profile = if (::profile.isInitialized) {
-            profile
-        } else{
-            Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
-        }
-        userViewModel.getUser(profile.email).observe(this){
-            if (it == null){
-                profile
-            }
+        reservationViewModel.email = Firebase.auth.currentUser!!.email!!
+
+
+
+        userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this){
+            if(it != null)
+            profile = it
         }
 
-        profile.sports.forEach {
-            it.achievements.forEach{
 
-                a ->
-                println("-----aa----")
-                println(a)
-                println("..........---------------")
-            }
-        }
-        reservationViewModel.email = profile.email
         bottomBar.setup()
     }
 

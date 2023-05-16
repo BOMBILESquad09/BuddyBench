@@ -265,7 +265,7 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
         if(court.facilities!!.isEmpty()) {
             binding.facility.text = getString(R.string.facility_list) + " Not Available"
         } else {
-            binding.facility.text = getString(R.string.facility_list) + " " + court.facilities.joinToString(", ")
+            binding.facility.text = getString(R.string.facility_list) + " " + court.facilities!!.joinToString(", ")
         }
 
 

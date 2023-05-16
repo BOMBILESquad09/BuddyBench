@@ -16,16 +16,17 @@ data class CourtWithSport (
 
 fun CourtWithSport.toCourtDTO(): CourtDTO {
     return CourtDTO(
-        name = this.court.name,
-        address = this.court.address,
-        location = this.court.location,
-        feeHour = this.court.feeHour,
-        sport = this.sport.sport_name,
-        phoneNumber = this.court.phoneNumber,
-        path = this.court.path,
-        feeEquipment = this.court.feeEquipment,
-        rating = this.court.rating,
-        nReviews = this.court.nReviews
+        this.court.name,
+        this.court.address,
+        this.court.location,
+        this.court.feeHour,
+        this.sport.sport_name,
+        this.court.phoneNumber,
+        this.court.path,
+        this.court.feeEquipment,
+        this.court.rating,
+        this.court.nReviews,
+        listOf()
 
     )
 }

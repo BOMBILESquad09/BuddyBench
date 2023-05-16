@@ -7,3 +7,4 @@ class CourtTimeTableDTO(
     val court: CourtDTO,
     val timeTable: HashMap<DayOfWeek, Pair<LocalTime, LocalTime>>
 )
+

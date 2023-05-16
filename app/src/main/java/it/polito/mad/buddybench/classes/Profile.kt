@@ -41,6 +41,9 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
     var age:Int = ChronoUnit.YEARS.between(birthdate, LocalDate.now()).toInt()
     var matchesOrganized: Int = sports.filter { it.skill != Skills.NULL }.fold(0){ a:Int, b: Sport -> a + b.matchesOrganized}
     var fullName = "$name $surname"
+
+
+
     companion object {
 
         fun fromJSON(jsonProfile: JSONObject): Profile{

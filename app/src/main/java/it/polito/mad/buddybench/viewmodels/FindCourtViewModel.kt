@@ -35,8 +35,11 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
 
     @Inject
     lateinit var sportRepository: SportRepository
+
+
     @Inject
     lateinit var courtRepository: CourtRepository
+    val courtRepositoryFirebase =  it.polito.mad.buddybench.persistence.firebaseRepositories.CourtRepository()
     @Inject
     lateinit var courtTimeRepository: CourtTimeRepository
 
@@ -48,12 +51,20 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
         return sports
     }
     fun getCourtsBySport(): LiveData<List<CourtDTO>> {
-        Thread{
+        courtRepositoryFirebase.getCourtsByDay(selectedSport.value!!, selectedDate){
+            list ->
             loading.postValue(true)
+            _courts = list
+            val courts = applyFiltersOnCourts(_courts)
+            _currentCourts.postValue(courts)
+        }
+        /*
+        Thread{
+
             _courts = courtTimeRepository.getCourtTimesByDay(selectedSport.value!!, selectedDate)
             val courts = applyFiltersOnCourts(_courts)
             _currentCourts.postValue(courts)
-        }.start()
+        }.start()*/
         return currentCourts
     }
 

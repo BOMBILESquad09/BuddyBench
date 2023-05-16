@@ -12,13 +12,14 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
+import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.classes.Sport
 import it.polito.mad.buddybench.enums.Skills
 
 @AndroidEntryPoint
 class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_profile) {
-    var profile = context.profile
 
+    lateinit var profile: Profile
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -26,7 +27,13 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_pro
 
     override fun onResume() {
         super.onResume()
-        setGUI()
+        context.userViewModel.user.observe(this){
+            if (it != null){
+                profile = it
+                setGUI()
+            }
+
+        }
 
     }
 

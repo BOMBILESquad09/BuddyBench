@@ -58,15 +58,17 @@ data class Court(
     )
 fun Court.toCourtDTO(): CourtDTO {
     return CourtDTO(
-        name = this.name,
-        address = this.address,
-        location = this.location,
-        feeHour = this.feeHour,
-        sport = this.sport,
-        phoneNumber =this.phoneNumber,
-        path = this.path,
-        feeEquipment = this.feeEquipment,
-        rating = this.rating,
-        nReviews = this.nReviews
+        this.name,
+        this.address,
+        this.location,
+        this.feeHour,
+        this.sport,
+        this.phoneNumber,
+        this.path,
+        this.feeEquipment,
+        this.rating,
+        this.nReviews,
+        listOf()
+
     )
 }
