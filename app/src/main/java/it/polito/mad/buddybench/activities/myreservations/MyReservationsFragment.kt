@@ -123,8 +123,11 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
                 refreshCalendar()
             }
         }
-        viewModel.getAllByUser()
-        viewModel.reservations.observe(viewLifecycleOwner){
+        viewModel.getAllByUser().observe(viewLifecycleOwner){
+            if(it == null)return@observe
+            println("----sizeee-----")
+            println("----------")
+
             refreshCalendar()
             refresh()
         }
@@ -162,12 +165,8 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
 
     private fun refreshCalendar(){
         val reservations = viewModel.reservations.value ?: return
+
         for(entries in reservations.entries){
-            if(entries.key == LocalDate.of(2023,6,3)){
-                println(".............ci sta.........")
-                println(viewModel.reservations.value?.get(entries.key))
-                println("........................")
-            }
 
             val firstDay = calendarView.findFirstVisibleMonth()?.yearMonth!!.atDay(1)
             val lastDay = calendarView.findFirstVisibleMonth()?.yearMonth!!.atEndOfMonth()

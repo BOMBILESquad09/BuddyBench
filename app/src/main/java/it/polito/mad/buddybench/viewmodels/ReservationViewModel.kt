@@ -32,6 +32,8 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     @Inject
     lateinit var reservationRepository: ReservationRepository
 
+    val reservationRepositoryFirebase = it.polito.mad.buddybench.persistence.firebaseRepositories.ReservationRepository()
+
     // ** Expose to other classes (view)
     val reservations: LiveData<HashMap<LocalDate, List<ReservationDTO>>> get() = _reservations
 
@@ -46,6 +48,13 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     }
 
     fun getAllByUser(): LiveData<HashMap<LocalDate, List<ReservationDTO>>> {
+        loading.value = (true)
+        reservationRepositoryFirebase.getAllByUser(email){
+            val reservations = it
+            _reservations.postValue(reservations)
+            loading.postValue(false)
+        }
+        /*
         Thread {
             loading.postValue(true)
             val reservations = reservationRepository.getAllByUser(email)
@@ -53,7 +62,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
 
             _reservations.postValue(reservations)
 
-        }.start()
+        }.start()*/
         return _reservations
     }
 
@@ -64,7 +73,10 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         oldStartTime: LocalTime?,
     ) {
         loading.postValue(true)
-        if (edit) {
+        reservationRepositoryFirebase.save(reservation){
+            loading.postValue(false)
+        }
+        /*if (edit) {
             Thread {
                 loading.postValue(true)
                 reservationRepository.update(reservation, oldDate!!, oldStartTime!!.hour)
@@ -76,7 +88,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
                 loading.postValue(true)
                 reservationRepository.save(reservation)
                 loading.postValue(false)
-            }.start()
+            }.start()*/
     }
 
 
@@ -120,18 +132,14 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         email: String,
         dialogSheetDeleteReservation: DialogSheetDeleteReservation,
     ) {
+        //da chiamare nella view NON QUI
         dialogSheetDeleteReservation.isCancelable = false
-        Thread {
-            loading.postValue(true)
-            reservationRepository.delete(
-                courtName,
-                sport,
-                startTime,
-                email,
-                date
-            )
+        loading.postValue(true)
+        reservationRepositoryFirebase.delete(courtName, sport, startTime, email, date){
             loading.postValue(false)
-        }.start()
+        }
+
+
     }
 
 

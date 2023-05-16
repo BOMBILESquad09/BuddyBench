@@ -173,9 +173,8 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     }
 
     fun getTimeSlotsAvailable(courtDTO: CourtDTO, date: LocalDate, reservationDate: LocalDate?): LiveData<List<LocalTime>> {
-
-        Thread {
-            val timeSlotsOccupied = reservationRepository.getTimeSlotsOccupiedForCourtAndDate(courtDTO, date)
+        courtRepositoryFirebase.getTimeSlotsOccupiedForCourtAndDate(courtDTO, date ){
+            val timeSlotsOccupied = it
             val timeslotsDayOfWeek = openingAndClosingTimeForCourt(date.dayOfWeek)
 
             val alreadySelectedTimeSlots = try {
@@ -196,8 +195,7 @@ class CourtViewModel @Inject constructor() : ViewModel() {
             }
             _timeSlots.postValue(finalTimeSlots)
             _plainTimeSlots.postValue(finalTimeSlots.map { it.first })
-
-        }.start()
+        }
         return plainTimeSlots
     }
 

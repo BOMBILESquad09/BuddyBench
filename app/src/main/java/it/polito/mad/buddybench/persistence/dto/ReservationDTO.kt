@@ -5,13 +5,22 @@ import it.polito.mad.buddybench.enums.Sports
 import java.time.LocalDate
 import java.time.LocalTime
 
-class ReservationDTO(val userOrganizer: UserDTO,
-                     val court: CourtDTO,
-                     val date: LocalDate,
-                     val startTime: LocalTime,
-                     val endTime: LocalTime,
-                     val equipment: Boolean
+class ReservationDTO(
 ) {
+    constructor(userOrganizer: UserDTO, court: CourtDTO, date: LocalDate, startTime: LocalTime, endTime: LocalTime, equipment: Boolean): this(){
+        this.userOrganizer = userOrganizer
+        this.court = court
+        this.date = date
+        this.startTime = startTime
+        this.endTime = endTime
+        this.equipment = equipment
+    }
+    lateinit var  userOrganizer: UserDTO
+    lateinit var court: CourtDTO
+    lateinit var date: LocalDate
+    lateinit var startTime: LocalTime
+    lateinit var endTime: LocalTime
+    var equipment: Boolean = false
     companion object{
 
         private fun createUser(): User {
@@ -100,4 +109,6 @@ class ReservationDTO(val userOrganizer: UserDTO,
         )
     }
 }
+
+
 

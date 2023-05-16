@@ -11,6 +11,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.court.CourtActivity
 import it.polito.mad.buddybench.activities.court.ReviewsActivity
@@ -96,7 +98,7 @@ class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent
         intent.putExtra("courtName", reservation.court.name)
         intent.putExtra("sport", reservation.court.sport)
         intent.putExtra("date", reservation.date.toString())
-        intent.putExtra("email", reservation.userOrganizer.email)
+        intent.putExtra("email", Firebase.auth.currentUser!!.email)
         intent.putExtra("startTime", reservation.startTime.hour)
         intent.putExtra("endTime", reservation.endTime.hour)
         intent.putExtra("equipment", reservation.equipment)
