@@ -21,6 +21,17 @@
         android:theme="@style/AppTheme"
         tools:targetApi="33">
         <activity
+            android:name=".activities.auth.AuthActivity"
+            android:exported="true">
+            <intent-filter>
+                <action
+                    android:name="android.intent.action.MAIN"
+                    android:windowSoftInputMode="adjustPan" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".activities.court.ReviewsActivity"
             android:exported="true"
             android:screenOrientation="sensorPortrait"
@@ -30,13 +41,6 @@
             android:exported="true"
             android:screenOrientation="sensorPortrait"
             android:windowSoftInputMode="adjustPan">
-            <intent-filter>
-                <action
-                    android:name="android.intent.action.MAIN"
-                    android:windowSoftInputMode="adjustPan" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activities.court.CourtActivity"
