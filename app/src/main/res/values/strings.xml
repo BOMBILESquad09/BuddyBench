@@ -114,6 +114,7 @@
     <string name="phone_number">+391231231212</string>
     <string name="sport_basketball">basketball</string>
     <string name="see_all">See all reviews</string>
+    <string name="google_oauth_client_id">893031240238-c2n5hi4k3uo50pdr2fd69rp3vpsguvr3.apps.googleusercontent.com</string>
 
     <string name="large_text">
         "Material is the metaphor.\n\n"
