@@ -41,7 +41,7 @@ class ReviewRepository {
                     .addOnSuccessListener { reviewsDoc ->
                         val reviews = mutableListOf<ReviewDTO>()
                         for (rev in reviewsDoc) {
-                            val user = users.find { it.email == (rev.data["user"] as DocumentReference).id }
+                            val user = users.find { it.email == (rev).id }
                             reviews.add(
                                 ReviewDTO(
                                     user!!,
