@@ -69,7 +69,6 @@ class ReservationRepository {
         reservationMap["startTime"] = reservationDTO.startTime.hour
         reservationMap["endTime"] = reservationDTO.endTime.hour
         reservationMap["equipment"] = reservationDTO.equipment
-        println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
         db.collection("courts")
             .document(courtName)
             .get()
@@ -77,7 +76,6 @@ class ReservationRepository {
                 val openingTime = (it.data!!["timetable"] as HashMap<String, HashMap<String, Long>>).get(reservationDTO.date.dayOfWeek.name)!!.get("openingTime") as Long
                 val closingTime = (it.data!!["timetable"] as HashMap<String, HashMap<String, Long>>).get(reservationDTO.date.dayOfWeek.name)!!.get("closingTime") as Long
                 val slots = (closingTime - openingTime).toInt()
-                println("court taken")
                 db.collection("reservations")
                     .whereEqualTo("court", db.document("courts/$courtName"))
                     .whereEqualTo("date", reservationDTO.date.toString())
@@ -89,17 +87,13 @@ class ReservationRepository {
                             val startTime = r.data["startTime"] as Long
                             if ((reservationDTO.startTime.hour >= startTime && reservationDTO.startTime.hour < endTime)
                                 ||(reservationDTO.endTime.hour <=endTime && reservationDTO.endTime.hour > startTime)){
-                                println("ERRRORRRRRRRRRRRR")
+                                //ERROREEEEEEEEEEEE
                                 return@addOnSuccessListener
                             }
                             count = (count + (endTime - startTime)).toInt()
                         }
-                        println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                        println("------------count----------------------------")
-                        println(slots)
-                        println(count)
+
                         if ((count + (reservationDTO.endTime.hour - reservationDTO.startTime.hour)) == slots ){
-                            println("fullll")
                             db
                                 .collection("unavailable_courts")
                                 .document(reservationDTO.date.toString())
@@ -113,7 +107,6 @@ class ReservationRepository {
                                     }
                                 }
                         } else{
-                            println("saving")
                             db
                                 .collection("reservations")
                                 .document(courtName + "_" + reservationDTO.userOrganizer.email + "_" + reservationDTO.date.toString() + "_" + reservationDTO.startTime.hour)
@@ -124,49 +117,24 @@ class ReservationRepository {
                         }
                     }
             }
-
-        /*val user = userDao.getUserByEmail(reservationDTO.userOrganizer.email)!!
-        val courtWithSport =
-            courtDao.getByNameAndSport(reservationDTO.court.name, reservationDTO.court.sport)
-
-        reservationDao.save(
-            reservationDTO.toEntity(
-                user.user.id,
-                courtWithSport.court.id,
-                reservationDTO.equipment
-            )
-        )
-        updateUnavailableDayCourt(reservationDTO, courtWithSport)
     }
 
     fun update(
         reservationDTO: ReservationDTO,
         oldDate: LocalDate,
         oldStartTime: Int,
-    ) {
-        Thread.sleep(5000)
-        val user = userDao.getUserByEmail(reservationDTO.userOrganizer.email)!!
-        val courtWithSport =
-            courtDao.getByNameAndSport(reservationDTO.court.name, reservationDTO.court.sport)
-        val oldReservation_ = reservationDao.getReservationPlain(
-            user.user.id, courtWithSport.court.id,
-            oldDate.format(DateTimeFormatter.ISO_LOCAL_DATE), oldStartTime
-        )
+        callback: () -> Unit
+    ){
 
-        val oldReservation = reservationDao.get(oldReservation_.id)
 
-        val newReservation = Reservation(
-            id = oldReservation.id,
-            startTime = reservationDTO.startTime.hour,
-            endTime = reservationDTO.endTime.hour,
-            date = reservationDTO.date.format(DateTimeFormatter.ISO_LOCAL_DATE),
-            userOrganizer = user.user.id,
-            equipment = reservationDTO.equipment,
-            court = courtWithSport.court.id
-        )
 
-        reservationDao.update(newReservation)
-        updateUnavailableDayCourt(reservationDTO, courtWithSport)*/
+        delete(reservationDTO.court.name,
+            Sports.valueOf(reservationDTO.court.sport),
+            LocalTime.of(oldStartTime, 0),
+            reservationDTO.userOrganizer.email, oldDate ){
+            save(reservationDTO){callback()}
+        }
+
 
     }
 
@@ -218,6 +186,7 @@ class ReservationRepository {
         callback: () -> Unit
     ) {
         val docName = courtName.replace(" ", "_") + "_" + sport.name + "_" + email + "_" + date.toString() + "_" + startTime.hour
+        val docCourtName = courtName.replace(" ", "_") + "_" + sport.name
         db
             .collection("reservations")
             .document(docName)
@@ -225,8 +194,9 @@ class ReservationRepository {
             .addOnSuccessListener {
                 db.collection("unavailable_courts")
                     .document(date.toString())
-                    .update("courts", FieldValue.arrayRemove(db.document("courts/$courtName")))
-                    .addOnSuccessListener { callback() }
+                    .update("courts", FieldValue.arrayRemove(db.document("courts/$docCourtName")))
+                    .addOnSuccessListener {
+                        callback() }
                  }
         /*
         val user = userDao.getUserByEmail(email)!!

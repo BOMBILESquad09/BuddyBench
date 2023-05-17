@@ -38,6 +38,17 @@ class CourtRepository {
             }
     }
 
+    fun getCourt(name:String, sport: String, callback: (CourtDTO) -> Unit){
+        val courtName = name.replace(" ", "_") + "_" + sport
+        db.collection("courts")
+            .document(courtName)
+            .get()
+            .addOnSuccessListener {
+                val court = it.toObject(CourtDTO::class.java)!!
+                callback(court)
+            }
+    }
+
     fun getCourtTimeTable(name: String, sport: Sports, callback: (CourtTimeTableDTO) -> Unit) {
         val courtName = name.replace(" ", "_") + "_" + sport.name
         val court = db.collection("courts").document(courtName).get()
@@ -50,7 +61,7 @@ class CourtRepository {
                     timetable.put(DayOfWeek.valueOf(s.key), Pair(LocalTime.of(openingTime.toInt(),0), LocalTime.of(closingTime.toInt(), 0)))
                 }
                 if(courtDTO.facilities == null)
-                courtDTO.facilities = listOf()
+                    courtDTO.facilities = listOf()
                 val courtTimeTableDTO = CourtTimeTableDTO(courtDTO, timetable )
                 callback(courtTimeTableDTO)
         }
@@ -106,5 +117,29 @@ class CourtRepository {
 
             }
 
+    }
+
+    fun checkIfPlayed(courtName: String, sport: String, userEmail: String, callback: (Boolean) -> Unit) {
+        val courtDocName = courtName.replace(" ", "_") + "_" + sport
+        db.collection("reservations")
+            .whereEqualTo("user", db.document("users/$userEmail"))
+            .whereEqualTo("court", db.document("courts/$courtDocName"))
+
+            .get()
+            .addOnSuccessListener {
+                if (it.size() == 0) callback(false)
+                val dates = it.map { Pair(LocalDate.parse(it.data["date"] as String, DateTimeFormatter.ISO_LOCAL_DATE), (it.data["endTime"] as Long).toInt()) }
+                val minDate = dates.map { it.first }.min()
+                val minEndTime = dates.first{it.first == minDate}.second
+                println(minDate)
+                println(minEndTime)
+                println(LocalTime.now().hour )
+                println(LocalDate.now())
+                if(minDate == LocalDate.now()){
+                    callback(minEndTime <= LocalTime.now().hour )
+                } else {
+                    callback(minDate < LocalDate.now())
+                }
+            }
     }
 }

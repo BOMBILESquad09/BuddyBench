@@ -33,30 +33,8 @@ class UserRepository {
                 document(email).get()
                 .addOnSuccessListener {
                     if(it.data != null) {
-                        val sports = mutableListOf<Sport>()
-                        val fbSports = it.data!!["sports"] as List<Map<String, Any>>
-                        for (s in fbSports){
-                            val name = Sports.valueOf( s["name"] as String)
-                            val skill = Skills.valueOf(s["skill"] as String)
-                            val matchesPlayed = s["matchesPlayed"] as Long
-                            val matchesOrganized = s["matchesOrganized"] as Long
-                            val achievements = s["achievements"] as MutableList<String>
-                            sports.add(Sport(name, skill, matchesPlayed.toInt(), matchesOrganized.toInt(),
-                                achievements
-                            ))
-                        }
 
-                         user.value = Profile(
-                            name = it.data!!["name"] as String,
-                            surname = it.data!!["surname"] as String,
-                            nickname = it.data!!["nickname"] as String,
-                            email = it.data!!["email"] as String,
-                            location = it.data!!["location"] as String,
-                            birthdate = LocalDate.parse(it.data!!["birthdate"] as String, DateTimeFormatter.ISO_LOCAL_DATE),
-                            reliability = (it.data!!["reliability"] as Long).toInt(),
-                            imageUri = null,
-                            sports = sports
-                        )
+                         user.value = serializeUser(it.data as Map<String, Object>)
                     }
                     else{
                         val newProfile = createProfile()
@@ -88,7 +66,7 @@ class UserRepository {
             return ProfileData(
                 name, surname, "BuddyBenchGuest", user.email!!,
                 "Turin", LocalDate.of(1999, 4, 27).toString(), 80,
-                null, mutableListOf(
+                "", mutableListOf(
                     Sport(
                     Sports.TENNIS,
                         Skills.NEWBIE,11,11, mutableListOf("Coppa Champion")
@@ -144,4 +122,33 @@ class UserRepository {
             val birthdate = profile.birthdate
             return UserDTO(name, surname, nickname, birthdate, location, email, reliability, imagePath)
         }
+
+    companion object{
+        fun serializeUser(map: Map<String, Object>): Profile{
+            val sports = mutableListOf<Sport>()
+            val fbSports = map["sports"] as List<Map<String, Any>>
+            for (s in fbSports){
+                val name = Sports.valueOf( s["name"] as String)
+                val skill = Skills.valueOf(s["skill"] as String)
+                val matchesPlayed = s["matchesPlayed"] as Long
+                val matchesOrganized = s["matchesOrganized"] as Long
+                val achievements = s["achievements"] as MutableList<String>
+                sports.add(Sport(name, skill, matchesPlayed.toInt(), matchesOrganized.toInt(),
+                    achievements
+                ))
+
+            }
+            return Profile(
+                name = map["name"] as String,
+                surname = map["surname"] as String,
+                nickname = map["nickname"] as String,
+                email = map["email"] as String,
+                location = map["location"] as String,
+                birthdate = LocalDate.parse(map["birthdate"] as String, DateTimeFormatter.ISO_LOCAL_DATE),
+                reliability = (map["reliability"] as Long).toInt(),
+                imageUri = null,
+                sports = sports
+            )
+        }
+    }
 }

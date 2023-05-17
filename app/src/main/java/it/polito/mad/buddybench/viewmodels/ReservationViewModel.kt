@@ -73,8 +73,16 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         oldStartTime: LocalTime?,
     ) {
         loading.postValue(true)
-        reservationRepositoryFirebase.save(reservation){
-            loading.postValue(false)
+        if(!edit){
+            reservationRepositoryFirebase.save(reservation){
+                loading.postValue(false)
+            }
+        }
+
+        else{
+           reservationRepositoryFirebase.update(reservation, oldDate!!, oldStartTime!!.hour){
+               loading.postValue(false)
+           }
         }
         /*if (edit) {
             Thread {
