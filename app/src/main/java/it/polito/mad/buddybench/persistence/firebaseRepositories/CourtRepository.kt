@@ -124,7 +124,6 @@ class CourtRepository {
         db.collection("reservations")
             .whereEqualTo("user", db.document("users/$userEmail"))
             .whereEqualTo("court", db.document("courts/$courtDocName"))
-
             .get()
             .addOnSuccessListener {
                 if (it.size() == 0) callback(false)

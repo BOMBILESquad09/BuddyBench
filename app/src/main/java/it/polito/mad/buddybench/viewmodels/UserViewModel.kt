@@ -1,22 +1,18 @@
 package it.polito.mad.buddybench.viewmodels
 
-import android.content.Context
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.classes.Sport
 import it.polito.mad.buddybench.enums.Skills
-import it.polito.mad.buddybench.enums.Sports
-import it.polito.mad.buddybench.persistence.entities.User
 import it.polito.mad.buddybench.persistence.entities.UserWithSports
-import it.polito.mad.buddybench.persistence.entities.UserWithSportsDTO
-
+import it.polito.mad.buddybench.persistence.firebaseRepositories.ImageRepository
 import it.polito.mad.buddybench.persistence.repositories.UserRepository
-import org.json.JSONObject
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,11 +22,16 @@ class UserViewModel @Inject constructor() : ViewModel() {
     lateinit var userRepository: UserRepository
 
     private val userRepositoryFirebase = it.polito.mad.buddybench.persistence.firebaseRepositories.UserRepository()
+    private val imageRepository: ImageRepository = ImageRepository()
+
     private val _initName: String = ""
 
     private val _userName: MutableLiveData<String> = MutableLiveData(_initName)
     private val _user: MutableLiveData<Profile> = MutableLiveData(null)
+    private val _profileImage: MutableLiveData<Uri> = MutableLiveData(null)
+
     val user: LiveData<Profile> = _user
+    val profileImage: LiveData<Uri> get() = _profileImage
 
     var oldSports: List<Sport> = listOf()
     private var _invisibleSports: MutableList<Sport> = mutableListOf()
@@ -39,10 +40,7 @@ class UserViewModel @Inject constructor() : ViewModel() {
     var oldAchievements:List<String> = listOf()
 
     val sports: LiveData<MutableList<Sport>> = _sports
-
-
     val username: LiveData<String> get() = _userName
-
 
     fun checkUserEmail(email: String): UserWithSports? {
         val u = userRepository.checkUser(email);
@@ -94,11 +92,29 @@ class UserViewModel @Inject constructor() : ViewModel() {
 
     }
 
+    fun uploadProfileImage(uri: Uri) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        imageRepository.uploadImageToPath(uri, "${userId}.jpg", { onImageUploadSuccess() },{ onImageUploadError()} )
+    }
+
+    fun getProfileImage() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val destinationUri = Uri.parse("/profile_image/${userId}.jpg")
+        imageRepository.getUserProfileImage(userId!!, destinationUri ,{ _profileImage.postValue(destinationUri) }, { throw Error("Error downloading profile image")})
+    }
+
+    private fun onImageUploadSuccess() {
+        println("Image uploaded")
+    }
+
+    private fun onImageUploadError() {
+        println("Image upload error")
+    }
+
     fun setUserName(name: String) {
         Thread {
             _userName.value = name
         }.start()
-
     }
 
 
@@ -111,8 +127,6 @@ class UserViewModel @Inject constructor() : ViewModel() {
 
     fun removeSport(sport: Sport):  LiveData<MutableList<Sport>>{
         oldSports = _sports.value!!.toList()
-
-
         _sports.value = _sports.value!!.filter {
             (it.name != sport.name)
         }.toMutableList()
@@ -129,7 +143,6 @@ class UserViewModel @Inject constructor() : ViewModel() {
             else
             it
         }.toMutableList()
-
 
         return sports
     }
@@ -158,10 +171,6 @@ class UserViewModel @Inject constructor() : ViewModel() {
             } else  {
             it}
         }.toMutableList()
-
-        println("adddingee...........")
-
-
     }
 
     fun removeAchievement(sport: Sport, achievement: String){
@@ -176,7 +185,5 @@ class UserViewModel @Inject constructor() : ViewModel() {
         }.toMutableList()
         println(achievement)
         println(_sports.value!![0].achievements.size)
-        println("-------------------removig----------------------")
     }
-
 }

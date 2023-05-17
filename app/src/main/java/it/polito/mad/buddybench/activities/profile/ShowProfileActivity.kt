@@ -3,6 +3,7 @@ package it.polito.mad.buddybench.activities.profile
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -10,17 +11,23 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Profile
+import it.polito.mad.buddybench.viewmodels.UserViewModel
 import org.json.JSONObject
 
 @AndroidEntryPoint
 class ShowProfileActivity : AppCompatActivity() {
+
     private lateinit var profile: Profile
     private lateinit var sharedPref: SharedPreferences
+    private val userViewModel by viewModels<UserViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
@@ -30,8 +37,18 @@ class ShowProfileActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
-        profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
-        setGUI()
+        // profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
+        userViewModel.user.observe(this) {
+            profile = it
+            setGUI()
+        }
+
+        userViewModel.profileImage.observe(this) {
+            println("Profile image observer uri: $it")
+            setProfileImage(it)
+        }
+
+        userViewModel.getProfileImage()
     }
 
     private fun setGUI(){
@@ -56,23 +73,11 @@ class ShowProfileActivity : AppCompatActivity() {
         val reliabilityTv = findViewById<TextView>(R.id.reliabilityView)
         reliabilityTv.text = getString(R.string.reliabilityValue).format(profile.reliability)
 
-        val iv = findViewById<ImageView>(R.id.profile_image)
-        resizeImageView(iv)
-        try{
-            iv.setImageURI(profile.imageUri)
-        } catch (_: Exception){
-            iv.setImageResource(R.drawable.person)
-        }
-
-
-
         val sportContainer = findViewById<LinearLayout>(R.id.sportsContainerEdit)
         sportContainer.removeAllViews()
 
-
-
+        setProfileImage(null)
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
@@ -80,11 +85,28 @@ class ShowProfileActivity : AppCompatActivity() {
         return true
     }
 
+    private fun setProfileImage(uri: Uri?) {
 
+        val iv = findViewById<ImageView>(R.id.profile_image)
+        resizeImageView(iv)
 
+        if (uri != null) {
+            try{
+                iv.setImageURI(uri)
+            } catch (_: Exception){
+                iv.setImageResource(R.drawable.person)
+            }
+            return
+        }
+
+        try{
+            iv.setImageURI(profile.imageUri)
+        } catch (_: Exception){
+            iv.setImageResource(R.drawable.person)
+        }
+    }
 
     private  fun resizeImageView(iv: ImageView){
-
         val ll = findViewById<LinearLayout>(R.id.imageContainer)
         ll.post {
             val width = ll.width
@@ -95,8 +117,5 @@ class ShowProfileActivity : AppCompatActivity() {
             iv.layoutParams = FrameLayout.LayoutParams(diameter, diameter)
             iv.requestLayout()
         }
-
     }
-
-
 }

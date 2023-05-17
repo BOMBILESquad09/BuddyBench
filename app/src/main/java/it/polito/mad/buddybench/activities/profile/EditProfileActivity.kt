@@ -52,6 +52,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         EditSportsOpened,
         ContextMenuOpened
     }
+
     // ** Data
     private lateinit var profile: Profile
     private var datePicker: DatePickerDialog? = null
@@ -64,6 +65,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     private var tempSelectedSport: ArrayList<Sports>? = null
     private var oldEmail: String? = null
     private lateinit var sportsRecyclerView: RecyclerView
+
     // ** Profile Image
     private val launcherCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -158,13 +160,11 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             popup.show()
         }
 
-
         sportsRecyclerView = findViewById<RecyclerView>(R.id.sports_container)
         sportsRecyclerView.layoutManager = LinearLayoutManager(this).let {
             it.orientation = RecyclerView.HORIZONTAL
             it
         }
-
 
         userViewModel.setSports(profile.sports)
         val sportRemoveCallback:(Sport) -> Unit =   { sport: Sport ->
@@ -212,41 +212,12 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             }
         }
 
-        //sportContainer = findViewById(R.id.sportsContainerEdit)
-        //sportContainer.removeAllViews()
-
-        // ** Populate sport cards
-        /*profile.populateSportCards(this, sportContainer,
-            edit = true,
-            onSkillSelected = { sportSkillLevel, sport ->
-
-                val popup = PopupMenu(this, sportSkillLevel)
-                popup.menuInflater.inflate(R.menu.skill_level_edit, popup.menu)
-                popup.setOnMenuItemClickListener {
-                    profile.updateSkillLevel(sport, Skills.fromJSON(it.title.toString().uppercase())!!)
-                    profile.refreshSportsCard(this, sportContainer, sport)
-                    true
-                }
-                popupOpened = popup
-                popup.show()
-            })*/
-
-
-
-        //Creating the instance of PopupMenu
-
-
-
-
-
         // ** Add Sports Button
         addSportButton = findViewById(R.id.add_sport_button)
         addSportButton.setOnClickListener { openSportSelectionDialog() }
         checkCameraPermission()
 
-
         restoreDialog(savedInstanceState)
-
     }
 
     private  fun resizeImageView(){
@@ -288,6 +259,9 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     private fun onCameraImageReturned(response: androidx.activity.result.ActivityResult) {
         //TODO: on rotation the image is not returned. Its possible to retrieve the bitmap of the snapped photo in the bundle, but the methods are deprecated or requiring API 33
         if (response.resultCode != Activity.RESULT_OK || imageUri == null) return
+
+        imageUri?.let { uploadImage(it) }
+
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, imageUri!!)
         imageEdit.setImageBitmap(bitmap)
         profile.imageUri = imageUri
@@ -297,10 +271,16 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         //TODO: on rotation the image is not returned
         if (response.resultCode != Activity.RESULT_OK || response.data == null) return
         imageUri = response.data?.data
+
+        imageUri?.let { uploadImage(it) }
+
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, imageUri!!)
         imageEdit.setImageBitmap(bitmap)
         profile.imageUri = imageUri
+    }
 
+    private fun uploadImage(uri: Uri) {
+        userViewModel.uploadProfileImage(uri)
     }
 
     private fun checkSdkVersion(): Boolean {
