@@ -86,7 +86,7 @@ abstract class FirebaseUIActivity : AppCompatActivity() {
         val signInIntent = AuthUI.getInstance()
             .createSignInIntentBuilder()
             .setAvailableProviders(providers)
-            .setLogo(R.drawable.basketball) // Set logo drawable
+            .setLogo(R.drawable.logo_app) // Set logo drawable
             .setTheme(R.style.AppTheme) // Set theme
             .build()
         signInLauncher.launch(signInIntent)
