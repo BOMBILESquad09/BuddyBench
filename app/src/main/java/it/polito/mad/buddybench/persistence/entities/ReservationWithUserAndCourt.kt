@@ -25,7 +25,8 @@ data class ReservationWithUserAndCourt(
 
 fun ReservationWithUserAndCourt.toReservationDTO(): ReservationDTO {
     return ReservationDTO(
-        userOrganizer = this.userOrganizer.toUserDTO(),
+        id = this.reservation.id.toString(),
+        userOrganizer = this.userOrganizer.toUserDTO().toProfile(),
         court = this.court.toCourtDTO(),
         date = LocalDate.parse(this.reservation.date),
         startTime = LocalTime.of(this.reservation.startTime,0),

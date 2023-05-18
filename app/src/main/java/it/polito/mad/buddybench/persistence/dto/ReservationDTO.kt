@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.persistence.dto
 
+import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.persistence.entities.*
 import it.polito.mad.buddybench.enums.Sports
 import java.time.LocalDate
@@ -7,20 +8,27 @@ import java.time.LocalTime
 
 class ReservationDTO(
 ) {
-    constructor(userOrganizer: UserDTO, court: CourtDTO, date: LocalDate, startTime: LocalTime, endTime: LocalTime, equipment: Boolean): this(){
+    constructor(id: String, userOrganizer: Profile, court: CourtDTO, date: LocalDate, startTime: LocalTime, endTime: LocalTime, equipment: Boolean): this(){
+        this.id = id
         this.userOrganizer = userOrganizer
         this.court = court
         this.date = date
         this.startTime = startTime
         this.endTime = endTime
         this.equipment = equipment
+        this.accepted = listOf()
+        this.pendings = listOf()
     }
-    lateinit var  userOrganizer: UserDTO
+
+    lateinit var id: String
+    lateinit var  userOrganizer: Profile
     lateinit var court: CourtDTO
     lateinit var date: LocalDate
     lateinit var startTime: LocalTime
     lateinit var endTime: LocalTime
     var equipment: Boolean = false
+    lateinit var accepted: List<Profile>
+    lateinit var pendings: List<Profile>
     companion object{
 
         private fun createUser(): User {
@@ -64,37 +72,7 @@ class ReservationDTO(
             }
             return hm as HashMap<LocalDate, List<ReservationDTO>>
         }
-        fun mockReservationDTOs(): HashMap<LocalDate,List<ReservationDTO>>{
-            val now = LocalDate.now()
-            val later = now.plusDays(10)
-            val timeNow = LocalTime.now()
-            val endNow = timeNow.plusHours(1)
-            val timeLaterEnd = timeNow.plusHours(3)
-            val list =  listOf(
-                ReservationDTO(
-                    createUser().toUserDTO(),
-                    createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), now,timeNow, endNow, false),
-                    ReservationDTO(
-                        createUser().toUserDTO(),
-                        createCourt(Sports.toJSON(Sports.BASKETBALL)).toCourtDTO(), later, timeNow, timeLaterEnd, false),
-                ReservationDTO(
-                    createUser().toUserDTO(),
-                    createCourt(Sports.toJSON(Sports.FOOTBALL)).toCourtDTO(), later, timeNow, timeLaterEnd, false),
-                ReservationDTO(
-                    createUser().toUserDTO(),
-                    createCourt(Sports.toJSON(Sports.VOLLEYBALL)).toCourtDTO(), later, timeNow, timeLaterEnd, false),
-                ReservationDTO(
-                    createUser().toUserDTO(),
-                    createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd, false),
-                ReservationDTO(
-                    createUser().toUserDTO(),
-                    createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd, false),
-                ReservationDTO(
-                    createUser().toUserDTO(),
-                    createCourt(Sports.toJSON(Sports.TENNIS)).toCourtDTO(), later, timeNow, timeLaterEnd, false)
-            )
-            return toHashmap(list)
-        }
+
     }
 
     fun toEntity(userOrganizer: Int, court: Int, equipment: Boolean): Reservation {
@@ -108,6 +86,8 @@ class ReservationDTO(
 
         )
     }
+
+    fun isUserOrganizerInitialized() = ::userOrganizer.isInitialized
 }
 
 

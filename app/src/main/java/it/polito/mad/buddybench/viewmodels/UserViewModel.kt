@@ -11,11 +11,15 @@ import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.classes.Sport
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.persistence.entities.User
 import it.polito.mad.buddybench.persistence.entities.UserWithSports
 import it.polito.mad.buddybench.persistence.entities.UserWithSportsDTO
+import it.polito.mad.buddybench.persistence.firebaseRepositories.FriendRepository
+import it.polito.mad.buddybench.persistence.firebaseRepositories.InvitationsRepository
 
 import it.polito.mad.buddybench.persistence.repositories.UserRepository
+import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import javax.inject.Inject
 
@@ -26,9 +30,11 @@ class UserViewModel @Inject constructor() : ViewModel() {
     lateinit var userRepository: UserRepository
 
     private val userRepositoryFirebase = it.polito.mad.buddybench.persistence.firebaseRepositories.UserRepository()
-    private val _initName: String = ""
+    private val invitationsRepository = InvitationsRepository()
 
-    private val _userName: MutableLiveData<String> = MutableLiveData(_initName)
+    private val friendRepository = FriendRepository()
+
+    private val _userName: MutableLiveData<String> = MutableLiveData(null)
     private val _user: MutableLiveData<Profile> = MutableLiveData(null)
     val user: LiveData<Profile> = _user
 
@@ -36,12 +42,11 @@ class UserViewModel @Inject constructor() : ViewModel() {
     private var _invisibleSports: MutableList<Sport> = mutableListOf()
     private val _sports: MutableLiveData<MutableList<Sport>> = MutableLiveData(null)
 
-    var oldAchievements:List<String> = listOf()
+    var oldAchievements: List<String> = listOf()
 
     val sports: LiveData<MutableList<Sport>> = _sports
 
 
-    val username: LiveData<String> get() = _userName
 
 
     fun checkUserEmail(email: String): UserWithSports? {
@@ -51,29 +56,13 @@ class UserViewModel @Inject constructor() : ViewModel() {
 
 
     fun getUser(email: String): LiveData<Profile> {
-        userRepositoryFirebase.getUser(email, _user)
+        runBlocking {
+            userRepositoryFirebase.getUser(email) {
+                _user.postValue(it)
+            }
+            val reservationDTO = ReservationDTO()
 
-        /*Thread {
-            val u = userRepository.getUser(email);
-            val uri =
-                if (u.user.imagePath == null || u.user.imagePath == "null" || u.user.imagePath == "")
-                    Uri.parse("null") else
-                    Uri.parse(u.user.imagePath)
-            _user.postValue(
-                Profile(
-                    u.user.name,
-                    u.user.surname,
-                    u.user.nickname,
-                    u.user.email,
-                    u.user.location,
-                    u.user.birthdate,
-                    u.user.reliability,
-                    uri,
-                    u.sports.toMutableList()
-                )
-            )
-        }.start()*/
-
+        }
         return user
     }
 
@@ -95,21 +84,18 @@ class UserViewModel @Inject constructor() : ViewModel() {
     }
 
     fun setUserName(name: String) {
-        Thread {
-            _userName.value = name
-        }.start()
-
+        _userName.value
     }
 
 
-    fun setSports(sportsList: List<Sport>): LiveData<MutableList<Sport>>{
+    fun setSports(sportsList: List<Sport>): LiveData<MutableList<Sport>> {
         _invisibleSports = sportsList.filter { it.skill == Skills.NULL }.toMutableList()
         _sports.value = sportsList.filter { it.skill != Skills.NULL }.toMutableList()
         oldSports = _sports.value!!.toList()
         return sports
     }
 
-    fun removeSport(sport: Sport):  LiveData<MutableList<Sport>>{
+    fun removeSport(sport: Sport): LiveData<MutableList<Sport>> {
         oldSports = _sports.value!!.toList()
 
 
@@ -121,25 +107,26 @@ class UserViewModel @Inject constructor() : ViewModel() {
         return sports
     }
 
-    fun updateSport(sport: Sport):  LiveData<MutableList<Sport>>{
+    fun updateSport(sport: Sport): LiveData<MutableList<Sport>> {
         oldSports = _sports.value!!.map { it.copy() }
 
         _sports.value = _sports.value!!.map {
-            if(it.name == sport.name){sport}
-            else
-            it
+            if (it.name == sport.name) {
+                sport
+            } else
+                it
         }.toMutableList()
 
 
         return sports
     }
 
-    fun addSport(sport: Sport):  LiveData<MutableList<Sport>>{
+    fun addSport(sport: Sport): LiveData<MutableList<Sport>> {
 
         oldSports = _sports.value!!.map { it.copy() }
-        val exists = _invisibleSports!!.find{ it.name == sport.name}
+        val exists = _invisibleSports!!.find { it.name == sport.name }
         _invisibleSports.remove(exists)
-        if (exists != null){
+        if (exists != null) {
             _sports.value = _sports.value!!.plus(exists).toMutableList()
         } else {
             _sports.value = _sports.value!!.plus(sport).toMutableList()
@@ -148,35 +135,31 @@ class UserViewModel @Inject constructor() : ViewModel() {
         return sports
     }
 
-    fun addAchievement(sport: Sport,achievement: String){
+    fun addAchievement(sport: Sport, achievement: String) {
         oldAchievements = _sports.value!!.find { it.name == sport.name }!!.achievements
         oldSports = _sports.value!!.map { it.copy() }
         _sports.value = _sports.value!!.map {
-            if (it.name == sport.name){
+            if (it.name == sport.name) {
                 it.achievements.add(achievement)
                 it
-            } else  {
-            it}
+            } else {
+                it
+            }
         }.toMutableList()
-
-        println("adddingee...........")
 
 
     }
 
-    fun removeAchievement(sport: Sport, achievement: String){
+    fun removeAchievement(sport: Sport, achievement: String) {
         oldSports = _sports.value!!.map { it.copy() }
         _sports.value = _sports.value!!.map {
-            if (it.name == sport.name){
+            if (it.name == sport.name) {
                 it.achievements.remove(achievement)
                 it
             } else {
-            it
+                it
             }
         }.toMutableList()
-        println(achievement)
-        println(_sports.value!![0].achievements.size)
-        println("-------------------removig----------------------")
     }
 
 }

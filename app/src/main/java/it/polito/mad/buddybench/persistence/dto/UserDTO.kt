@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.persistence.dto
 
+import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.persistence.entities.User
 import java.time.LocalDate
 
@@ -17,6 +18,22 @@ class UserDTO(val name: String, val surname: String, val nickname: String, val b
             email = this.email,
             reliability = this.reliability,
             imagePath = this.imagePath
+        )
+    }
+
+    fun toProfile(): Profile{
+        return Profile(
+            name = this.name,
+            surname = this.surname,
+            nickname = this.nickname,
+            email = this.email,
+            birthdate = this.birthdate,
+            reliability = this.reliability,
+            friends = mutableListOf(),
+            imageUri = null,
+            location = this.location,
+            pendings = mutableListOf(),
+            sports = mutableListOf()
         )
     }
 

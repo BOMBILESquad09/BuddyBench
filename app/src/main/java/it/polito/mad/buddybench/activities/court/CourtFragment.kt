@@ -32,6 +32,7 @@ import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.databinding.FragmentCourtBinding
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
+import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.persistence.dto.UserDTO
 import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.CourtViewModel
@@ -76,6 +77,7 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
     // ** Edit mode (default to false)
     private var editMode = false
 
+    private var reservationID: String? = ""
     private var reservationDate: LocalDate? = null
     private var emailReservation: String = ""
     private var equipment: Boolean? = null
@@ -276,12 +278,15 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
         } else {
             val b : Button? = view?.findViewById(R.id.cancel_button)
             b?.setOnClickListener {
+                val oldReservation = ReservationDTO()
+                oldReservation.id = reservationID!!
+                oldReservation.date = oldDate!!
+                oldReservation.court = court
+
                 val deleteSheet = DialogSheetDeleteReservation(
-                    courtName,
-                    sport,
-                    oldStartTime!!,
+                    oldReservation,
                     oldDate!!,
-                    profile.email
+                    emailReservation
                 ) { finishActivity(oldDate!!) }
 
                 deleteSheet.show(requireActivity().supportFragmentManager, "DeleteSheet")
@@ -310,6 +315,7 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
         val editConfirmDialogSheet = EditConfirmDialogSheet(
             editMode,
             courtViewModel,
+            reservationID,
             courtToReserve,
             equipment,
             reservationViewModel,
@@ -346,7 +352,7 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
             if (it != null)
                 reservationDate = LocalDate.parse(it, DateTimeFormatter.ISO_LOCAL_DATE)
         }
-
+        reservationID =  activity?.intent?.getStringExtra("id") ?: ""
         emailReservation = activity?.intent?.getStringExtra("email") ?: ""
         startTime = activity?.intent?.getIntExtra("startTime", -1) ?: -1
         endTime = activity?.intent?.getIntExtra("endTime", -1) ?: -1
