@@ -7,6 +7,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
+import it.polito.mad.buddybench.persistence.repositories.ReservationRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -16,15 +17,25 @@ import java.time.format.DateTimeFormatter
 
 class InvitationsRepository {
     val db = FirebaseFirestore.getInstance()
+    val reservationRepository = ReservationRepository()
 
+
+    fun subscribeRequests(){
+        val currentEmail = Firebase.auth.currentUser!!.email!!
+        db.collection("user").document(currentEmail).addSnapshotListener { value, error ->
+           println((value!!.data!!["play_request_pendings"] as List<*>).size)
+        }
+    }
     suspend fun getRequests(): List<ReservationDTO>{
-        withContext(Dispatchers.IO){
+        return withContext(Dispatchers.IO){
             val currentEmail = Firebase.auth.currentUser!!.email!!
             val invitations = (db.collection("user")
                 .document(currentEmail)
-                .get().await().data!!["play_request_pendings"] as List<DocumentReference>).map {  }
+                .get().await().data!!["play_request_pendings"] as List<DocumentReference>).map {
+                    reservationRepository.getReservation(it.id, userOrganizer = true)
+            }
+            invitations
         }
-        TODO()
     }
     suspend fun sendRequests(reservationDTO: ReservationDTO,usersToInvite: List<String>){
         withContext(Dispatchers.IO){
