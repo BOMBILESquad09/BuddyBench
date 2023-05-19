@@ -94,21 +94,19 @@ class UserRepository {
 
 
     fun update(user: Profile, wrapper: MutableLiveData<Profile>) {
-        val profileData = ProfileData(
-            user.name,
-            user.surname,
-            user.nickname,
-            user.email,
-            user.location,
-            user.birthdate.toString(),
-            user.reliability,
-            user.imageUri.toString(),
-            user.sports,
-            user.friends.map { db.document("users/${it.email}") },
-            user.pendings.map { db.document("users/${it.email}") }
-        )
+
         db.collection("users")
-            .document(user.email).set(profileData).addOnSuccessListener {
+            .document(user.email).update(
+                mapOf(
+                    "name" to user.name,
+                    "surname" to user.surname,
+                    "nickname" to user.nickname,
+                    "location" to user.location,
+                    "birthdate" to user.birthdate.toString(),
+                    "sports" to user.sports,
+                    "imageUri" to user.imageUri.toString()
+                )
+            ).addOnSuccessListener {
                 wrapper.value = user
             }
 

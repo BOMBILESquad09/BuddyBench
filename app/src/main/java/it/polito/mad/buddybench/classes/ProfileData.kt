@@ -15,7 +15,8 @@ class ProfileData() {
         imageUri: String?,
         sports: MutableList<Sport>,
         friends: List<DocumentReference>,
-        friend_requests_pending: List<DocumentReference>
+        friend_requests_pending: List<DocumentReference>,
+
     ) : this() {
         this.name = name
         this.surname = surname
@@ -42,4 +43,5 @@ class ProfileData() {
     var sports: MutableList<Sport> = mutableListOf()
     var friends: List<DocumentReference> = mutableListOf()
     var friend_requests_pending: List<DocumentReference> = mutableListOf()
+    var play_request_pendings: List<DocumentReference> = mutableListOf()
 }

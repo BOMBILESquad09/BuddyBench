@@ -42,6 +42,7 @@ class ReservationRepository {
                 reservationDTO.id = res.data["id"] as String
                 val court = (res.data["court"] as DocumentReference).get().await()
                 val acceptedUsers = (res.data["accepted"] as List<DocumentReference>).map { it.get() }.map { it.await() }.map { UserRepository.serializeUser(it.data as Map<String, Object>) }
+                println((res.data["pendings"] as ArrayList<*>).size)
                 val pendingUsers = (res.data["pendings"] as List<DocumentReference>).map { it.get() }.map { it.await() }.map { UserRepository.serializeUser(it.data as Map<String, Object>) }
                 reservationDTO.court = court.toObject(CourtDTO::class.java)!!
                 reservationDTO.accepted = acceptedUsers
