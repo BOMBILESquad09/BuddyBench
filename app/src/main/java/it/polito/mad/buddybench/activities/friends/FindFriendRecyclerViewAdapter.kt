@@ -4,6 +4,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.friends.placeholder.PlaceholderContent.PlaceholderItem
@@ -15,7 +16,7 @@ import it.polito.mad.buddybench.viewmodels.FriendsViewModel
  * [RecyclerView.Adapter] that can display a [PlaceholderItem].
  * TODO: Replace the implementation with code for your data type.
  */
-class FindFriendRecyclerViewAdapter(private val values: List<Profile>,private val viewModel: FriendsViewModel) : RecyclerView.Adapter<FindFriendRecyclerViewAdapter.ViewHolder>() {
+class FindFriendRecyclerViewAdapter(private val values: List<Profile>, private val viewModel: FriendsViewModel) : RecyclerView.Adapter<FindFriendRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -25,7 +26,6 @@ class FindFriendRecyclerViewAdapter(private val values: List<Profile>,private va
                 false
             )
         )
-
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -33,13 +33,16 @@ class FindFriendRecyclerViewAdapter(private val values: List<Profile>,private va
         holder.tvName.text = item.fullName
         holder.tvUsername.text = item.nickname
         holder.btnAdd.setOnClickListener {
-            viewModel.sendRequest(item.email) { updateAddBtn(holder, position) }
+            viewModel.sendRequest(item.email) {
+                Toast.makeText(holder.btnAdd.context, "A friend request has been sent to ${item.fullName}", Toast.LENGTH_LONG).show()
+                updateAddBtn(holder)
+            }
         }
     }
 
     override fun getItemCount(): Int = values.size
 
-    private fun updateAddBtn(holder: ViewHolder, position: Int) {
+    private fun updateAddBtn(holder: ViewHolder) {
         holder.btnAdd.backgroundTintList = ColorStateList.valueOf(Color.LTGRAY)
         holder.btnAdd.text = holder.btnAdd.context.getString(R.string.added)
     }

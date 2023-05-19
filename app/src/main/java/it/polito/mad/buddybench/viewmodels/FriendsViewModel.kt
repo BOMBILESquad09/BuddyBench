@@ -3,6 +3,7 @@ package it.polito.mad.buddybench.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.persistence.firebaseRepositories.FriendRepository
@@ -16,6 +17,9 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     // ** Repositories
     private val friendRepository: FriendRepository = FriendRepository()
     private val userRepository: UserRepository = UserRepository()
+
+    // ** Current user
+    private val currentUser = FirebaseAuth.getInstance().currentUser
 
     // ** Loading state
     private val _l: MutableLiveData<Boolean> = MutableLiveData(true)
@@ -35,8 +39,7 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
         _l.postValue(true)
         println("Loading")
         runBlocking {
-            val list = friendRepository.getNotFriends()
-            println("${list[0]}")
+            val list = friendRepository.getNotFriends().filter { it.email != currentUser!!.email  }
             _possibleFriends.postValue(list)
         }
         println("Done")
