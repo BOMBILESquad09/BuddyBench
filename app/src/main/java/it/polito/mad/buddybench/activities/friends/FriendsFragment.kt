@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.badge.BadgeDrawable
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.databinding.FragmentFriendsBinding
+import it.polito.mad.buddybench.viewmodels.FriendsViewModel
 
 
 /**
@@ -27,8 +29,12 @@ class FriendsFragment(val context: HomeActivity) : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    // ** View Model
+    private val friendsViewModel by activityViewModels<FriendsViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        friendsViewModel.getFriendRequests()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -44,11 +50,14 @@ class FriendsFragment(val context: HomeActivity) : Fragment() {
         binding.tabFriends.addOnTabSelectedListener(FriendsTabListener(viewPager = binding.tabFriendsViewpager))
         binding.tabFriendsViewpager.registerOnPageChangeCallback(FriendsOnPageChangeCallback(binding.tabFriends))
 
-        // **  TODO: Check for requests and add the badge
-        val requestsBadge: BadgeDrawable? = binding.tabFriends.getTabAt(1)?.orCreateBadge
-        if (requestsBadge != null) {
-            requestsBadge.number = 1
-            requestsBadge.isVisible = true
+        friendsViewModel.friendRequests.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
+                val requestsBadge: BadgeDrawable? = binding.tabFriends.getTabAt(1)?.orCreateBadge
+                if (requestsBadge != null) {
+                    requestsBadge.number = it.size
+                    requestsBadge.isVisible = true
+                }
+            }
         }
     }
 }

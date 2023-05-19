@@ -9,12 +9,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.AdapterListUpdateCallback
 import it.polito.mad.buddybench.R
 
 import it.polito.mad.buddybench.activities.friends.placeholder.PlaceholderContent.PlaceholderItem
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.databinding.FragmentFriendRequestItemBinding
 import it.polito.mad.buddybench.viewmodels.FriendsViewModel
+import kotlinx.coroutines.runBlocking
 
 /**
  * [RecyclerView.Adapter] that can display a [PlaceholderItem].
@@ -35,22 +37,22 @@ class FriendRequestRecyclerViewAdapter(private val values: List<Profile>, privat
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
         holder.tvName.text = item.fullName
-        holder.btnConfirm.setOnClickListener{ confirmRequest(item.email, holder.btnReject.context) }
-        holder.btnReject.setOnClickListener { rejectRequest(item.email, holder.btnReject.context) }
+        holder.btnConfirm.setOnClickListener{ confirmRequest(item.email, holder.btnReject.context, position) }
+        holder.btnReject.setOnClickListener { rejectRequest(item.email, holder.btnReject.context, position) }
     }
 
     override fun getItemCount(): Int = values.size
 
-    private fun confirmRequest(email: String, context: Context) {
+    private fun confirmRequest(email: String, context: Context, position: Int) {
         viewModel.confirmRequest(email)
         Toast.makeText(context, "Friend request accepted", Toast.LENGTH_LONG).show()
-        viewModel.getFriendRequests()
+        this.notifyItemRemoved(position)
     }
 
-    private fun rejectRequest(email: String, context: Context) {
-        Toast.makeText(context, "Friend request declined", Toast.LENGTH_LONG).show()
+    private fun rejectRequest(email: String, context: Context, position: Int) {
         viewModel.rejectRequest(email)
-        viewModel.friendRequests
+        Toast.makeText(context, "Friend request declined", Toast.LENGTH_LONG).show()
+        this.notifyItemRemoved(position)
     }
 
     inner class ViewHolder(binding: FragmentFriendRequestItemBinding) :

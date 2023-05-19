@@ -12,6 +12,7 @@ import android.widget.ProgressBar
 import androidx.fragment.app.activityViewModels
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.friends.placeholder.PlaceholderContent
+import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.viewmodels.FriendsViewModel
 
 /**
@@ -34,10 +35,7 @@ class FriendRequestFragment : Fragment() {
         friendsViewModel.getFriendRequests()
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_friend_request_list, container, false)
 
         rvFriendRequests = view.findViewById(R.id.rv_friend_requests)

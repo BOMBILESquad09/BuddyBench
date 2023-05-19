@@ -12,6 +12,8 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat_bold_700"
         android:textSize="32sp"
+        android:paddingTop="16dp"
+        android:paddingHorizontal="16dp"
         android:text="@string/friends" />
 
     <com.google.android.material.tabs.TabLayout

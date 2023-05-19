@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.persistence.firebaseRepositories.FriendRepository
 import it.polito.mad.buddybench.persistence.firebaseRepositories.UserRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -62,6 +63,7 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
         _lRequests.postValue(true)
         if (currentUser != null) {
             runBlocking {
+                delay(1000)
                 userRepository.getUser(currentUser.email!!) {
                     _friendRequests.postValue(it.pendings)
                 }
@@ -72,13 +74,19 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
 
     fun confirmRequest(email: String) {
         _lRequests.postValue(true)
-        runBlocking { friendRepository.acceptFriendRequest(email) }
+        runBlocking {
+            friendRepository.acceptFriendRequest(email)
+            _friendRequests.postValue(_friendRequests.value!!.filter { it.email != email })
+        }
         _lRequests.postValue(false)
     }
 
     fun rejectRequest(email: String) {
         _lRequests.postValue(true)
-        runBlocking { friendRepository.refuseFriendRequest(email) }
+        runBlocking {
+            friendRepository.refuseFriendRequest(email)
+            _friendRequests.postValue(_friendRequests.value!!.filter { it.email != email })
+        }
         _lRequests.postValue(false)
     }
 }
