@@ -1,12 +1,14 @@
 package it.polito.mad.buddybench.viewmodels
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.classes.Sport
 import it.polito.mad.buddybench.enums.Skills
@@ -46,6 +48,7 @@ class UserViewModel @Inject constructor() : ViewModel() {
 
     val sports: LiveData<MutableList<Sport>> = _sports
 
+    lateinit var sharedPref: SharedPreferences
 
 
 
@@ -57,10 +60,11 @@ class UserViewModel @Inject constructor() : ViewModel() {
 
     fun getUser(email: String): LiveData<Profile> {
         runBlocking {
-            userRepositoryFirebase.getUser(email) {
-                _user.postValue(it)
-            }
-            val reservationDTO = ReservationDTO()
+
+                userRepositoryFirebase.getUser(email) {
+                    _user.postValue(it)
+                }
+
 
         }
         return user

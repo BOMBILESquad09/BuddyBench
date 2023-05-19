@@ -9,8 +9,8 @@
         android:id="@+id/tab_my_reservations"
         android:icon="@drawable/booking"
         android:title="Reservations"
-
         />
+
     <item
         android:id="@+id/tab_my_profile"
         android:icon="@drawable/user"

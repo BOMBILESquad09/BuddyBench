@@ -196,21 +196,25 @@ class ReservationRepository {
 
 
 
+
     suspend fun getReservation(
         reservationID: String
     ): ReservationDTO {
         return withContext(Dispatchers.IO){
-            val res = db.collection("reservations")
-                .document(reservationID)
-                .get().await()
+            val res = db.collection("reservations").document(reservationID).get().await()
             val reservationDTO = ReservationDTO()
             reservationDTO.date = LocalDate.parse(res.data!!["date"] as String, DateTimeFormatter.ISO_LOCAL_DATE)
             reservationDTO.startTime = LocalTime.of((res.data!!["startTime"] as Long).toInt(),0)
             reservationDTO.endTime = LocalTime.of((res.data!!["endTime"] as Long).toInt(),0)
             reservationDTO.equipment = res.data!!["equipment"] as Boolean
             reservationDTO.id = res.data!!["id"] as String
+            val acceptedUsers = (res.data!!["accepted"] as List<DocumentReference>).map { it.get() }.map { it.await() }.map { UserRepository.serializeUser(it.data as Map<String, Object>) }
+            val pendingUsers = (res.data!!["pendings"] as List<DocumentReference>).map { it.get() }.map { it.await() }.map { UserRepository.serializeUser(it.data as Map<String, Object>) }
+            reservationDTO.accepted = acceptedUsers
+            reservationDTO.pendings = pendingUsers
+            val court = (res.data!!["court"] as DocumentReference).get().await()
+            reservationDTO.court = court.toObject(CourtDTO::class.java)!!
             reservationDTO
-
         }
     }
 
@@ -226,6 +230,7 @@ class ReservationRepository {
         reservationMap["equipment"] = reservationDTO.equipment
         reservationMap["accepted"] = listOf<DocumentReference>()
         reservationMap["pendings"] = listOf<DocumentReference>()
+
         reservationMap["id"] = reservationID
         return  reservationMap
     }

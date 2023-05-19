@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.activities.findcourt.FindCourtFragment
@@ -49,6 +50,8 @@ class BottomBar(val context: HomeActivity) {
             Tabs.PROFILE -> ShowProfileFragment(context)
             Tabs.RESERVATIONS -> MyReservationsFragment(context)
             Tabs.FINDCOURT -> FindCourtFragment(context)
+            //Tabs.INVITES -> InvitesFragment(context)
+            else -> Fragment()
         }
         transaction.add(R.id.home_fragment_container, newFragment, currentTab.name)
         transaction.commitNow()
@@ -75,6 +78,8 @@ class BottomBar(val context: HomeActivity) {
                     Tabs.PROFILE -> ShowProfileFragment(context)
                     Tabs.RESERVATIONS -> MyReservationsFragment(context)
                     Tabs.FINDCOURT -> FindCourtFragment(context)
+                    //Tabs.INVITES -> InvitesFragment(context)
+                    else -> Fragment()
                 }
 
                 transaction.add(R.id.home_fragment_container, newFragment, newTag.name)

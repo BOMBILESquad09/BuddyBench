@@ -53,8 +53,11 @@ class HomeActivity: AppCompatActivity() {
 
 
         userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this){
+            if (it==null){
+                profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
+            }
             if(it != null)
-            profile = it
+                profile = it
         }
 
 
@@ -96,11 +99,9 @@ class HomeActivity: AppCompatActivity() {
                     )
                     toast.show()
                 }
-
                 val oldEmail = profile.email
                 profile = newProfile
                 profile.imageUri = newImageUri?: profile.imageUri
-
                 putString("profile", profile.toJSON().toString())
                 apply()
                 userViewModel.setSports(profile.sports)

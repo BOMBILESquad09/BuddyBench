@@ -43,12 +43,10 @@ class UserRepository {
             val profile = db.collection("users").document(email).get().await()
             if(profile.data != null){
                 val serializedProfile = serializeUser( profile.data as Map<String, Object>)
-
                 (profile.data!!["friends"] as List<DocumentReference>).map { it.get() }.map { it.await() }.forEach{
                     serializedProfile.friends.add(serializeUser(it.data as Map<String, Object>)) }
                 (profile.data!!["friend_requests_pending"] as List<DocumentReference>).map { it.get() }.map { it.await() }.forEach{
                     serializedProfile.pendings.add(serializeUser(it.data as Map<String, Object>)) }
-
                 callback(serializedProfile)
             } else{
                 val newProfile = createProfile()
@@ -92,15 +90,7 @@ class UserRepository {
     }
 
 
-    fun save(user: UserDTO) {
 
-    }
-
-
-
-    fun checkUser(email: String): UserWithSports? {
-        TODO()
-    }
 
 
     fun update(user: Profile, wrapper: MutableLiveData<Profile>) {
@@ -112,7 +102,7 @@ class UserRepository {
             user.location,
             user.birthdate.toString(),
             user.reliability,
-            null,
+            user.imageUri.toString(),
             user.sports,
             user.friends.map { db.document("users/${it.email}") },
             user.pendings.map { db.document("users/${it.email}") }
