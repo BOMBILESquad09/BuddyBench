@@ -198,7 +198,8 @@ class ReservationRepository {
 
 
     suspend fun getReservation(
-        reservationID: String
+        reservationID: String,
+        userOrganizer: Boolean = false
     ): ReservationDTO {
         return withContext(Dispatchers.IO){
             val res = db.collection("reservations").document(reservationID).get().await()
@@ -208,6 +209,8 @@ class ReservationRepository {
             reservationDTO.endTime = LocalTime.of((res.data!!["endTime"] as Long).toInt(),0)
             reservationDTO.equipment = res.data!!["equipment"] as Boolean
             reservationDTO.id = res.data!!["id"] as String
+            if(userOrganizer)
+                reservationDTO.userOrganizer = UserRepository.serializeUser((res.data!!["user"] as DocumentReference).get().await().data!! as Map<String, Object>)
             val acceptedUsers = (res.data!!["accepted"] as List<DocumentReference>).map { it.get() }.map { it.await() }.map { UserRepository.serializeUser(it.data as Map<String, Object>) }
             val pendingUsers = (res.data!!["pendings"] as List<DocumentReference>).map { it.get() }.map { it.await() }.map { UserRepository.serializeUser(it.data as Map<String, Object>) }
             reservationDTO.accepted = acceptedUsers
