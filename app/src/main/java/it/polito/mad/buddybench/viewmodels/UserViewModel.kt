@@ -67,7 +67,7 @@ class UserViewModel @Inject constructor() : ViewModel() {
         return user
     }
 
-    fun updateUserInfo(profile: Profile, oldEmail: String) {
+    fun updateUserInfo(profile: Profile) {
         userRepositoryFirebase.update(profile, _user)
 
         /*

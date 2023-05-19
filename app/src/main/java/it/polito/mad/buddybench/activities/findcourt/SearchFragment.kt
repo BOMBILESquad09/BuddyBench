@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,6 +30,7 @@ import it.polito.mad.buddybench.activities.findcourt.sportselection.SportsSelect
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.utils.Utils
+import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -41,6 +43,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
     private lateinit var progressLayout: LinearLayout
     private lateinit var progressBar: ProgressBar
     private lateinit var noCourts: TextView
+    val imageViewModel by activityViewModels<ImageViewModel> ()
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

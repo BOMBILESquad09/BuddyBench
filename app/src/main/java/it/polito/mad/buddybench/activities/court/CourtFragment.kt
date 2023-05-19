@@ -23,6 +23,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.apachat.loadingbutton.core.customViews.ProgressButton
+import com.bumptech.glide.Glide
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.WeekDayPosition
 import com.kizitonwose.calendar.view.WeekCalendarView
@@ -36,6 +37,7 @@ import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.persistence.dto.UserDTO
 import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.CourtViewModel
+import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import org.json.JSONObject
 import java.io.FileNotFoundException
@@ -90,6 +92,8 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
     private lateinit var progressDialog: AlertDialog
     private var oldDate: LocalDate? = null
     private var oldStartTime: LocalTime? = null
+
+    private val imageViewModel by viewModels<ImageViewModel> ()
 
 
     override fun onCreateView(
@@ -249,14 +253,17 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
 
             }
         }
-        val bitmap = try {
-            BitmapFactory.decodeStream(view?.context?.assets?.open("courtImages/" + court.path + ".jpg"))
-        } catch (_: FileNotFoundException) {
-            BitmapFactory.decodeStream(view?.context?.assets?.open("courtImages/default_image.jpg"))
+        imageViewModel.getCourtImage(court.path  + ".jpg", {
+            binding.backgroundImage.setImageBitmap(BitmapFactory.decodeStream(view?.context?.assets?.open("courtImages/default_image.jpg")))
+        }) {
+            Glide.with(this)
+                .load(it)
+                .into(binding.backgroundImage)
         }
+
+
         courtToReserve = court
         binding.courtPhoneNumber.text = court.phoneNumber
-        binding.backgroundImage.setImageBitmap(bitmap)
         binding.rating.text = DecimalFormat("#.0").format(court.rating)
         binding.ratingBar.rating = court.rating.toFloat()
         binding.nReviews.text = "(${court.nReviews})"

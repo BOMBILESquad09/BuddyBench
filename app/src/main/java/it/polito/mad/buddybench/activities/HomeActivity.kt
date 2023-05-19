@@ -13,6 +13,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.activityViewModels
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,6 +25,7 @@ import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.enums.Tabs
 import it.polito.mad.buddybench.utils.BottomBar
 import it.polito.mad.buddybench.viewmodels.FindCourtViewModel
+import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import it.polito.mad.buddybench.viewmodels.InvitationsViewModel
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
@@ -42,10 +44,10 @@ class HomeActivity: AppCompatActivity() {
 
     lateinit var profile: Profile
     private lateinit var sharedPref: SharedPreferences
+    val imageViewModel by viewModels<ImageViewModel> ()
     val userViewModel by viewModels<UserViewModel>()
     val findCourtViewModel by viewModels<FindCourtViewModel>()
     val reservationViewModel by viewModels<ReservationViewModel>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home)
@@ -91,23 +93,15 @@ class HomeActivity: AppCompatActivity() {
         if(response.resultCode == Activity.RESULT_OK){
             with(sharedPref.edit()) {
                 val newProfile = Profile.fromJSON(JSONObject(response.data?.getStringExtra("newProfile").toString()))
-                val newImageUri =  if(newProfile.imageUri != null &&  newProfile.imageUri.toString() != profile.imageUri.toString() )
-                    BitmapUtils.saveToInternalStorage(applicationContext, BitmapUtils.uriToBitmap(contentResolver, newProfile.imageUri!!)!!, profile.imageUri) else profile.imageUri
-                if(newImageUri == null){
-                    val toast = Toast.makeText(
-                        applicationContext,
-                        "Something went wrong while saving the profile image...",
-                        Toast.LENGTH_SHORT
-                    )
-                    toast.show()
-                }
-                val oldEmail = profile.email
+
                 profile = newProfile
-                profile.imageUri = newImageUri?: profile.imageUri
+                profile.imageUri = profile.imageUri
                 putString("profile", profile.toJSON().toString())
                 apply()
                 userViewModel.setSports(profile.sports)
-                userViewModel.updateUserInfo(profile, oldEmail)
+                if(profile.imageUri != null)
+                    imageViewModel.postUserImage(profile.email, profile.imageUri!!)
+                userViewModel.updateUserInfo(profile)
                 supportFragmentManager.findFragmentByTag(Tabs.PROFILE.name).let {
                     if (it != null){
                         (it as ShowProfileFragment).let {

@@ -153,8 +153,9 @@ class UserRepository {
                         achievements
                     )
                 )
-
             }
+
+
             return Profile(
                 name = map["name"] as String,
                 surname = map["surname"] as String,
@@ -169,7 +170,9 @@ class UserRepository {
                 imageUri = null,
                 sports = sports,
                 friends = mutableListOf(),
-                pendings = mutableListOf()
+                pendings = mutableListOf(),
+                isFriend = (map["friends"] as List<DocumentReference>).any { it.id == Firebase.auth.currentUser!!.email },
+                isPending = (map["friend_requests_pending"] as List<DocumentReference>).any { it.id == Firebase.auth.currentUser!!.email }
             )
         }
     }

@@ -49,11 +49,7 @@ class MyMonthDayBinder(val context: MyReservationsFragment, private val calendar
             dayTitle.text =
                 viewModel.selectedDate.value?.format(DateTimeFormatter.ofPattern("EEEE, d MMMM y"))
         }
-        if(data.date == LocalDate.of(2023,6,3)){
-            println("........................")
-            println(viewModel.reservations.value?.get(data.date))
-            println("........................")
-        }
+
         container.textView.text = data.date.dayOfMonth.toString()
         container.reservations = viewModel.reservations.value?.get(data.date)
         container.setTextColor(viewModel.selectedDate.value, context.context)

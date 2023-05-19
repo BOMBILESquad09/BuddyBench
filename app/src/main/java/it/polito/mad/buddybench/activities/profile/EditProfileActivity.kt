@@ -25,6 +25,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.findcourt.CourtsDiffUtils
@@ -37,6 +38,7 @@ import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateString
 import it.polito.mad.buddybench.dialogs.EditSportsDialog
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
 import org.json.JSONObject
 
@@ -64,6 +66,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     private var tempSelectedSport: ArrayList<Sports>? = null
     private var oldEmail: String? = null
     private lateinit var sportsRecyclerView: RecyclerView
+    private val imageViewModel by viewModels<ImageViewModel> ()
     // ** Profile Image
     private val launcherCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -143,7 +146,14 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         // ** Profile Image
         imageEdit = findViewById(R.id.profile_image)
         try{
-            imageEdit.setImageURI(profile.imageUri)
+            imageViewModel.getUserImage(profile.email,{
+                imageEdit.setImageResource(R.drawable.person)
+
+            }){
+                Glide.with(this)
+                    .load(it)
+                    .into(imageEdit)
+            }
         } catch (_: Exception){
             imageEdit.setImageResource(R.drawable.person)
         }

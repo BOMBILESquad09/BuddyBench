@@ -7,19 +7,25 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.classes.Sport
 import it.polito.mad.buddybench.enums.Skills
+import it.polito.mad.buddybench.viewmodels.ImageViewModel
 
 @AndroidEntryPoint
 class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_profile) {
 
     lateinit var profile: Profile
+    private val imageViewModel by activityViewModels<ImageViewModel>()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -70,7 +76,11 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_pro
         val iv = thisView.findViewById<ImageView>(R.id.profile_image)
         //resizeImageView(iv)
         try{
-            iv.setImageURI(profile.imageUri)
+            imageViewModel.getUserImage(profile.email,{iv.setImageResource(R.drawable.person)}){
+                Glide.with(this)
+                    .load(it)
+                    .into(iv)
+            }
         } catch (_: Exception){
             iv.setImageResource(R.drawable.person)
         }
