@@ -83,8 +83,6 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
             mutableListOf(), mutableListOf()
             ).toJSON().toString()
         }
-
-
     }
 
     fun toJSON(): JSONObject {
@@ -119,8 +117,6 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
     }
 
 
-
-
     fun getSportsEnum(): List<Sports> {
         val sportsList = mutableListOf<Sports>()
         for (sport in this.sports.filter { it.skill != Skills.NULL }) {
@@ -128,150 +124,5 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
         }
         return sportsList
     }
-
-    fun updateSkillLevel(sport: Sport, skill: Skills) {
-        this.sports.find { it.name == sport.name }?.skill = skill
-
-    }
-
-    //TODO: BETTER TO MOVE THE FOLLOWING METHODS IN ANOTHER FILE
-
-    /**
-     * Adds sport cards to the profile section relative to the profile.sports values
-     * The context (activity) and the container layout are passed as parameters
-     * @param context The Activity or context in which the function is called
-     * @param sportContainer The container layout in which to add the cards
-     */
-    fun populateSportCards(context: AppCompatActivity,
-                           sportContainer: LinearLayout,
-                           onDeleteSport: () -> Unit = {},
-                           onSkillSelected: (CardView, Sport) -> Unit = {_,_ -> },
-                           edit: Boolean = false,
-                           popupOpened:PopupMenu?  = null
-    ) {
-        sportContainer.removeAllViews()
-        if (this.sports.filter { it.skill != Skills.NULL }.isEmpty()) {
-            val emptySportsText = TextView(context)
-            emptySportsText.text = context.getString(R.string.no_sports)
-            sportContainer.addView(emptySportsText)
-            emptySportsText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
-            return
-        }
-        this.sports.sortedBy {
-            it.name
-        }
-        return
-        /*for (sport in this.sports.filter { it.skill != Skills.NULL }) {
-            val layout = if (!edit) R.layout.card_sport else R.layout.card_sport_edit
-
-            val sportCard = LayoutInflater.from(context).inflate(layout, sportContainer, false)
-
-            val achievementButton = sportCard.findViewById<ImageView>(R.id.achievements_button)
-            val popup = context.findViewById<CardView>(R.id.sport_card_expanded)
-
-            //val cardView = sportCard.findViewById<CardView>(R.id.sport_card_view)
-            //val screen = context.findViewById<LinearLayout>(R.id.profile_page)
-            //val inflater = TransitionInflater.from(context)
-            //val transition = inflater.inflateTransition(R.transition.card_expand_transition)
-
-
-
-
-            /*sportCard.setOnClickListener {
-                flipCard(context, it)
-            }*/
-
-            // ** Sport card dynamic values
-
-            val sportName = sportCard.findViewById<TextView>(R.id.sport_card_name)
-            val sportIcon = sportCard.findViewById<ImageView>(R.id.sport_card_icon)
-            val sportSkillLevelText = sportCard.findViewById<TextView>(R.id.skill_level_card_text)
-            val sportGamesPlayed = sportCard.findViewById<TextView>(R.id.games_played_text)
-
-            sportName.text = Utils.formatString(sport.name.toString())
-            sportIcon?.setImageResource(Sports.sportToIconDrawable(sport.name))
-            // TODO: Doesn't work
-            //sportSkillLevelText.setBackgroundColor(Skills.skillToColor(sport.skill))
-            sportSkillLevelText.text = Utils.formatString(sport.skill.toString())
-            sportGamesPlayed.text = String.format(
-                context.resources.getString(R.string.games_played),
-                sport.matchesPlayed
-            )
-
-            // ** Add card to container
-
-            val deleteButton = sportCard.findViewById<LinearLayout>(R.id.close_button)
-
-            deleteButton?.setOnClickListener {
-                val newSports = this.sports.map {
-                    if (it.name == sport.name)
-                        it.skill = Skills.NULL
-                    it
-                }
-                this.sports = newSports.toMutableList()
-                onDeleteSport()
-                this.populateSportCards(context, sportContainer, edit = true, onSkillSelected = onSkillSelected)
-            }
-            val sportSkillLevel = sportCard.findViewById<CardView>(R.id.skill_level_card)
-            if (edit) {
-                sportSkillLevel.setOnClickListener(){
-
-                    onSkillSelected(sportSkillLevel, sport)
-                }
-            }
-            sportContainer.addView(sportCard)
-        }*/
-    }
-
-    fun refreshSportsCard(context: AppCompatActivity, sportContainer: LinearLayout, sport: Sport){
-        val children = sportContainer.children
-        for (child in children){
-            val sportName = child.findViewById<TextView>(R.id.sport_card_name)
-            if(sportName.text == Utils.formatString(sport.name.toString())){
-                child.findViewById<TextView>(R.id.skill_level_card_text).text = Utils.formatString(sport.skill.toString())
-            }
-        }
-    }
-    /*fun flipCard(context: Context, view: View) {
-        val front = view.findViewById<ConstraintLayout>(R.id.sport_card_linear_layout)
-        val back = view.findViewById<ConstraintLayout>(R.id.sport_card_back)
-        if(front.visibility == View.VISIBLE){
-
-            val flipOutAnimatorSet =
-                AnimatorInflater.loadAnimator(
-                    context,
-                    R.animator.flip_out
-                ) as AnimatorSet
-            flipOutAnimatorSet.setTarget(view)
-            flipOutAnimatorSet.start()
-            front.visibility = View.INVISIBLE
-            back.visibility = View.VISIBLE
-
-        } else {
-
-            val flipInAnimatorSet =
-                AnimatorInflater.loadAnimator(
-                    context,
-                    R.animator.flip_in
-                ) as AnimatorSet
-            flipInAnimatorSet.setTarget(view)
-            val mainAnimator = flipInAnimatorSet.childAnimations[0] as ValueAnimator
-            mainAnimator.addUpdateListener { p0 ->
-                val currentValue = p0.animatedValue as Float
-
-
-                if (currentValue == -90.0f) {
-                    front.visibility = View.VISIBLE
-                    back.visibility = View.INVISIBLE
-                }
-            }
-            flipInAnimatorSet.start()
-
-
-
-        }
-
-    }*/
-
 
 }

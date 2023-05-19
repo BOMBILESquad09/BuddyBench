@@ -1,33 +1,18 @@
 package it.polito.mad.buddybench.persistence.firebaseRepositories
 
 import android.content.SharedPreferences
-import android.net.Uri
-import androidx.compose.ui.text.substring
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.ktx.app
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.classes.ProfileData
 import it.polito.mad.buddybench.classes.Sport
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.UserDTO
-import it.polito.mad.buddybench.persistence.entities.User
-import it.polito.mad.buddybench.persistence.entities.UserSport
-import it.polito.mad.buddybench.persistence.entities.UserWithSports
-import it.polito.mad.buddybench.persistence.entities.UserWithSportsDTO
-import it.polito.mad.buddybench.persistence.entities.toUserDTO
-import it.polito.mad.buddybench.persistence.entities.toUserSportDTO
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -37,16 +22,15 @@ import java.time.format.DateTimeFormatter
 class UserRepository {
     val db = FirebaseFirestore.getInstance()
 
-
     suspend fun getUser(email: String, callback: (Profile) -> Unit) {
         withContext(Dispatchers.IO){
             val profile = db.collection("users").document(email).get().await()
             if(profile.data != null){
-                val serializedProfile = serializeUser( profile.data as Map<String, Object>)
+                val serializedProfile = serializeUser( profile.data as Map<String, Any>)
                 (profile.data!!["friends"] as List<DocumentReference>).map { it.get() }.map { it.await() }.forEach{
-                    serializedProfile.friends.add(serializeUser(it.data as Map<String, Object>)) }
+                    serializedProfile.friends.add(serializeUser(it.data as Map<String, Any>)) }
                 (profile.data!!["friend_requests_pending"] as List<DocumentReference>).map { it.get() }.map { it.await() }.forEach{
-                    serializedProfile.pendings.add(serializeUser(it.data as Map<String, Object>)) }
+                    serializedProfile.pendings.add(serializeUser(it.data as Map<String, Any>)) }
                 callback(serializedProfile)
             } else{
                 val newProfile = createProfile()
@@ -88,10 +72,6 @@ class UserRepository {
             ), listOf(), listOf()
         )
     }
-
-
-
-
 
     fun update(user: Profile, wrapper: MutableLiveData<Profile>) {
         val profileData = ProfileData(
@@ -140,7 +120,7 @@ class UserRepository {
     }
 
     companion object {
-        fun serializeUser(map: Map<String, Object>): Profile {
+        fun serializeUser(map: Map<String, Any>): Profile {
             val sports = mutableListOf<Sport>()
             val fbSports = map["sports"] as List<Map<String, Any>>
             for (s in fbSports) {

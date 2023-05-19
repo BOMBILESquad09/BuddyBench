@@ -42,13 +42,6 @@ class ShowProfileActivity : AppCompatActivity() {
             profile = it
             setGUI()
         }
-
-        userViewModel.profileImage.observe(this) {
-            println("Profile image observer uri: $it")
-            setProfileImage(it)
-        }
-
-        userViewModel.getProfileImage()
     }
 
     private fun setGUI(){

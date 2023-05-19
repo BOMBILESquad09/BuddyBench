@@ -260,8 +260,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         //TODO: on rotation the image is not returned. Its possible to retrieve the bitmap of the snapped photo in the bundle, but the methods are deprecated or requiring API 33
         if (response.resultCode != Activity.RESULT_OK || imageUri == null) return
 
-        imageUri?.let { uploadImage(it) }
-
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, imageUri!!)
         imageEdit.setImageBitmap(bitmap)
         profile.imageUri = imageUri
@@ -272,16 +270,11 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         if (response.resultCode != Activity.RESULT_OK || response.data == null) return
         imageUri = response.data?.data
 
-        imageUri?.let { uploadImage(it) }
-
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, imageUri!!)
         imageEdit.setImageBitmap(bitmap)
         profile.imageUri = imageUri
     }
 
-    private fun uploadImage(uri: Uri) {
-        userViewModel.uploadProfileImage(uri)
-    }
 
     private fun checkSdkVersion(): Boolean {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
