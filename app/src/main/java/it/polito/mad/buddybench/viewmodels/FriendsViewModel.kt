@@ -24,16 +24,19 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     // ** Loading state
     private val _l: MutableLiveData<Boolean> = MutableLiveData(true)
     private val _lAdd: MutableLiveData<Boolean> = MutableLiveData(false)
+    private val _lRequests: MutableLiveData<Boolean> = MutableLiveData(false)
     val l: LiveData<Boolean> get() = _l
     val lAdd: LiveData<Boolean> get() = _lAdd
+    val lRequests: LiveData<Boolean> get() = _lRequests
 
     // ** Friends data
     private val _possibleFriends: MutableLiveData<List<Profile>> = MutableLiveData(emptyList())
     private val _friends: MutableLiveData<List<Profile>> = MutableLiveData(emptyList())
-    // TODO: Friend requests
+    private val _friendRequests: MutableLiveData<List<Profile>> = MutableLiveData(emptyList())
 
     val possibleFriends: LiveData<List<Profile>> get() = _possibleFriends
     val friends: LiveData<List<Profile>> get() = _friends
+    val friendRequests: LiveData<List<Profile>> get() = _friendRequests
 
     fun getPossibleFriends() {
         _l.postValue(true)
@@ -53,5 +56,29 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
         }
         _lAdd.postValue(false)
         callback()
+    }
+
+    fun getFriendRequests() {
+        _lRequests.postValue(true)
+        if (currentUser != null) {
+            runBlocking {
+                userRepository.getUser(currentUser.email!!) {
+                    _friendRequests.postValue(it.pendings)
+                }
+            }
+        }
+        _lRequests.postValue(false)
+    }
+
+    fun confirmRequest(email: String) {
+        _lRequests.postValue(true)
+        runBlocking { friendRepository.acceptFriendRequest(email) }
+        _lRequests.postValue(false)
+    }
+
+    fun rejectRequest(email: String) {
+        _lRequests.postValue(true)
+        runBlocking { friendRepository.refuseFriendRequest(email) }
+        _lRequests.postValue(false)
     }
 }

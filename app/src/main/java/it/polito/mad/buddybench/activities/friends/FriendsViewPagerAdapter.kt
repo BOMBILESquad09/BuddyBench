@@ -12,7 +12,7 @@ class FriendsViewPagerAdapter(fragment: Fragment): FragmentStateAdapter(fragment
         println("Position: $position")
         return when (position) {
             0 -> FindFriendFragment()
-            1 -> FriendRequestsFragment()
+            1 -> FriendRequestFragment()
             2 -> FriendListFragment()
             else -> FindFriendFragment()
         }
