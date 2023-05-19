@@ -126,10 +126,13 @@ class CourtRepository {
 
             .get()
             .addOnSuccessListener {
-                if (it.size() == 0) callback(false)
+                if (it.size() == 0) {
+                    callback(false)
+                    return@addOnSuccessListener
+                }
                 val dates = it.map { Pair(LocalDate.parse(it.data["date"] as String, DateTimeFormatter.ISO_LOCAL_DATE), (it.data["endTime"] as Long).toInt()) }
-                val minDate = dates.map { it.first }.min()
-                val minEndTime = dates.filter{it.first == minDate}.map { it.second }.min()
+                val minDate = dates.minOfOrNull { d -> d.first }!!
+                val minEndTime = dates.filter { t -> t.first == minDate }.minOfOrNull { t -> t.second }!!
 
                 if(minDate == LocalDate.now()){
                     callback(minEndTime <= LocalTime.now().hour )
