@@ -24,6 +24,7 @@ import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.enums.Tabs
 import it.polito.mad.buddybench.utils.BottomBar
 import it.polito.mad.buddybench.viewmodels.FindCourtViewModel
+import it.polito.mad.buddybench.viewmodels.InvitationsViewModel
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
 import org.json.JSONObject
@@ -37,6 +38,7 @@ class HomeActivity: AppCompatActivity() {
     private val launcherEdit = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onEditReturn(it)}
     val launcherReservation = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onReservationReturn(it)}
     val launcherReviews = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { onReviewsReturn(it) }
+    val invitationsViewModel by viewModels<InvitationsViewModel>()
 
     lateinit var profile: Profile
     private lateinit var sharedPref: SharedPreferences
@@ -49,7 +51,7 @@ class HomeActivity: AppCompatActivity() {
         setContentView(R.layout.home)
         sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         reservationViewModel.email = Firebase.auth.currentUser!!.email!!
-
+        invitationsViewModel.subscribeInvitations()
 
 
         userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this){

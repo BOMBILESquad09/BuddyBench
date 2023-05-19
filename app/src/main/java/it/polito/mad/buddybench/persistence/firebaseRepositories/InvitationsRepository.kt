@@ -20,16 +20,18 @@ class InvitationsRepository {
     val reservationRepository = ReservationRepository()
 
 
-    fun subscribeRequests(){
+    fun subscribeInvitations(onSuccess: (Int) -> Unit){
         val currentEmail = Firebase.auth.currentUser!!.email!!
-        db.collection("user").document(currentEmail).addSnapshotListener { value, error ->
-           println((value!!.data!!["play_request_pendings"] as List<*>).size)
+        db.collection("users").document(currentEmail).addSnapshotListener { value, error ->
+            if(error == null && value != null && value.exists()){
+                onSuccess((value!!.data!!["play_request_pendings"] as List<DocumentReference>).size)
+            }
         }
     }
-    suspend fun getRequests(): List<ReservationDTO>{
+    suspend fun getInvitations(): List<ReservationDTO>{
         return withContext(Dispatchers.IO){
             val currentEmail = Firebase.auth.currentUser!!.email!!
-            val invitations = (db.collection("user")
+            val invitations = (db.collection("users")
                 .document(currentEmail)
                 .get().await().data!!["play_request_pendings"] as List<DocumentReference>).map {
                     reservationRepository.getReservation(it.id, userOrganizer = true)
@@ -37,7 +39,7 @@ class InvitationsRepository {
             invitations
         }
     }
-    suspend fun sendRequests(reservationDTO: ReservationDTO,usersToInvite: List<String>){
+    suspend fun sendInvitations(reservationDTO: ReservationDTO,usersToInvite: List<String>){
         withContext(Dispatchers.IO){
             val currentEmail = Firebase.auth.currentUser!!.email!!
             val reservationDocName = reservationDTO.id
@@ -54,7 +56,7 @@ class InvitationsRepository {
         }
     }
 
-    suspend fun removeRequests(reservationDTO: ReservationDTO,usersToInvite: List<String>){
+    suspend fun removeInvitations(reservationDTO: ReservationDTO,usersToInvite: List<String>){
         withContext(Dispatchers.IO){
             val currentEmail = Firebase.auth.currentUser!!.email!!
             val reservationDocName = reservationDTO.id
@@ -71,7 +73,7 @@ class InvitationsRepository {
         }
     }
 
-    suspend fun acceptRequest(reservationDTO: ReservationDTO){
+    suspend fun acceptInvitation(reservationDTO: ReservationDTO){
         withContext(Dispatchers.IO){
             val currentEmailDoc = db.collection("users").document(Firebase.auth.currentUser!!.email!!)
             val reservationDoc = db.collection("reservations").document(reservationDTO.id)
@@ -87,7 +89,7 @@ class InvitationsRepository {
         }
     }
 
-    suspend fun refuseRequest(reservationDTO: ReservationDTO){
+    suspend fun refuseInvitation(reservationDTO: ReservationDTO){
         withContext(Dispatchers.IO){
             val currentEmailDoc = db.collection("users").document(Firebase.auth.currentUser!!.email!!)
             val reservationDoc = db.collection("reservations").document(reservationDTO.id)
