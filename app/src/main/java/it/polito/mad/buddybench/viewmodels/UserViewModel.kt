@@ -60,12 +60,9 @@ class UserViewModel @Inject constructor() : ViewModel() {
 
     fun getUser(email: String): LiveData<Profile> {
         runBlocking {
-
                 userRepositoryFirebase.getUser(email) {
                     _user.postValue(it)
                 }
-
-
         }
         return user
     }
