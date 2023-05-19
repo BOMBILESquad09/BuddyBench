@@ -229,5 +229,6 @@
     <string name="friends">Friends</string>
     <string name="requests">Requests</string>
     <string name="list">List</string>
+    <string name="find">Find</string>
 
 </resources>

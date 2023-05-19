@@ -15,6 +15,9 @@
         android:text="@string/friends" />
 
     <com.google.android.material.tabs.TabLayout
+        android:theme="@style/Theme.MaterialComponents.Light"
+        android:backgroundTint="@color/md_theme_light_background"
+        app:tabIndicatorColor="@color/md_theme_light_primary"
         android:id="@+id/tab_friends"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,6 +25,11 @@
         app:tabSelectedTextColor="@color/md_theme_light_primary"
         app:tabTextAppearance="@style/TabBarText"
         >
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/find" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.google.android.material.badge.BadgeDrawable
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.databinding.FragmentFriendsBinding
 
@@ -40,5 +41,12 @@ class FriendsFragment(val context: HomeActivity) : Fragment() {
         binding.tabFriendsViewpager.adapter = viewPagerAdapter
         binding.tabFriends.addOnTabSelectedListener(FriendsTabListener(viewPager = binding.tabFriendsViewpager))
         binding.tabFriendsViewpager.registerOnPageChangeCallback(FriendsOnPageChangeCallback(binding.tabFriends))
+
+        // **  TODO: Check for requests and add the badge
+        val requestsBadge: BadgeDrawable? = binding.tabFriends.getTabAt(1)?.orCreateBadge
+        if (requestsBadge != null) {
+            requestsBadge.number = 1
+            requestsBadge.isVisible = true
+        }
     }
 }
