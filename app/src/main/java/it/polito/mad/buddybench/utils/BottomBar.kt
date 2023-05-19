@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
+import it.polito.mad.buddybench.activities.InvitesFragment
 import it.polito.mad.buddybench.activities.findcourt.FindCourtFragment
 import it.polito.mad.buddybench.activities.profile.ShowProfileFragment
 import it.polito.mad.buddybench.activities.myreservations.MyReservationsFragment
@@ -50,7 +51,7 @@ class BottomBar(val context: HomeActivity) {
             Tabs.PROFILE -> ShowProfileFragment(context)
             Tabs.RESERVATIONS -> MyReservationsFragment(context)
             Tabs.FINDCOURT -> FindCourtFragment(context)
-            //Tabs.INVITES -> InvitesFragment(context)
+            Tabs.INVITATIONS -> InvitesFragment(context)
             else -> Fragment()
         }
         transaction.add(R.id.home_fragment_container, newFragment, currentTab.name)
@@ -78,8 +79,7 @@ class BottomBar(val context: HomeActivity) {
                     Tabs.PROFILE -> ShowProfileFragment(context)
                     Tabs.RESERVATIONS -> MyReservationsFragment(context)
                     Tabs.FINDCOURT -> FindCourtFragment(context)
-                    //Tabs.INVITES -> InvitesFragment(context)
-                    else -> Fragment()
+                    Tabs.INVITATIONS -> InvitesFragment(context)
                 }
 
                 transaction.add(R.id.home_fragment_container, newFragment, newTag.name)

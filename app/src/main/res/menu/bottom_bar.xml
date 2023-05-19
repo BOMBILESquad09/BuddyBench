@@ -12,6 +12,11 @@
         />
 
     <item
+        android:id="@+id/tab_my_invitations"
+        android:icon="@drawable/invitations"
+        android:title="Invitations" />
+
+    <item
         android:id="@+id/tab_my_profile"
         android:icon="@drawable/user"
         android:title="Profile" />
