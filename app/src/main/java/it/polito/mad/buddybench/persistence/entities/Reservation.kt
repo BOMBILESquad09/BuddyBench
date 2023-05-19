@@ -51,7 +51,8 @@ data class Reservation(
 
 fun Reservation.toReservationDTO(user: User, court: Court): ReservationDTO {
     return ReservationDTO (
-        userOrganizer = user.toUserDTO(),
+        id = this.id.toString(),
+        userOrganizer = user.toUserDTO().toProfile(),
         court = court.toCourtDTO(),
         date = LocalDate.parse(this.date),
         startTime = LocalTime.of(this.startTime,0),

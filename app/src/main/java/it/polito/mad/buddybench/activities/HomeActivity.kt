@@ -13,7 +13,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,12 +50,16 @@ class HomeActivity: AppCompatActivity() {
         sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         reservationViewModel.email = Firebase.auth.currentUser!!.email!!
 
+
+
         userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this){
-            if(it != null) profile = it
+            if (it==null){
+                profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
+            }
+            if(it != null)
+                profile = it
         }
 
-        // ** Initialize Firebase Cloud Storage
-        FirebaseApp.initializeApp(this)
 
         bottomBar.setup()
     }
@@ -96,11 +99,9 @@ class HomeActivity: AppCompatActivity() {
                     )
                     toast.show()
                 }
-
                 val oldEmail = profile.email
                 profile = newProfile
                 profile.imageUri = newImageUri?: profile.imageUri
-
                 putString("profile", profile.toJSON().toString())
                 apply()
                 userViewModel.setSports(profile.sports)

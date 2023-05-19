@@ -37,6 +37,7 @@ import java.time.format.DateTimeFormatter
 class EditConfirmDialogSheet(
     private val editMode: Boolean,
     private val courtViewModel: CourtViewModel,
+    private val reservationID: String?,
     private val courtToReserve: CourtDTO,
     private val equipment: Boolean?,
     private val reservationViewModel: ReservationViewModel,
@@ -87,7 +88,8 @@ class EditConfirmDialogSheet(
                 ).show()
             } else {
                 val reservation = ReservationDTO(
-                    userOrganizer = user,
+                    id = reservationID ?: "",
+                    userOrganizer = user.toProfile(),
                     court = courtToReserve,
                     date = selectedDate,
                     startTime = courtViewModel.selectedTimes.first(),
@@ -99,15 +101,20 @@ class EditConfirmDialogSheet(
                 switch.isEnabled = false
                 checkboxAccept.isEnabled = false
 
+
+
                 reservationViewModel.saveReservation(
                     reservation,
                     editMode,
                     oldDate,
-                    oldStartTime
-                )
+
+                ) {
+                    buildAlertDialog("Ops","Seems that the time slots selected are not available",requireContext()).show()
+                }
 
                 reservationViewModel.loading.observe(viewLifecycleOwner) {
-                    if (it) {
+
+                    if (!it) {
                         val bitmap =
                             AppCompatResources.getDrawable(
                                 requireContext(),
@@ -119,6 +126,7 @@ class EditConfirmDialogSheet(
                             Thread.sleep(700)
                             callback()
                         }.start()
+
                     } else {
                         confirmButton.startAnimation()
                     }
@@ -235,6 +243,8 @@ class EditConfirmDialogSheet(
     override fun isSheetAlwaysExpanded(): Boolean {
         return true
     }
+
+
 
 
 }

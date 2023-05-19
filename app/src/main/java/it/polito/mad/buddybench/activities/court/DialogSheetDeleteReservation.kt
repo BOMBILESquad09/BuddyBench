@@ -15,15 +15,14 @@ import com.apachat.loadingbutton.core.presentation.State
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import java.time.LocalDate
 import java.time.LocalTime
 
 @AndroidEntryPoint
 class DialogSheetDeleteReservation(
-    private val courtName: String,
-    private val sport: Sports,
-    private val oldStartTime: LocalTime,
+    private val reservationDTO: ReservationDTO,
     private val oldDate: LocalDate,
     private val email: String,
     private val callback: () -> Unit
@@ -53,20 +52,18 @@ class DialogSheetDeleteReservation(
                         )!!
                             .toBitmap()
                     button.doneLoadingAnimation(Color.RED, bitmap)
+
+                } else {
+                    button.startAnimation()
                     Thread {
                         Thread.sleep(700)
                         callback()
                     }.start()
-                } else {
-                    button.startAnimation()
                 }
             }
             reservationViewModel.deleteReservation(
-                courtName,
-                sport,
-                oldStartTime,
+                reservationDTO,
                 oldDate,
-                email,
                 this,
             )
         }

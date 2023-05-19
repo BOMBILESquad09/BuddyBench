@@ -28,8 +28,6 @@
         android:clickable="true"
         android:focusable="true"
         android:orientation="vertical"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="16dp"
         >
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/home_fragment_container"

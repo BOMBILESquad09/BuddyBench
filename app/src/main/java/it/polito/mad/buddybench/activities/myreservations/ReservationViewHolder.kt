@@ -71,10 +71,16 @@ class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent
         val wrappedDrawable = DrawableCompat.wrap(iconDrawable!!)
         iconSport.setImageDrawable(wrappedDrawable)
         slot.text = "${reservation.startTime.format(formatter)} - ${reservation.endTime.format(formatter)}"
-        if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime))
+
+        if (reservation.isUserOrganizerInitialized() && reservation.userOrganizer.email != Firebase.auth.currentUser!!.email!!){
+            manageBtn.text = "Invited"
+            manageBtn.isEnabled = false
+        }
+        else if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime))
             manageBtn.text = "Review it"
         manageBtn.setTextColor(Sports.getSportColor(Sports.valueOf(reservation.court.sport), view.context))
         manageBtn.setOnClickListener {
+
             if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime)){
                 launchReview(reservation)
             } else {
@@ -102,6 +108,7 @@ class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent
         intent.putExtra("startTime", reservation.startTime.hour)
         intent.putExtra("endTime", reservation.endTime.hour)
         intent.putExtra("equipment", reservation.equipment)
+        intent.putExtra("id", reservation.id)
         launcher.launch(intent)
     }
 

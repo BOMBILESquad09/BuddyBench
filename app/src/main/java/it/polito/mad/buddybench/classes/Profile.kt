@@ -36,7 +36,9 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 
-class Profile(var name: String?, var surname: String?, var nickname: String?, var email: String, var location: String?, var birthdate: LocalDate, var reliability: Int, var imageUri: Uri?, var sports: MutableList<Sport> ) {
+class Profile(var name: String?, var surname: String?, var nickname: String?, var email: String, var location: String?, var birthdate: LocalDate, var reliability: Int, var imageUri: Uri?, var sports: MutableList<Sport>,
+            var friends: MutableList<Profile>, val pendings: MutableList<Profile>
+              ) {
     var matchesPlayed:Int = sports.filter { it.skill != Skills.NULL  }.fold(0){a: Int, b: Sport -> a + b.matchesPlayed }
     var age:Int = ChronoUnit.YEARS.between(birthdate, LocalDate.now()).toInt()
     var matchesOrganized: Int = sports.filter { it.skill != Skills.NULL }.fold(0){ a:Int, b: Sport -> a + b.matchesOrganized}
@@ -66,7 +68,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
                 val jsonSport = sportsList.getJSONObject(i)
                 sports.add(Sport.fromJSON(jsonSport))
             }
-            return Profile(name, surname, nickname, email, location, birthday, reliability, imageUri,sports)
+            return Profile(name, surname, nickname, email, location, birthday, reliability, imageUri,sports, mutableListOf(), mutableListOf())
         }
 
 
@@ -77,7 +79,9 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
                 mutableListOf(
                     Sport(Sports.TENNIS, Skills.SKILLED, 3, 2, mutableListOf("Coppa del Nonno")),
                     Sport(Sports.FOOTBALL, Skills.NEWBIE, 7, 6, mutableListOf("Coppa Campionii"))
-                )).toJSON().toString()
+                ),
+            mutableListOf(), mutableListOf()
+            ).toJSON().toString()
         }
 
 

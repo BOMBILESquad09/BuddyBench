@@ -26,6 +26,7 @@ import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 import java.time.temporal.WeekFields
 import java.util.Locale
+import java.util.UUID
 
 
 class Utils {
@@ -184,6 +185,11 @@ class Utils {
             val dialog: AlertDialog = builder.create()
             dialog.show()
             return dialog
+        }
+
+        fun generateUUID(): String {
+            val uuid = UUID.randomUUID()
+            return uuid.toString()
         }
     }
 }

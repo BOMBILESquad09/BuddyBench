@@ -53,8 +53,8 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         val filterButton = view.findViewById<CardView>(R.id.filterButton)
         val filterIcon = view.findViewById<ImageView>(R.id.filterIcon)
 
-        parent.context.userViewModel.username.observe(viewLifecycleOwner) {
-            textUser.text = parent.context.getString(R.string.user_hello, it)
+        parent.context.userViewModel.user.observe(viewLifecycleOwner) {
+            textUser.text = parent.context.getString(R.string.user_hello, it.name)
         }
 
         progressLayout = view.findViewById(R.id.progess_layout)

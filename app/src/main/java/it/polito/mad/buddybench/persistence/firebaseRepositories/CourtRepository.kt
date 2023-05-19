@@ -26,8 +26,7 @@ class CourtRepository {
             val hash: HashMap<String, Int> = HashMap()
             hash["openingTime"] = t.value.first.hour
             hash["closingTime"] = t.value.second.hour
-            timetable.put(t.key.name, hash)
-
+            timetable[t.key.name] = hash
         }
 
         db.collection("courts")
@@ -129,11 +128,8 @@ class CourtRepository {
                 if (it.size() == 0) callback(false)
                 val dates = it.map { Pair(LocalDate.parse(it.data["date"] as String, DateTimeFormatter.ISO_LOCAL_DATE), (it.data["endTime"] as Long).toInt()) }
                 val minDate = dates.map { it.first }.min()
-                val minEndTime = dates.first{it.first == minDate}.second
-                println(minDate)
-                println(minEndTime)
-                println(LocalTime.now().hour )
-                println(LocalDate.now())
+                val minEndTime = dates.filter{it.first == minDate}.map { it.second }.min()
+
                 if(minDate == LocalDate.now()){
                     callback(minEndTime <= LocalTime.now().hour )
                 } else {
