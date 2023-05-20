@@ -421,6 +421,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         profile.birthdate = birthdateListener.value!!
         profile.email = emailEdit.text.toString()
         profile.imageUri = imageUri ?: profile.imageUri
+        profile.sports = userViewModel.getAllSports().toMutableList()
         val newProfileJSON = profile.toJSON().toString()
         intent.putExtra("newProfile", newProfileJSON)
         intent.putExtra("newImage", newImage)
