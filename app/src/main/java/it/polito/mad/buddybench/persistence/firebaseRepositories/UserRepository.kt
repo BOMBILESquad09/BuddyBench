@@ -41,16 +41,25 @@ import java.util.Objects
 class UserRepository {
     val db = FirebaseFirestore.getInstance()
     var profile: Profile? = null
-
+    var otherProfile: Profile? = null
 
     suspend fun getUser(email: String = Firebase.auth.currentUser!!.email!!, callback: (Profile) -> Unit){
         withContext(Dispatchers.IO){
-            if(profile == null){
-                fetchUser(email,callback)
-            } else
-            {
-                callback(profile!!)
+            if(email == Firebase.auth.currentUser!!.email!!){
+                if(profile == null){
+                    fetchUser(email,callback)
+                } else
+                {
+                    callback(profile!!)
+                }
+            } else{
+                if(otherProfile == null){
+                    fetchUser(email, callback)
+                } else{
+                    callback(otherProfile!!)
+                }
             }
+
         }
     }
 
@@ -105,18 +114,22 @@ class UserRepository {
                         it.matchesOrganized = counters[it.name]?.first ?: 0
                         it.matchesPlayed = counters[it.name]?.second ?: 0
                     }
+
                     update(serializedProfile, callback)
 
                     return@withContext
                 }
-
-                this@UserRepository.profile = serializedProfile
+                if(email == Firebase.auth.currentUser!!.email)
+                    this@UserRepository.profile = serializedProfile
+                else
+                    this@UserRepository.otherProfile = serializedProfile
                 callback(serializedProfile)
             } else {
                 val newProfile = createProfile()
                 val x = db.collection("users").document(newProfile.email).set(
                     newProfile
                 ).await()
+
                 this@UserRepository.profile = Profile(
                     newProfile.name,
                     newProfile.surname,
@@ -168,7 +181,11 @@ class UserRepository {
                         "last_update" to LocalDate.now().toString()
                     )
                 ).await()
-            this@UserRepository.profile = user
+            if(user.email == Firebase.auth.currentUser!!.email)
+                this@UserRepository.profile = user
+            else{
+                this@UserRepository.otherProfile = user
+            }
             callback(user)
         }
 
