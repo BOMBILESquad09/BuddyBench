@@ -9,15 +9,15 @@
         android:id="@+id/tab_my_reservations"
         android:icon="@drawable/booking"
         android:title="@string/reservations"
-
         />
-    <item
-        android:id="@+id/tab_my_profile"
-        android:icon="@drawable/user"
-        android:title="@string/profile" />
     <item
         android:id="@+id/tab_friends"
         android:icon="@drawable/round_groups_24"
         android:title="@string/friends" />
+    <item
+        android:id="@+id/tab_my_profile"
+        android:icon="@drawable/user"
+        android:title="@string/profile" />
+
 
 </menu>

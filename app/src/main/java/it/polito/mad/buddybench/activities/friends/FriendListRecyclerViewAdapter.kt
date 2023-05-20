@@ -5,45 +5,74 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import dagger.hilt.android.internal.managers.FragmentComponentManager
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.activities.HomeActivity
 
 import it.polito.mad.buddybench.activities.friends.placeholder.PlaceholderContent.PlaceholderItem
+import it.polito.mad.buddybench.classes.Profile
+import it.polito.mad.buddybench.databinding.FragmentFindFriendsListBinding
+import it.polito.mad.buddybench.databinding.FragmentFriendListItemBinding
 import it.polito.mad.buddybench.databinding.FragmentItemBinding
+import it.polito.mad.buddybench.viewmodels.FriendsViewModel
 
-/**
- * [RecyclerView.Adapter] that can display a [PlaceholderItem].
- * TODO: Replace the implementation with code for your data type.
- */
+
 class FriendListRecyclerViewAdapter(
-    private val values: List<PlaceholderItem>
+    var values: List<Profile>,
+    val viewModel: FriendsViewModel
 ) : RecyclerView.Adapter<FriendListRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
-        return ViewHolder(
-            FragmentItemBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
+
+            return ViewHolder(
+                FragmentFriendListItemBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
             )
-        )
+
 
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
-        holder.idView.text = item.id
-        holder.contentView.text = item.content
+        holder.bind(item)
     }
 
     override fun getItemCount(): Int = values.size
 
-    inner class ViewHolder(binding: FragmentItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        val idView: TextView = binding.itemNumber
-        val contentView: TextView = binding.content
+    inner class ViewHolder(val binding: FragmentFriendListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        val tvName = binding.tvFriendName
+        val tvUsername = binding.tvFriendUsername
+        val ivImage = binding.ivFriendImage
 
-        override fun toString(): String {
-            return super.toString() + " '" + contentView.text + "'"
+        val btnRemove = binding.btnRemoveFriend
+
+
+        fun bind(profile: Profile){
+            tvName.text = profile.fullName
+            tvUsername.text = profile.nickname
+            (FragmentComponentManager.findActivity(binding.root.context) as HomeActivity).imageViewModel.getUserImage(profile.email,{
+                ivImage.setImageResource(R.drawable.person)
+            }){
+                Glide.with(binding.root.context)
+                    .load(it)
+                    .into(ivImage)
+            }
+            var sure = false
+            btnRemove.setOnClickListener {
+                if(sure == false){
+                    sure = true
+                    btnRemove.text = "Are you sure?"
+                }
+                else{
+                    viewModel.removeFriend(profile.email)
+                }
+            }
+
         }
     }
 

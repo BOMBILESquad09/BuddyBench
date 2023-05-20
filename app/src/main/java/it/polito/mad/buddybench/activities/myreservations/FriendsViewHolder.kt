@@ -27,7 +27,6 @@ class FriendsViewHolder(val v: View):  RecyclerView.ViewHolder(v) {
             profileIv.setImageResource(R.drawable.person)
 
         }){
-            println(profile.first.email)
             Glide.with(v.context)
                 .load(it)
                 .into(profileIv)

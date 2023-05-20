@@ -36,11 +36,25 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Objects
 
+
+
 class UserRepository {
     val db = FirebaseFirestore.getInstance()
+    var profile: Profile? = null
 
 
-    suspend fun getUser(email: String, callback: (Profile) -> Unit) {
+    suspend fun getUser(email: String = Firebase.auth.currentUser!!.email!!, callback: (Profile) -> Unit){
+        withContext(Dispatchers.IO){
+            if(profile == null){
+                fetchUser(email,callback)
+            } else
+            {
+                callback(profile!!)
+            }
+        }
+    }
+
+    suspend fun fetchUser(email: String = Firebase.auth.currentUser!!.email!!, callback: (Profile) -> Unit) {
         withContext(Dispatchers.IO) {
             val profile = db.collection("users").document(email).get().await()
             if (profile.data != null) {
@@ -95,29 +109,32 @@ class UserRepository {
 
                     return@withContext
                 }
+
+                this@UserRepository.profile = serializedProfile
                 callback(serializedProfile)
             } else {
                 val newProfile = createProfile()
                 val x = db.collection("users").document(newProfile.email).set(
                     newProfile
                 ).await()
+                this@UserRepository.profile = Profile(
+                    newProfile.name,
+                    newProfile.surname,
+                    newProfile.nickname,
+                    newProfile.email,
+                    newProfile.location,
+                    LocalDate.parse(
+                        newProfile.birthdate,
+                        DateTimeFormatter.ISO_LOCAL_DATE
+                    ),
+                    newProfile.reliability,
+                    null,
+                    newProfile.sports,
+                    mutableListOf(),
+                    mutableListOf()
+                )
                 callback(
-                    Profile(
-                        newProfile.name,
-                        newProfile.surname,
-                        newProfile.nickname,
-                        newProfile.email,
-                        newProfile.location,
-                        LocalDate.parse(
-                            newProfile.birthdate,
-                            DateTimeFormatter.ISO_LOCAL_DATE
-                        ),
-                        newProfile.reliability,
-                        null,
-                        newProfile.sports,
-                        mutableListOf(),
-                        mutableListOf()
-                    )
+                    this@UserRepository.profile!!
                 )
             }
         }
@@ -151,8 +168,10 @@ class UserRepository {
                         "last_update" to LocalDate.now().toString()
                     )
                 ).await()
+            this@UserRepository.profile = user
             callback(user)
         }
+
 
     }
 

@@ -10,7 +10,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.AdapterListUpdateCallback
+import com.bumptech.glide.Glide
+import dagger.hilt.android.internal.managers.FragmentComponentManager
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.activities.HomeActivity
 
 import it.polito.mad.buddybench.activities.friends.placeholder.PlaceholderContent.PlaceholderItem
 import it.polito.mad.buddybench.classes.Profile
@@ -22,7 +25,7 @@ import kotlinx.coroutines.runBlocking
  * [RecyclerView.Adapter] that can display a [PlaceholderItem].
  * TODO: Replace the implementation with code for your data type.
  */
-class FriendRequestRecyclerViewAdapter(private val values: List<Profile>, private val viewModel: FriendsViewModel) : RecyclerView.Adapter<FriendRequestRecyclerViewAdapter.ViewHolder>() {
+class FriendRequestRecyclerViewAdapter( var values: List<Profile>, private val viewModel: FriendsViewModel) : RecyclerView.Adapter<FriendRequestRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -36,26 +39,23 @@ class FriendRequestRecyclerViewAdapter(private val values: List<Profile>, privat
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
-        holder.tvName.text = item.fullName
-        holder.btnConfirm.setOnClickListener{ confirmRequest(item.email, holder.btnReject.context, position) }
-        holder.btnReject.setOnClickListener { rejectRequest(item.email, holder.btnReject.context, position) }
+        holder.bind(item)
+
     }
 
     override fun getItemCount(): Int = values.size
 
-    private fun confirmRequest(email: String, context: Context, position: Int) {
+    private fun confirmRequest(email: String, context: Context) {
         viewModel.confirmRequest(email)
         Toast.makeText(context, "Friend request accepted", Toast.LENGTH_LONG).show()
-        this.notifyItemRemoved(position)
     }
 
-    private fun rejectRequest(email: String, context: Context, position: Int) {
+    private fun rejectRequest(email: String, context: Context) {
         viewModel.rejectRequest(email)
         Toast.makeText(context, "Friend request declined", Toast.LENGTH_LONG).show()
-        this.notifyItemRemoved(position)
     }
 
-    inner class ViewHolder(binding: FragmentFriendRequestItemBinding) :
+    inner class ViewHolder(val binding: FragmentFriendRequestItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val tvName: TextView = binding.tvFriendRequestName
         val ivImage: ImageView = binding.ivFriendRequestImage
@@ -64,6 +64,19 @@ class FriendRequestRecyclerViewAdapter(private val values: List<Profile>, privat
 
         override fun toString(): String {
             return super.toString() + " '" + tvName.text + "'"
+        }
+
+        fun bind(profile: Profile){
+            tvName.text = profile.fullName
+            ((FragmentComponentManager.findActivity(binding.root.context) as HomeActivity)).imageViewModel.getUserImage(profile.email,{
+                ivImage.setImageResource(R.drawable.person)
+            }){
+                Glide.with(binding.root.context)
+                    .load(it)
+                    .into(ivImage)
+            }
+            btnConfirm.setOnClickListener{ confirmRequest(profile.email, btnReject.context) }
+            btnReject.setOnClickListener { rejectRequest(profile.email, btnReject.context) }
         }
     }
 

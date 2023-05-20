@@ -8,55 +8,66 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.DiffUtil
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.friends.placeholder.PlaceholderContent
+import it.polito.mad.buddybench.viewmodels.FriendsViewModel
 
-/**
- * A fragment representing a list of Items.
- */
-class FriendListFragment : Fragment() {
+
+class FriendListFragment : Fragment(R.layout.fragment_friend_request_list) {
 
     private var columnCount = 1
+    private lateinit var rvFriendList: RecyclerView
+    private lateinit var pbFriendList: ProgressBar
+    private val friendsViewModel by activityViewModels<FriendsViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
-        arguments?.let {
-            columnCount = it.getInt(ARG_COLUMN_COUNT)
-        }
-    }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_item_list, container, false)
+
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         // Set the adapter
-        if (view is RecyclerView) {
-            with(view) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
-                }
-                adapter = FriendListRecyclerViewAdapter(PlaceholderContent.ITEMS)
+        rvFriendList = view.findViewById(R.id.rv_friend_requests)
+        pbFriendList = view.findViewById(R.id.pb_friend_requests)
+
+        // ** Loading state
+        friendsViewModel.lRequests.observe(viewLifecycleOwner) {
+            if (it) {
+                pbFriendList.visibility = View.VISIBLE
+                rvFriendList.visibility = View.GONE
+            } else {
+                pbFriendList.visibility = View.GONE
+                rvFriendList.visibility = View.VISIBLE
             }
         }
-        return view
-    }
 
-    companion object {
+        with(rvFriendList) {
+            layoutManager = when {
+                columnCount <= 1 -> LinearLayoutManager(context)
+                else -> GridLayoutManager(context, columnCount)
+            }
+            adapter = FriendListRecyclerViewAdapter(listOf(), friendsViewModel)
+        }
+        // ** Data
+        friendsViewModel.friends.observe(viewLifecycleOwner) {
+            if (it != null) {
 
-        // TODO: Customize parameter argument names
-        const val ARG_COLUMN_COUNT = "column-count"
+                with(rvFriendList){
+                    val oldList = (adapter as FriendListRecyclerViewAdapter).values
+                    val friendDiff = FriendListDiffUtils(oldList, it)
+                    val diffs = DiffUtil.calculateDiff(friendDiff)
 
-        // TODO: Customize parameter initialization
-        @JvmStatic
-        fun newInstance(columnCount: Int) =
-            FriendListFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_COLUMN_COUNT, columnCount)
+                    (adapter as FriendListRecyclerViewAdapter).values = it
+                    diffs.dispatchUpdatesTo(adapter!!)
                 }
             }
+        }
     }
 }
+
+

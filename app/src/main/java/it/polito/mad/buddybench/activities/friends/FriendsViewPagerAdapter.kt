@@ -9,7 +9,6 @@ class FriendsViewPagerAdapter(fragment: Fragment): FragmentStateAdapter(fragment
     }
 
     override fun createFragment(position: Int): Fragment {
-        println("Position: $position")
         return when (position) {
             0 -> FindFriendFragment()
             1 -> FriendRequestFragment()

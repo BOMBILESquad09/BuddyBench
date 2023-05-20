@@ -17,15 +17,12 @@ class ValidationUtils {
             return string != null && string.trim().isNotEmpty()
         }
 
-        fun validateEmail(string: String?, oldEmail: String?, userViewModel: UserViewModel): Boolean{
+        fun validateEmail(string: String): Boolean{
             if(!validateString(string)) return  false
             //maybe this pattern
             //the following instructions returns true for invalid email like name@domain.i should be false.
             //at least two characters after the last dot
-            val user = userViewModel.checkUserEmail(string!!)
-            if(user!= null && oldEmail != user.user.email) {
-                return false
-            }
+
             return Patterns.EMAIL_ADDRESS.matcher(string).matches();
         }
         private fun validateLocalDate(string: String?): Boolean{

@@ -34,7 +34,7 @@ class FriendsFragment(val context: HomeActivity) : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        friendsViewModel.getFriendRequests()
+        friendsViewModel.subscribeFriendsList()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -51,11 +51,11 @@ class FriendsFragment(val context: HomeActivity) : Fragment() {
         binding.tabFriendsViewpager.registerOnPageChangeCallback(FriendsOnPageChangeCallback(binding.tabFriends))
 
         friendsViewModel.friendRequests.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty()) {
+            if (it != null) {
                 val requestsBadge: BadgeDrawable? = binding.tabFriends.getTabAt(1)?.orCreateBadge
                 if (requestsBadge != null) {
                     requestsBadge.number = it.size
-                    requestsBadge.isVisible = true
+                    requestsBadge.isVisible = it.isNotEmpty()
                 }
             }
         }

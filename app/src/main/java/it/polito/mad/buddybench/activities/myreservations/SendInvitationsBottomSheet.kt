@@ -112,8 +112,12 @@ class SendInvitationsBottomSheet(
                 reservationViewModel.updateAcceptedFriends(it)
         }
 
-        reservationViewModel.profile = userViewModel.user.value!!
-        reservationViewModel.getReservation(reservationDTO.id)
+        userViewModel.getUser().observe(this){
+            reservationViewModel.profile = it
+            reservationViewModel.getReservation(reservationDTO.id)
+        }
+
+
 
         reservationViewModel.acceptedFriends.observe(this){
             if (it != null) {

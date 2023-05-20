@@ -13,16 +13,30 @@ import kotlinx.coroutines.withContext
 class FriendRepository {
     val db = FirebaseFirestore.getInstance()
 
+    fun subscribeFriends(onFailure: ()-> Unit, onSuccess:()->Unit) {
+        val currentEmail = Firebase.auth.currentUser!!.email!!
+        db.collection("users").document(currentEmail).addSnapshotListener { value, error ->
+            if(value != null && value.exists() && error == null){
+                onSuccess()
+            } else{
+                onFailure()
+            }
+        }
+    }
+
+
+
     /*ritorna la lista delle persone che non sono amiche*/
     suspend fun getNotFriends(): List<Profile>{
         return withContext(Dispatchers.IO){
             val currentEmail = Firebase.auth.currentUser!!.email!!
             val usersDocuments = db.collection("users").get().await()
-            val userFriends = (usersDocuments.documents.find { it.id == currentEmail }!!.data!!["friends"] as List<DocumentReference>).map { it.id }
-            val otherUsers = usersDocuments.filter { !userFriends.contains(it.id) }.map {
-                UserRepository.serializeUser(it.data)
+            val userFriends = (usersDocuments.documents.find { it.id == currentEmail }!!.data!!["friends"] as List<DocumentReference>)
+            val otherUsers = usersDocuments.filter { !userFriends.map { f -> f.id }.contains(it.id) }.map {
+                UserRepository.serializeUser(it.data as Map<String, Object>)
             }
-            otherUsers
+
+            otherUsers.filter { it.email != Firebase.auth.currentUser!!.email!! }
         }
     }
 

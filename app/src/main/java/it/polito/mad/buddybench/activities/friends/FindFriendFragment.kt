@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.DiffUtil
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.friends.placeholder.PlaceholderContent
@@ -33,7 +34,6 @@ class FindFriendFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        friendsViewModel.getPossibleFriends()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -51,18 +51,25 @@ class FindFriendFragment : Fragment() {
                 rvFindFriends.visibility = View.VISIBLE
             }
         }
-
+        with(rvFindFriends) {
+            layoutManager = when {
+                columnCount <= 1 -> LinearLayoutManager(context)
+                else -> GridLayoutManager(context, columnCount)
+            }
+            adapter = FindFriendRecyclerViewAdapter(listOf(), friendsViewModel)
+        }
         // ** Data
         friendsViewModel.possibleFriends.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty()) {
-                // Set the adapter
-                with(rvFindFriends) {
-                    layoutManager = when {
-                        columnCount <= 1 -> LinearLayoutManager(context)
-                        else -> GridLayoutManager(context, columnCount)
-                    }
-                    adapter = FindFriendRecyclerViewAdapter(it, friendsViewModel)
+            if (it != null) {
+
+                with(rvFindFriends){
+                    val oldList = (adapter as FindFriendRecyclerViewAdapter).values
+                    val friendDiff = FriendListDiffUtils(oldList, it)
+                    val diffs = DiffUtil.calculateDiff(friendDiff)
+                    (adapter as FindFriendRecyclerViewAdapter).values = it
+                    diffs.dispatchUpdatesTo(adapter!!)
                 }
+
             }
         }
 

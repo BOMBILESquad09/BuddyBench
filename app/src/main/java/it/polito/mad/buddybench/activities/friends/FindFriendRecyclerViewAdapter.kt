@@ -6,17 +6,20 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import dagger.hilt.android.internal.managers.FragmentComponentManager
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.activities.friends.placeholder.PlaceholderContent.PlaceholderItem
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.databinding.FragmentFindFriendItemBinding
 import it.polito.mad.buddybench.viewmodels.FriendsViewModel
 
-/**
- * [RecyclerView.Adapter] that can display a [PlaceholderItem].
- * TODO: Replace the implementation with code for your data type.
- */
-class FindFriendRecyclerViewAdapter(private val values: List<Profile>, private val viewModel: FriendsViewModel) : RecyclerView.Adapter<FindFriendRecyclerViewAdapter.ViewHolder>() {
+
+class FindFriendRecyclerViewAdapter(
+    var values: List<Profile>,
+    private val viewModel: FriendsViewModel
+) : RecyclerView.Adapter<FindFriendRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -30,32 +33,54 @@ class FindFriendRecyclerViewAdapter(private val values: List<Profile>, private v
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
-        holder.tvName.text = item.fullName
-        holder.tvUsername.text = item.nickname
-        holder.btnAdd.setOnClickListener {
-            viewModel.sendRequest(item.email) {
-                Toast.makeText(holder.btnAdd.context, "A friend request has been sent to ${item.fullName}", Toast.LENGTH_LONG).show()
-                updateAddBtn(holder)
-            }
-        }
+        holder.bind(item)
+
     }
 
     override fun getItemCount(): Int = values.size
 
-    private fun updateAddBtn(holder: ViewHolder) {
-        holder.btnAdd.backgroundTintList = ColorStateList.valueOf(Color.LTGRAY)
-        holder.btnAdd.text = holder.btnAdd.context.getString(R.string.added)
-    }
 
-    inner class ViewHolder(binding: FragmentFindFriendItemBinding) :
+    inner class ViewHolder(val binding: FragmentFindFriendItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val tvName = binding.tvFriendName
         val tvUsername = binding.tvFriendUsername
         val ivImage = binding.ivFriendImage
+
         val btnAdd = binding.btnAddFriend
+
 
         override fun toString(): String {
             return super.toString() + " '" + tvName.text + "'"
+        }
+
+        fun bind(profile: Profile) {
+            tvName.text = profile.fullName
+            tvUsername.text = profile.nickname
+            if (profile.isPending) {
+                updateAddBtn()
+            }
+            (FragmentComponentManager.findActivity(binding.root.context) as HomeActivity).imageViewModel.getUserImage(profile.email,{
+                ivImage.setImageResource(R.drawable.person)
+            }){
+                Glide.with(binding.root.context)
+                    .load(it)
+                    .into(ivImage)
+            }
+            btnAdd.setOnClickListener {
+                viewModel.sendRequest(profile.email) {
+                    Toast.makeText(
+                        btnAdd.context,
+                        "A friend request has been sent to ${profile.fullName}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    updateAddBtn()
+                }
+            }
+        }
+
+        private fun updateAddBtn() {
+            this.btnAdd.backgroundTintList = ColorStateList.valueOf(Color.LTGRAY)
+            this.btnAdd.text = btnAdd.context.getString(R.string.request_sent)
         }
     }
 }

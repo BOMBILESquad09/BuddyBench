@@ -73,9 +73,7 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
     }
 
 
-    fun getNotInvitedFriends(){
 
-    }
 
 
 

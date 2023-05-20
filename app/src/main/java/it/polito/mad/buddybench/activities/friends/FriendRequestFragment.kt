@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.DiffUtil
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.friends.placeholder.PlaceholderContent
 import it.polito.mad.buddybench.classes.Profile
@@ -18,7 +19,7 @@ import it.polito.mad.buddybench.viewmodels.FriendsViewModel
 /**
  * A fragment representing a list of Items.
  */
-class FriendRequestFragment : Fragment() {
+class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
 
     // ** UI
     private lateinit var rvFriendRequests: RecyclerView
@@ -32,12 +33,12 @@ class FriendRequestFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        friendsViewModel.getFriendRequests()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_friend_request_list, container, false)
 
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         rvFriendRequests = view.findViewById(R.id.rv_friend_requests)
         pbFriendRequests = view.findViewById(R.id.pb_friend_requests)
 
@@ -52,19 +53,26 @@ class FriendRequestFragment : Fragment() {
             }
         }
 
+        with(rvFriendRequests) {
+            layoutManager = when {
+                columnCount <= 1 -> LinearLayoutManager(context)
+                else -> GridLayoutManager(context, columnCount)
+            }
+            adapter = FriendRequestRecyclerViewAdapter(listOf(), friendsViewModel)
+        }
         // ** Data
         friendsViewModel.friendRequests.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty()) {
-                // Set the adapter
-                with(rvFriendRequests) {
-                    layoutManager = when {
-                        columnCount <= 1 -> LinearLayoutManager(context)
-                        else -> GridLayoutManager(context, columnCount)
-                    }
-                    adapter = FriendRequestRecyclerViewAdapter(it, friendsViewModel)
+            if (it != null) {
+
+                with(rvFriendRequests){
+                    val oldList = (adapter as FriendRequestRecyclerViewAdapter).values
+                    val friendDiff = FriendListDiffUtils(oldList, it)
+                    val diffs = DiffUtil.calculateDiff(friendDiff)
+
+                    (adapter as FriendRequestRecyclerViewAdapter).values = it
+                    diffs.dispatchUpdatesTo(adapter!!)
                 }
             }
         }
-        return view
     }
 }

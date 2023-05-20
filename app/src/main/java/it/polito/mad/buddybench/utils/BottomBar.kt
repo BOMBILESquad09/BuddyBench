@@ -41,7 +41,9 @@ class BottomBar(val context: HomeActivity) {
     private fun initializeProfile(){
         replaceFragment(currentTab, Tabs.PROFILE)
         context.supportFragmentManager.executePendingTransactions()
-        replaceFragment(Tabs.PROFILE, currentTab)
+        replaceFragment(Tabs.PROFILE, Tabs.FRIENDS)
+        context.supportFragmentManager.executePendingTransactions()
+        replaceFragment(Tabs.FRIENDS, currentTab)
     }
 
     private fun addInitialFragment(){
