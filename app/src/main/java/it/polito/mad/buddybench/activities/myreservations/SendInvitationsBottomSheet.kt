@@ -37,7 +37,7 @@ class SendInvitationsBottomSheet(
 
     private val userViewModel by activityViewModels<UserViewModel>()
     private val invitationViewModel by viewModels<InvitationsViewModel>()
-    private val reservationViewModel by viewModels<ReservationViewModel>()
+    private val reservationViewModel by activityViewModels<ReservationViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -181,9 +181,7 @@ class SendInvitationsBottomSheet(
                     } else{
                         invitationViewModel.removeAcceptedInvitations(reservationDTO, listOf(Firebase.auth.currentUser!!.email!!)){
                             reservationViewModel.getReservation(reservationDTO.id)
-
-                            ((FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager.findFragmentByTag(
-                                Tabs.RESERVATIONS.name) as MyReservationsFragment).viewModel.getAllByUser()
+                            reservationViewModel.getAllByUser()
                             this.dismiss()
                         }
                     }

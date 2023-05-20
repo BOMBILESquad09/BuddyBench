@@ -12,11 +12,13 @@ import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.viewmodels.InvitationsViewModel
+import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 
 @AndroidEntryPoint
 class InvitationsFragment(context: HomeActivity) : Fragment(R.layout.my_invitations) {
 
     private val viewModel by activityViewModels<InvitationsViewModel> ()
+    private val reservationViewModel by activityViewModels<ReservationViewModel> ()
     private lateinit var recyclerViewInvitations: RecyclerView
 
 
@@ -28,10 +30,12 @@ class InvitationsFragment(context: HomeActivity) : Fragment(R.layout.my_invitati
 
         val onAccept: (ReservationDTO) -> Unit = {
             viewModel.acceptInvitation(it)
+            reservationViewModel.getAllByUser()
         }
 
         val onDecline: (ReservationDTO) -> Unit = {
             viewModel.refuseInvitation(it)
+
         }
 
         recyclerViewInvitations.adapter = InvitationAdapter(viewModel.invitations.value?: listOf(), onAccept, onDecline )
