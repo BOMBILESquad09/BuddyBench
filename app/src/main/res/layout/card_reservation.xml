@@ -16,7 +16,7 @@
     card_view:cardElevation="3dp">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/card_reservation"
+        android:id="@+id/card_inner"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="2dp"
@@ -33,7 +33,7 @@
 
 
             <TextView
-                android:id="@+id/textView6"
+                android:id="@+id/card_invitation_court"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -54,8 +54,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 card_view:layout_constraintBottom_toTopOf="@+id/phone_layout"
-                card_view:layout_constraintStart_toStartOf="@+id/textView6"
-                card_view:layout_constraintTop_toBottomOf="@+id/textView6">
+                card_view:layout_constraintStart_toStartOf="@+id/card_invitation_court"
+                card_view:layout_constraintTop_toBottomOf="@+id/card_invitation_court">
 
                 <ImageView
                     android:id="@+id/position"
@@ -67,7 +67,7 @@
                     card_view:tint="@color/md_theme_light_background" />
 
                 <TextView
-                    android:id="@+id/card_reservation_address"
+                    android:id="@+id/card_invitation_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
@@ -125,6 +125,8 @@
                 android:textColor="@color/md_theme_light_background"
                 android:textSize="17sp"
                 card_view:layout_constraintBottom_toBottomOf="parent"
+                card_view:layout_constraintEnd_toStartOf="@+id/show_reservation_friend_button"
+                card_view:layout_constraintHorizontal_bias="0.5"
                 card_view:layout_constraintHorizontal_chainStyle="spread_inside"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toBottomOf="@+id/phone_layout"
@@ -161,13 +163,19 @@
 
             <ImageView
                 android:id="@+id/show_reservation_friend_button"
-                android:layout_width="40dp"
-                android:layout_marginRight="10dp"
-                android:layout_height="40dp"
-                android:background="@drawable/rounded_shape_card"
-                android:src="@drawable/team"
-                card_view:layout_constraintBottom_toBottomOf="parent"
-                card_view:layout_constraintEnd_toStartOf="@+id/manage_btn" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/rounded_shape"
+                android:backgroundTint="@color/md_theme_light_background"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="3dp"
+                android:src="@drawable/invite"
+                card_view:layout_constraintBottom_toBottomOf="@+id/manage_btn"
+                card_view:layout_constraintEnd_toStartOf="@+id/manage_btn"
+                card_view:layout_constraintHorizontal_bias="0.5"
+                card_view:layout_constraintStart_toEndOf="@+id/textView5"
+                card_view:layout_constraintTop_toTopOf="@+id/manage_btn" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

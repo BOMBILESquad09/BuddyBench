@@ -6,6 +6,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.Toolbar
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
+import it.polito.mad.buddybench.activities.invitations.InvitationsFragment
 import it.polito.mad.buddybench.activities.findcourt.FindCourtFragment
 import it.polito.mad.buddybench.activities.friends.FriendsFragment
 import it.polito.mad.buddybench.activities.profile.ShowProfileFragment
@@ -53,6 +54,7 @@ class BottomBar(val context: HomeActivity) {
             Tabs.RESERVATIONS -> MyReservationsFragment(context)
             Tabs.FINDCOURT -> FindCourtFragment(context)
             Tabs.FRIENDS -> FriendsFragment(context)
+            Tabs.INVITATIONS -> InvitationsFragment(context)
         }
         transaction.add(R.id.home_fragment_container, newFragment, currentTab.name)
         transaction.commitNow()
@@ -77,6 +79,7 @@ class BottomBar(val context: HomeActivity) {
                     Tabs.PROFILE -> ShowProfileFragment(context)
                     Tabs.RESERVATIONS -> MyReservationsFragment(context)
                     Tabs.FINDCOURT -> FindCourtFragment(context)
+                    Tabs.INVITATIONS -> InvitationsFragment(context)
                     Tabs.FRIENDS -> FriendsFragment(context)
                 }
 

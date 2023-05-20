@@ -18,12 +18,6 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
     private val _invitations: MutableLiveData<List<ReservationDTO>> = MutableLiveData(listOf())
     val invitations: LiveData<List<ReservationDTO>> = _invitations
 
-
-
-
-
-
-
     private val invitationSize: MutableLiveData<Int> = MutableLiveData(0)
 
     fun subscribeInvitations(): LiveData<List<ReservationDTO>>{

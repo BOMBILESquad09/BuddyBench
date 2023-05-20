@@ -2,7 +2,7 @@ package it.polito.mad.buddybench.enums
 
 enum class Tabs {
 
-    PROFILE, RESERVATIONS, FINDCOURT, FRIENDS;
+    PROFILE, RESERVATIONS, INVITATIONS, FINDCOURT, FRIENDS;
 
     fun getId(): Int{
         return when(this){
@@ -10,6 +10,7 @@ enum class Tabs {
             RESERVATIONS -> 1
             PROFILE -> 2
             FRIENDS -> 3
+            INVITATIONS -> 4
         }
     }
 }

@@ -15,6 +15,11 @@
         android:icon="@drawable/round_groups_24"
         android:title="@string/friends" />
     <item
+        android:id="@+id/tab_my_invitations"
+        android:icon="@drawable/invitations"
+        android:title="Invitations" />
+
+    <item
         android:id="@+id/tab_my_profile"
         android:icon="@drawable/user"
         android:title="@string/profile" />
