@@ -1,6 +1,5 @@
 package it.polito.mad.buddybench.activities.myreservations
 
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.view.View
@@ -27,8 +26,8 @@ import java.time.format.DateTimeFormatter
 
 class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent>): RecyclerView.ViewHolder(v) {
 
-    private val courtName : TextView = v.findViewById(R.id.textView6)
-    private val courtAddress: TextView = v.findViewById(R.id.card_reservation_address)
+    private val courtName : TextView = v.findViewById(R.id.card_invitation_court)
+    private val courtAddress: TextView = v.findViewById(R.id.card_invitation_address)
     private val courtPhone: TextView = v.findViewById(R.id.card_reservation_phone_number)
     private val slot : TextView = v.findViewById(R.id.textView5)
     private val iconSport : ImageView = v.findViewById(R.id.imageView)
@@ -44,7 +43,7 @@ class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent
 
 
         // ** Card color
-        val card = view.findViewById<CardView>(R.id.card_reservation)
+        val card = view.findViewById<CardView>(R.id.card_inner)
         card.setCardBackgroundColor(Sports.getSportColor(Sports.valueOf(reservation.court.sport), view.context))
 
         courtName.text = reservation.court.name

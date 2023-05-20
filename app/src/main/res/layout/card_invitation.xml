@@ -3,7 +3,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card_view_outer"
+    android:id="@+id/card_invitation"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
@@ -19,19 +19,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/profile_picture"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_picture"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="12dp"
-            android:src="@drawable/circle_shape"
-            card_view:layout_constraintBottom_toTopOf="@+id/card_reservation"
+            card_view:cardCornerRadius="255dp"
+            card_view:layout_constraintBottom_toTopOf="@+id/card_inner"
             card_view:layout_constraintEnd_toStartOf="@+id/invite_text"
             card_view:layout_constraintHorizontal_bias="0.5"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toTopOf="parent"
-            card_view:tint="@color/md_theme_light_background" />
+            card_view:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/inviter_picture"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/circle_shape"
+                card_view:tint="@color/md_theme_light_background" />
+        </androidx.cardview.widget.CardView>
+
 
         <TextView
             android:id="@+id/invite_text"
@@ -43,14 +51,14 @@
             android:text="Gerry invites you to play a game!"
             android:textColor="@color/md_theme_light_background"
             android:textSize="20sp"
-            card_view:layout_constraintBottom_toBottomOf="@+id/profile_picture"
+            card_view:layout_constraintBottom_toBottomOf="@+id/card_picture"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0.5"
-            card_view:layout_constraintStart_toEndOf="@+id/profile_picture"
-            card_view:layout_constraintTop_toTopOf="@+id/profile_picture" />
+            card_view:layout_constraintStart_toEndOf="@+id/card_picture"
+            card_view:layout_constraintTop_toTopOf="@+id/card_picture" />
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/card_reservation"
+            android:id="@+id/card_inner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="16dp"
@@ -60,7 +68,7 @@
             card_view:cardElevation="0dp"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@+id/profile_picture">
+            card_view:layout_constraintTop_toBottomOf="@+id/card_picture">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -73,11 +81,11 @@
 
 
                 <TextView
-                    android:id="@+id/textView6"
+                    android:id="@+id/card_invitation_court"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
-                    android:layout_marginLeft="6dp"
+                    android:layout_marginStart="6dp"
                     android:layout_marginTop="4dp"
                     android:fontFamily="@font/montserrat_semibold_600"
                     android:text="@string/court_name"
@@ -94,8 +102,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     card_view:layout_constraintBottom_toTopOf="@+id/day_layout"
-                    card_view:layout_constraintStart_toStartOf="@+id/textView6"
-                    card_view:layout_constraintTop_toBottomOf="@+id/textView6">
+                    card_view:layout_constraintStart_toStartOf="@+id/card_invitation_court"
+                    card_view:layout_constraintTop_toBottomOf="@+id/card_invitation_court">
 
                     <ImageView
                         android:id="@+id/position"
@@ -106,7 +114,7 @@
                         card_view:tint="@color/md_theme_light_background" />
 
                     <TextView
-                        android:id="@+id/card_reservation_address"
+                        android:id="@+id/card_invitation_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
@@ -126,7 +134,10 @@
                     android:layout_marginVertical="8dp"
                     android:orientation="horizontal"
                     card_view:layout_constraintBottom_toBottomOf="parent"
-                    card_view:layout_constraintStart_toStartOf="@+id/address_layout"
+                    card_view:layout_constraintEnd_toStartOf="@+id/hours_layout"
+                    card_view:layout_constraintHorizontal_bias="0.5"
+                    card_view:layout_constraintHorizontal_chainStyle="packed"
+                    card_view:layout_constraintStart_toStartOf="parent"
                     card_view:layout_constraintTop_toBottomOf="@+id/address_layout">
 
                     <ImageView
@@ -138,7 +149,7 @@
                         card_view:tint="@color/md_theme_light_background" />
 
                     <TextView
-                        android:id="@+id/card_reservation_day"
+                        android:id="@+id/card_invitation_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
@@ -159,7 +170,8 @@
                     android:orientation="horizontal"
                     android:paddingStart="24dp"
                     card_view:layout_constraintBottom_toBottomOf="@+id/day_layout"
-                    card_view:layout_constraintStart_toEndOf="@+id/day_layout">
+                    card_view:layout_constraintTop_toTopOf="@+id/day_layout"
+                    tools:layout_editor_absoluteX="165dp">
 
                     <ImageView
                         android:id="@+id/hours"
@@ -170,7 +182,7 @@
                         card_view:tint="@color/md_theme_light_background" />
 
                     <TextView
-                        android:id="@+id/card_reservation_hours"
+                        android:id="@+id/card_invitation_hours"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
@@ -206,7 +218,7 @@
             card_view:layout_constraintEnd_toStartOf="@+id/decline_btn"
             card_view:layout_constraintHorizontal_bias="0.5"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@+id/card_reservation" />
+            card_view:layout_constraintTop_toBottomOf="@+id/card_inner" />
 
         <TextView
             android:id="@+id/decline_btn"
