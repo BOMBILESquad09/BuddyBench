@@ -68,15 +68,16 @@ class UserRepository {
             val profile = db.collection("users").document(email).get().await()
             if (profile.data != null) {
                 val serializedProfile = serializeUser(profile.data as Map<String, Object>)
-                (profile.data!!["friends"] as List<DocumentReference>).map { it.get() }
-                    .map { it.await() }.forEach {
-                    serializedProfile.friends.add(serializeUser(it.data as Map<String, Object>))
+                if(email == Firebase.auth.currentUser!!.email!!){
+                    (profile.data!!["friends"] as List<DocumentReference>).map { it.get() }
+                        .map { it.await() }.forEach {
+                            serializedProfile.friends.add(serializeUser(it.data as Map<String, Object>))
+                        }
+                    (profile.data!!["friend_requests_pending"] as List<DocumentReference>).map { it.get() }
+                        .map { it.await() }.forEach {
+                            serializedProfile.pendings.add(serializeUser(it.data as Map<String, Object>))
+                        }
                 }
-                (profile.data!!["friend_requests_pending"] as List<DocumentReference>).map { it.get() }
-                    .map { it.await() }.forEach {
-                    serializedProfile.pendings.add(serializeUser(it.data as Map<String, Object>))
-                }
-
                 if (profile.data!!["last_update"] == null || LocalDate.parse(profile.data!!["last_update"] as String, DateTimeFormatter.ISO_LOCAL_DATE) != LocalDate.now()) {
                     val organized = db.collection("reservations")
                         .whereEqualTo("user", db.document("users/$email")).get()
