@@ -42,6 +42,10 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
               ) {
 
 
+    fun copy(): Profile{
+        return Profile(this.name, this.surname, this.nickname, this.email, this.location, this.birthdate, this.reliability, this.imageUri, this.sports, this.friends, this.pendings, this.isFriend, this.isPending)
+    }
+
     var age: Int = ChronoUnit.YEARS.between(birthdate, LocalDate.now()).toInt()
     var fullName = "$name $surname"
 

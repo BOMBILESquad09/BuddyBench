@@ -76,7 +76,6 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     private fun getFriendsList() {
         runBlocking {
             userRepository.getUser {
-                println("----------------------------------------")
                 oldFriends = _friends.value!!
 
                 _friends.postValue(it.friends)
@@ -96,17 +95,7 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun sendRequest(email: String, callback: () -> Unit) {
-        _lAdd.postValue(true)
-        runBlocking {
 
-
-            friendRepository.postFriendRequest(email)
-
-            callback()
-            _lAdd.postValue(false)
-        }
-    }
 
     private fun getFriendRequests() {
         _lRequests.postValue(true)
@@ -144,9 +133,36 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    fun sendRequest(email: String, callback: () -> Unit) {
+        _lAdd.postValue(true)
+        runBlocking {
+
+            friendRepository.postFriendRequest(email)
+            _possibleFriends.value = _possibleFriends.value!!.map {
+                val p = it.copy()
+                if(p.email == email){
+                    p.isPending = true
+                }
+                p
+            }
+            callback()
+            _lAdd.postValue(false)
+        }
+    }
+
     fun removeFriendRequest(email: String, onSuccess: () -> Unit) {
         runBlocking {
+
             friendRepository.removeFriendRequest(email)
+
+
+            _possibleFriends.value = _possibleFriends.value!!.map {
+                val p = it.copy()
+                if(p.email == email){
+                    p.isPending = false
+                }
+                p
+            }
 
             onSuccess()
         }

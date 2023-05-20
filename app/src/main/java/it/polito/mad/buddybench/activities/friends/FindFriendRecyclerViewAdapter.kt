@@ -57,35 +57,34 @@ class FindFriendRecyclerViewAdapter(
             tvName.text = profile.fullName
             tvUsername.text = profile.nickname
 
-            println(profile.email)
-            println(position)
-            println(profile.isPending)
-            println("------")
-            updateAddBtn(profile.isPending)
 
-            if (profile.isPending) {
-                btnAdd.setOnClickListener {
-                    viewModel.removeFriendRequest(profile.email){
-                        profile.isPending = false
+
+            updateAddBtn(profile.isPending)
+            btnAdd.setOnClickListener {
+                println(profile.isPending)
+                if (profile.isPending) {
+                    viewModel.removeFriendRequest(profile.email) {
+
                     }
-                    notifyItemChanged(position)
-                }
-            } else{
-                btnAdd.setOnClickListener {
+                } else {
                     viewModel.sendRequest(profile.email) {
                         Toast.makeText(
                             btnAdd.context,
                             "A friend request has been sent to ${profile.fullName}",
-                            Toast.LENGTH_SHORT
+                            Toast.LENGTH_LONG
                         ).show()
-                        profile.isPending = true
-                        notifyItemChanged(position)
                     }
+
                 }
+
+                println(profile.email)
+                println(profile.isPending)
             }
-            (FragmentComponentManager.findActivity(binding.root.context) as HomeActivity).imageViewModel.getUserImage(profile.email,{
-                ivImage.setImageResource(R.drawable.person)
-            }){
+            (FragmentComponentManager.findActivity(binding.root.context) as HomeActivity).imageViewModel.getUserImage(
+                profile.email,
+                {
+                    ivImage.setImageResource(R.drawable.person)
+                }) {
                 Glide.with(binding.root.context)
                     .load(it)
                     .into(ivImage)
@@ -94,12 +93,12 @@ class FindFriendRecyclerViewAdapter(
         }
 
         private fun updateAddBtn(state: Boolean) {
-            if(state){
+            if (state) {
                 this.btnAdd.backgroundTintList = ColorStateList.valueOf(Color.LTGRAY)
                 this.btnAdd.text = btnAdd.context.getString(R.string.request_sent)
-            }
-            else{
-                this.btnAdd.backgroundTintList = ColorStateList.valueOf(binding.root.context.getColor(R.color.md_theme_light_primary))
+            } else {
+                this.btnAdd.backgroundTintList =
+                    ColorStateList.valueOf(binding.root.context.getColor(R.color.md_theme_light_primary))
                 this.btnAdd.text = binding.root.context.getString(R.string.send_request)
             }
 
