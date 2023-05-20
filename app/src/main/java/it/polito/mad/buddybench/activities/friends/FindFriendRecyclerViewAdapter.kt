@@ -33,7 +33,7 @@ class FindFriendRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
-        holder.bind(item)
+        holder.bind(item, position)
 
     }
 
@@ -53,11 +53,35 @@ class FindFriendRecyclerViewAdapter(
             return super.toString() + " '" + tvName.text + "'"
         }
 
-        fun bind(profile: Profile) {
+        fun bind(profile: Profile, position: Int) {
             tvName.text = profile.fullName
             tvUsername.text = profile.nickname
+
+            println(profile.email)
+            println(position)
+            println(profile.isPending)
+            println("------")
+            updateAddBtn(profile.isPending)
+
             if (profile.isPending) {
-                updateAddBtn()
+                btnAdd.setOnClickListener {
+                    viewModel.removeFriendRequest(profile.email){
+                        profile.isPending = false
+                    }
+                    notifyItemChanged(position)
+                }
+            } else{
+                btnAdd.setOnClickListener {
+                    viewModel.sendRequest(profile.email) {
+                        Toast.makeText(
+                            btnAdd.context,
+                            "A friend request has been sent to ${profile.fullName}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        profile.isPending = true
+                        notifyItemChanged(position)
+                    }
+                }
             }
             (FragmentComponentManager.findActivity(binding.root.context) as HomeActivity).imageViewModel.getUserImage(profile.email,{
                 ivImage.setImageResource(R.drawable.person)
@@ -66,21 +90,19 @@ class FindFriendRecyclerViewAdapter(
                     .load(it)
                     .into(ivImage)
             }
-            btnAdd.setOnClickListener {
-                viewModel.sendRequest(profile.email) {
-                    Toast.makeText(
-                        btnAdd.context,
-                        "A friend request has been sent to ${profile.fullName}",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    updateAddBtn()
-                }
-            }
+
         }
 
-        private fun updateAddBtn() {
-            this.btnAdd.backgroundTintList = ColorStateList.valueOf(Color.LTGRAY)
-            this.btnAdd.text = btnAdd.context.getString(R.string.request_sent)
+        private fun updateAddBtn(state: Boolean) {
+            if(state){
+                this.btnAdd.backgroundTintList = ColorStateList.valueOf(Color.LTGRAY)
+                this.btnAdd.text = btnAdd.context.getString(R.string.request_sent)
+            }
+            else{
+                this.btnAdd.backgroundTintList = ColorStateList.valueOf(binding.root.context.getColor(R.color.md_theme_light_primary))
+                this.btnAdd.text = binding.root.context.getString(R.string.send_request)
+            }
+
         }
     }
 }

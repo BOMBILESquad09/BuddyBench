@@ -116,5 +116,15 @@ class FriendRepository {
                 .await()
         }
     }
+
+    suspend fun removeFriendRequest(friendEmail: String) {
+        withContext(Dispatchers.IO) {
+            val currentEmail = Firebase.auth.currentUser!!.email!!
+            db.collection("users").document(friendEmail).update(
+                "friend_requests_pending", FieldValue.arrayRemove(db.document("users/$currentEmail"))
+            )
+                .await()
+        }
+    }
 }
 

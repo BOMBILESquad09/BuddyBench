@@ -235,5 +235,6 @@
     <string name="buddy_bench">Buddy Bench</string>
     <string name="username">username</string>
     <string name="request_sent">Request sent</string>
+    <string name="send_request">Send request</string>
 
 </resources>

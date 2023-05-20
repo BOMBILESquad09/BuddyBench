@@ -58,7 +58,7 @@ class FriendListFragment : Fragment(R.layout.fragment_friend_request_list) {
             if (it != null) {
 
                 with(rvFriendList){
-                    val oldList = (adapter as FriendListRecyclerViewAdapter).values
+                    val oldList = friendsViewModel.oldFriends
                     val friendDiff = FriendListDiffUtils(oldList, it)
                     val diffs = DiffUtil.calculateDiff(friendDiff)
 

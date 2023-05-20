@@ -17,8 +17,9 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
 
     // ** Repositories
     private val friendRepository: FriendRepository = FriendRepository()
+
     @Inject
-    lateinit var  userRepository: UserRepository
+    lateinit var userRepository: UserRepository
 
     // ** Current user
     private val currentUser = FirebaseAuth.getInstance().currentUser
@@ -36,31 +37,35 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     private val _friends: MutableLiveData<List<Profile>> = MutableLiveData(emptyList())
     private val _friendRequests: MutableLiveData<List<Profile>> = MutableLiveData(emptyList())
 
+    var oldPossibleFriends = _possibleFriends.value!!
     val possibleFriends: LiveData<List<Profile>> get() = _possibleFriends
+    var oldFriends = _friends.value!!
     val friends: LiveData<List<Profile>> get() = _friends
+    var oldFriendsRequests = friendRequests.value!!
     val friendRequests: LiveData<List<Profile>> get() = _friendRequests
 
 
-    private val subListener:MutableLiveData<Int> = MutableLiveData(0)
+    private val subListener: MutableLiveData<Int> = MutableLiveData(0)
 
-    fun subscribeFriendsList(){
+    fun subscribeFriendsList() {
         friendRepository.subscribeFriends({
-        }){
+        }) {
             subListener.postValue(subListener.value!! + 1)
         }
-        subListener.observeForever{
-            if(it == 0){
+        subListener.observeForever {
+            if (it == 0) {
                 runBlocking {
                     getFriendsList()
                     getFriendRequests()
                     getPossibleFriends()
                 }
             }
-            if(it != 0){
+            if (it != 0) {
                 runBlocking {
                     userRepository.fetchUser {
                         getFriendRequests()
-                        getFriendsList() }
+                        getFriendsList()
+                    }
                     getPossibleFriends()
                 }
             }
@@ -68,10 +73,13 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     }
 
 
-    private fun getFriendsList(){
+    private fun getFriendsList() {
         runBlocking {
             userRepository.getUser {
-                _friends.postValue( it.friends)
+                println("----------------------------------------")
+                oldFriends = _friends.value!!
+
+                _friends.postValue(it.friends)
             }
         }
     }
@@ -79,7 +87,10 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     private fun getPossibleFriends() {
         _l.postValue(true)
         runBlocking {
+            oldPossibleFriends = possibleFriends.value!!
+
             _possibleFriends.postValue(friendRepository.getNotFriends())
+
 
             _l.postValue(false)
         }
@@ -88,10 +99,13 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     fun sendRequest(email: String, callback: () -> Unit) {
         _lAdd.postValue(true)
         runBlocking {
+
+
             friendRepository.postFriendRequest(email)
+
+            callback()
             _lAdd.postValue(false)
         }
-        callback()
     }
 
     private fun getFriendRequests() {
@@ -99,8 +113,7 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
         if (currentUser != null) {
             runBlocking {
                 userRepository.getUser(currentUser.email!!) {
-                    println(it.pendings)
-                    println("--------------")
+                    oldFriendsRequests = _friendRequests.value!!
                     _friendRequests.postValue(it.pendings)
                 }
                 _lRequests.postValue(false)
@@ -125,9 +138,17 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun removeFriend(email: String){
+    fun removeFriend(email: String) {
         runBlocking {
             friendRepository.removeFriend(email)
+        }
+    }
+
+    fun removeFriendRequest(email: String, onSuccess: () -> Unit) {
+        runBlocking {
+            friendRepository.removeFriendRequest(email)
+
+            onSuccess()
         }
     }
 }
