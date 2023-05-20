@@ -84,6 +84,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     private lateinit var addSportButton: ImageButton
     private lateinit var sportContainer: LinearLayout
 
+    private var newImage: Boolean = false
+
     private val userViewModel by viewModels<UserViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -301,6 +303,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, imageUri!!)
         imageEdit.setImageBitmap(bitmap)
         profile.imageUri = imageUri
+        newImage = true
+
     }
 
     private fun onGalleryImageReturned(response: androidx.activity.result.ActivityResult) {
@@ -310,6 +314,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         val bitmap = BitmapUtils.uriToBitmap(contentResolver, imageUri!!)
         imageEdit.setImageBitmap(bitmap)
         profile.imageUri = imageUri
+        newImage = true
 
     }
 
@@ -419,6 +424,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         profile.imageUri = imageUri ?: profile.imageUri
         val newProfileJSON = profile.toJSON().toString()
         intent.putExtra("newProfile", newProfileJSON)
+        intent.putExtra("newImage", newImage)
     }
 
 

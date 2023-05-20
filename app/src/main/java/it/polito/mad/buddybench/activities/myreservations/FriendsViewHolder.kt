@@ -23,9 +23,11 @@ class FriendsViewHolder(val v: View):  RecyclerView.ViewHolder(v) {
 
     fun bind(profile: Pair<Profile, Boolean>, onChange: (Profile) -> Unit){
         ((FragmentComponentManager.findActivity(v.context) as HomeActivity)).imageViewModel.getUserImage(profile.first.email,{
+
             profileIv.setImageResource(R.drawable.person)
 
         }){
+            println(profile.first.email)
             Glide.with(v.context)
                 .load(it)
                 .into(profileIv)

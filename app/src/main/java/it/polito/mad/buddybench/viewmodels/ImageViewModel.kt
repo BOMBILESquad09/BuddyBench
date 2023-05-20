@@ -13,6 +13,8 @@ class ImageViewModel @Inject constructor() : ViewModel(){
     val cacheCourtImages: HashMap<String, Uri> = HashMap()
     val cacheProfileImages: HashMap<String, Uri> = HashMap()
 
+
+
     val imageRepository = ImageRepository()
 
     fun postUserImage(path: String, uri: Uri){
@@ -29,7 +31,9 @@ class ImageViewModel @Inject constructor() : ViewModel(){
         }
     }
 
-    fun getUserImage(path: String, onFailure:()->Unit, onSuccess: (Uri)->Unit){
+    fun getUserImage(path: String, onFailure: () ->Unit, onSuccess: (Uri)->Unit){
+        println(path)
+        println("---------------------------------------------------------")
         if(cacheProfileImages[path] != null) {
             onSuccess(cacheProfileImages[path]!!)
             return
@@ -41,6 +45,7 @@ class ImageViewModel @Inject constructor() : ViewModel(){
                 cacheProfileImages[path] = image
                 onSuccess(image)
             } catch (_: Exception){
+                onFailure()
             }
         }
     }

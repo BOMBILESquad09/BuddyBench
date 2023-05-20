@@ -5,7 +5,10 @@ import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import dagger.hilt.android.internal.managers.FragmentComponentManager
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.persistence.dto.ReviewDTO
 import java.time.format.DateTimeFormatter
 
@@ -23,7 +26,7 @@ class ReviewsViewHolder(private val v: View): RecyclerView.ViewHolder(v) {
     fun bind(review: ReviewDTO) {
         // ** Username
         tvUsername = v.findViewById(R.id.tv_username_review)
-        tvUsername.text = review.user.name
+        tvUsername.text = review.user.nickname
 
         // ** Date
         tvReviewDate = v.findViewById(R.id.tv_review_date)
@@ -32,7 +35,13 @@ class ReviewsViewHolder(private val v: View): RecyclerView.ViewHolder(v) {
         // ** User profile picture
         // TODO: Add user profile picture
         ivUserPicture = v.findViewById(R.id.iv_user_picture_review)
-
+        (FragmentComponentManager.findActivity(v.context) as ReviewsActivity).imageViewModel.getUserImage(review.user.email,{
+            ivUserPicture.setImageResource(R.drawable.person)
+        }){
+            Glide.with(v.context)
+                .load(it)
+                .into(ivUserPicture)
+        }
         // ** Rating
         tvRatingValue = v.findViewById(R.id.tv_rating_value)
         tvRatingValue.text = review.rating.toString()

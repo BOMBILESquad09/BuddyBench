@@ -95,11 +95,10 @@ class HomeActivity: AppCompatActivity() {
                 val newProfile = Profile.fromJSON(JSONObject(response.data?.getStringExtra("newProfile").toString()))
 
                 profile = newProfile
-                profile.imageUri = profile.imageUri
                 putString("profile", profile.toJSON().toString())
                 apply()
                 userViewModel.setSports(profile.sports)
-                if(profile.imageUri != null)
+                if(profile.imageUri != null && response.data?.getBooleanExtra("newImage", false) == true)
                     imageViewModel.postUserImage(profile.email, profile.imageUri!!)
                 userViewModel.updateUserInfo(profile)
                 supportFragmentManager.findFragmentByTag(Tabs.PROFILE.name).let {
