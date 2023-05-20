@@ -1,6 +1,5 @@
 package it.polito.mad.buddybench.persistence.firebaseRepositories
 
-import com.firebase.ui.auth.data.model.User
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
@@ -20,7 +19,9 @@ class FriendRepository {
             val currentEmail = Firebase.auth.currentUser!!.email!!
             val usersDocuments = db.collection("users").get().await()
             val userFriends = (usersDocuments.documents.find { it.id == currentEmail }!!.data!!["friends"] as List<DocumentReference>).map { it.id }
-            val otherUsers = usersDocuments.filter { !userFriends.contains(it.id) }.map { UserRepository.serializeUser(it as Map<String, Object>) }
+            val otherUsers = usersDocuments.filter { !userFriends.contains(it.id) }.map {
+                UserRepository.serializeUser(it.data)
+            }
             otherUsers
         }
     }

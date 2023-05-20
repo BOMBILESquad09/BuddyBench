@@ -21,7 +21,7 @@
     <string name="age">%1$d y.o.</string>
     <string name="location_icon">location icon</string>
     <string name="save">SAVE</string>
-    <string name="add">ADD</string>
+    <string name="add">Add</string>
     <string name="no_sports">No sports yet, add new ones!</string>
     <string name="edit_your_sports">Edit your sports</string>
     <string name="add_sports">Add sports</string>
@@ -223,5 +223,16 @@
     <string name="your_review">Your review</string>
     <string name="missing_rating">Missing rating and/or text</string>
     <string name="new_achievement">New Achievement</string>
+    <string name="profile">Profile</string>
+    <string name="reservations">Reservations</string>
+    <string name="find_court">Find Court</string>
+    <string name="friends">Friends</string>
+    <string name="requests">Requests</string>
+    <string name="list">List</string>
+    <string name="find">Find</string>
+    <string name="friend_profile_image">friend_profile_image</string>
+    <string name="buddy_bench">Buddy Bench</string>
+    <string name="username">username</string>
+    <string name="added">Added</string>
 
 </resources>

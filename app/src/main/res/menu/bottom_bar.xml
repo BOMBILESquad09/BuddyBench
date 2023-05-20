@@ -2,18 +2,22 @@
     <item
         android:id="@+id/tab_find_court"
         android:icon="@drawable/magnifier"
-        android:title="Find Court"
+        android:title="@string/find_court"
 
         />
     <item
         android:id="@+id/tab_my_reservations"
         android:icon="@drawable/booking"
-        android:title="Reservations"
-        />
+        android:title="@string/reservations"
 
+        />
     <item
         android:id="@+id/tab_my_profile"
         android:icon="@drawable/user"
-        android:title="Profile" />
+        android:title="@string/profile" />
+    <item
+        android:id="@+id/tab_friends"
+        android:icon="@drawable/round_groups_24"
+        android:title="@string/friends" />
 
 </menu>

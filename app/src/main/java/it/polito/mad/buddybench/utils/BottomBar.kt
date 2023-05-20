@@ -4,10 +4,10 @@ import android.graphics.Color
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.activities.findcourt.FindCourtFragment
+import it.polito.mad.buddybench.activities.friends.FriendsFragment
 import it.polito.mad.buddybench.activities.profile.ShowProfileFragment
 import it.polito.mad.buddybench.activities.myreservations.MyReservationsFragment
 import it.polito.mad.buddybench.enums.Tabs
@@ -29,7 +29,7 @@ class BottomBar(val context: HomeActivity) {
 
                 if(lastTab == newTab) return
                 val newTag = Tabs.valueOf( newTab.title.replace(" ","").uppercase())
-                val lastTag = Tabs.valueOf(currentTab.name ?: currentTab.name)
+                val lastTag = Tabs.valueOf(currentTab.name)
                 currentTab = newTag
                 replaceFragment(lastTag,newTag)
             }
@@ -50,8 +50,7 @@ class BottomBar(val context: HomeActivity) {
             Tabs.PROFILE -> ShowProfileFragment(context)
             Tabs.RESERVATIONS -> MyReservationsFragment(context)
             Tabs.FINDCOURT -> FindCourtFragment(context)
-            //Tabs.INVITES -> InvitesFragment(context)
-            else -> Fragment()
+            Tabs.FRIENDS -> FriendsFragment(context)
         }
         transaction.add(R.id.home_fragment_container, newFragment, currentTab.name)
         transaction.commitNow()
@@ -76,8 +75,7 @@ class BottomBar(val context: HomeActivity) {
                     Tabs.PROFILE -> ShowProfileFragment(context)
                     Tabs.RESERVATIONS -> MyReservationsFragment(context)
                     Tabs.FINDCOURT -> FindCourtFragment(context)
-                    //Tabs.INVITES -> InvitesFragment(context)
-                    else -> Fragment()
+                    Tabs.FRIENDS -> FriendsFragment(context)
                 }
 
                 transaction.add(R.id.home_fragment_container, newFragment, newTag.name)

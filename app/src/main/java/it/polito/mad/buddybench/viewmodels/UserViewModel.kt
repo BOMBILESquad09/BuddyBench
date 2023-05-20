@@ -51,12 +51,10 @@ class UserViewModel @Inject constructor() : ViewModel() {
     lateinit var sharedPref: SharedPreferences
 
 
-
     fun checkUserEmail(email: String): UserWithSports? {
         val u = userRepository.checkUser(email);
         return u
     }
-
 
     fun getUser(email: String): LiveData<Profile> {
         runBlocking {

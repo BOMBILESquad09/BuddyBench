@@ -21,12 +21,12 @@ class ReviewViewModel @Inject constructor(): ViewModel() {
     @Inject
     lateinit var reviewRepository: ReviewRepository
 
-    val reviewRepositoryFirebase = it.polito.mad.buddybench.persistence.firebaseRepositories.ReviewRepository()
+    private val reviewRepositoryFirebase = it.polito.mad.buddybench.persistence.firebaseRepositories.ReviewRepository()
 
     @Inject
     lateinit var courtRepository: CourtRepository
 
-    val courtRepositoryFirebase = it.polito.mad.buddybench.persistence.firebaseRepositories.CourtRepository()
+    private val courtRepositoryFirebase = it.polito.mad.buddybench.persistence.firebaseRepositories.CourtRepository()
 
     @Inject
     lateinit var userRepository: UserRepository
