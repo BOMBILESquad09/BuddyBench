@@ -125,8 +125,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         }
         viewModel.getAllByUser().observe(viewLifecycleOwner){
             if(it == null)return@observe
-            println("----sizeee-----")
-            println("----------")
+
 
             refreshCalendar()
             refresh()

@@ -63,6 +63,9 @@ class ReservationRepository {
                 reservationDTO.userOrganizer = UserRepository.serializeUser((res.data["user"] as DocumentReference).get().await().data!! as Map<String, Object>)
                 reservations.add(reservationDTO)
             }
+
+
+
             ReservationDTO.toHashmap(reservations)
         }
     }
@@ -204,6 +207,7 @@ class ReservationRepository {
         return withContext(Dispatchers.IO){
             val res = db.collection("reservations").document(reservationID).get().await()
             val reservationDTO = ReservationDTO()
+
             reservationDTO.date = LocalDate.parse(res.data!!["date"] as String, DateTimeFormatter.ISO_LOCAL_DATE)
             reservationDTO.startTime = LocalTime.of((res.data!!["startTime"] as Long).toInt(),0)
             reservationDTO.endTime = LocalTime.of((res.data!!["endTime"] as Long).toInt(),0)

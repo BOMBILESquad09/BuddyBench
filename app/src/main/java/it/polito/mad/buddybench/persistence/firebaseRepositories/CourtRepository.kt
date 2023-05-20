@@ -33,7 +33,6 @@ class CourtRepository {
             .document(name)
             .update("timetable", timetable)
             .addOnSuccessListener {
-                println("done")
             }
     }
 
@@ -103,7 +102,6 @@ class CourtRepository {
             .whereEqualTo("date", date.toString())
             .get()
             .addOnSuccessListener {
-                println(it.size())
                 val timeslots = mutableListOf<ReservationDTO>()
                 for( res in it){
                     val reservationDTO = ReservationDTO()

@@ -46,8 +46,7 @@
                 card_view:layout_constraintBottom_toTopOf="@+id/address_layout"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toTopOf="parent"
-                card_view:layout_constraintVertical_chainStyle="spread">
-            </TextView>
+                card_view:layout_constraintVertical_chainStyle="spread"></TextView>
 
             <LinearLayout
                 android:id="@+id/address_layout"
@@ -63,17 +62,17 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_marginTop="5dp"
+                    android:layout_marginEnd="4dp"
                     android:src="@drawable/location"
-                    card_view:tint="@color/md_theme_light_background"
-                    android:layout_marginEnd="4dp"/>
+                    card_view:tint="@color/md_theme_light_background" />
 
                 <TextView
-                    android:paddingTop="5dp"
                     android:id="@+id/card_reservation_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:fontFamily="@font/montserrat_medium_500"
+                    android:paddingTop="5dp"
                     android:text="@string/court_address"
                     android:textColor="@color/md_theme_light_background"
                     android:textSize="17sp">
@@ -86,20 +85,19 @@
                 android:id="@+id/phone_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginTop="4dp"
+                android:orientation="horizontal"
                 card_view:layout_constraintBottom_toTopOf="@+id/textView5"
                 card_view:layout_constraintStart_toStartOf="@+id/address_layout"
-                card_view:layout_constraintTop_toBottomOf="@+id/address_layout"
-                >
+                card_view:layout_constraintTop_toBottomOf="@+id/address_layout">
 
                 <ImageView
                     android:id="@+id/telephone"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginEnd="4dp"
                     android:src="@drawable/phone"
-                    card_view:tint="@color/md_theme_light_background"
-                    android:layout_marginEnd="4dp"/>
+                    card_view:tint="@color/md_theme_light_background" />
 
                 <TextView
                     android:id="@+id/card_reservation_phone_number"
@@ -127,8 +125,6 @@
                 android:textColor="@color/md_theme_light_background"
                 android:textSize="17sp"
                 card_view:layout_constraintBottom_toBottomOf="parent"
-                card_view:layout_constraintEnd_toStartOf="@+id/manage_btn"
-                card_view:layout_constraintHorizontal_bias="0.5"
                 card_view:layout_constraintHorizontal_chainStyle="spread_inside"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toBottomOf="@+id/phone_layout"
@@ -159,11 +155,19 @@
                 android:textSize="12sp"
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintEnd_toEndOf="parent"
-                card_view:layout_constraintHorizontal_bias="0.5"
-                card_view:layout_constraintStart_toEndOf="@+id/textView5"
                 card_view:layout_constraintTop_toBottomOf="@+id/imageView">
 
             </TextView>
+
+            <ImageView
+                android:id="@+id/show_reservation_friend_button"
+                android:layout_width="40dp"
+                android:layout_marginRight="10dp"
+                android:layout_height="40dp"
+                android:background="@drawable/rounded_shape_card"
+                android:src="@drawable/team"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+                card_view:layout_constraintEnd_toStartOf="@+id/manage_btn" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

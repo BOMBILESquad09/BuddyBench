@@ -7,19 +7,25 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.classes.Sport
 import it.polito.mad.buddybench.enums.Skills
+import it.polito.mad.buddybench.viewmodels.ImageViewModel
 
 @AndroidEntryPoint
 class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_profile) {
 
     lateinit var profile: Profile
+    private val imageViewModel by activityViewModels<ImageViewModel>()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -29,18 +35,17 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_pro
         super.onResume()
         context.userViewModel.user.observe(this){
             if (it != null){
+
+
                 profile = it
+
                 setGUI()
             }
-
         }
-
     }
 
-    override fun onStart() {
-        super.onStart()
 
-    }
+
 
     private fun setGUI(){
 
@@ -59,10 +64,10 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_pro
         locationTv.text = profile.location
 
         val matchesPlayedTv = thisView.findViewById<TextView>(R.id.games_played)
-        matchesPlayedTv.text = profile.matchesPlayed.toString()
+        matchesPlayedTv.text = profile.getMatchesPlayed().toString()
 
         val matchesOrganizedTv = thisView.findViewById<TextView>(R.id.games_organized)
-        matchesOrganizedTv.text = profile.matchesOrganized.toString()
+        matchesOrganizedTv.text = profile.getMatchesOrganized().toString()
 
         val reliabilityTv = thisView.findViewById<TextView>(R.id.reliability)
         reliabilityTv.text = getString(R.string.reliabilityValue).format(profile.reliability)
@@ -70,7 +75,11 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_pro
         val iv = thisView.findViewById<ImageView>(R.id.profile_image)
         //resizeImageView(iv)
         try{
-            iv.setImageURI(profile.imageUri)
+            imageViewModel.getUserImage(profile.email,{iv.setImageResource(R.drawable.person)}){
+                Glide.with(this)
+                    .load(it)
+                    .into(iv)
+            }
         } catch (_: Exception){
             iv.setImageResource(R.drawable.person)
         }
@@ -86,12 +95,8 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_pro
         sportsRecyclerView.adapter = SportsAdapter(context.userViewModel.sports, false)
         context.userViewModel.sports.observe(this){
             if (it == null) return@observe
-            println(it.size)
-
         }
-        println(profile.sports.filter { it.skill != Skills.NULL }.isEmpty())
-        if(profile.sports.filter { it.skill != Skills.NULL }.isEmpty()){
-            println("empty")
+        if(profile.sports.none { it.skill != Skills.NULL }){
             thisView.findViewById<TextView>(R.id.empty_sports).visibility= View.VISIBLE
         } else{
             thisView.findViewById<TextView>(R.id.empty_sports).visibility= View.GONE

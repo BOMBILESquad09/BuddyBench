@@ -1,6 +1,7 @@
 package it.polito.mad.buddybench.classes
 
 import com.google.firebase.firestore.DocumentReference
+import java.time.LocalDate
 
 class ProfileData() {
 
@@ -15,7 +16,9 @@ class ProfileData() {
         imageUri: String?,
         sports: MutableList<Sport>,
         friends: List<DocumentReference>,
-        friend_requests_pending: List<DocumentReference>
+        friend_requests_pending: List<DocumentReference>,
+        last_update: LocalDate
+
     ) : this() {
         this.name = name
         this.surname = surname
@@ -28,6 +31,7 @@ class ProfileData() {
         this.sports = sports
         this.friends = friends
         this.friend_requests_pending = friend_requests_pending
+        this.last_update = last_update.toString()
 
     }
 
@@ -42,4 +46,6 @@ class ProfileData() {
     var sports: MutableList<Sport> = mutableListOf()
     var friends: List<DocumentReference> = mutableListOf()
     var friend_requests_pending: List<DocumentReference> = mutableListOf()
+    var play_request_pendings: List<DocumentReference> = mutableListOf()
+    var last_update: String = ""
 }

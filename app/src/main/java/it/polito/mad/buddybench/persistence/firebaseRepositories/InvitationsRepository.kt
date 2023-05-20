@@ -73,6 +73,19 @@ class InvitationsRepository {
         }
     }
 
+    suspend fun removeAcceptedInvitations(reservationDTO: ReservationDTO,usersToInvite: List<String>){
+        withContext(Dispatchers.IO){
+            val currentEmail = Firebase.auth.currentUser!!.email!!
+            val reservationDocName = reservationDTO.id
+            val invitationsResponse = db
+                .collection("reservations")
+                .document(reservationDocName)
+                .update("accepted", FieldValue.arrayRemove(*usersToInvite.map { u -> db.document("users/$u") }.toTypedArray()))
+            invitationsResponse.await()
+
+        }
+    }
+
     suspend fun acceptInvitation(reservationDTO: ReservationDTO){
         withContext(Dispatchers.IO){
             val currentEmailDoc = db.collection("users").document(Firebase.auth.currentUser!!.email!!)

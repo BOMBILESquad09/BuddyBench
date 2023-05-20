@@ -5,11 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.activities.court.DialogSheetDeleteReservation
+import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.classes.TimeSlotsNotAvailableException
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 
 import it.polito.mad.buddybench.enums.Sports
-import it.polito.mad.buddybench.persistence.repositories.ReservationRepository
+import it.polito.mad.buddybench.persistence.firebaseRepositories.ReservationRepository
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.LocalTime
@@ -31,24 +32,27 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     var refresh: Boolean = false
     var email: String = ""
 
-    @Inject
-    lateinit var reservationRepository: ReservationRepository
+    lateinit var  profile: Profile
 
-    val reservationRepositoryFirebase =
-        it.polito.mad.buddybench.persistence.firebaseRepositories.ReservationRepository()
+
+    val reservationRepositoryFirebase = ReservationRepository()
 
     // ** Expose to other classes (view)
     val reservations: LiveData<HashMap<LocalDate, List<ReservationDTO>>> get() = _reservations
 
-    fun getAll(): LiveData<HashMap<LocalDate, List<ReservationDTO>>> {
-        // Repository Call, All the repos return DTO Obj
-        Thread {
-            val reservations = reservationRepository.getAll()
-            _reservations.postValue(reservations)
-        }.start()
+    private val _pendingFriends: MutableLiveData<List<Pair<Profile, Boolean>>> = MutableLiveData(listOf())
+    var oldPendingFriends: List<Pair<Profile, Boolean>> = _pendingFriends.value!!
+    val pendingFriends: LiveData<List<Pair<Profile, Boolean>>> = _pendingFriends
 
-        return _reservations
-    }
+    private val _acceptedFriends: MutableLiveData<List<Pair<Profile, Boolean>>> = MutableLiveData(listOf())
+    var oldAcceptedFriends: List<Pair<Profile, Boolean>> = _acceptedFriends.value!!
+    val acceptedFriends: LiveData<List<Pair<Profile, Boolean>>> = _acceptedFriends
+
+    private val _notInvitedFriends: MutableLiveData<List<Pair<Profile, Boolean>>> = MutableLiveData(listOf())
+    var oldNotInvitedFriends: List<Pair<Profile, Boolean>> = _notInvitedFriends.value!!
+    val notInvitedFriends: LiveData<List<Pair<Profile, Boolean>>> = _notInvitedFriends
+
+
 
     fun getAllByUser(): LiveData<HashMap<LocalDate, List<ReservationDTO>>> {
         loading.value = (true)
@@ -58,15 +62,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
             loading.postValue(false)
         }
 
-        /*
-        Thread {
-            loading.postValue(true)
-            val reservations = reservationRepository.getAllByUser(email)
-            println("------------------")
 
-            _reservations.postValue(reservations)
-
-        }.start()*/
         return _reservations
     }
 
@@ -108,12 +104,27 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     }
 
     fun getReservation(
-        reservationID: String
+        reservationID: String,
     ): MutableLiveData<ReservationDTO?> {
         runBlocking {
-            _currentReservation.postValue(reservationRepositoryFirebase.getReservation(reservationID))
+            val res = reservationRepositoryFirebase.getReservation(reservationID)
+            _currentReservation.postValue(res)
+            initAcceptedFriends(res)
+            initPendingFriends(res)
+            initNotInvitedFriends()
+
         }
         return _currentReservation
+    }
+
+    private fun initPendingFriends(reservation: ReservationDTO) {
+        oldPendingFriends = _pendingFriends.value!!
+        _pendingFriends.value = reservation.pendings.map { Pair(it, false) }
+    }
+
+    private fun initAcceptedFriends(reservation: ReservationDTO) {
+        oldAcceptedFriends = _acceptedFriends.value!!
+        _acceptedFriends.value = reservation.accepted.map { Pair(it, false) }
     }
 
     fun deleteReservation(
@@ -130,6 +141,56 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
 
         }
     }
+
+    private fun initNotInvitedFriends(): LiveData<List<Pair<Profile,Boolean>>>{
+        currentReservation.observeForever {
+            if (it != null){
+                val acceptedEmails = it.accepted.map { p ->p.email }
+                val pendingEmail = it.pendings.map { p->p.email }
+                oldNotInvitedFriends = _notInvitedFriends.value!!
+                _notInvitedFriends.value =  profile.friends.filter { p -> !pendingEmail.contains(p.email) && !acceptedEmails.contains(p.email) }.map { p->Pair(p, false) }
+
+            }
+        }
+        return notInvitedFriends
+    }
+
+
+
+    fun updateNotInvitedFriends(profile: Profile){
+        oldNotInvitedFriends = _notInvitedFriends.value!!
+        _notInvitedFriends.value = notInvitedFriends.value?.map {
+            if(it.first.email == profile.email){
+                Pair(it.first, !it.second)
+            }else{
+                it
+            }
+        }
+    }
+
+    fun updateAcceptedFriends(profile: Profile){
+        oldAcceptedFriends = _acceptedFriends.value!!
+        _acceptedFriends.value = acceptedFriends.value?.map {
+            if(it.first.email == profile.email){
+                Pair(it.first, !it.second)
+            }else{
+                it
+            }
+        }
+    }
+
+    fun updatePendingFriends(profile: Profile){
+        oldPendingFriends = _pendingFriends.value!!
+        _pendingFriends.value = _pendingFriends.value?.map {
+            if(it.first.email == profile.email){
+                Pair(it.first, !it.second)
+            }else{
+                it
+            }
+        }
+    }
+
+
 
 
 }

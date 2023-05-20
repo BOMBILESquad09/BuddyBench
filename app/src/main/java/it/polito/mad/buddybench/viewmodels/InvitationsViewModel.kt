@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.persistence.firebaseRepositories.InvitationsRepository
 import kotlinx.coroutines.runBlocking
@@ -17,6 +18,12 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
     private val _invitations: MutableLiveData<List<ReservationDTO>> = MutableLiveData(listOf())
     val invitations: LiveData<List<ReservationDTO>> = _invitations
 
+
+
+
+
+
+
     private val invitationSize: MutableLiveData<Int> = MutableLiveData(0)
 
     fun subscribeInvitations(): LiveData<List<ReservationDTO>>{
@@ -24,9 +31,10 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
             invitationSize.postValue(it)
         })
         invitationSize.observeForever{
-            runBlocking {
-                _invitations.postValue(invitationsRepository.getInvitations())
-            }
+            if(it != 0)
+                runBlocking {
+                    _invitations.postValue(invitationsRepository.getInvitations())
+                }
         }
         return invitations
     }
@@ -43,18 +51,31 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun sendInvitations(reservationDTO: ReservationDTO, invitedUsers: List<String>){
+    fun sendInvitations(reservationDTO: ReservationDTO, invitedUsers: List<String>, onSuccess: () -> Unit){
         runBlocking {
             invitationsRepository.sendInvitations(reservationDTO, invitedUsers)
+            onSuccess()
         }
     }
 
-    fun removeInvitations(reservationDTO: ReservationDTO, invitedUsers: List<String>){
+    fun removeInvitations(reservationDTO: ReservationDTO, invitedUsers: List<String>, onSuccess: () -> Unit){
         runBlocking {
             invitationsRepository.removeInvitations(reservationDTO, invitedUsers)
+            onSuccess()
         }
     }
 
+    fun removeAcceptedInvitations(reservationDTO: ReservationDTO, invitedUsers: List<String>, onSuccess: () -> Unit){
+        runBlocking {
+            invitationsRepository.removeAcceptedInvitations(reservationDTO, invitedUsers)
+            onSuccess()
+        }
+    }
+
+
+    fun getNotInvitedFriends(){
+
+    }
 
 
 

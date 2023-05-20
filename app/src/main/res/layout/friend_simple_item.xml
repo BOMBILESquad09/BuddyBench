@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:clipToPadding="false"
+    android:padding="10dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/profile_cv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:checkedIconMargin="12.5dp"
+        app:checkedIconTint="@color/colorPrimary"
+        android:checkable="true"
+        app:cardCornerRadius="300dp"
+        app:strokeColor="@color/card_border_selector"
+        app:strokeWidth="1dp">
+
+        <ImageView
+            android:id="@+id/profile_iv"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/person"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"/>
+    </com.google.android.material.card.MaterialCardView>
+    <TextView
+        android:layout_marginTop="5dp"
+        android:id="@+id/nickname_tv"
+        android:textSize="13sp"
+        android:layout_gravity="center"
+        android:text="TheNextLayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

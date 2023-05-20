@@ -1,29 +1,29 @@
 package it.polito.mad.buddybench.activities.myreservations
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.internal.managers.FragmentComponentManager
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.court.CourtActivity
 import it.polito.mad.buddybench.activities.court.ReviewsActivity
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
-import it.polito.mad.buddybench.persistence.entities.Court
-import java.lang.String
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import java.util.Locale
+
 
 class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent>): RecyclerView.ViewHolder(v) {
 
@@ -36,10 +36,12 @@ class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent
     private var manageBtn: TextView = v.findViewById(R.id.manage_btn)
     private var telephoneIcon: ImageView = v.findViewById(R.id.telephone)
     private var positionIcon: ImageView = v.findViewById(R.id.position)
+    private var friendsButton: ImageView = v.findViewById(R.id.show_reservation_friend_button)
 
     val view: View = v
 
     fun bind(reservation: ReservationDTO){
+
 
         // ** Card color
         val card = view.findViewById<CardView>(R.id.card_reservation)
@@ -72,10 +74,23 @@ class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent
         iconSport.setImageDrawable(wrappedDrawable)
         slot.text = "${reservation.startTime.format(formatter)} - ${reservation.endTime.format(formatter)}"
 
+        if(!reservation.isUserOrganizerInitialized()){
+            friendsButton.setOnClickListener {
+                SendInvitationsBottomSheet(reservation).show((FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager, "InvitationBottomSheet")
+            }
+        } else{
+            friendsButton.setOnClickListener {
+                SendInvitationsBottomSheet(reservation, true).show((FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager, "InvitationBottomSheet")
+            }
+        }
+
         if (reservation.isUserOrganizerInitialized() && reservation.userOrganizer.email != Firebase.auth.currentUser!!.email!!){
             manageBtn.text = "Invited"
             manageBtn.isEnabled = false
         }
+
+
+
         else if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime))
             manageBtn.text = "Review it"
         manageBtn.setTextColor(Sports.getSportColor(Sports.valueOf(reservation.court.sport), view.context))

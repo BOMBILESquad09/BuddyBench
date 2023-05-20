@@ -48,10 +48,10 @@ class ShowProfileActivity : AppCompatActivity() {
         locationTv.text = profile.location
 
         val matchesPlayedTv = findViewById<TextView>(R.id.matchesPlayedView)
-        matchesPlayedTv.text = profile.matchesPlayed.toString()
+        matchesPlayedTv.text = profile.getMatchesPlayed().toString()
 
         val matchesOrganizedTv = findViewById<TextView>(R.id.matchesOrganizedView)
-        matchesOrganizedTv.text = profile.matchesOrganized.toString()
+        matchesOrganizedTv.text = profile.getMatchesOrganized().toString()
 
         val reliabilityTv = findViewById<TextView>(R.id.reliabilityView)
         reliabilityTv.text = getString(R.string.reliabilityValue).format(profile.reliability)

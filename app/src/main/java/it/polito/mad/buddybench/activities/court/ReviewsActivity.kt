@@ -13,6 +13,7 @@ import it.polito.mad.buddybench.activities.findcourt.ReviewsDiffUtils
 import it.polito.mad.buddybench.databinding.ActivityReviewsBinding
 import it.polito.mad.buddybench.persistence.dto.ReviewDTO
 import it.polito.mad.buddybench.utils.Utils
+import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import it.polito.mad.buddybench.viewmodels.ReviewViewModel
 
 @AndroidEntryPoint
@@ -27,6 +28,7 @@ class ReviewsActivity : AppCompatActivity() {
 
     // ** View Models
     private val reviewViewModel by viewModels<ReviewViewModel>()
+    val imageViewModel by viewModels<ImageViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

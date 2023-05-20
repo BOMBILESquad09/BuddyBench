@@ -67,8 +67,12 @@ class UserViewModel @Inject constructor() : ViewModel() {
         return user
     }
 
-    fun updateUserInfo(profile: Profile, oldEmail: String) {
-        userRepositoryFirebase.update(profile, _user)
+    fun updateUserInfo(profile: Profile) {
+        runBlocking {
+            userRepositoryFirebase.update(profile){
+                _user.postValue(it)
+            }
+        }
 
         /*
         _user.value = profile
@@ -103,11 +107,15 @@ class UserViewModel @Inject constructor() : ViewModel() {
         _sports.value = _sports.value!!.filter {
             (it.name != sport.name)
         }.toMutableList()
-
         _invisibleSports.add(sport)
         return sports
     }
-
+    fun getAllSports(): List<Sport>{
+        val allSports = mutableListOf<Sport>()
+        _invisibleSports.forEach { it.skill = Skills.NULL;allSports.add(it) }
+        sports.value!!.forEach { allSports.add(it) }
+        return allSports
+    }
     fun updateSport(sport: Sport): LiveData<MutableList<Sport>> {
         oldSports = _sports.value!!.map { it.copy() }
 
@@ -125,11 +133,13 @@ class UserViewModel @Inject constructor() : ViewModel() {
     fun addSport(sport: Sport): LiveData<MutableList<Sport>> {
 
         oldSports = _sports.value!!.map { it.copy() }
-        val exists = _invisibleSports!!.find { it.name == sport.name }
+        val exists = _invisibleSports.find { it.name == sport.name }
         _invisibleSports.remove(exists)
         if (exists != null) {
+            exists.skill = Skills.NEWBIE
             _sports.value = _sports.value!!.plus(exists).toMutableList()
         } else {
+
             _sports.value = _sports.value!!.plus(sport).toMutableList()
         }
 
