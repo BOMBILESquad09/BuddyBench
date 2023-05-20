@@ -65,11 +65,9 @@ class BottomBar(val context: HomeActivity) {
         val transaction = context.supportFragmentManager.beginTransaction()
 
         context.supportFragmentManager.findFragmentByTag(lastTag.name).let {
-            println(it)
-            println("watch--------------------------")
+
             if(it != null){
                 transaction.hide(it)
-                println("hideeee")
             }
         }
         context.supportFragmentManager.findFragmentByTag(newTag.name).let {

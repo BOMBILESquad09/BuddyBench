@@ -294,9 +294,12 @@
                                     </androidx.constraintlayout.widget.ConstraintLayout>
                                 </LinearLayout>
 
-                                <View style="@style/Divider" android:layout_gravity="center_vertical"/>
+                                <View style="@style/Divider" android:layout_gravity="center_vertical"
+                                    android:visibility="gone"
+                                    />
 
                                 <LinearLayout
+                                    android:visibility="gone"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical"

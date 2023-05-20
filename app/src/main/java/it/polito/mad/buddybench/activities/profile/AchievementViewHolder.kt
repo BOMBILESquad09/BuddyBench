@@ -19,9 +19,7 @@ class AchievementViewHolder(private val v: View,
 
     @SuppressLint("SetTextI18n")
     fun bind(achievement: String, sport: Sport){
-        println("------------------")
-        println(achievement)
-        println("-------------------------------------")
+
 
 
         v.findViewById<TextView>(R.id.achievement_name).text = "• $achievement"

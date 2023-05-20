@@ -57,11 +57,9 @@ class HomeActivity: AppCompatActivity() {
 
 
         userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this){
-            if (it==null){
-                profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
-            }
-            if(it != null)
-                profile = it
+            profile = it ?: Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
+
+
         }
 
 
@@ -101,13 +99,7 @@ class HomeActivity: AppCompatActivity() {
                 if(profile.imageUri != null && response.data?.getBooleanExtra("newImage", false) == true)
                     imageViewModel.postUserImage(profile.email, profile.imageUri!!)
                 userViewModel.updateUserInfo(profile)
-                supportFragmentManager.findFragmentByTag(Tabs.PROFILE.name).let {
-                    if (it != null){
-                        (it as ShowProfileFragment).let {
-                            it.profile = profile
-                        }
-                    }
-                }
+
             }
         }
     }
@@ -126,7 +118,6 @@ class HomeActivity: AppCompatActivity() {
     private fun onReviewsReturn(response: ActivityResult) {
         if (response.resultCode  == Activity.RESULT_OK){
            // TODO: Maybe update
-           println("Returned from reviews activity")
         }
 
 

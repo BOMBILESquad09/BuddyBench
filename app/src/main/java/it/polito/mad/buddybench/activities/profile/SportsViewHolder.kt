@@ -111,9 +111,6 @@ class SportsViewHolder(val v: View,
         //sportSkillLevelText.setBackgroundColor(Skills.skillToColor(sport.skill))
         //sportSkillLevelText.text = Utils.formatString(sport.skill.toString())
 
-        println("-----------achievements-------------------")
-        println(sport.achievements.size)
-        println("--------------------------------------------------")
 
         val achievementsRecyclerView = view.findViewById<RecyclerView>(R.id.achievements)
         achievementsRecyclerView.adapter = AchievementsAdapter(sport, 0, edit, achievementAddCallback, achievementRemoveCallback)

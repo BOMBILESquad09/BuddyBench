@@ -32,7 +32,9 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.Objects
 
 class UserRepository {
     val db = FirebaseFirestore.getInstance()
@@ -61,6 +63,7 @@ class UserRepository {
                     invited.await()
                     val counters: HashMap<Sports, Pair<Int, Int>> = HashMap()
                     for (o in organized.result) {
+                        if(!checkReservationIsPassed(o.data)) continue
                         val sport = Sports.valueOf(
                             (o.data!!["court"] as DocumentReference).id.split("_").last()
                         )
@@ -72,6 +75,7 @@ class UserRepository {
                         }
                     }
                     for (i in invited.result) {
+                        if(!checkReservationIsPassed(i.data)) continue
                         val sport = Sports.valueOf(
                             (i.data!!["court"] as DocumentReference).id.split("_").last()
                         )
@@ -88,6 +92,7 @@ class UserRepository {
                         it.matchesPlayed = counters[it.name]?.second ?: 0
                     }
                     update(serializedProfile, callback)
+
                     return@withContext
                 }
                 callback(serializedProfile)
@@ -151,6 +156,12 @@ class UserRepository {
 
     }
 
+    fun checkReservationIsPassed(reservation: Map<String, Any>): Boolean{
+        val date = LocalDate.parse(reservation["date"] as String, DateTimeFormatter.ISO_LOCAL_DATE)
+        if (date < LocalDate.now()) return true
+        if(date == LocalDate.now()) return (reservation["endTime"] as Long).toInt() < LocalTime.now().hour
+        return false
+    }
 
     /**
      * TODO: Update with user session (auth)

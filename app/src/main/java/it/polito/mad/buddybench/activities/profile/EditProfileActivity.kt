@@ -198,7 +198,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
         val achievementAddCallback: (Sport, String) -> Unit = {
             sport, achievement ->
-            println("add achievement")
             userViewModel.addAchievement(sport, achievement)
         }
 

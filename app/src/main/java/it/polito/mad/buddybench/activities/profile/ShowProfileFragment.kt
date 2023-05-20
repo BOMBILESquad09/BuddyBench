@@ -35,18 +35,17 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_pro
         super.onResume()
         context.userViewModel.user.observe(this){
             if (it != null){
+
+
                 profile = it
+
                 setGUI()
             }
-
         }
-
     }
 
-    override fun onStart() {
-        super.onStart()
 
-    }
+
 
     private fun setGUI(){
 
@@ -65,10 +64,10 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_pro
         locationTv.text = profile.location
 
         val matchesPlayedTv = thisView.findViewById<TextView>(R.id.games_played)
-        matchesPlayedTv.text = profile.matchesPlayed.toString()
+        matchesPlayedTv.text = profile.getMatchesPlayed().toString()
 
         val matchesOrganizedTv = thisView.findViewById<TextView>(R.id.games_organized)
-        matchesOrganizedTv.text = profile.matchesOrganized.toString()
+        matchesOrganizedTv.text = profile.getMatchesOrganized().toString()
 
         val reliabilityTv = thisView.findViewById<TextView>(R.id.reliability)
         reliabilityTv.text = getString(R.string.reliabilityValue).format(profile.reliability)
@@ -96,12 +95,8 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_pro
         sportsRecyclerView.adapter = SportsAdapter(context.userViewModel.sports, false)
         context.userViewModel.sports.observe(this){
             if (it == null) return@observe
-            println(it.size)
-
         }
-        println(profile.sports.filter { it.skill != Skills.NULL }.isEmpty())
-        if(profile.sports.filter { it.skill != Skills.NULL }.isEmpty()){
-            println("empty")
+        if(profile.sports.none { it.skill != Skills.NULL }){
             thisView.findViewById<TextView>(R.id.empty_sports).visibility= View.VISIBLE
         } else{
             thisView.findViewById<TextView>(R.id.empty_sports).visibility= View.GONE

@@ -32,8 +32,6 @@ class ImageViewModel @Inject constructor() : ViewModel(){
     }
 
     fun getUserImage(path: String, onFailure: () ->Unit, onSuccess: (Uri)->Unit){
-        println(path)
-        println("---------------------------------------------------------")
         if(cacheProfileImages[path] != null) {
             onSuccess(cacheProfileImages[path]!!)
             return

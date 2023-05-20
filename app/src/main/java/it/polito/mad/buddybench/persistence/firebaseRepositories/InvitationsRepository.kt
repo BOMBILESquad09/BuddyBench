@@ -77,7 +77,6 @@ class InvitationsRepository {
         withContext(Dispatchers.IO){
             val currentEmail = Firebase.auth.currentUser!!.email!!
             val reservationDocName = reservationDTO.id
-            println("diocaneeeeeeeeeeeeeeee")
             val invitationsResponse = db
                 .collection("reservations")
                 .document(reservationDocName)

@@ -41,13 +41,19 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
             var isFriend: Boolean = false, var isPending: Boolean = false
               ) {
 
-    var matchesPlayed: Int = sports.filter { it.skill != Skills.NULL }
-        .fold(0) { a: Int, b: Sport -> a + b.matchesPlayed }
+
     var age: Int = ChronoUnit.YEARS.between(birthdate, LocalDate.now()).toInt()
-    var matchesOrganized: Int = sports.filter { it.skill != Skills.NULL }
-        .fold(0) { a: Int, b: Sport -> a + b.matchesOrganized }
     var fullName = "$name $surname"
 
+    fun getMatchesOrganized():Int{
+        return sports.filter { it.skill != Skills.NULL }
+            .fold(0) { a: Int, b: Sport -> a + b.matchesOrganized }
+    }
+
+    fun getMatchesPlayed():Int{
+        return sports.filter { it.skill != Skills.NULL }
+            .fold(0) { a: Int, b: Sport -> a + b.matchesPlayed }
+    }
 
 
     companion object {
