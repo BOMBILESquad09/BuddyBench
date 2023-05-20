@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
@@ -16,14 +18,21 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
+import com.google.android.material.button.MaterialButton
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.internal.managers.FragmentComponentManager
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Profile
+import it.polito.mad.buddybench.enums.Tabs
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.viewmodels.InvitationsViewModel
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
 
-class SendInvitationsBottomSheet(private val reservationDTO: ReservationDTO): SuperBottomSheetFragment() {
+class SendInvitationsBottomSheet(
+    private val reservationDTO: ReservationDTO,
+    private val invited: Boolean = false): SuperBottomSheetFragment() {
 
 
     private val userViewModel by activityViewModels<UserViewModel>()
@@ -54,9 +63,7 @@ class SendInvitationsBottomSheet(private val reservationDTO: ReservationDTO): Su
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        userViewModel.user.observe(this){
 
-        }
         val recyclerViewNotInvited = view.findViewById<RecyclerView>(R.id.not_invited_friends_rv)
         val recyclerViewPending = view.findViewById<RecyclerView>(R.id.pending_friends_rv)
         val recyclerViewAccepted = view.findViewById<RecyclerView>(R.id.accepted_friends_rv)
@@ -92,15 +99,17 @@ class SendInvitationsBottomSheet(private val reservationDTO: ReservationDTO): Su
         recyclerViewAccepted.layoutManager = LinearLayoutManager(context).let { it.orientation = HORIZONTAL; it }
 
         recyclerViewNotInvited.adapter = FriendsAdapter(reservationViewModel.notInvitedFriends.value ?: listOf()){
-            reservationViewModel.updateNotInvitedFriends(it)
+            if(!invited)
+                reservationViewModel.updateNotInvitedFriends(it)
         }
         recyclerViewPending.adapter = FriendsAdapter(reservationViewModel.pendingFriends.value ?: listOf()){
-            reservationViewModel.updatePendingFriends(it)
+            if(!invited)
+                reservationViewModel.updatePendingFriends(it)
 
         }
         recyclerViewAccepted.adapter = FriendsAdapter(reservationViewModel.acceptedFriends.value ?: listOf()){
-            reservationViewModel.updateAcceptedFriends(it)
-
+            if(!invited)
+                reservationViewModel.updateAcceptedFriends(it)
         }
 
         reservationViewModel.profile = userViewModel.user.value!!
@@ -136,21 +145,54 @@ class SendInvitationsBottomSheet(private val reservationDTO: ReservationDTO): Su
                 }
             }
         }
-
-        reservationViewModel.notInvitedFriends.observe(this){
-            val diffUtils = FriendsDiffUtils(reservationViewModel.oldNotInvitedFriends, it)
-            val diffs = DiffUtil.calculateDiff(diffUtils)
-            (recyclerViewNotInvited.adapter as FriendsAdapter).friends = it
-            diffs.dispatchUpdatesTo(recyclerViewNotInvited.adapter!!)
-            if(it.isEmpty()){
-                emptyNotInvited.visibility = View.VISIBLE
-            } else{
-                emptyNotInvited.visibility = View.GONE
+        if(!invited){
+            reservationViewModel.notInvitedFriends.observe(this){
+                val diffUtils = FriendsDiffUtils(reservationViewModel.oldNotInvitedFriends, it)
+                val diffs = DiffUtil.calculateDiff(diffUtils)
+                (recyclerViewNotInvited.adapter as FriendsAdapter).friends = it
+                diffs.dispatchUpdatesTo(recyclerViewNotInvited.adapter!!)
+                if(it.isEmpty()){
+                    emptyNotInvited.visibility = View.VISIBLE
+                } else{
+                    emptyNotInvited.visibility = View.GONE
+                }
             }
         }
 
 
+
+
+        fun setForInvited(){
+            if(invited){
+                view.findViewById<LinearLayout>(R.id.invite_friends_ll).visibility = View.GONE
+                acceptedButton.visibility = View.GONE
+                pendingButton.visibility = View.GONE
+                val removeButton = view.findViewById<MaterialButton>(R.id.remove_invite)
+                removeButton.visibility = View.VISIBLE
+                var confirm = 0
+                removeButton.setOnClickListener {
+                    if(confirm == 0){
+                        confirm = 1
+                        removeButton.text = "Confirm to remove?"
+                    } else{
+                        invitationViewModel.removeAcceptedInvitations(reservationDTO, listOf(Firebase.auth.currentUser!!.email!!)){
+                            reservationViewModel.getReservation(reservationDTO.id)
+
+                            ((FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager.findFragmentByTag(
+                                Tabs.RESERVATIONS.name) as MyReservationsFragment).viewModel.getAllByUser()
+                            this.dismiss()
+                        }
+                    }
+
+                }
+            }
+        }
+
+        setForInvited()
+
     }
+
+
 
 
 

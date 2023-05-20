@@ -12,6 +12,7 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
+            android:id="@+id/invite_friends_ll"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -35,12 +36,16 @@
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="0dp"/>
-                <Button
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/invite_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
+                    android:backgroundTint="@color/colorPrimary"
                     android:text="Invite friends"
+                    android:textSize="12sp"
+                    app:cornerRadius="30dp"
                     app:layout_constraintEnd_toEndOf="parent" />
             </LinearLayout>
             <TextView
@@ -86,7 +91,10 @@
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="0dp"/>
-                <Button
+                <com.google.android.material.button.MaterialButton
+                    android:backgroundTint="@color/colorPrimary"
+                    app:cornerRadius="30dp"
+                    android:textSize="12sp"
                     android:id="@+id/remove_pending_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -137,7 +145,10 @@
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="0dp"/>
-                <Button
+                <com.google.android.material.button.MaterialButton
+                    android:backgroundTint="@color/colorPrimary"
+                    app:cornerRadius="30dp"
+                    android:textSize="12sp"
                     android:id="@+id/remove_accepted_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -163,7 +174,21 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/accepted_friends" />
         </LinearLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/remove_invite"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Remove invite"
+            android:backgroundTint="@color/error"
+            app:layout_constraintBottom_toTopOf="@+id/recyclerView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:cornerRadius="30dp"
+            />
+
 
     </LinearLayout>
+
 
 </LinearLayout>

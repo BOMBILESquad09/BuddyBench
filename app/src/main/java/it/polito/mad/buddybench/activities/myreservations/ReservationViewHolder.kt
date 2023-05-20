@@ -76,8 +76,11 @@ class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent
 
         if(!reservation.isUserOrganizerInitialized()){
             friendsButton.setOnClickListener {
-
                 SendInvitationsBottomSheet(reservation).show((FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager, "InvitationBottomSheet")
+            }
+        } else{
+            friendsButton.setOnClickListener {
+                SendInvitationsBottomSheet(reservation, true).show((FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager, "InvitationBottomSheet")
             }
         }
 
