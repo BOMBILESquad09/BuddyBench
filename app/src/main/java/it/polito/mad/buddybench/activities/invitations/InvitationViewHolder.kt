@@ -1,6 +1,7 @@
 package it.polito.mad.buddybench.activities.invitations
 
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -15,7 +16,8 @@ import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import java.time.format.DateTimeFormatter
 
-class InvitationViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Unit,
+                           val onDecline: (ReservationDTO) -> Unit,): RecyclerView.ViewHolder(view) {
 
     private val cardInvitation: CardView = view.findViewById(R.id.card_invitation)
     private val cardInner: CardView = view.findViewById(R.id.card_inner)
@@ -25,6 +27,8 @@ class InvitationViewHolder(val view: View): RecyclerView.ViewHolder(view) {
     private val address: TextView = view.findViewById(R.id.card_invitation_address)
     private val date: TextView = view.findViewById(R.id.card_invitation_date)
     private val slot: TextView = view.findViewById(R.id.card_invitation_hours)
+    private val acceptButton: TextView = view.findViewById(R.id.accept_btn)
+    private val declineButton: TextView = view.findViewById(R.id.decline_btn)
 
     var slotFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("H:mm")
     var dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
@@ -38,9 +42,7 @@ class InvitationViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 
         //set inviter
         ((FragmentComponentManager.findActivity(view.context) as HomeActivity)).imageViewModel.getUserImage(invitation.userOrganizer.email,{
-
             inviterPicture.setImageResource(R.drawable.person)
-
         }){
             Glide.with(view.context)
                 .load(it)
@@ -60,6 +62,14 @@ class InvitationViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 
         //set hours
         slot.text = "${invitation.startTime.format(slotFormatter)} - ${invitation.endTime.format(slotFormatter)}"
+
+        acceptButton.setOnClickListener {
+            onAccept(invitation)
+        }
+
+        declineButton.setOnClickListener {
+            onDecline(invitation)
+        }
 
     }
 }

@@ -25,7 +25,7 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
             invitationSize.postValue(it)
         })
         invitationSize.observeForever{
-            if(it != 0)
+            if(it != null)
                 runBlocking {
                     _invitations.postValue(invitationsRepository.getInvitations())
                 }

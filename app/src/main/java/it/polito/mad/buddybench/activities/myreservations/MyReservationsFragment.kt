@@ -125,8 +125,6 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         }
         viewModel.getAllByUser().observe(viewLifecycleOwner){
             if(it == null)return@observe
-
-
             refreshCalendar()
             refresh()
         }
@@ -189,7 +187,6 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         super.onStart()
 
         viewModel.selectedDate.observe(viewLifecycleOwner){
-
             if (it != null && viewModel.refresh){
                 calendarView.scrollToDate(it)
                 calendarView.scrollToMonth(YearMonth.from(it))
