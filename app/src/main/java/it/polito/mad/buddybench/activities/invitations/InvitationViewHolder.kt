@@ -5,6 +5,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.compose.ui.text.capitalize
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -15,6 +16,7 @@ import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Unit,
                            val onDecline: (ReservationDTO) -> Unit,): RecyclerView.ViewHolder(view) {
@@ -49,7 +51,8 @@ class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Uni
                 .into(inviterPicture)
         }
         //set invite text
-        inviteText.text = "${invitation.userOrganizer.name} invites you to play ${invitation.court.sport.lowercase()}!"
+        inviteText.text = "${invitation.userOrganizer.name} invites you to play ${invitation.court.sport.lowercase().capitalize(Locale.ENGLISH
+        )}!"
 
         //set court
         courtName.text = invitation.court.name

@@ -18,6 +18,7 @@ import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.core.CalendarDay
@@ -32,8 +33,10 @@ import com.kizitonwose.calendar.view.MonthHeaderFooterBinder
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
+import it.polito.mad.buddybench.activities.invitations.InvitationsDiffsUtils
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
+import it.polito.mad.buddybench.persistence.entities.Invitation
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -63,6 +66,9 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         calendarView = view.findViewById(R.id.calendar)
         recyclerViewReservations = view.findViewById(R.id.reservations)
         recyclerViewReservations.layoutManager = LinearLayoutManager(context)
+        recyclerViewReservations.adapter = ReservationAdapter(  listOf(), context.launcherReservation)
+
+
         val dayTitle = view.findViewById<TextView>(R.id.dayTitle)
         dayTitle.text = LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, d MMMM y"))
 
@@ -70,6 +76,8 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
 
         progressLayout = view.findViewById(R.id.progess_layout)
         progressBar = progressLayout.findViewById(R.id.progress_circular)
+
+
 
         context.reservationViewModel.loading.observe(viewLifecycleOwner) {
             if(it) {
@@ -131,9 +139,9 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
     }
 
     private fun refresh(){
-        val selectedReservations = viewModel.getSelectedReservations()?.sortedBy { it.endTime }
+        val selectedReservations = viewModel.getSelectedReservations()?.sortedBy { it.endTime } ?: listOf()
         context.findViewById<View>(R.id.emptyReservations).let {
-            it.visibility = if (selectedReservations.isNullOrEmpty()){
+            it.visibility = if (selectedReservations.isEmpty()){
                 View.VISIBLE
             } else {
                 View.GONE}
@@ -154,8 +162,12 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
             calendarView.notifyDayChanged(CalendarDay(viewModel.selectedDate.value!!, DayPosition.MonthDate))
         }
 
-        recyclerViewReservations.adapter = ReservationAdapter(selectedReservations ?: listOf(), context.launcherReservation)
         context.reservationViewModel.loading.postValue(false)
+
+        val diffUtils = InvitationsDiffsUtils((recyclerViewReservations.adapter as ReservationAdapter).reservations, selectedReservations)
+        val diff = DiffUtil.calculateDiff(diffUtils)
+        (recyclerViewReservations.adapter as ReservationAdapter).reservations = selectedReservations
+        diff.dispatchUpdatesTo(recyclerViewReservations.adapter!!)
 
     }
 
