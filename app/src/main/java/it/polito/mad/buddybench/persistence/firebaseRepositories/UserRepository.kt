@@ -39,36 +39,81 @@ class UserRepository {
 
 
     suspend fun getUser(email: String, callback: (Profile) -> Unit) {
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             val profile = db.collection("users").document(email).get().await()
-            if(profile.data != null){
-                val serializedProfile = serializeUser( profile.data as Map<String, Object>)
-                (profile.data!!["friends"] as List<DocumentReference>).map { it.get() }.map { it.await() }.forEach{
-                    serializedProfile.friends.add(serializeUser(it.data as Map<String, Object>)) }
-                (profile.data!!["friend_requests_pending"] as List<DocumentReference>).map { it.get() }.map { it.await() }.forEach{
-                    serializedProfile.pendings.add(serializeUser(it.data as Map<String, Object>)) }
+            if (profile.data != null) {
+                val serializedProfile = serializeUser(profile.data as Map<String, Object>)
+                (profile.data!!["friends"] as List<DocumentReference>).map { it.get() }
+                    .map { it.await() }.forEach {
+                    serializedProfile.friends.add(serializeUser(it.data as Map<String, Object>))
+                }
+                (profile.data!!["friend_requests_pending"] as List<DocumentReference>).map { it.get() }
+                    .map { it.await() }.forEach {
+                    serializedProfile.pendings.add(serializeUser(it.data as Map<String, Object>))
+                }
+
+                if (profile.data!!["last_update"] == null || LocalDate.parse(profile.data!!["last_update"] as String, DateTimeFormatter.ISO_LOCAL_DATE) != LocalDate.now()) {
+                    val organized = db.collection("reservations")
+                        .whereEqualTo("user", db.document("users/$email")).get()
+                    val invited = db.collection("reservations")
+                        .whereArrayContains("accepted", db.document("users/$email")).get()
+                    organized.await()
+                    invited.await()
+                    val counters: HashMap<Sports, Pair<Int, Int>> = HashMap()
+                    for (o in organized.result) {
+                        val sport = Sports.valueOf(
+                            (o.data!!["court"] as DocumentReference).id.split("_").last()
+                        )
+                        if (counters[sport] == null) {
+                            counters[sport] = Pair(1, 1)
+                        } else {
+                            counters[sport] =
+                                Pair(counters[sport]!!.first + 1, counters[sport]!!.second + 1)
+                        }
+                    }
+                    for (i in invited.result) {
+                        val sport = Sports.valueOf(
+                            (i.data!!["court"] as DocumentReference).id.split("_").last()
+                        )
+                        if (counters[sport] == null) {
+                            counters[sport] = Pair(0, 1)
+                        } else {
+                            counters[sport] =
+                                Pair(counters[sport]!!.first, counters[sport]!!.second + 1)
+                        }
+                    }
+
+                    serializedProfile.sports.forEach {
+                        it.matchesOrganized = counters[it.name]?.first ?: 0
+                        it.matchesPlayed = counters[it.name]?.second ?: 0
+                    }
+                    update(serializedProfile, callback)
+                    return@withContext
+                }
                 callback(serializedProfile)
-            } else{
+            } else {
                 val newProfile = createProfile()
                 val x = db.collection("users").document(newProfile.email).set(
                     newProfile
                 ).await()
-                callback(Profile(
-                    newProfile.name,
-                    newProfile.surname,
-                    newProfile.nickname,
-                    newProfile.email,
-                    newProfile.location,
-                    LocalDate.parse(
-                        newProfile.birthdate,
-                        DateTimeFormatter.ISO_LOCAL_DATE
-                    ),
-                    newProfile.reliability,
-                    null,
-                    newProfile.sports,
-                    mutableListOf(),
-                    mutableListOf()
-                ))
+                callback(
+                    Profile(
+                        newProfile.name,
+                        newProfile.surname,
+                        newProfile.nickname,
+                        newProfile.email,
+                        newProfile.location,
+                        LocalDate.parse(
+                            newProfile.birthdate,
+                            DateTimeFormatter.ISO_LOCAL_DATE
+                        ),
+                        newProfile.reliability,
+                        null,
+                        newProfile.sports,
+                        mutableListOf(),
+                        mutableListOf()
+                    )
+                )
             }
         }
     }
@@ -80,35 +125,29 @@ class UserRepository {
         return ProfileData(
             name, surname, "BuddyBenchGuest", user.email!!,
             "Turin", LocalDate.of(1999, 4, 27).toString(), 80,
-            "", mutableListOf(
-                Sport(
-                    Sports.TENNIS,
-                    Skills.NEWBIE, 11, 11, mutableListOf("Coppa Champion")
-                )
-            ), listOf(), listOf()
+            "", mutableListOf()
+            , listOf(), listOf(), LocalDate.now()
         )
     }
 
 
-
-
-
-    fun update(user: Profile, wrapper: MutableLiveData<Profile>) {
-
-        db.collection("users")
-            .document(user.email).update(
-                mapOf(
-                    "name" to user.name,
-                    "surname" to user.surname,
-                    "nickname" to user.nickname,
-                    "location" to user.location,
-                    "birthdate" to user.birthdate.toString(),
-                    "sports" to user.sports,
-                    "imageUri" to user.imageUri.toString()
-                )
-            ).addOnSuccessListener {
-                wrapper.value = user
-            }
+    suspend fun update(user: Profile, callback: (Profile) -> Unit) {
+        withContext(Dispatchers.IO) {
+            db.collection("users")
+                .document(user.email).update(
+                    mapOf(
+                        "name" to user.name,
+                        "surname" to user.surname,
+                        "nickname" to user.nickname,
+                        "location" to user.location,
+                        "birthdate" to user.birthdate.toString(),
+                        "sports" to user.sports,
+                        "imageUri" to user.imageUri.toString(),
+                        "last_update" to LocalDate.now().toString()
+                    )
+                ).await()
+            callback(user)
+        }
 
     }
 

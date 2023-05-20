@@ -23,6 +23,8 @@
                 android:id="@+id/iv_user_picture_review"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
                 android:contentDescription="@string/user_hello"
                 android:src="@mipmap/ic_launcher"
                  />

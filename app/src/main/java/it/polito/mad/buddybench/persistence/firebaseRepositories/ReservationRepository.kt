@@ -64,6 +64,9 @@ class ReservationRepository {
                 reservationDTO.userOrganizer = UserRepository.serializeUser((res.data["user"] as DocumentReference).get().await().data!! as Map<String, Object>)
                 reservations.add(reservationDTO)
             }
+
+
+
             ReservationDTO.toHashmap(reservations)
         }
     }

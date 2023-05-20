@@ -6,7 +6,7 @@ import org.json.JSONObject
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getInt
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getString
 
-data class Sport(val name: Sports, var skill: Skills, val matchesPlayed: Int, val matchesOrganized: Int = 0,
+data class Sport(val name: Sports, var skill: Skills, var matchesPlayed: Int, var matchesOrganized: Int = 0,
                  var achievements: MutableList<String>
 ): java.io.Serializable {
     companion object{

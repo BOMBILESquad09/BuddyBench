@@ -128,5 +128,10 @@ class HomeActivity: AppCompatActivity() {
            // TODO: Maybe update
            println("Returned from reviews activity")
         }
+
+
     }
+
+
+
 }
