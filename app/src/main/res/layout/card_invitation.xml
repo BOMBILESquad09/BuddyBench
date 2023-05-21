@@ -17,14 +17,14 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="12dp">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/card_picture"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="12dp"
             card_view:cardCornerRadius="255dp"
             card_view:layout_constraintBottom_toTopOf="@+id/card_inner"
             card_view:layout_constraintEnd_toStartOf="@+id/invite_text"
@@ -34,13 +34,13 @@
 
             <ImageView
                 android:id="@+id/inviter_picture"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
                 android:src="@drawable/person"
 
-                 />
+                />
         </androidx.cardview.widget.CardView>
 
 
@@ -48,12 +48,12 @@
             android:id="@+id/invite_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:lines="2"
-            android:layout_marginRight="16dp"
             android:fontFamily="@font/montserrat_semibold_600"
+            android:lines="2"
             android:text="Gerry invites you to play a game!"
             android:textColor="@color/md_theme_light_background"
             android:textSize="20sp"
+            android:layout_marginRight="16dp"
             card_view:layout_constraintBottom_toBottomOf="@+id/card_picture"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0.5"
@@ -62,6 +62,7 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/card_inner"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="16dp"
@@ -69,6 +70,7 @@
             card_view:cardBackgroundColor="@color/tennis_sport"
             card_view:cardCornerRadius="20dp"
             card_view:cardElevation="0dp"
+            card_view:layout_constraintBottom_toTopOf="@+id/expand_icon"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/card_picture">
@@ -77,10 +79,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="10dp"
-                card_view:layout_constraintBottom_toTopOf="@+id/accept_btn"
-                card_view:layout_constraintHorizontal_bias="0.5"
-                card_view:layout_constraintTop_toBottomOf="parent">
+                android:padding="10dp">
 
 
                 <TextView
@@ -88,22 +87,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginTop="4dp"
                     android:fontFamily="@font/montserrat_semibold_600"
                     android:text="@string/court_name"
                     android:textColor="@color/md_theme_light_background"
                     android:textSize="20sp"
                     card_view:layout_constraintBottom_toTopOf="@+id/address_layout"
                     card_view:layout_constraintStart_toStartOf="parent"
-                    card_view:layout_constraintTop_toTopOf="parent"
-                    card_view:layout_constraintVertical_chainStyle="spread" />
+                    card_view:layout_constraintTop_toTopOf="parent" />
 
                 <LinearLayout
                     android:id="@+id/address_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     card_view:layout_constraintBottom_toTopOf="@+id/day_layout"
                     card_view:layout_constraintStart_toStartOf="@+id/card_invitation_court"
                     card_view:layout_constraintTop_toBottomOf="@+id/card_invitation_court">
@@ -120,7 +116,7 @@
                         android:id="@+id/card_invitation_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start|bottom"
+                        android:layout_gravity="start|center"
                         android:fontFamily="@font/montserrat_medium_500"
                         android:text="@string/court_address"
                         android:textColor="@color/md_theme_light_background"
@@ -134,13 +130,10 @@
                     android:id="@+id/day_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="8dp"
+                    android:layout_marginTop="4dp"
                     android:orientation="horizontal"
-                    card_view:layout_constraintBottom_toBottomOf="parent"
-                    card_view:layout_constraintEnd_toStartOf="@+id/hours_layout"
-                    card_view:layout_constraintHorizontal_bias="0.5"
-                    card_view:layout_constraintHorizontal_chainStyle="packed"
-                    card_view:layout_constraintStart_toStartOf="parent"
+                    card_view:layout_constraintBottom_toTopOf="@+id/hours_layout"
+                    card_view:layout_constraintStart_toStartOf="@+id/address_layout"
                     card_view:layout_constraintTop_toBottomOf="@+id/address_layout">
 
                     <ImageView
@@ -155,7 +148,7 @@
                         android:id="@+id/card_invitation_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start|bottom"
+                        android:layout_gravity="start|center"
                         android:fontFamily="@font/montserrat_medium_500"
                         android:text="19/05/2023"
                         android:textColor="@color/md_theme_light_background"
@@ -165,16 +158,15 @@
 
                 </LinearLayout>
 
-
                 <LinearLayout
                     android:id="@+id/hours_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingStart="24dp"
-                    card_view:layout_constraintBottom_toBottomOf="@+id/day_layout"
-                    card_view:layout_constraintTop_toTopOf="@+id/day_layout"
-                    tools:layout_editor_absoluteX="165dp">
+                    android:layout_marginTop="4dp"
+                    card_view:layout_constraintBottom_toTopOf="@+id/accept_btn"
+                    card_view:layout_constraintStart_toStartOf="@+id/day_layout"
+                    card_view:layout_constraintTop_toBottomOf="@+id/day_layout">
 
                     <ImageView
                         android:id="@+id/hours"
@@ -188,7 +180,7 @@
                         android:id="@+id/card_invitation_hours"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start|bottom"
+                        android:layout_gravity="start|center"
                         android:fontFamily="@font/montserrat_medium_500"
                         android:text="14:00 - 15:00"
                         android:textColor="@color/md_theme_light_background"
@@ -198,49 +190,56 @@
 
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/accept_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/rounded_shape_card"
+                    android:drawableEnd="@drawable/confirm"
+                    android:drawablePadding="8dp"
+                    android:fontFamily="@font/montserrat_bold_700"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="10dp"
+                    android:text="Accept"
+                    android:textSize="16sp"
+                    card_view:layout_constraintBottom_toBottomOf="parent"
+                    card_view:layout_constraintEnd_toStartOf="@+id/decline_btn"
+                    card_view:layout_constraintHorizontal_bias="0.5"
+                    card_view:layout_constraintStart_toStartOf="parent"
+                    card_view:layout_constraintTop_toBottomOf="@+id/hours_layout" />
 
+                <TextView
+                    android:id="@+id/decline_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_shape_card"
+                    android:drawableEnd="@drawable/close"
+                    android:drawablePadding="8dp"
+                    android:drawableTint="@color/error"
+                    android:fontFamily="@font/montserrat_bold_700"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="10dp"
+                    android:text="Decline"
+                    android:textSize="16sp"
+                    card_view:layout_constraintBottom_toBottomOf="parent"
+                    card_view:layout_constraintEnd_toEndOf="parent"
+                    card_view:layout_constraintHorizontal_bias="0.5"
+                    card_view:layout_constraintStart_toEndOf="@+id/accept_btn"
+                    card_view:layout_constraintTop_toTopOf="@+id/accept_btn" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:id="@+id/accept_btn"
+
+        <ImageView
+            android:id="@+id/expand_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/rounded_shape_card"
-            android:drawableEnd="@drawable/confirm"
-            android:drawablePadding="8dp"
-            android:fontFamily="@font/montserrat_bold_700"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="10dp"
-            android:text="Accept"
-            android:textSize="16sp"
+            android:src="@drawable/expand_down"
             card_view:layout_constraintBottom_toBottomOf="parent"
-            card_view:layout_constraintEnd_toStartOf="@+id/decline_btn"
-            card_view:layout_constraintHorizontal_bias="0.5"
+            card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/card_inner" />
-
-        <TextView
-            android:id="@+id/decline_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
-            android:background="@drawable/rounded_shape_card"
-            android:drawableEnd="@drawable/close"
-            android:drawablePadding="8dp"
-            android:drawableTint="@color/error"
-            android:fontFamily="@font/montserrat_bold_700"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="10dp"
-            android:text="Decline"
-            android:textSize="16sp"
-            card_view:layout_constraintBottom_toBottomOf="@+id/accept_btn"
-            card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintHorizontal_bias="0.5"
-            card_view:layout_constraintStart_toEndOf="@+id/accept_btn" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:text="My invitations"
-        android:textSize="24sp"
+        android:textSize="32sp"
         android:fontFamily="@font/montserrat_bold_700">
 
     </TextView>
@@ -20,7 +20,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/invtationsRecyclerView"
-        android:paddingHorizontal="16dp"
+        android:layout_marginHorizontal="16dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

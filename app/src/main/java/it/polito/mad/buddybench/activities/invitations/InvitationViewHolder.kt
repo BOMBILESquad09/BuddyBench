@@ -1,11 +1,15 @@
 package it.polito.mad.buddybench.activities.invitations
 
+import android.animation.ValueAnimator
+import android.opengl.Visibility
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.compose.ui.text.capitalize
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -17,6 +21,7 @@ import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import kotlin.math.exp
 
 class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Unit,
                            val onDecline: (ReservationDTO) -> Unit,): RecyclerView.ViewHolder(view) {
@@ -31,6 +36,8 @@ class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Uni
     private val slot: TextView = view.findViewById(R.id.card_invitation_hours)
     private val acceptButton: TextView = view.findViewById(R.id.accept_btn)
     private val declineButton: TextView = view.findViewById(R.id.decline_btn)
+
+    private val expandButton: ImageView = view.findViewById(R.id.expand_icon)
 
     var slotFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("H:mm")
     var dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
@@ -72,6 +79,18 @@ class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Uni
 
         declineButton.setOnClickListener {
             onDecline(invitation)
+        }
+
+        val expandDuration = 200L // Durata dell'animazione di espansione in millisecondi
+
+        expandButton.setOnClickListener{
+            if (cardInner.isVisible) {
+                cardInner.visibility = View.GONE
+                expandButton.setImageResource(R.drawable.expand_down)
+            } else {
+                cardInner.visibility = View.VISIBLE
+                expandButton.setImageResource(R.drawable.expand_up)
+            }
         }
 
     }
