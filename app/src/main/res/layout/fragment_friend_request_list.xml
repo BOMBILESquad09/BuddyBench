@@ -30,6 +30,7 @@
             android:layout_gravity="center"
             android:layout_height="wrap_content"
             android:textColor="@color/disabled"
+            android:textSize="20sp"
             android:text="@string/you_have_no_friends"
             />
 

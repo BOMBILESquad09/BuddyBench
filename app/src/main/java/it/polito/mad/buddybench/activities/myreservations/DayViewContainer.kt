@@ -48,14 +48,12 @@ class DayViewContainer(view: View) : ViewContainer(view) {
 
                 if (wrappedDrawable != null) {
                     //TO BE FIXED
-                    println("-------------------------------------------")
                     DrawableCompat.setTint(wrappedDrawable, sportColor)
                 }
             }
             // ** Else ( > 1 reservation or no reservation) use the primary
             else {
                 if (wrappedDrawable != null) {
-                    println("------ vuota --------------")
                     DrawableCompat.setTint(wrappedDrawable, primaryColor)
                 }
             }

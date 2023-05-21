@@ -61,7 +61,6 @@ class FindFriendRecyclerViewAdapter(
 
             updateAddBtn(profile.isPending)
             btnAdd.setOnClickListener {
-                println(profile.isPending)
                 if (profile.isPending) {
                     viewModel.removeFriendRequest(profile.email) {
 

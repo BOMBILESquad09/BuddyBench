@@ -100,6 +100,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     }
 
     fun getSelectedReservations(): List<ReservationDTO>? {
+
         return reservations.value?.get(selectedDate.value ?: LocalDate.now())
     }
 

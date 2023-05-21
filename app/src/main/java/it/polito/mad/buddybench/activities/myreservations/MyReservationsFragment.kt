@@ -96,6 +96,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
                 progressLayout.visibility = View.VISIBLE
             } else {
                 if(viewModel.getSelectedReservations().isNullOrEmpty()){
+
                     context.findViewById<View>(R.id.emptyReservations).visibility = View.VISIBLE
                     recyclerViewReservations.visibility = View.GONE
 
@@ -168,12 +169,24 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
             calendarView.notifyDayChanged(CalendarDay(viewModel.selectedDate.value!!, DayPosition.MonthDate))
         }
 
-        context.reservationViewModel.loading.postValue(false)
+        if(selectedReservations.isEmpty()){
+            context.findViewById<View>(R.id.emptyReservations).visibility = View.VISIBLE
+            recyclerViewReservations.visibility = View.GONE
+            (recyclerViewReservations.adapter as ReservationAdapter).reservations = selectedReservations
+            recyclerViewReservations.adapter!!.notifyDataSetChanged()
 
-        val diffUtils = InvitationsDiffsUtils((recyclerViewReservations.adapter as ReservationAdapter).reservations, selectedReservations)
-        val diff = DiffUtil.calculateDiff(diffUtils)
-        (recyclerViewReservations.adapter as ReservationAdapter).reservations = selectedReservations
-        diff.dispatchUpdatesTo(recyclerViewReservations.adapter!!)
+        } else {
+            recyclerViewReservations.visibility = View.VISIBLE
+            context.findViewById<View>(R.id.emptyReservations).visibility = View.GONE
+            val diffUtils = InvitationsDiffsUtils((recyclerViewReservations.adapter as ReservationAdapter).reservations, selectedReservations)
+            val diff = DiffUtil.calculateDiff(diffUtils)
+            (recyclerViewReservations.adapter as ReservationAdapter).reservations = selectedReservations
+            diff.dispatchUpdatesTo(recyclerViewReservations.adapter!!)
+        }
+
+
+
+
 
     }
 
@@ -204,15 +217,13 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         super.onStart()
 
         viewModel.selectedDate.observe(viewLifecycleOwner){
-            if (it != null && viewModel.refresh){
+            if (it != null){
                 calendarView.scrollToDate(it)
                 calendarView.scrollToMonth(YearMonth.from(it))
                 refreshPreviousCalendarButton(YearMonth.from(it))
                 refreshNextCalendarButton(YearMonth.from(it))
                 refresh()
-                viewModel.refresh = false
             } else {
-                viewModel.refresh = false
                 refresh()
             }
         }

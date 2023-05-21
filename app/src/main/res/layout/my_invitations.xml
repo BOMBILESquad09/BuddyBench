@@ -31,8 +31,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No invitations received"
+                android:text="@string/no_invitations_received"
                 android:textColor="@color/disabled"
+                android:textSize="20sp"
                 android:layout_gravity="center"
                 />
             <View

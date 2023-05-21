@@ -11,6 +11,7 @@ class FriendsDiffUtils(
 
 ): DiffUtil.Callback(
 ){
+
     override fun getOldListSize(): Int {
         return lastFriends.size
     }

@@ -61,7 +61,6 @@ class FindFriendFragment : Fragment() {
             } else {
                 pbFindFriends.visibility = View.GONE
                 emptyLL.visibility = View.VISIBLE
-
                 rvFindFriends.visibility = View.VISIBLE
             }
         }
@@ -86,34 +85,19 @@ class FindFriendFragment : Fragment() {
                     (adapter as FindFriendRecyclerViewAdapter).values = it
                     val diffs = DiffUtil.calculateDiff(friendDiff)
                     diffs.dispatchUpdatesTo(adapter!!)
-
+                    println(it.size)
+                    if((rvFindFriends.adapter as FindFriendRecyclerViewAdapter).values.isEmpty()){
+                        emptyLL.visibility = View.VISIBLE
+                        rvFindFriends.visibility = View.GONE
+                    } else{
+                        emptyLL.visibility = View.GONE
+                        rvFindFriends.visibility = View.VISIBLE
+                    }
                 }
             }
         }
 
-        rvFindFriends.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
-            override fun onLayoutChange(
-                view: View,
-                left: Int,
-                top: Int,
-                right: Int,
-                bottom: Int,
-                oldLeft: Int,
-                oldTop: Int,
-                oldRight: Int,
-                oldBottom: Int
-            ) {
-                if (right - left != oldRight - oldLeft || bottom - top != oldBottom - oldTop) {
-                    if((rvFindFriends.adapter as FindFriendRecyclerViewAdapter).values.isEmpty() && (friendsViewModel.l.value != true)){
-                            emptyLL.visibility = View.GONE
-                            rvFindFriends.visibility = View.VISIBLE
-                    } else{
-                        emptyLL.visibility = View.VISIBLE
-                        rvFindFriends.visibility = View.GONE
-                    }
-                }
-            }
-        })
+
 
 
 
