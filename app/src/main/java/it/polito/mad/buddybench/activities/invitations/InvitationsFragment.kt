@@ -1,6 +1,8 @@
 package it.polito.mad.buddybench.activities.invitations
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
@@ -48,13 +50,21 @@ class InvitationsFragment(context: HomeActivity) : Fragment(R.layout.my_invitati
             val diffs = DiffUtil.calculateDiff(diffsUtils)
             (recyclerViewInvitations.adapter as InvitationAdapter).invitations = it
             diffs.dispatchUpdatesTo(recyclerViewInvitations.adapter!!)
+            val handler = Handler(Looper.getMainLooper())
+            Thread{
+                Thread.sleep(500)
+                handler.post {
+                    emptyLL.visibility = View.VISIBLE
+                    recyclerViewInvitations.visibility = View.GONE
+                }
+            }.start()
 
-            if(it.isEmpty()){
-                emptyLL.visibility = View.VISIBLE
-                recyclerViewInvitations.visibility = View.GONE
-            } else{
+
+
+            if(it.isNotEmpty()){
                 emptyLL.visibility = View.GONE
                 recyclerViewInvitations.visibility = View.VISIBLE
+
             }
 
         }

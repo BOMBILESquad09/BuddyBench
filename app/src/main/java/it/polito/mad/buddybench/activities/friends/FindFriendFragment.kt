@@ -83,12 +83,24 @@ class FindFriendFragment : Fragment() {
                     val diffs = DiffUtil.calculateDiff(friendDiff)
                     diffs.dispatchUpdatesTo(adapter!!)
                     if (friendsViewModel.l.value != true) {
-                        if (friendsViewModel.possibleFriends.value!!.isEmpty()) {
-                            emptyLL.visibility = View.VISIBLE
-                            rvFindFriends.visibility = View.GONE
-                        } else {
-                            rvFindFriends.visibility = View.VISIBLE
-                            emptyLL.visibility = View.GONE
+                        if (friendsViewModel.l.value != true) {
+                            if(it.isEmpty())
+                                Thread{
+                                    Thread.sleep(400)
+                                    handler.post {
+                                        if(it.isEmpty()){
+                                            emptyLL.visibility = View.VISIBLE
+                                            rvFindFriends.visibility = View.GONE
+                                        }
+                                    }
+                                }.start()
+
+                            if(it.isNotEmpty()){
+                                emptyLL.visibility = View.GONE
+                                rvFindFriends.visibility = View.VISIBLE
+
+                            }
+
                         }
 
 

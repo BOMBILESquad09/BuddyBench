@@ -73,20 +73,27 @@ class FriendListFragment : Fragment(R.layout.fragment_friend_request_list) {
 
                     (adapter as FriendListRecyclerViewAdapter).values = it
                     diffs.dispatchUpdatesTo(adapter!!)
+
+
                     if (friendsViewModel.l.value != true) {
+                        if (it.isEmpty())
+                            Thread{
+                                Thread.sleep(500)
+                                handler.post {
+                                    if(it.isEmpty()){
+                                        emptyLL.visibility = View.VISIBLE
+                                        rvFriendList.visibility = View.GONE
+                                    }
+                                }
+                            }.start()
 
-                        if (friendsViewModel.friends.value!!.isEmpty()) {
-                            rvFriendList.visibility = View.GONE
-                            emptyLL.visibility = View.VISIBLE
-
-                        } else {
-                            rvFriendList.visibility = View.VISIBLE
+                        if(it.isNotEmpty()){
                             emptyLL.visibility = View.GONE
+                            rvFriendList.visibility = View.VISIBLE
+
                         }
 
-
                     }
-
                 }
             }
         }

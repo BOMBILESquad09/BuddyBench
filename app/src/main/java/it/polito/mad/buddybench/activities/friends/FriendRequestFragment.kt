@@ -106,12 +106,21 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
                     diffs.dispatchUpdatesTo(adapter!!)
 
                     if (friendsViewModel.l.value != true) {
-                        if (friendsViewModel.friendRequests.value!!.isEmpty()) {
-                            rvFriendRequests.visibility = View.GONE
-                            emptyLL.visibility = View.VISIBLE
-                        } else {
-                            rvFriendRequests.visibility = View.VISIBLE
+                        if (it.isEmpty())
+                            Thread{
+                                Thread.sleep(500)
+                                handler.post {
+                                    if(it.isEmpty()){
+                                        emptyLL.visibility = View.VISIBLE
+                                        rvFriendRequests.visibility = View.GONE
+                                    }
+                                }
+                            }.start()
+
+                        if(it.isNotEmpty()){
                             emptyLL.visibility = View.GONE
+                            rvFriendRequests.visibility = View.VISIBLE
+
                         }
                     }
                 }
