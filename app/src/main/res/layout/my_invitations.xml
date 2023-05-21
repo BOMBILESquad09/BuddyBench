@@ -15,14 +15,41 @@
         android:fontFamily="@font/montserrat_bold_700">
 
     </TextView>
-
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/invtationsRecyclerView"
-        android:paddingHorizontal="16dp"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No invitations received"
+                android:textColor="@color/disabled"
+                android:layout_gravity="center"
+                />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/invtationsRecyclerView"
+            android:paddingHorizontal="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+
+
 
 
 </LinearLayout>

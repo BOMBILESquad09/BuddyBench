@@ -50,7 +50,7 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
         var init = true
         friendRepository.subscribeFriends({
         }) {
-            println("AGGIORNOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+
             runBlocking {
                 suspend {
                     if(init){
@@ -59,13 +59,13 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
                         getPossibleFriends()
                         init = false
                     } else{
-                        println("prendiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
                         userRepository.fetchUser {
                             getFriendRequests()
                             getFriendsList()
                         }
                         getPossibleFriends()
                     }
+                    _l.postValue(false)
                 }.invoke()
             }
         }
@@ -84,14 +84,12 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun getPossibleFriends() {
-        _l.postValue(true)
         runBlocking {
             oldPossibleFriends = possibleFriends.value!!
 
             _possibleFriends.postValue(friendRepository.getNotFriends())
 
 
-            _l.postValue(false)
         }
     }
 
@@ -104,7 +102,6 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
                     oldFriendsRequests = _friendRequests.value!!
                     _friendRequests.postValue(it.pendings)
                 }
-                _lRequests.postValue(false)
             }
 
         }
@@ -115,16 +112,18 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
         runBlocking {
             friendRepository.acceptFriendRequest(email)
             onSuccess()
+            _lRequests.postValue(false)
+
         }
-        _lRequests.postValue(false)
     }
 
     fun rejectRequest(email: String, onSuccess: () -> Unit) {
         _lRequests.postValue(true)
         runBlocking {
             friendRepository.refuseFriendRequest(email)
-            onSuccess()
             _lRequests.postValue(false)
+            onSuccess()
+
         }
     }
 
@@ -146,8 +145,9 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
                 }
                 p
             }
-            callback()
             _lAdd.postValue(false)
+            callback()
+
         }
     }
 

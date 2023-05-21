@@ -2,6 +2,7 @@ package it.polito.mad.buddybench.activities.invitations
 
 import android.os.Bundle
 import android.view.View
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DiffUtil
@@ -20,6 +21,7 @@ class InvitationsFragment(context: HomeActivity) : Fragment(R.layout.my_invitati
     private val viewModel by activityViewModels<InvitationsViewModel> ()
     private val reservationViewModel by activityViewModels<ReservationViewModel> ()
     private lateinit var recyclerViewInvitations: RecyclerView
+    private lateinit var emptyLL: LinearLayout
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -27,6 +29,8 @@ class InvitationsFragment(context: HomeActivity) : Fragment(R.layout.my_invitati
 
         recyclerViewInvitations = view.findViewById(R.id.invtationsRecyclerView)
         recyclerViewInvitations.layoutManager = LinearLayoutManager(context)
+
+        emptyLL = view.findViewById(R.id.empty)
 
         val onAccept: (ReservationDTO) -> Unit = {
             viewModel.acceptInvitation(it)
@@ -44,6 +48,15 @@ class InvitationsFragment(context: HomeActivity) : Fragment(R.layout.my_invitati
             val diffs = DiffUtil.calculateDiff(diffsUtils)
             (recyclerViewInvitations.adapter as InvitationAdapter).invitations = it
             diffs.dispatchUpdatesTo(recyclerViewInvitations.adapter!!)
+
+            if(it.isEmpty()){
+                emptyLL.visibility = View.VISIBLE
+                recyclerViewInvitations.visibility = View.GONE
+            } else{
+                emptyLL.visibility = View.GONE
+                recyclerViewInvitations.visibility = View.VISIBLE
+            }
+
         }
 
 
