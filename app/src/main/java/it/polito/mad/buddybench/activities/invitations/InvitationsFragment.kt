@@ -51,13 +51,7 @@ class InvitationsFragment(context: HomeActivity) : Fragment(R.layout.my_invitati
             (recyclerViewInvitations.adapter as InvitationAdapter).invitations = it
             diffs.dispatchUpdatesTo(recyclerViewInvitations.adapter!!)
             val handler = Handler(Looper.getMainLooper())
-            Thread{
-                Thread.sleep(500)
-                handler.post {
-                    emptyLL.visibility = View.VISIBLE
-                    recyclerViewInvitations.visibility = View.GONE
-                }
-            }.start()
+
 
 
 
@@ -65,6 +59,9 @@ class InvitationsFragment(context: HomeActivity) : Fragment(R.layout.my_invitati
                 emptyLL.visibility = View.GONE
                 recyclerViewInvitations.visibility = View.VISIBLE
 
+            } else{
+                emptyLL.visibility = View.VISIBLE
+                recyclerViewInvitations.visibility = View.GONE
             }
 
         }
