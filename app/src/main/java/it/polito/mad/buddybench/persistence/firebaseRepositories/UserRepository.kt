@@ -225,7 +225,7 @@ class UserRepository {
     }
 
     companion object {
-        fun serializeUser(map: Map<String, Object>): Profile {
+        fun serializeUser(map: Map<String, Any>): Profile {
             val sports = mutableListOf<Sport>()
             val fbSports = map["sports"] as List<Map<String, Any>>
             for (s in fbSports) {

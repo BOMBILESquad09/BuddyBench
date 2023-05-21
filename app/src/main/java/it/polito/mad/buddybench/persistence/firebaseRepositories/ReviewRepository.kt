@@ -9,6 +9,9 @@ import it.polito.mad.buddybench.persistence.dto.ReviewDTO
 import it.polito.mad.buddybench.persistence.dto.UserDTO
 import it.polito.mad.buddybench.persistence.entities.Review
 import it.polito.mad.buddybench.persistence.entities.toUserDTO
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -16,50 +19,33 @@ class ReviewRepository {
     val db = FirebaseFirestore.getInstance()
 
 
-    fun getAllByCourt(courtDTO: CourtDTO, callback: (List<ReviewDTO>) -> Unit) {
-        val courtDocName = courtDTO.name.replace(" ", "_") + "_" + courtDTO.sport
-        db.collection("users")
-            .get()
-            .addOnSuccessListener {
-                val users = it.map { profile ->
-                    val p = UserRepository.serializeUser(profile.data!! as Map<String, Object>)
-                    UserDTO(
-                        p.name!!,
-                        p.surname!!,
-                        p.nickname!!,
-                        p.birthdate,
-                        p.location!!,
-                        p.email!!,
-                        p.reliability!!,
-                        p.imageUri.toString()
+    suspend fun getAllByCourt(courtDTO: CourtDTO, callback: (List<ReviewDTO>) -> Unit) {
+        withContext(Dispatchers.IO) {
+            val courtDocName = courtDTO.name.replace(" ", "_") + "_" + courtDTO.sport
+            val res =
+                db.collection("courts").document(courtDocName).collection("reviews").get().await()
+            val reviews = mutableListOf<ReviewDTO>()
+            val usersResponse = res.map { r -> db.collection("users").document(r.id).get() }
+            val users =
+                usersResponse.map { it.await() }.map { UserRepository.serializeUser(it.data!!) }
+            for (r in res) {
+                val user = users.find { u -> u.email == r.id }
+                reviews.add(
+                    ReviewDTO(
+                        user!!,
+                        LocalDate.parse(
+                            r.data["date"] as String,
+                            DateTimeFormatter.ISO_LOCAL_DATE
+                        ),
+                        (r.data["rating"] as Long).toInt(),
+                        r.data["description"] as String,
+                        courtDTO
                     )
-                }
-                db.collection("courts")
-                    .document(courtDocName)
-                    .collection("reviews")
-                    .get()
-                    .addOnSuccessListener { reviewsDoc ->
-                        val reviews = mutableListOf<ReviewDTO>()
-                        for (rev in reviewsDoc) {
-                            val user = users.find { it.email == (rev).id }
-                            reviews.add(
-                                ReviewDTO(
-                                    user!!,
-                                    LocalDate.parse(
-                                        rev.data["date"] as String,
-                                        DateTimeFormatter.ISO_LOCAL_DATE
-                                    ),
-                                    (rev.data["rating"] as Long).toInt(),
-                                    rev.data["description"] as String,
-                                    courtDTO
-                                )
-                            )
-                        }
-                        callback(reviews)
-                    }
+                )
             }
+            callback(reviews)
 
-
+        }
     }
 
 
@@ -76,107 +62,37 @@ class ReviewRepository {
     }*/
 
     fun saveReview(reviewDTO: ReviewDTO, callback: () -> Unit) {
-        val courtName =  reviewDTO.courtDTO.name.replace(" ", "_") + "_" + reviewDTO.courtDTO.sport
-
-        val courtDoc = db.collection("courts").document(courtName)
-        courtDoc.get()
-            .addOnSuccessListener {
-                val court = it.toObject(CourtDTO::class.java)
-
-                val reviewDoc = courtDoc.collection("reviews").document(reviewDTO.user.email)
-                reviewDoc.get()
-                .addOnSuccessListener {
-                        if(it.data == null){
-                            val updates: Map<String, Any> = mapOf(
-                                "nreviews" to court!!.nReviews +1,
-                                "rating" to ((court.rating * court.nReviews + reviewDTO.rating) / court.nReviews +1)
-                                )
-                            courtDoc.update(
-                                updates
-                            ).addOnSuccessListener {
-                                reviewDoc.set(mapOf("date" to reviewDTO.date.toString(),
-                                        "rating" to reviewDTO.rating,
-                                        "description" to reviewDTO.description
-                                    )).addOnSuccessListener {
-                                        callback()
-                                }
-                            }
-                        } else{
-                            val oldRating = (it.data!!.get("rating") as Long).toInt()
-                            val updates: Map<String, Any> = mapOf(
-                                "rating" to ((court!!.rating * (court.nReviews) - oldRating + reviewDTO.rating ) / court.nReviews)
-                            )
-                            courtDoc.update(updates).addOnSuccessListener{
-                                reviewDoc.set(mapOf("date" to reviewDTO.date.toString(),
-                                    "rating" to reviewDTO.rating,
-                                    "description" to reviewDTO.description
-                                )).addOnSuccessListener {
-                                    callback()
-                                }
-                            }
-
-                        }
-                    }
-            }
-
-
-
-
-        /*val user = userDao.getUserByEmail(reviewDTO.user.email)!!.user
-        val court = courtDao.getByNameAndSport(reviewDTO.courtDTO.name, reviewDTO.courtDTO.sport).court
-        val review = reviewDao.getReview(court.id,user.id)
-
-
-        // ** Insert new review
-        if(review == null){
-            println("INSERTING:")
-            println(
-                Review(
-                description = reviewDTO.description,
-                date = reviewDTO.date.format(DateTimeFormatter.ISO_LOCAL_DATE),
-                rating = reviewDTO.rating,
-                userId = user.id,
-                courtId = court.id
-            )
-            )
-            reviewDao.save(
-                Review(
-                    description = reviewDTO.description,
-                    date = reviewDTO.date.format(DateTimeFormatter.ISO_LOCAL_DATE),
-                    rating = reviewDTO.rating,
-                    userId = user.id,
-                    courtId = court.id
+        val courtName = reviewDTO.courtDTO.name.replace(" ", "_") + "_" + reviewDTO.courtDTO.sport
+        db.runTransaction { t ->
+            val courtDoc = db.collection("courts").document(courtName)
+            val court = t.get(courtDoc).toObject(CourtDTO::class.java)
+            val reviewDoc = courtDoc.collection("reviews").document(reviewDTO.user.email)
+            val review = t.get(reviewDoc)
+            if (review.data == null) {
+                val updates: Map<String, Any> = mapOf(
+                    "nreviews" to court!!.nReviews + 1,
+                    "rating" to ((court.rating * court.nReviews + reviewDTO.rating) / (court.nReviews + 1))
                 )
-            )
-            reviewDao.updateRating(court.id, (court.nReviews + 1), (court.rating * court.nReviews + reviewDTO.rating) / (court.nReviews + 1))
-        } else {
-
-            // ** Update existing review
-            println(review.copy(
-                description = reviewDTO.description,
-                date = reviewDTO.date.format(DateTimeFormatter.ISO_LOCAL_DATE),
-                rating = reviewDTO.rating
-            ))
-            reviewDao.update(
-                review.copy(
-                    id = review.id,
-                    description = reviewDTO.description,
-                    date = reviewDTO.date.format(DateTimeFormatter.ISO_LOCAL_DATE),
-                    rating = reviewDTO.rating,
-
+                t.update(courtDoc, updates)
+                t.set(
+                    reviewDoc, mapOf(
+                        "date" to reviewDTO.date.toString(),
+                        "rating" to reviewDTO.rating,
+                        "description" to reviewDTO.description
                     )
-            ).let {
-                println("updated $it")
-                println(review.copy(
-                    description = reviewDTO.description,
-                    date = reviewDTO.date.format(DateTimeFormatter.ISO_LOCAL_DATE),
-                    rating = reviewDTO.rating,
-                ))
+                )
+                println("ecccccccccooooooooooooo")
+            } else {
+                val oldRating = (review.get("rating") as Long).toInt()
+                val updates: Map<String, Any> = mapOf(
+                    "rating" to ((court!!.rating * (court.nReviews) - oldRating + reviewDTO.rating) / court.nReviews)
+                )
+                t.update(courtDoc, updates)
+
             }
-            val updatedSumOfRatings = (court.rating * court.nReviews - review.rating)
-            reviewDao.updateRating(court.id, (court.nReviews), (updatedSumOfRatings + reviewDTO.rating) / (court.nReviews))
+            callback()
         }
-        return true*/
+
     }
 }
 

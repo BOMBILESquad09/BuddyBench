@@ -111,7 +111,7 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        progressDialog = Utils.openProgressDialgo(requireContext())
+        progressDialog = Utils.openProgressDialog(requireContext())
 
 
         // ** View Model

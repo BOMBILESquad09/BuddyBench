@@ -69,14 +69,10 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
                         holder as FriendRequestRecyclerViewAdapter.ViewHolder
                         val animation = if(holder.accepted){
                             AnimationUtils.loadAnimation(holder.itemView.context, R.anim.slide_out_left)
-
                         } else{
                             AnimationUtils.loadAnimation(holder.itemView.context, android.R.anim.slide_out_right)
-
                         }
-
                         holder.itemView.startAnimation(animation)
-
                     }
                     return super.animateRemove(holder)
                 }

@@ -20,19 +20,19 @@ class ReviewRepository @Inject constructor (
     private val courtDao: CourtDao
 ) {
 
-    fun getAllByCourt(courtDTO: CourtDTO): List<ReviewDTO>{
+    /*fun getAllByCourt(courtDTO: CourtDTO): List<ReviewDTO>{
         val reviews = reviewDao.getAllByCourt(courtDTO.name, courtDTO.sport)
-        reviews.map { println("Repository reviews: id ${it.review.id} rating ${it.review.rating}") }
         return reviews.map {
+
             ReviewDTO(
-                it.user.toUserDTO(),
+                it.user,
                 LocalDate.parse(it.review.date, DateTimeFormatter.ISO_LOCAL_DATE),
                 it.review.rating,
                 it.review.description,
                 courtDTO
             )
         }
-    }
+    }*/
 
     fun saveReview(reviewDTO: ReviewDTO): Boolean{
         val user = userDao.getUserByEmail(reviewDTO.user.email)!!.user

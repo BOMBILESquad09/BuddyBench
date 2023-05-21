@@ -3,13 +3,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingHorizontal="16dp"
-    android:paddingTop="16dp">
+    >
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:fillViewport="true">
 
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -17,6 +17,8 @@
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="16dp"
             android:clickable="true"
             android:focusable="true"
             android:orientation="vertical">
@@ -106,7 +108,7 @@
             <LinearLayout
                 android:id="@+id/dayDescription"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
@@ -115,7 +117,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="3dp"
-                    android:text="Domenica 30 Aprile 2023"
+                    android:text="@string/domenica_30_aprile_2023"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -124,10 +126,12 @@
                     android:id="@+id/emptyReservations"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:layout_marginLeft="3dp"
                     android:layout_marginTop="5dp">
 
                     <TextView
+
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/no_reservation"
@@ -138,22 +142,24 @@
                 <LinearLayout
                     android:id="@+id/progess_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
                     android:orientation="vertical"
-                    android:paddingTop="100dp"
+                    android:layout_gravity="center"
                     android:visibility="gone">
 
                     <ProgressBar
                         android:id="@+id/progress_circular"
                         android:layout_width="match_parent"
+                        android:layout_gravity="center"
                         android:layout_height="wrap_content" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Loading..."
-                        android:textSize="25sp"
+                        android:text="@string/loading"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>

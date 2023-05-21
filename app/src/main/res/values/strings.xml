@@ -222,7 +222,7 @@
     <string name="cannot_review">You must have played in this court before leaving a review</string>
     <string name="info_icon">info_icon</string>
     <string name="your_review">Your review</string>
-    <string name="missing_rating">Missing rating and/or text</string>
+    <string name="missing_rating">Missing rating</string>
     <string name="new_achievement">New Achievement</string>
     <string name="profile">Profile</string>
     <string name="reservations">Reservations</string>
@@ -236,5 +236,7 @@
     <string name="username">username</string>
     <string name="request_sent">Request sent</string>
     <string name="send_request">Send request</string>
+    <string name="loading">Loading...</string>
+    <string name="domenica_30_aprile_2023">Domenica 30 Aprile 2023</string>
 
 </resources>
