@@ -71,7 +71,7 @@ class ReservationRepository {
     }
 
     suspend fun save(reservationDTO: ReservationDTO) {
-
+        println(reservationDTO.date)
         withContext(Dispatchers.IO) {
             val reservationMap: HashMap<String, Any> = createReservationMap(reservationDTO)
             val reservationID = reservationMap["id"] as String

@@ -314,7 +314,6 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun showBottomSheetDialog() {
-
         val editConfirmDialogSheet = EditConfirmDialogSheet(
             editMode,
             courtViewModel,
