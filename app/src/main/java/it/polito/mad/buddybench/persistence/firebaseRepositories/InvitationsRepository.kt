@@ -63,7 +63,11 @@ class InvitationsRepository {
             val invitationsResponse = db
                 .collection("reservations")
                 .document(reservationDocName)
-                .update("pendings", FieldValue.arrayRemove(*usersToInvite.map { u -> db.document("users/$u") }.toTypedArray()))
+                .update(
+                    mapOf(
+                    "pendings" to  FieldValue.arrayRemove(*usersToInvite.map { u -> db.document("users/$u") }.toTypedArray()),
+                    "accepted" to  FieldValue.arrayRemove(*usersToInvite.map { u -> db.document("users/$u") }.toTypedArray()))
+                )
             usersToInvite.map {
                 db.collection("users").document(it)
                     .update("play_request_pendings", FieldValue.arrayRemove(db.document("reservations/${reservationDTO.id}")))

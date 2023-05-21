@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.activities.myreservations
 
+import android.icu.util.LocaleData
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -29,6 +30,10 @@ import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.viewmodels.InvitationsViewModel
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.util.Locale
 
 class SendInvitationsBottomSheet(
     private val reservationDTO: ReservationDTO,
@@ -38,6 +43,7 @@ class SendInvitationsBottomSheet(
     private val userViewModel by activityViewModels<UserViewModel>()
     private val invitationViewModel by viewModels<InvitationsViewModel>()
     private val reservationViewModel by activityViewModels<ReservationViewModel>()
+    private val expired = (LocalDateTime.of(reservationDTO.date, reservationDTO.endTime)  < LocalDateTime.now())
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -149,6 +155,9 @@ class SendInvitationsBottomSheet(
                 }
             }
         }
+
+
+
         if(!invited){
             reservationViewModel.notInvitedFriends.observe(this){
                 val diffUtils = FriendsDiffUtils(reservationViewModel.oldNotInvitedFriends, it)
@@ -185,12 +194,22 @@ class SendInvitationsBottomSheet(
                             this.dismiss()
                         }
                     }
-
                 }
             }
         }
 
+        fun setExpired(){
+            acceptedButton.visibility = View.GONE
+            pendingButton.visibility = View.GONE
+            view.findViewById<LinearLayout>(R.id.invite_friends_ll).visibility = View.GONE
+            view.findViewById<LinearLayout>(R.id.pending_friends_ll).visibility = View.GONE
+            notInvitedButton.visibility = View.GONE
+
+        }
+
+
         setForInvited()
+        if(expired) setExpired()
 
     }
 

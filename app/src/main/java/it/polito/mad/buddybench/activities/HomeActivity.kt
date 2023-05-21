@@ -57,10 +57,23 @@ class HomeActivity: AppCompatActivity() {
         sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         reservationViewModel.email = Firebase.auth.currentUser!!.email!!
         bottomBar.setup()
-        friendsViewModel.subscribeFriendsList()
+
+        userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this){
+            profile = it ?: Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
+            friendsViewModel.subscribeFriendsList()
+            invitationsViewModel.subscribeInvitations(){
+                if(it > 0){
+                    bottomBar.counter[Tabs.INVITATIONS.getId()] = it
+                    bottomBar.bottomBar.setBadgeAtTabIndex(Tabs.INVITATIONS.getId(), AnimatedBottomBar.Badge(it.toString()))
+                } else{
+                    bottomBar.counter[Tabs.INVITATIONS.getId()] = 0
+                }
+            }
+
+        }
+
 
         friendsViewModel.friendRequests.observe(this){
-            println("aggiornatoooooooooooooooooooooooooooooooooooooooooooooo")
             if(it.isNotEmpty()){
                 bottomBar.counter[Tabs.FRIENDS.getId()] = it.size
                 bottomBar.bottomBar.setBadgeAtTabIndex(Tabs.FRIENDS.getId(), AnimatedBottomBar.Badge(it.size.toString()))
@@ -70,21 +83,10 @@ class HomeActivity: AppCompatActivity() {
 
             }
         }
-        invitationsViewModel.subscribeInvitations(){
-            if(it > 0){
-                bottomBar.counter[Tabs.INVITATIONS.getId()] = it
-                bottomBar.bottomBar.setBadgeAtTabIndex(Tabs.INVITATIONS.getId(), AnimatedBottomBar.Badge(it.toString()))
-            } else{
-                bottomBar.counter[Tabs.INVITATIONS.getId()] = 0
-            }
-        }
 
 
-        userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this){
-            profile = it ?: Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
 
 
-        }
 
 
     }

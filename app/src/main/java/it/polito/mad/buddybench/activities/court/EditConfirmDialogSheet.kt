@@ -74,6 +74,11 @@ class EditConfirmDialogSheet(
         // Setting the price details Dialog
         setPriceDetailCard(view)
 
+        println("------------------------")
+        println(selectedDate)
+        println("------------------------")
+
+
         // CheckBox inside the Additional Information Card
         val checkboxAccept = view.findViewById<CheckBox>(R.id.accept_checkbox)
         // Take the reference of the confirm button
@@ -156,8 +161,7 @@ class EditConfirmDialogSheet(
         val secondTime = courtViewModel.selectedTimes.last().plusHours(1).toString()
         timeSelected?.text = String.format(getString(R.string.time_selected), firstTime, secondTime)
 
-        dateSelected?.text =
-            courtViewModel.selectedDay.value?.format(formatter) ?: LocalDate.now().format(formatter)
+        dateSelected!!.text = selectedDate.format(formatter)
         val iconSport = bottomSheetDialog.findViewById<ImageView>(R.id.icon_sport)
         iconSport?.setImageDrawable(
             ResourcesCompat.getDrawable(

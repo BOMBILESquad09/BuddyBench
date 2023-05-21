@@ -85,10 +85,15 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
                 recyclerViewReservations.visibility = View.GONE
                 progressLayout.visibility = View.VISIBLE
             } else {
+                if(viewModel.getSelectedReservations().isNullOrEmpty()){
+                    context.findViewById<View>(R.id.emptyReservations).visibility = View.VISIBLE
+                    recyclerViewReservations.visibility = View.GONE
 
+                } else {
+                    recyclerViewReservations.visibility = View.VISIBLE
+                    context.findViewById<View>(R.id.emptyReservations).visibility = View.GONE
+                }
                 progressLayout.visibility = View.GONE
-                context.findViewById<View>(R.id.emptyReservations).visibility = View.VISIBLE
-                recyclerViewReservations.visibility = View.VISIBLE
             }
         }
 
@@ -143,12 +148,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
 
     private fun refresh(){
         val selectedReservations = viewModel.getSelectedReservations()?.sortedBy { it.endTime } ?: listOf()
-        /*context.findViewById<View>(R.id.emptyReservations).let {
-            it.visibility = if (selectedReservations.isEmpty() && viewModel.loading.value != true){
-                View.VISIBLE
-            } else {
-                View.GONE}
-        }*/
+
         if (viewModel.oldDate != null){
             val firstDay = calendarView.findFirstVisibleMonth()?.yearMonth!!.atDay(1)
             val lastDay = calendarView.findFirstVisibleMonth()?.yearMonth!!.atEndOfMonth()
