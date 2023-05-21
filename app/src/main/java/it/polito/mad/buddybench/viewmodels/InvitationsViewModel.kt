@@ -20,8 +20,9 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
 
     private val invitationSize: MutableLiveData<Int> = MutableLiveData(0)
 
-    fun subscribeInvitations(): LiveData<List<ReservationDTO>>{
+    fun subscribeInvitations(onSuccess: (Int) -> Unit): LiveData<List<ReservationDTO>>{
         invitationsRepository.subscribeInvitations( onSuccess = {
+            onSuccess(it)
             invitationSize.postValue(it)
         })
         invitationSize.observeForever{

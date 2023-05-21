@@ -8,9 +8,9 @@ enum class Tabs {
         return when(this){
             FINDCOURT -> 0
             RESERVATIONS -> 1
-            PROFILE -> 2
-            FRIENDS -> 3
-            INVITATIONS -> 4
+            FRIENDS -> 2
+            INVITATIONS -> 3
+            PROFILE -> 4
         }
     }
 }

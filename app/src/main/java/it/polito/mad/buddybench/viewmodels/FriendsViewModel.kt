@@ -45,31 +45,31 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     val friendRequests: LiveData<List<Profile>> get() = _friendRequests
 
 
-    private val subListener: MutableLiveData<Int> = MutableLiveData(0)
 
     fun subscribeFriendsList() {
+        var init = true
         friendRepository.subscribeFriends({
         }) {
-            subListener.postValue(subListener.value!! + 1)
-        }
-        subListener.observeForever {
-            if (it == 0) {
-                runBlocking {
-                    getFriendsList()
-                    getFriendRequests()
-                    getPossibleFriends()
-                }
-            }
-            if (it != 0) {
-                runBlocking {
-                    userRepository.fetchUser {
-                        getFriendRequests()
+            println("AGGIORNOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+            runBlocking {
+                suspend {
+                    if(init){
                         getFriendsList()
+                        getFriendRequests()
+                        getPossibleFriends()
+                        init = false
+                    } else{
+                        println("prendiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
+                        userRepository.fetchUser {
+                            getFriendRequests()
+                            getFriendsList()
+                        }
+                        getPossibleFriends()
                     }
-                    getPossibleFriends()
-                }
+                }.invoke()
             }
         }
+
     }
 
 
@@ -98,7 +98,6 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
 
 
     private fun getFriendRequests() {
-        _lRequests.postValue(true)
         if (currentUser != null) {
             runBlocking {
                 userRepository.getUser(currentUser.email!!) {
@@ -111,18 +110,20 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun confirmRequest(email: String) {
+    fun confirmRequest(email: String,  onSuccess: ()->Unit) {
         _lRequests.postValue(true)
         runBlocking {
             friendRepository.acceptFriendRequest(email)
+            onSuccess()
         }
         _lRequests.postValue(false)
     }
 
-    fun rejectRequest(email: String) {
+    fun rejectRequest(email: String, onSuccess: () -> Unit) {
         _lRequests.postValue(true)
         runBlocking {
             friendRepository.refuseFriendRequest(email)
+            onSuccess()
             _lRequests.postValue(false)
         }
     }

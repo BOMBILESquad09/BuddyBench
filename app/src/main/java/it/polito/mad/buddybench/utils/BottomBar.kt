@@ -18,6 +18,7 @@ class BottomBar(val context: HomeActivity) {
 
     var currentTab = Tabs.RESERVATIONS
     lateinit var bottomBar: AnimatedBottomBar
+    val counter: HashMap<Int, Int> = HashMap()
     fun setup(){
         bottomBar = context.findViewById(R.id.bottom_bar)
         bottomBar.setOnTabSelectListener(object : AnimatedBottomBar.OnTabSelectListener {
@@ -66,7 +67,6 @@ class BottomBar(val context: HomeActivity) {
 
     fun replaceFragment(lastTag: Tabs, newTag: Tabs){
         val transaction = context.supportFragmentManager.beginTransaction()
-
         context.supportFragmentManager.findFragmentByTag(lastTag.name).let {
 
             if(it != null){
@@ -91,9 +91,23 @@ class BottomBar(val context: HomeActivity) {
         transaction.commit()
         adjustExternalComponents()
 
+
     }
 
     private fun adjustExternalComponents(){
+        if(currentTab == Tabs.INVITATIONS){
+            bottomBar.clearBadgeAtTabIndex(currentTab.getId())
+        } else{
+            if((counter[Tabs.INVITATIONS.getId()] ?: 0) > 0)
+                bottomBar.setBadgeAtTabIndex(Tabs.INVITATIONS.getId(),AnimatedBottomBar.Badge(counter[Tabs.INVITATIONS.getId()]!!.toString()))
+        }
+
+        if(currentTab == Tabs.FRIENDS){
+            bottomBar.clearBadgeAtTabIndex(currentTab.getId())
+        } else{
+            if((counter[Tabs.FRIENDS.getId()] ?: 0) > 0)
+                bottomBar.setBadgeAtTabIndex(Tabs.FRIENDS.getId(),AnimatedBottomBar.Badge(counter[Tabs.FRIENDS.getId()]!!.toString()))
+        }
 
         when(this.currentTab){
             Tabs.PROFILE -> {setToolbar() }

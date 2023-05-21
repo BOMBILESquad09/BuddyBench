@@ -26,13 +26,13 @@ class FriendListRecyclerViewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
 
-            return ViewHolder(
-                FragmentFriendListItemBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
+        return ViewHolder(
+            FragmentFriendListItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
             )
+        )
 
 
     }
@@ -44,31 +44,32 @@ class FriendListRecyclerViewAdapter(
 
     override fun getItemCount(): Int = values.size
 
-    inner class ViewHolder(val binding: FragmentFriendListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: FragmentFriendListItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         val tvName = binding.tvFriendName
         val tvUsername = binding.tvFriendUsername
         val ivImage = binding.ivFriendImage
-
         val btnRemove = binding.btnRemoveFriend
 
 
-        fun bind(profile: Profile){
+        fun bind(profile: Profile) {
             tvName.text = profile.fullName
             tvUsername.text = profile.nickname
-            (FragmentComponentManager.findActivity(binding.root.context) as HomeActivity).imageViewModel.getUserImage(profile.email,{
-                ivImage.setImageResource(R.drawable.person)
-            }){
+            (FragmentComponentManager.findActivity(binding.root.context) as HomeActivity).imageViewModel.getUserImage(
+                profile.email,
+                {
+                    ivImage.setImageResource(R.drawable.person)
+                }) {
                 Glide.with(binding.root.context)
                     .load(it)
                     .into(ivImage)
             }
             var sure = false
             btnRemove.setOnClickListener {
-                if(sure == false){
+                if (sure == false) {
                     sure = true
                     btnRemove.text = "Are you sure?"
-                }
-                else{
+                } else {
                     viewModel.removeFriend(profile.email)
                 }
             }

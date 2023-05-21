@@ -27,11 +27,12 @@
         app:tabSelectedTextColor="@color/md_theme_light_primary"
         app:tabTextAppearance="@style/TabBarText"
         >
-
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/find" />
+            android:text="@string/list" />
+
+
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
@@ -41,7 +42,9 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/list" />
+            android:text="@string/find" />
+
+
 
     </com.google.android.material.tabs.TabLayout>
 

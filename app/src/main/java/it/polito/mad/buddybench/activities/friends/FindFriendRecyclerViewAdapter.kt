@@ -77,8 +77,7 @@ class FindFriendRecyclerViewAdapter(
 
                 }
 
-                println(profile.email)
-                println(profile.isPending)
+
             }
             (FragmentComponentManager.findActivity(binding.root.context) as HomeActivity).imageViewModel.getUserImage(
                 profile.email,

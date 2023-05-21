@@ -34,7 +34,7 @@ class FriendsFragment(val context: HomeActivity) : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        friendsViewModel.subscribeFriendsList()
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

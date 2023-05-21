@@ -25,10 +25,12 @@ import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.enums.Tabs
 import it.polito.mad.buddybench.utils.BottomBar
 import it.polito.mad.buddybench.viewmodels.FindCourtViewModel
+import it.polito.mad.buddybench.viewmodels.FriendsViewModel
 import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import it.polito.mad.buddybench.viewmodels.InvitationsViewModel
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
+import nl.joery.animatedbottombar.AnimatedBottomBar
 import org.json.JSONObject
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -48,12 +50,34 @@ class HomeActivity: AppCompatActivity() {
     val userViewModel by viewModels<UserViewModel>()
     val findCourtViewModel by viewModels<FindCourtViewModel>()
     val reservationViewModel by viewModels<ReservationViewModel>()
+    val friendsViewModel by viewModels<FriendsViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home)
         sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         reservationViewModel.email = Firebase.auth.currentUser!!.email!!
-        invitationsViewModel.subscribeInvitations()
+        bottomBar.setup()
+        friendsViewModel.subscribeFriendsList()
+
+        friendsViewModel.friendRequests.observe(this){
+            println("aggiornatoooooooooooooooooooooooooooooooooooooooooooooo")
+            if(it.isNotEmpty()){
+                bottomBar.counter[Tabs.FRIENDS.getId()] = it.size
+                bottomBar.bottomBar.setBadgeAtTabIndex(Tabs.FRIENDS.getId(), AnimatedBottomBar.Badge(it.size.toString()))
+            } else{
+                bottomBar.counter[Tabs.FRIENDS.getId()] = 0
+                bottomBar.bottomBar.clearBadgeAtTabIndex(Tabs.FRIENDS.getId())
+
+            }
+        }
+        invitationsViewModel.subscribeInvitations(){
+            if(it > 0){
+                bottomBar.counter[Tabs.INVITATIONS.getId()] = it
+                bottomBar.bottomBar.setBadgeAtTabIndex(Tabs.INVITATIONS.getId(), AnimatedBottomBar.Badge(it.toString()))
+            } else{
+                bottomBar.counter[Tabs.INVITATIONS.getId()] = 0
+            }
+        }
 
 
         userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this){
@@ -63,7 +87,6 @@ class HomeActivity: AppCompatActivity() {
         }
 
 
-        bottomBar.setup()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

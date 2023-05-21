@@ -8,8 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ProgressBar
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.friends.placeholder.PlaceholderContent
@@ -53,13 +56,33 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
             }
         }
 
+
         with(rvFriendRequests) {
             layoutManager = when {
                 columnCount <= 1 -> LinearLayoutManager(context)
                 else -> GridLayoutManager(context, columnCount)
             }
             adapter = FriendRequestRecyclerViewAdapter(listOf(), friendsViewModel)
+            itemAnimator = object :DefaultItemAnimator(){
+                override fun animateRemove(holder: RecyclerView.ViewHolder?): Boolean {
+                    if(holder != null){
+                        holder as FriendRequestRecyclerViewAdapter.ViewHolder
+                        val animation = if(holder.accepted){
+                            AnimationUtils.loadAnimation(holder.itemView.context, R.anim.slide_out_left)
+
+                        } else{
+                            AnimationUtils.loadAnimation(holder.itemView.context, android.R.anim.slide_out_right)
+
+                        }
+
+                        holder.itemView.startAnimation(animation)
+
+                    }
+                    return super.animateRemove(holder)
+                }
+            }
         }
+
         // ** Data
         friendsViewModel.friendRequests.observe(viewLifecycleOwner) {
             if (it != null) {
