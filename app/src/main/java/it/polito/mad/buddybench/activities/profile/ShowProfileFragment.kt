@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
@@ -76,8 +77,10 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_pro
         //resizeImageView(iv)
         try{
             imageViewModel.getUserImage(profile.email,{iv.setImageResource(R.drawable.person)}){
+
                 Glide.with(this)
                     .load(it)
+                    .skipMemoryCache(true)
                     .into(iv)
             }
         } catch (_: Exception){
