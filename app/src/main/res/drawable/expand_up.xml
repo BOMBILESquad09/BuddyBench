@@ -6,6 +6,6 @@
     android:viewportHeight="24">
 
     <path
-        android:fillColor="@color/md_theme_light_background"
-        android:pathData="M4.58606 13.586L11.0001 13.586L11.0001 8L13.0001 8L13.0001 13.586L19.4141 13.586L12.0001 21L4.58606 13.586ZM19.0001 6L5.00006 6L5.00006 4L19.0001 4L19.0001 6Z" />
+        android:fillColor="@color/cardview_light_background"
+        android:pathData="M19.4139 10.414L12.9999 10.414L12.9999 16L10.9999 16L10.9999 10.414L4.58594 10.414L11.9999 3L19.4139 10.414ZM4.99994 18L18.9999 18L18.9999 20L4.99994 20L4.99994 18Z" />
 </vector>

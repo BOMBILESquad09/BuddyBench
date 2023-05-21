@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.activities.invitations
 
+import android.animation.ValueAnimator
 import android.opengl.Visibility
 import android.view.View
 import android.widget.Button
@@ -7,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.compose.ui.text.capitalize
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
@@ -79,14 +81,15 @@ class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Uni
             onDecline(invitation)
         }
 
+        val expandDuration = 200L // Durata dell'animazione di espansione in millisecondi
+
         expandButton.setOnClickListener{
-            if (cardInner.isVisible){
+            if (cardInner.isVisible) {
                 cardInner.visibility = View.GONE
-                expandButton.animate().rotation(180f)
-            }
-            else{
+                expandButton.setImageResource(R.drawable.expand_down)
+            } else {
                 cardInner.visibility = View.VISIBLE
-                expandButton.animate().rotation(360f)
+                expandButton.setImageResource(R.drawable.expand_up)
             }
         }
 
