@@ -5,5 +5,6 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class BuddyBenchApplication: Application() {
-    
+
+
 }

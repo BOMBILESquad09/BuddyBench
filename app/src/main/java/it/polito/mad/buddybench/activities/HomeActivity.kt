@@ -13,6 +13,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.activityViewModels
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -53,6 +54,8 @@ class HomeActivity: AppCompatActivity() {
     val friendsViewModel by viewModels<FriendsViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
         setContentView(R.layout.home)
         sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         reservationViewModel.email = Firebase.auth.currentUser!!.email!!
@@ -61,10 +64,10 @@ class HomeActivity: AppCompatActivity() {
         userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this){
             profile = it ?: Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
             friendsViewModel.subscribeFriendsList()
-            invitationsViewModel.subscribeInvitations(){
-                if(it > 0){
-                    bottomBar.counter[Tabs.INVITATIONS.getId()] = it
-                    bottomBar.bottomBar.setBadgeAtTabIndex(Tabs.INVITATIONS.getId(), AnimatedBottomBar.Badge(it.toString()))
+            invitationsViewModel.subscribeInvitations(){ s ->
+                if(s > 0){
+                    bottomBar.counter[Tabs.INVITATIONS.getId()] = s
+                    bottomBar.bottomBar.setBadgeAtTabIndex(Tabs.INVITATIONS.getId(), AnimatedBottomBar.Badge(s.toString()))
                 } else{
                     bottomBar.counter[Tabs.INVITATIONS.getId()] = 0
                 }

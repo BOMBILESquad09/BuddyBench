@@ -64,15 +64,25 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         super.onViewCreated(view, savedInstanceState)
 
         calendarView = view.findViewById(R.id.calendar)
+        currentMonth = YearMonth.now()
+
+        startMonth = currentMonth.minusMonths(0)  // Adjust as needed
+        endMonth = currentMonth.plusMonths(1)  // Adjust as needed
+        val daysOfWeek = daysOfWeek(DayOfWeek.MONDAY)
+        calendarView.setup(startMonth, endMonth, daysOfWeek.first()) // Available from the library
+        calendarView.scrollToMonth(currentMonth)
         recyclerViewReservations = view.findViewById(R.id.reservations)
         recyclerViewReservations.layoutManager = LinearLayoutManager(context)
         recyclerViewReservations.adapter = ReservationAdapter(  listOf(), context.launcherReservation)
+        calendarView.dayBinder = MyMonthDayBinder(this, calendarView, recyclerViewReservations, context.launcherReservation)
+        calendarView.monthHeaderBinder = MyMonthHeaderFooterBinder()
+
+
 
 
         val dayTitle = view.findViewById<TextView>(R.id.dayTitle)
         dayTitle.text = LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, d MMMM y"))
 
-        calendarView.dayBinder = MyMonthDayBinder(this, calendarView, recyclerViewReservations, context.launcherReservation)
 
         progressLayout = view.findViewById(R.id.progess_layout)
         progressBar = progressLayout.findViewById(R.id.progress_circular)
@@ -97,16 +107,9 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
             }
         }
 
-        currentMonth = YearMonth.now()
 
-        startMonth = currentMonth.minusMonths(0)  // Adjust as needed
-        endMonth = currentMonth.plusMonths(1)  // Adjust as needed
-        val daysOfWeek = daysOfWeek(DayOfWeek.MONDAY)
-        calendarView.setup(startMonth, endMonth, daysOfWeek.first()) // Available from the library
-        calendarView.scrollToMonth(currentMonth)
         val monthName = view.findViewById<TextView>(R.id.monthName)
 
-        calendarView.monthHeaderBinder = MyMonthHeaderFooterBinder()
 
         previousButton = view.findViewById<ImageView>(R.id.previousButton)
         nextButton = view.findViewById<ImageView>(R.id.nextButton)
@@ -117,10 +120,10 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         }
 
 
-
-
         refreshNextCalendarButton(currentMonth)
         refreshPreviousCalendarButton(currentMonth)
+
+
 
         previousButton.setOnClickListener {
             calendarView.findFirstVisibleMonth()?.let {
@@ -150,8 +153,8 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         val selectedReservations = viewModel.getSelectedReservations()?.sortedBy { it.endTime } ?: listOf()
 
         if (viewModel.oldDate != null){
-            val firstDay = calendarView.findFirstVisibleMonth()?.yearMonth!!.atDay(1)
-            val lastDay = calendarView.findFirstVisibleMonth()?.yearMonth!!.atEndOfMonth()
+            val firstDay = calendarView.findFirstVisibleMonth()?.yearMonth?.atDay(1) ?: YearMonth.now().atDay(1)
+            val lastDay = calendarView.findFirstVisibleMonth()?.yearMonth?.atEndOfMonth() ?: YearMonth.now().atEndOfMonth()
             if (firstDay <= viewModel.oldDate && viewModel.oldDate!! <= lastDay)
                 calendarView.notifyDayChanged(CalendarDay(viewModel.oldDate!!, DayPosition.MonthDate))
             else if (firstDay > viewModel.oldDate){
@@ -179,9 +182,8 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         val reservations = viewModel.reservations.value ?: return
 
         for(entries in reservations.entries){
-
-            val firstDay = calendarView.findFirstVisibleMonth()?.yearMonth!!.atDay(1)
-            val lastDay = calendarView.findFirstVisibleMonth()?.yearMonth!!.atEndOfMonth()
+            val firstDay = calendarView.findFirstVisibleMonth()?.yearMonth?.atDay(1) ?: YearMonth.now().atDay(1)
+            val lastDay = calendarView.findFirstVisibleMonth()?.yearMonth?.atEndOfMonth() ?: YearMonth.now().atEndOfMonth()
 
             val calendarDay = if (firstDay <= entries.key && entries.key <= lastDay ){
                 CalendarDay(entries.key, DayPosition.MonthDate)

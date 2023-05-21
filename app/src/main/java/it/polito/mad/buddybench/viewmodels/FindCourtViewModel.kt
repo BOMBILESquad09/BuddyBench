@@ -43,9 +43,7 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
 
 
     fun getAllSports(): LiveData<List<Sports>>{
-        Thread{
-            _sports.postValue(  sportRepository.getAll().map { Sports.valueOf(it.name) })
-        }.start()
+        _sports.value = listOf(Sports.TENNIS, Sports.BASKETBALL, Sports.FOOTBALL, Sports.VOLLEYBALL)
         return sports
     }
     fun getCourtsBySport(): LiveData<List<CourtDTO>> {
