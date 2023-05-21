@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center_vertical"
+    android:layout_marginTop="16dp"
+    android:orientation="horizontal">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:checkedIconMargin="12.5dp"
+        android:layout_marginRight="10dp"
+
+        app:checkedIconTint="@color/colorPrimary"
+        android:checkable="false"
+        app:cardCornerRadius="300dp"
+        app:strokeColor="@color/card_border_selector"
+        app:strokeWidth="1dp">
+
+        <ImageView
+            android:id="@+id/iv_friend_request_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/person"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"/>
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/tv_friend_request_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/buddy_bench"
+        android:fontFamily="@font/montserrat_medium_500" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+
+
+    <ImageButton
+        android:id="@+id/btn_confirm_request"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/round_check_24"
+        android:background="@drawable/rounded_shape"
+        android:backgroundTint="@color/md_theme_light_primary"
+        android:padding="8dp"
+        android:layout_marginEnd="8dp"
+
+        android:contentDescription="@string/confirm" />
+    <ImageButton
+        android:id="@+id/btn_reject_request"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/round_close_white_24"
+        android:background="@drawable/rounded_shape"
+        android:backgroundTint="@color/md_theme_light_error"
+        android:padding="8dp"
+        android:contentDescription="@string/confirm" />
+
+</LinearLayout>

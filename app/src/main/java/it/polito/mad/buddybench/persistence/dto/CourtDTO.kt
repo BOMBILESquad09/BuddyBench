@@ -50,6 +50,9 @@ class CourtDTO (
         )
     }
 
+    fun copy(): CourtDTO{
+        return CourtDTO(name, address, location, feeHour, sport, phoneNumber, path, feeEquipment, rating, nReviews, facilities)
+    }
 }
 
 

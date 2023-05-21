@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.icu.text.DecimalFormat
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -14,8 +15,10 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.cardview.widget.CardView
 import androidx.core.animation.doOnEnd
 import androidx.core.graphics.drawable.DrawableCompat
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.myreservations.displayText
 import java.math.RoundingMode
@@ -145,44 +148,13 @@ class Utils {
             return df.format(number).toDouble()
         }
 
-        fun openProgressDialgo(context: Context): AlertDialog{
-            val llPadding = 30
-            val ll = LinearLayout(context)
-            ll.orientation = LinearLayout.VERTICAL
-            ll.setPadding(llPadding, llPadding, llPadding, llPadding)
-            ll.gravity = Gravity.CENTER
-            var llParam = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            llParam.gravity = Gravity.CENTER
-            ll.layoutParams = llParam
-
-            // Creating a ProgressBar inside the layout
-            val progressBar = ProgressBar(context)
-            progressBar.isIndeterminate = true
-            progressBar.setPadding(0, 0, llPadding, 0)
-            progressBar.layoutParams = llParam
-            llParam = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            llParam.gravity = Gravity.CENTER
-
-
-
-            // Creating a TextView inside the layout
-            val tvText = TextView(context)
-            tvText.text = "Loading..."
-            tvText.setTextColor(Color.parseColor("#000000"))
-            tvText.textSize = 20f
-            tvText.layoutParams = llParam
-            ll.addView(progressBar)
-            ll.addView(tvText)
+        fun openProgressDialog(context: Context): AlertDialog{
+            val dialogCard = LayoutInflater.from(context).inflate(R.layout.loading, null)
             val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-            builder.setCancelable(false)
-            builder.setView(ll)
+            builder.setView(dialogCard)
             val dialog: AlertDialog = builder.create()
+            dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+            dialog.setCancelable(false)
             dialog.show()
             return dialog
         }

@@ -21,7 +21,8 @@
     <string name="age">%1$d y.o.</string>
     <string name="location_icon">location icon</string>
     <string name="save">SAVE</string>
-    <string name="add">ADD</string>
+    <string name="add">Add</string>
+    <string name="remove">Remove</string>
     <string name="no_sports">No sports yet, add new ones!</string>
     <string name="edit_your_sports">Edit your sports</string>
     <string name="add_sports">Add sports</string>
@@ -221,7 +222,21 @@
     <string name="cannot_review">You must have played in this court before leaving a review</string>
     <string name="info_icon">info_icon</string>
     <string name="your_review">Your review</string>
-    <string name="missing_rating">Missing rating and/or text</string>
+    <string name="missing_rating">Missing rating</string>
     <string name="new_achievement">New Achievement</string>
+    <string name="profile">Profile</string>
+    <string name="reservations">Reservations</string>
+    <string name="find_court">Find Court</string>
+    <string name="friends">Friends</string>
+    <string name="requests">Requests</string>
+    <string name="list">List</string>
+    <string name="find">Find</string>
+    <string name="friend_profile_image">friend_profile_image</string>
+    <string name="buddy_bench">Buddy Bench</string>
+    <string name="username">username</string>
+    <string name="request_sent">Request sent</string>
+    <string name="send_request">Send request</string>
+    <string name="loading">Loading...</string>
+    <string name="domenica_30_aprile_2023">Domenica 30 Aprile 2023</string>
 
 </resources>

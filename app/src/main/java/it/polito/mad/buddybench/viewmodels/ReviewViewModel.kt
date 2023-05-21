@@ -4,32 +4,32 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.app
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.persistence.dto.ReviewDTO
-import it.polito.mad.buddybench.persistence.repositories.CourtRepository
-import it.polito.mad.buddybench.persistence.repositories.ReviewRepository
-import it.polito.mad.buddybench.persistence.repositories.UserRepository
+import it.polito.mad.buddybench.persistence.firebaseRepositories.CourtRepository
+import it.polito.mad.buddybench.persistence.firebaseRepositories.ReviewRepository
+import it.polito.mad.buddybench.persistence.firebaseRepositories.UserRepository
+
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class ReviewViewModel @Inject constructor(): ViewModel() {
+class ReviewViewModel @Inject constructor() : ViewModel() {
 
-    @Inject
-    lateinit var reviewRepository: ReviewRepository
-
-    val reviewRepositoryFirebase = it.polito.mad.buddybench.persistence.firebaseRepositories.ReviewRepository()
-
-    @Inject
-    lateinit var courtRepository: CourtRepository
-
-    val courtRepositoryFirebase = it.polito.mad.buddybench.persistence.firebaseRepositories.CourtRepository()
+    private val reviewRepository = ReviewRepository()
+    private val courtRepository = CourtRepository()
 
     @Inject
     lateinit var userRepository: UserRepository
+
 
     private val _reviews: MutableLiveData<List<ReviewDTO>> = MutableLiveData(listOf())
     private val _court: MutableLiveData<CourtDTO> = MutableLiveData()
@@ -44,59 +44,77 @@ class ReviewViewModel @Inject constructor(): ViewModel() {
     private val _l: MutableLiveData<Boolean> = MutableLiveData(true)
     val l: LiveData<Boolean> = _l
 
-    fun getCourtReviews(name: String, sport: String, context: Context): LiveData<List<ReviewDTO>>{
+    private val _done: MutableLiveData<Boolean> = MutableLiveData(false)
+    val done: LiveData<Boolean> = _done
+
+    fun getCourtReviews(name: String, sport: String, context: Context): LiveData<List<ReviewDTO>> {
+        _done.postValue(false)
         _l.postValue(true)
-        val sharedPreferences = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        val currentUser = userRepository.getCurrentUser(sharedPreferences)
-        courtRepositoryFirebase.getCourt(name,sport){
-            _court.postValue(it)
-            reviewRepositoryFirebase.getAllByCourt(it){ reviewsDocs ->
-                if (reviewsDocs.any {r -> r.user.email == currentUser.email }) {
-                    val userReview = reviewsDocs.first { r -> r.user.email == currentUser.email }
+        runBlocking {
+            val currentUser = Firebase.auth.currentUser!!.email!!
+            lateinit var courtFetched: CourtDTO
+            courtRepository.getCourt(name, sport) {
+                courtFetched = it
+                _court.postValue(it)
+            }
+            reviewRepository.getAllByCourt(courtFetched) { reviewsDocs ->
+                if (reviewsDocs.any { r -> r.user.email == currentUser }) {
+                    val userReview = reviewsDocs.first { r -> r.user.email == currentUser }
+                    _canReview.postValue(true)
                     _userReview.postValue(userReview)
+                    _l.postValue(false)
+                    _done.postValue(true)
+                } else {
+                    userCanReview(name, sport, context)
                 }
-                val reviews = reviewsDocs.filter { r -> r.user.email != currentUser.email }
+                val reviews = reviewsDocs.filter { r -> r.user.email != currentUser }
                 _reviews.postValue(reviews)
                 _l.postValue(false)
+
             }
         }
-
-
-
         return reviews
     }
 
+
     fun insertReview(description: String, rating: Int, context: Context): LiveData<ReviewDTO> {
         _l.value = true
-
-
-        val sharedPreferences = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        val currentUser = userRepository.getCurrentUser(sharedPreferences)
-        val review = ReviewDTO(currentUser, LocalDate.now(), rating, description, court.value!!)
-        reviewRepositoryFirebase.saveReview(review){
-            _userReview.postValue(review)
-            courtRepositoryFirebase.getCourt(_court.value!!.name, _court.value!!.sport){
-                c ->
-                _court.postValue(c)
-                _l.postValue(false)
+        runBlocking {
+            lateinit var currentUser: Profile
+            userRepository.getUser() {
+                currentUser = it
             }
+            val review = ReviewDTO(currentUser, LocalDate.now(), rating, description, court.value!!)
+            reviewRepository.saveReview(review) {}
+
+            val pair: Pair<Double, Int> = if (userReview.value == null) {
+                val newNReviews = court.value!!.nReviews + 1
+                val newRating = (court.value!!.rating * court.value!!.nReviews + rating) / newNReviews
+                Pair(newRating, newNReviews)
+            } else {
+                val newRating = (court.value!!.rating * court.value!!.nReviews - userReview.value!!.rating + rating) / court.value!!.nReviews
+                Pair(newRating, court.value!!.nReviews)
+            }
+
+
+            _userReview.postValue(review)
+            val updatedCourt = _court.value!!.copy()
+            updatedCourt.nReviews = pair.second
+            updatedCourt.rating = pair.first
+            _court.postValue(updatedCourt)
+            _l.value = false
         }
-
-
         return _userReview
     }
 
-    fun userCanReview(name: String, sport: String, context: Context): LiveData<Boolean> {
+    private fun userCanReview(name: String, sport: String, context: Context): LiveData<Boolean> {
         _l.postValue(true)
-        val sharedPreferences = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        val currentUser = userRepository.getCurrentUser(sharedPreferences)
-        courtRepositoryFirebase.checkIfPlayed(name, sport, currentUser.email){
-            println(it)
-            println("-------------------")
+        val currentUser = Firebase.auth.currentUser!!.email!!
+        courtRepository.checkIfPlayed(name, sport, currentUser) {
             _canReview.postValue(it)
             _l.postValue(false)
+            _done.postValue(true)
         }
-
         return _canReview
     }
 }

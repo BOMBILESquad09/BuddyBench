@@ -36,24 +36,48 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Objects
 
+
+
 class UserRepository {
     val db = FirebaseFirestore.getInstance()
+    var profile: Profile? = null
+    var otherProfile: Profile? = null
 
+    suspend fun getUser(email: String = Firebase.auth.currentUser!!.email!!, callback: (Profile) -> Unit){
+        withContext(Dispatchers.IO){
+            if(email == Firebase.auth.currentUser!!.email!!){
+                if(profile == null){
+                    fetchUser(email,callback)
+                } else
+                {
+                    callback(profile!!)
+                }
+            } else{
+                if(otherProfile == null){
+                    fetchUser(email, callback)
+                } else{
+                    callback(otherProfile!!)
+                }
+            }
 
-    suspend fun getUser(email: String, callback: (Profile) -> Unit) {
+        }
+    }
+
+    suspend fun fetchUser(email: String = Firebase.auth.currentUser!!.email!!, callback: (Profile) -> Unit) {
         withContext(Dispatchers.IO) {
             val profile = db.collection("users").document(email).get().await()
             if (profile.data != null) {
                 val serializedProfile = serializeUser(profile.data as Map<String, Object>)
-                (profile.data!!["friends"] as List<DocumentReference>).map { it.get() }
-                    .map { it.await() }.forEach {
-                    serializedProfile.friends.add(serializeUser(it.data as Map<String, Object>))
+                if(email == Firebase.auth.currentUser!!.email!!){
+                    (profile.data!!["friends"] as List<DocumentReference>).map { it.get() }
+                        .map { it.await() }.forEach {
+                            serializedProfile.friends.add(serializeUser(it.data as Map<String, Object>))
+                        }
+                    (profile.data!!["friend_requests_pending"] as List<DocumentReference>).map { it.get() }
+                        .map { it.await() }.forEach {
+                            serializedProfile.pendings.add(serializeUser(it.data as Map<String, Object>))
+                        }
                 }
-                (profile.data!!["friend_requests_pending"] as List<DocumentReference>).map { it.get() }
-                    .map { it.await() }.forEach {
-                    serializedProfile.pendings.add(serializeUser(it.data as Map<String, Object>))
-                }
-
                 if (profile.data!!["last_update"] == null || LocalDate.parse(profile.data!!["last_update"] as String, DateTimeFormatter.ISO_LOCAL_DATE) != LocalDate.now()) {
                     val organized = db.collection("reservations")
                         .whereEqualTo("user", db.document("users/$email")).get()
@@ -91,33 +115,40 @@ class UserRepository {
                         it.matchesOrganized = counters[it.name]?.first ?: 0
                         it.matchesPlayed = counters[it.name]?.second ?: 0
                     }
+
                     update(serializedProfile, callback)
 
                     return@withContext
                 }
+                if(email == Firebase.auth.currentUser!!.email)
+                    this@UserRepository.profile = serializedProfile
+                else
+                    this@UserRepository.otherProfile = serializedProfile
                 callback(serializedProfile)
             } else {
                 val newProfile = createProfile()
                 val x = db.collection("users").document(newProfile.email).set(
                     newProfile
                 ).await()
+
+                this@UserRepository.profile = Profile(
+                    newProfile.name,
+                    newProfile.surname,
+                    newProfile.nickname,
+                    newProfile.email,
+                    newProfile.location,
+                    LocalDate.parse(
+                        newProfile.birthdate,
+                        DateTimeFormatter.ISO_LOCAL_DATE
+                    ),
+                    newProfile.reliability,
+                    null,
+                    newProfile.sports,
+                    mutableListOf(),
+                    mutableListOf()
+                )
                 callback(
-                    Profile(
-                        newProfile.name,
-                        newProfile.surname,
-                        newProfile.nickname,
-                        newProfile.email,
-                        newProfile.location,
-                        LocalDate.parse(
-                            newProfile.birthdate,
-                            DateTimeFormatter.ISO_LOCAL_DATE
-                        ),
-                        newProfile.reliability,
-                        null,
-                        newProfile.sports,
-                        mutableListOf(),
-                        mutableListOf()
-                    )
+                    this@UserRepository.profile!!
                 )
             }
         }
@@ -151,8 +182,14 @@ class UserRepository {
                         "last_update" to LocalDate.now().toString()
                     )
                 ).await()
+            if(user.email == Firebase.auth.currentUser!!.email)
+                this@UserRepository.profile = user
+            else{
+                this@UserRepository.otherProfile = user
+            }
             callback(user)
         }
+
 
     }
 
@@ -188,7 +225,7 @@ class UserRepository {
     }
 
     companion object {
-        fun serializeUser(map: Map<String, Object>): Profile {
+        fun serializeUser(map: Map<String, Any>): Profile {
             val sports = mutableListOf<Sport>()
             val fbSports = map["sports"] as List<Map<String, Any>>
             for (s in fbSports) {

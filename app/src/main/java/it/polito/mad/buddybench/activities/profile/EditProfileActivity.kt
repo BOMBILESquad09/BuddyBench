@@ -377,7 +377,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             nicknameEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
             flag = false
         }
-        if (!changeColor(emailEdit, validateEmail(emailEdit.text.toString(), oldEmail, userViewModel), resources)) {
+        if (!changeColor(emailEdit, validateEmail(emailEdit.text.toString()), resources)) {
             emailEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
             flagEmail = false
         }

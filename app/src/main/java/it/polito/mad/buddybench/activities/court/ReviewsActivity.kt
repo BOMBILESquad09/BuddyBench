@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.activities.court
 
+import android.app.Dialog
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.View
@@ -25,6 +26,7 @@ class ReviewsActivity : AppCompatActivity() {
     private var courtName: String? = null
     private var courtSport: String? = null
     private var lastReviews: List<ReviewDTO> = listOf()
+    lateinit var progressDialog: Dialog
 
     // ** View Models
     private val reviewViewModel by viewModels<ReviewViewModel>()
@@ -33,6 +35,7 @@ class ReviewsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityReviewsBinding.inflate(layoutInflater)
+
         getArguments()
         setContentView(binding.root)
         uiSetup()
@@ -41,7 +44,7 @@ class ReviewsActivity : AppCompatActivity() {
     private fun getArguments() {
         courtName = intent.getStringExtra("court_name")
         courtSport = intent.getStringExtra("court_sport")
-        reviewViewModel.userCanReview(courtName!!, courtSport!!, this)
+        progressDialog = Utils.openProgressDialog(this)
         reviewViewModel.getCourtReviews(courtName!!, courtSport!!, this)
     }
 
@@ -65,6 +68,11 @@ class ReviewsActivity : AppCompatActivity() {
         binding.rbYourReview.stepSize = 1F
         binding.rbNewReview.stepSize = 1F
 
+        reviewViewModel.done.observe(this){
+            if(it){
+                progressDialog.dismiss()
+            }
+        }
 
         reviewViewModel.l.observe(this) {
             if (it) {
@@ -130,7 +138,7 @@ class ReviewsActivity : AppCompatActivity() {
     }
 
     private fun addReview() {
-        if (binding.rbNewReview.rating.equals(0.0f) || binding.etNewReview.text.isBlank()) {
+        if (binding.rbNewReview.rating.equals(0.0f)) {
             binding.tvErrorReview.visibility = View.VISIBLE
             return
         }

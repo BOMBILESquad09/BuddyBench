@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Profile
@@ -19,8 +21,8 @@ import it.polito.mad.buddybench.persistence.entities.UserWithSports
 import it.polito.mad.buddybench.persistence.entities.UserWithSportsDTO
 import it.polito.mad.buddybench.persistence.firebaseRepositories.FriendRepository
 import it.polito.mad.buddybench.persistence.firebaseRepositories.InvitationsRepository
+import it.polito.mad.buddybench.persistence.firebaseRepositories.UserRepository
 
-import it.polito.mad.buddybench.persistence.repositories.UserRepository
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import javax.inject.Inject
@@ -28,10 +30,9 @@ import javax.inject.Inject
 @HiltViewModel
 class UserViewModel @Inject constructor() : ViewModel() {
 
-    @Inject
-    lateinit var userRepository: UserRepository
 
-    private val userRepositoryFirebase = it.polito.mad.buddybench.persistence.firebaseRepositories.UserRepository()
+    @Inject
+    lateinit var  userRepositoryFirebase: UserRepository
     private val invitationsRepository = InvitationsRepository()
 
     private val friendRepository = FriendRepository()
@@ -52,13 +53,8 @@ class UserViewModel @Inject constructor() : ViewModel() {
 
 
 
-    fun checkUserEmail(email: String): UserWithSports? {
-        val u = userRepository.checkUser(email);
-        return u
-    }
 
-
-    fun getUser(email: String): LiveData<Profile> {
+    fun getUser(email: String = Firebase.auth.currentUser!!.email!!): LiveData<Profile> {
         runBlocking {
                 userRepositoryFirebase.getUser(email) {
                     _user.postValue(it)
@@ -73,19 +69,6 @@ class UserViewModel @Inject constructor() : ViewModel() {
                 _user.postValue(it)
             }
         }
-
-        /*
-        _user.value = profile
-        _userName.value = profile.name!!
-        Thread {
-            userRepository.update(
-                UserWithSportsDTO(
-                    profile.toUserDto(),
-                    profile.sports
-                ), oldEmail
-            )
-        }.start()*/
-
     }
 
     fun setUserName(name: String) {

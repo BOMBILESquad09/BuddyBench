@@ -10,6 +10,9 @@ import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.persistence.entities.toCourtDTO
 import it.polito.mad.buddybench.persistence.entities.toCourtTimeDTO
 import it.polito.mad.buddybench.utils.Utils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
@@ -36,15 +39,16 @@ class CourtRepository {
             }
     }
 
-    fun getCourt(name:String, sport: String, callback: (CourtDTO) -> Unit){
-        val courtName = name.replace(" ", "_") + "_" + sport
-        db.collection("courts")
-            .document(courtName)
-            .get()
-            .addOnSuccessListener {
-                val court = it.toObject(CourtDTO::class.java)!!
-                callback(court)
-            }
+    suspend fun getCourt(name:String, sport: String, callback: (CourtDTO) -> Unit){
+        withContext(Dispatchers.IO){
+            val courtName = name.replace(" ", "_") + "_" + sport
+            val res = db.collection("courts")
+                .document(courtName)
+                .get().await()
+            val court = res.toObject(CourtDTO::class.java)!!
+            callback(court)
+        }
+
     }
 
     fun getCourtTimeTable(name: String, sport: Sports, callback: (CourtTimeTableDTO) -> Unit) {
@@ -121,14 +125,17 @@ class CourtRepository {
         db.collection("reservations")
             .whereEqualTo("user", db.document("users/$userEmail"))
             .whereEqualTo("court", db.document("courts/$courtDocName"))
-
             .get()
             .addOnSuccessListener {
+                println("LA SIZE è")
+                println(courtDocName)
+                println(userEmail)
+                println(it.size())
                 if (it.size() == 0) {
                     callback(false)
                     return@addOnSuccessListener
                 }
-                val dates = it.map { Pair(LocalDate.parse(it.data["date"] as String, DateTimeFormatter.ISO_LOCAL_DATE), (it.data["endTime"] as Long).toInt()) }
+                val dates = it.map { d -> Pair(LocalDate.parse(d.data["date"] as String, DateTimeFormatter.ISO_LOCAL_DATE), (d.data["endTime"] as Long).toInt()) }
                 val minDate = dates.minOfOrNull { d -> d.first }!!
                 val minEndTime = dates.filter { t -> t.first == minDate }.minOfOrNull { t -> t.second }!!
 

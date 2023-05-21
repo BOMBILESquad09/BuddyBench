@@ -4,11 +4,11 @@ import android.graphics.Color
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.activities.invitations.InvitationsFragment
 import it.polito.mad.buddybench.activities.findcourt.FindCourtFragment
+import it.polito.mad.buddybench.activities.friends.FriendsFragment
 import it.polito.mad.buddybench.activities.profile.ShowProfileFragment
 import it.polito.mad.buddybench.activities.myreservations.MyReservationsFragment
 import it.polito.mad.buddybench.enums.Tabs
@@ -18,6 +18,7 @@ class BottomBar(val context: HomeActivity) {
 
     var currentTab = Tabs.RESERVATIONS
     lateinit var bottomBar: AnimatedBottomBar
+    val counter: HashMap<Int, Int> = HashMap()
     fun setup(){
         bottomBar = context.findViewById(R.id.bottom_bar)
         bottomBar.setOnTabSelectListener(object : AnimatedBottomBar.OnTabSelectListener {
@@ -30,7 +31,7 @@ class BottomBar(val context: HomeActivity) {
 
                 if(lastTab == newTab) return
                 val newTag = Tabs.valueOf( newTab.title.replace(" ","").uppercase())
-                val lastTag = Tabs.valueOf(currentTab.name ?: currentTab.name)
+                val lastTag = Tabs.valueOf(currentTab.name)
                 currentTab = newTag
                 replaceFragment(lastTag,newTag)
             }
@@ -42,7 +43,9 @@ class BottomBar(val context: HomeActivity) {
     private fun initializeProfile(){
         replaceFragment(currentTab, Tabs.PROFILE)
         context.supportFragmentManager.executePendingTransactions()
-        replaceFragment(Tabs.PROFILE, currentTab)
+        replaceFragment(Tabs.PROFILE, Tabs.FRIENDS)
+        context.supportFragmentManager.executePendingTransactions()
+        replaceFragment(Tabs.FRIENDS, currentTab)
     }
 
     private fun addInitialFragment(){
@@ -51,8 +54,8 @@ class BottomBar(val context: HomeActivity) {
             Tabs.PROFILE -> ShowProfileFragment(context)
             Tabs.RESERVATIONS -> MyReservationsFragment(context)
             Tabs.FINDCOURT -> FindCourtFragment(context)
+            Tabs.FRIENDS -> FriendsFragment(context)
             Tabs.INVITATIONS -> InvitationsFragment(context)
-            else -> Fragment()
         }
         transaction.add(R.id.home_fragment_container, newFragment, currentTab.name)
         transaction.commitNow()
@@ -64,7 +67,6 @@ class BottomBar(val context: HomeActivity) {
 
     fun replaceFragment(lastTag: Tabs, newTag: Tabs){
         val transaction = context.supportFragmentManager.beginTransaction()
-
         context.supportFragmentManager.findFragmentByTag(lastTag.name).let {
 
             if(it != null){
@@ -78,6 +80,7 @@ class BottomBar(val context: HomeActivity) {
                     Tabs.RESERVATIONS -> MyReservationsFragment(context)
                     Tabs.FINDCOURT -> FindCourtFragment(context)
                     Tabs.INVITATIONS -> InvitationsFragment(context)
+                    Tabs.FRIENDS -> FriendsFragment(context)
                 }
 
                 transaction.add(R.id.home_fragment_container, newFragment, newTag.name)
@@ -88,9 +91,23 @@ class BottomBar(val context: HomeActivity) {
         transaction.commit()
         adjustExternalComponents()
 
+
     }
 
     private fun adjustExternalComponents(){
+        if(currentTab == Tabs.INVITATIONS){
+            bottomBar.clearBadgeAtTabIndex(currentTab.getId())
+        } else{
+            if((counter[Tabs.INVITATIONS.getId()] ?: 0) > 0)
+                bottomBar.setBadgeAtTabIndex(Tabs.INVITATIONS.getId(),AnimatedBottomBar.Badge(counter[Tabs.INVITATIONS.getId()]!!.toString()))
+        }
+
+        if(currentTab == Tabs.FRIENDS){
+            bottomBar.clearBadgeAtTabIndex(currentTab.getId())
+        } else{
+            if((counter[Tabs.FRIENDS.getId()] ?: 0) > 0)
+                bottomBar.setBadgeAtTabIndex(Tabs.FRIENDS.getId(),AnimatedBottomBar.Badge(counter[Tabs.FRIENDS.getId()]!!.toString()))
+        }
 
         when(this.currentTab){
             Tabs.PROFILE -> {setToolbar() }

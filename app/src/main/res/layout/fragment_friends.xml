@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".activities.friends.FriendsFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_bold_700"
+        android:textSize="32sp"
+        android:paddingTop="16dp"
+        android:paddingHorizontal="16dp"
+        android:text="@string/friends" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:theme="@style/Theme.MaterialComponents.Light"
+        android:backgroundTint="@color/md_theme_light_background"
+        app:tabIndicatorColor="@color/md_theme_light_primary"
+        android:id="@+id/tab_friends"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabTextColor="@color/md_theme_light_outline"
+        app:tabSelectedTextColor="@color/md_theme_light_primary"
+        app:tabTextAppearance="@style/TabBarText"
+        >
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/list" />
+
+
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/requests" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/find" />
+
+
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/tab_friends_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

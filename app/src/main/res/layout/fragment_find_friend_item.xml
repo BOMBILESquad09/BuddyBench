@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center_vertical"
+    android:layout_marginTop="16dp"
+    android:orientation="horizontal">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginRight="10dp"
+        app:checkedIconMargin="12.5dp"
+        app:checkedIconTint="@color/colorPrimary"
+        android:checkable="false"
+        app:cardCornerRadius="300dp"
+        app:strokeColor="@color/card_border_selector"
+        app:strokeWidth="1dp">
+
+        <ImageView
+            android:id="@+id/iv_friend_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/person"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"/>
+    </com.google.android.material.card.MaterialCardView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_friend_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/buddy_bench"
+            android:fontFamily="@font/montserrat_medium_500" />
+
+        <TextView
+            android:id="@+id/tv_friend_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/username"
+            android:textColor="@color/md_theme_light_outline"
+            android:fontFamily="@font/montserrat_regular_400" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/btn_add_friend"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/rounded_shape"
+        android:backgroundTint="@color/md_theme_light_primary"
+        android:text="@string/add"
+        android:textColor="@color/md_theme_light_background"
+        android:textAllCaps="false"
+        android:textSize="12sp"
+        android:fontFamily="@font/montserrat_semibold_600"
+        />
+
+
+</LinearLayout>

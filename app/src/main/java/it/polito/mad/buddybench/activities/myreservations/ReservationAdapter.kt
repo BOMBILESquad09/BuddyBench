@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.R
 
-class ReservationAdapter(private val reservations: List<ReservationDTO>, private val launcher: ActivityResultLauncher<Intent>): RecyclerView.Adapter<ReservationViewHolder>() {
+class ReservationAdapter( var reservations: List<ReservationDTO>, private val launcher: ActivityResultLauncher<Intent>): RecyclerView.Adapter<ReservationViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReservationViewHolder {
         val v = LayoutInflater.from(parent.context)

@@ -34,10 +34,13 @@
 
             <ImageView
                 android:id="@+id/inviter_picture"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/circle_shape"
-                card_view:tint="@color/md_theme_light_background" />
+                android:src="@drawable/person"
+
+                 />
         </androidx.cardview.widget.CardView>
 
 

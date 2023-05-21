@@ -10,37 +10,30 @@ import javax.inject.Inject
 @HiltViewModel
 class ImageViewModel @Inject constructor() : ViewModel(){
 
-    val cacheCourtImages: HashMap<String, Uri> = HashMap()
-    val cacheProfileImages: HashMap<String, Uri> = HashMap()
 
 
 
-    val imageRepository = ImageRepository()
+    @Inject
+    lateinit var imageRepository : ImageRepository
 
     fun postUserImage(path: String, uri: Uri){
-        cacheProfileImages[path] = uri
         runBlocking {
             imageRepository.postUserImage(path, uri)
         }
     }
 
     fun postCourtImage(path: String, uri: Uri){
-        cacheProfileImages[path] = uri
         runBlocking {
             imageRepository.postCourtImage(path, uri)
         }
     }
 
     fun getUserImage(path: String, onFailure: () ->Unit, onSuccess: (Uri)->Unit){
-        if(cacheProfileImages[path] != null) {
-            onSuccess(cacheProfileImages[path]!!)
-            return
-        }
+
 
         runBlocking {
             try{
                 val image = imageRepository.getUserImage(path)
-                cacheProfileImages[path] = image
                 onSuccess(image)
             } catch (_: Exception){
                 onFailure()
@@ -49,15 +42,11 @@ class ImageViewModel @Inject constructor() : ViewModel(){
     }
 
     fun getCourtImage(path: String, onFailure:()->Unit, onSuccess: (Uri)->Unit){
-        if(cacheCourtImages[path] != null) {
-            onSuccess(cacheCourtImages[path]!!)
-            return
-        }
+
 
         runBlocking {
             try{
                 val image = imageRepository.getCourtImage(path)
-                cacheCourtImages[path] = image
                 onSuccess(image)
             } catch (_: Exception){
             }
