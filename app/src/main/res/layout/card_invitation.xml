@@ -77,10 +77,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="10dp"
-                card_view:layout_constraintBottom_toTopOf="@+id/accept_btn"
-                card_view:layout_constraintHorizontal_bias="0.5"
-                card_view:layout_constraintTop_toBottomOf="parent">
+                android:padding="10dp">
 
 
                 <TextView
@@ -88,16 +85,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginTop="4dp"
                     android:fontFamily="@font/montserrat_semibold_600"
                     android:text="@string/court_name"
                     android:textColor="@color/md_theme_light_background"
                     android:textSize="20sp"
                     card_view:layout_constraintBottom_toTopOf="@+id/address_layout"
                     card_view:layout_constraintStart_toStartOf="parent"
-                    card_view:layout_constraintTop_toTopOf="parent"
-                    card_view:layout_constraintVertical_chainStyle="spread" />
+                    card_view:layout_constraintTop_toTopOf="parent" />
 
                 <LinearLayout
                     android:id="@+id/address_layout"
@@ -136,11 +130,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="8dp"
                     android:orientation="horizontal"
+                    android:paddingEnd="12dp"
                     card_view:layout_constraintBottom_toBottomOf="parent"
-                    card_view:layout_constraintEnd_toStartOf="@+id/hours_layout"
-                    card_view:layout_constraintHorizontal_bias="0.5"
-                    card_view:layout_constraintHorizontal_chainStyle="packed"
-                    card_view:layout_constraintStart_toStartOf="parent"
+                    card_view:layout_constraintStart_toStartOf="@+id/address_layout"
                     card_view:layout_constraintTop_toBottomOf="@+id/address_layout">
 
                     <ImageView
@@ -171,10 +163,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingStart="24dp"
+                    android:paddingStart="12dp"
                     card_view:layout_constraintBottom_toBottomOf="@+id/day_layout"
-                    card_view:layout_constraintTop_toTopOf="@+id/day_layout"
-                    tools:layout_editor_absoluteX="165dp">
+                    card_view:layout_constraintStart_toEndOf="@+id/day_layout">
 
                     <ImageView
                         android:id="@+id/hours"
