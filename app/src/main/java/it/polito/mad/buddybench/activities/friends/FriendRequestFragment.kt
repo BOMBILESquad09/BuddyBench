@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
@@ -60,9 +62,16 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
             } else {
 
                 pbFriendRequests.visibility = View.GONE
-                rvFriendRequests.visibility = View.VISIBLE
+                if (friendsViewModel.friendRequests.value!!.isEmpty()) {
+                    emptyLL.visibility = View.VISIBLE
+                    rvFriendRequests.visibility = View.GONE
+                } else {
+                    emptyLL.visibility = View.GONE
+                    rvFriendRequests.visibility = View.VISIBLE
+                }
             }
         }
+
 
 
         with(rvFriendRequests) {
@@ -87,6 +96,7 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
                             )
                         }
                         holder.itemView.startAnimation(animation)
+
                     }
                     return super.animateRemove(holder)
                 }
@@ -104,29 +114,27 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
 
                     (adapter as FriendRequestRecyclerViewAdapter).values = it
                     diffs.dispatchUpdatesTo(adapter!!)
-
-                    if (friendsViewModel.l.value != true) {
-                        if (it.isEmpty())
-                            Thread{
-                                Thread.sleep(500)
-                                handler.post {
-                                    if(it.isEmpty()){
-                                        emptyLL.visibility = View.VISIBLE
-                                        rvFriendRequests.visibility = View.GONE
-                                    }
+                    rvFriendRequests.viewTreeObserver.addOnGlobalLayoutListener(
+                        object : OnGlobalLayoutListener {
+                            override fun onGlobalLayout() {
+                                println("diocaneeeeeeeee")
+                                if ((rvFriendRequests.adapter as FriendRequestRecyclerViewAdapter).values.isEmpty()) {
+                                    emptyLL.visibility = View.VISIBLE
+                                    rvFriendRequests.visibility = View.GONE
+                                } else {
+                                    emptyLL.visibility = View.GONE
+                                    rvFriendRequests.visibility = View.VISIBLE
                                 }
-                            }.start()
-
-                        if(it.isNotEmpty()){
-                            emptyLL.visibility = View.GONE
-                            rvFriendRequests.visibility = View.VISIBLE
-
-                        }
-                    }
+                                rvFriendRequests.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                            }
+                        })
                 }
 
-
             }
+
         }
     }
+
+
 }
+

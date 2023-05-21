@@ -94,8 +94,6 @@ class FriendRequestRecyclerViewAdapter( var values: List<Profile>, private val v
                 }
             }
         }
-
-
     }
 
 

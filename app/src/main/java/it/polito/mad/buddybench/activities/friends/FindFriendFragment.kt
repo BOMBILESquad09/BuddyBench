@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
@@ -70,7 +71,10 @@ class FindFriendFragment : Fragment() {
                 else -> GridLayoutManager(context, columnCount)
             }
             adapter = FindFriendRecyclerViewAdapter(listOf(), friendsViewModel)
+
         }
+
+
         // ** Data
         friendsViewModel.possibleFriends.observe(viewLifecycleOwner) {
             if (it != null) {
@@ -82,35 +86,40 @@ class FindFriendFragment : Fragment() {
                     (adapter as FindFriendRecyclerViewAdapter).values = it
                     val diffs = DiffUtil.calculateDiff(friendDiff)
                     diffs.dispatchUpdatesTo(adapter!!)
-                    if (friendsViewModel.l.value != true) {
-                        if (friendsViewModel.l.value != true) {
-                            if(it.isEmpty())
-                                Thread{
-                                    Thread.sleep(400)
-                                    handler.post {
-                                        if(it.isEmpty()){
-                                            emptyLL.visibility = View.VISIBLE
-                                            rvFindFriends.visibility = View.GONE
-                                        }
-                                    }
-                                }.start()
-
-                            if(it.isNotEmpty()){
-                                emptyLL.visibility = View.GONE
-                                rvFindFriends.visibility = View.VISIBLE
-
-                            }
-
-                        }
-
-
-                    }
 
                 }
-
-
             }
         }
+
+        rvFindFriends.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
+            override fun onLayoutChange(
+                view: View,
+                left: Int,
+                top: Int,
+                right: Int,
+                bottom: Int,
+                oldLeft: Int,
+                oldTop: Int,
+                oldRight: Int,
+                oldBottom: Int
+            ) {
+                if (right - left != oldRight - oldLeft || bottom - top != oldBottom - oldTop) {
+                    if((rvFindFriends.adapter as FindFriendRecyclerViewAdapter).values.isEmpty() && (friendsViewModel.l.value != true)){
+                            emptyLL.visibility = View.GONE
+                            rvFindFriends.visibility = View.VISIBLE
+                    } else{
+                        emptyLL.visibility = View.VISIBLE
+                        rvFindFriends.visibility = View.GONE
+                    }
+                }
+            }
+        })
+
+
+
+
+
+
 
         return view
     }
