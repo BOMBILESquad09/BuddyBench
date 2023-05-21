@@ -19,6 +19,7 @@ import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import kotlin.math.exp
 
 class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Unit,
                            val onDecline: (ReservationDTO) -> Unit,): RecyclerView.ViewHolder(view) {
@@ -81,9 +82,11 @@ class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Uni
         expandButton.setOnClickListener{
             if (cardInner.isVisible){
                 cardInner.visibility = View.GONE
+                expandButton.animate().rotation(180f)
             }
             else{
                 cardInner.visibility = View.VISIBLE
+                expandButton.animate().rotation(360f)
             }
         }
 
