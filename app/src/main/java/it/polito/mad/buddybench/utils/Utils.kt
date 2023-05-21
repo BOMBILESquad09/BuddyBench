@@ -29,6 +29,7 @@ import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 import java.time.temporal.WeekFields
 import java.util.Locale
+import java.util.Random
 import java.util.UUID
 
 
@@ -159,6 +160,25 @@ class Utils {
             return dialog
         }
 
+        fun generateNickname(): String{
+            fun generateRandomNicknames(count: Int): List<String> {
+                val adjectives = listOf("Pazzo", "Sgravato", "Great", "Funny", "Brave", "Shiny", "Lucky", "Awesome", "Charming", "Gentle")
+                val nouns = listOf("Cat", "Dog", "Tiger", "Lion", "Elephant", "Monkey", "Kangaroo", "Panda", "Dolphin", "Owl")
+                val nicknames = mutableListOf<String>()
+
+                repeat(count) {
+                    val adjective = adjectives.random()
+                    val noun = nouns.random()
+                    val nickname = "$adjective$noun"
+                    nicknames.add(nickname)
+                }
+
+                return nicknames
+            }
+            val nicknames = generateRandomNicknames(100)
+            Random().setSeed(LocalDate.now().toEpochDay())
+            return nicknames.get(Random().nextInt(100))
+        }
         fun generateUUID(): String {
             val uuid = UUID.randomUUID()
             return uuid.toString()

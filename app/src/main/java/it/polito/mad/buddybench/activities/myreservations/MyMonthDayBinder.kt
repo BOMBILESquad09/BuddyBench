@@ -33,14 +33,11 @@ class MyMonthDayBinder(val context: MyReservationsFragment, private val calendar
         container.setOnClickCallback {
             if (container.day.position == DayPosition.MonthDate) {
                 if (context.viewModel.selectedDate.value != container.day.date) {
-                    val oldDate = viewModel.selectedDate.value
                     viewModel.updateSelectedDay(container.day.date)
-                    if (oldDate != null)
-                        calendarView.notifyDateChanged(oldDate)
+                    if (viewModel.oldDate != null)
+                        calendarView.notifyDateChanged(viewModel.oldDate!!)
                     calendarView.notifyDateChanged(data.date)
                 }
-                recyclerView.adapter =
-                    ReservationAdapter(context.viewModel.getSelectedReservations() ?: listOf(), launcher )
 
             }
 

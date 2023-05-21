@@ -67,7 +67,8 @@ class HomeActivity: AppCompatActivity() {
             invitationsViewModel.subscribeInvitations(){ s ->
                 if(s > 0){
                     bottomBar.counter[Tabs.INVITATIONS.getId()] = s
-                    bottomBar.bottomBar.setBadgeAtTabIndex(Tabs.INVITATIONS.getId(), AnimatedBottomBar.Badge(s.toString()))
+                    if(bottomBar.currentTab != Tabs.INVITATIONS)
+                        bottomBar.bottomBar.setBadgeAtTabIndex(Tabs.INVITATIONS.getId(), AnimatedBottomBar.Badge(s.toString()))
                 } else{
                     bottomBar.counter[Tabs.INVITATIONS.getId()] = 0
                 }
@@ -79,7 +80,8 @@ class HomeActivity: AppCompatActivity() {
         friendsViewModel.friendRequests.observe(this){
             if(it.isNotEmpty()){
                 bottomBar.counter[Tabs.FRIENDS.getId()] = it.size
-                bottomBar.bottomBar.setBadgeAtTabIndex(Tabs.FRIENDS.getId(), AnimatedBottomBar.Badge(it.size.toString()))
+                if(bottomBar.currentTab != Tabs.FRIENDS)
+                    bottomBar.bottomBar.setBadgeAtTabIndex(Tabs.FRIENDS.getId(), AnimatedBottomBar.Badge(it.size.toString()))
             } else{
                 bottomBar.counter[Tabs.FRIENDS.getId()] = 0
                 bottomBar.bottomBar.clearBadgeAtTabIndex(Tabs.FRIENDS.getId())

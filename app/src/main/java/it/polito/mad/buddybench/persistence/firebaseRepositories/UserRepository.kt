@@ -25,6 +25,7 @@ import it.polito.mad.buddybench.persistence.entities.UserWithSports
 import it.polito.mad.buddybench.persistence.entities.UserWithSportsDTO
 import it.polito.mad.buddybench.persistence.entities.toUserDTO
 import it.polito.mad.buddybench.persistence.entities.toUserSportDTO
+import it.polito.mad.buddybench.utils.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -71,11 +72,13 @@ class UserRepository {
                 if(email == Firebase.auth.currentUser!!.email!!){
                     (profile.data!!["friends"] as List<DocumentReference>).map { it.get() }
                         .map { it.await() }.forEach {
-                            serializedProfile.friends.add(serializeUser(it.data as Map<String, Object>))
+                            if(it != null)
+                                serializedProfile.friends.add(serializeUser(it.data as Map<String, Object>))
                         }
                     (profile.data!!["friend_requests_pending"] as List<DocumentReference>).map { it.get() }
                         .map { it.await() }.forEach {
-                            serializedProfile.pendings.add(serializeUser(it.data as Map<String, Object>))
+                            if(it!=null)
+                                serializedProfile.pendings.add(serializeUser(it.data as Map<String, Object>))
                         }
                 }
                 if (profile.data!!["last_update"] == null || LocalDate.parse(profile.data!!["last_update"] as String, DateTimeFormatter.ISO_LOCAL_DATE) != LocalDate.now()) {
@@ -158,8 +161,10 @@ class UserRepository {
         val user = Firebase.auth.currentUser!!
         val name = user.displayName!!.substringBefore(" ")
         val surname = user.displayName!!.substringAfter(" ")
+
+        val generatedNickname = Utils.generateNickname()
         return ProfileData(
-            name, surname, "BuddyBenchGuest", user.email!!,
+            name, surname, generatedNickname, user.email!!,
             "Turin", LocalDate.of(1999, 4, 27).toString(), 80,
             "", mutableListOf()
             , listOf(), listOf(), LocalDate.now()
