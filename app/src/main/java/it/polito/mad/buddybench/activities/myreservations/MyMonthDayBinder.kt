@@ -13,6 +13,7 @@ import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class MyMonthDayBinder(val context: MyReservationsFragment, private val calendarView: CalendarView,
                        private val recyclerView: RecyclerView, private val launcher: ActivityResultLauncher<Intent>): MonthDayBinder<DayViewContainer> {
@@ -44,7 +45,7 @@ class MyMonthDayBinder(val context: MyReservationsFragment, private val calendar
         }
         if(viewModel.selectedDate.value == data.date){
             dayTitle.text =
-                viewModel.selectedDate.value?.format(DateTimeFormatter.ofPattern("EEEE, d MMMM y"))
+                viewModel.selectedDate.value?.format(DateTimeFormatter.ofPattern("EEEE, d MMMM y", Locale.ENGLISH))
         }
 
         container.textView.text = data.date.dayOfMonth.toString()

@@ -172,11 +172,8 @@
                                     android:backgroundTint="@color/disabled"
                                     android:fontFamily="@font/montserrat_medium_500"
                                     android:gravity=""
-                                    android:hint="@string/surnameLabel"
-
                                     android:inputType="textNoSuggestions"
                                     android:singleLine="true"
-                                    android:text="@string/surnameLabel"
                                     android:textSize="15sp" />
                             </com.google.android.material.textfield.TextInputLayout>
                         </LinearLayout>
@@ -198,11 +195,9 @@
                                 android:backgroundTint="@color/disabled"
                                 android:fontFamily="@font/montserrat_medium_500"
                                 android:gravity=""
-                                android:hint="@string/nicknameLabel"
                                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
                                 android:inputType="textFilter"
                                 android:singleLine="true"
-                                android:text="@string/nicknameLabel"
                                 android:textSize="15sp" />
 
 
@@ -223,10 +218,8 @@
                                 android:layout_height="wrap_content"
                                 android:backgroundTint="@color/disabled"
                                 android:fontFamily="@font/montserrat_medium_500"
-                                android:hint="@string/emailLabel"
                                 android:inputType="textEmailAddress"
                                 android:singleLine="true"
-                                android:text="@string/emailLabel"
                                 android:textSize="15sp"
                                 android:autofillHints="emailAddress" />
                         </com.google.android.material.textfield.TextInputLayout>
@@ -252,10 +245,8 @@
                                     android:layout_height="wrap_content"
                                     android:backgroundTint="@color/disabled"
                                     android:fontFamily="@font/montserrat_medium_500"
-                                    android:hint="@string/localityLabel"
                                     android:inputType="textNoSuggestions"
                                     android:singleLine="true"
-                                    android:text="@string/localityLabel"
                                     android:textAlignment="textStart"
                                     android:textSize="15sp"
                                     />
@@ -284,9 +275,7 @@
                                     android:focusable="false"
                                     android:backgroundTint="@color/disabled"
                                     android:fontFamily="@font/montserrat_medium_500"
-                                    android:hint="@string/birthdateLabel"
                                     android:onClick="showDatePickerDialog"
-                                    android:text="01/01/2001"
                                     android:textAlignment="textStart"
                                     android:textSize="15sp"
                                     />

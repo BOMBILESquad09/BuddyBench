@@ -90,7 +90,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
 
 
         val dayTitle = view.findViewById<TextView>(R.id.dayTitle)
-        dayTitle.text = LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, d MMMM y"))
+        dayTitle.text = LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, d MMMM y", Locale.ENGLISH))
 
 
         progressLayout = view.findViewById(R.id.progess_layout)
@@ -228,7 +228,6 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         super.onStart()
 
         viewModel.selectedDate.observe(viewLifecycleOwner){
-            println("refreshingggggggggggg")
             if (it != null){
 
                 calendarView.scrollToDate(it)
