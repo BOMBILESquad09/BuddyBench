@@ -133,7 +133,7 @@
                                 android:layout_weight="1"
                                 android:hint="@string/nameLabel"
                                 android:backgroundTint="@color/disabled"
-                                app:boxStrokeColor="#FF0000">
+                                app:boxStrokeColor="#0B16DD">
 
                                 <EditText
                                     android:id="@+id/nameEdit"
@@ -160,7 +160,7 @@
                                 android:layout_weight="1"
                                 android:hint="@string/surnameLabel"
                                 android:backgroundTint="@color/disabled"
-                                app:boxStrokeColor="#FF0000">
+                                app:boxStrokeColor="#0B16DD">
 
                                 <EditText
                                     android:id="@+id/surnameEdit"
@@ -185,7 +185,7 @@
                             android:layout_weight="1"
                             android:hint="@string/nicknameLabel"
                             android:backgroundTint="@color/disabled"
-                            app:boxStrokeColor="#FF0000">
+                            app:boxStrokeColor="#0B16DD">
 
                             <EditText
                                 android:id="@+id/nicknameEdit"
@@ -210,7 +210,7 @@
                             android:layout_marginBottom="8dp"
                             android:hint="@string/emailLabel"
                             android:backgroundTint="@color/disabled"
-                            app:boxStrokeColor="#FF0000">
+                            app:boxStrokeColor="#0B16DD">
 
                             <EditText
                                 android:id="@+id/Email"
@@ -239,7 +239,7 @@
                                 android:layout_weight="1"
                                 android:hint="@string/localityLabel"
                                 android:backgroundTint="@color/disabled"
-                                app:boxStrokeColor="#FF0000">
+                                app:boxStrokeColor="#0B16DD">
 
                                 <EditText
                                     android:id="@+id/localityEdit"
@@ -267,7 +267,7 @@
                                 android:layout_weight="1"
                                 android:hint="@string/birthdateLabel"
 
-                                app:boxStrokeColor="#FF0000"
+                                app:boxStrokeColor="#0B16DD"
                                 >
 
                                 <EditText
