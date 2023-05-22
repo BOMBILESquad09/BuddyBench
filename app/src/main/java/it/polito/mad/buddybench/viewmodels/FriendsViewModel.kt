@@ -57,26 +57,34 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
         }) {
 
             mainScope.launch {
-                suspend {
+                if (init) {
+                    getFriendsList()
+                    getFriendRequests()
+                    getPossibleFriends()
+                    println("fine")
+                    init = false
+                } else {
+                    refreshAll {}
+                }
+                _l.postValue(false)
 
-                    if(init){
-                        getFriendsList()
-                        getFriendRequests()
-                        getPossibleFriends()
-                        println("fine")
-
-                        init = false
-                    } else{
-                        userRepository.fetchUser {
-                            getFriendRequests()
-                            getFriendsList()
-                        }
-                        getPossibleFriends()
-                    }
-                    _l.postValue(false)
-                }.invoke()
             }
         }
+
+    }
+
+    fun refreshAll(onSuccess: () -> Unit) {
+        _l.postValue(true)
+        mainScope.launch {
+            userRepository.fetchUser {
+                getFriendRequests()
+                getFriendsList()
+                onSuccess()
+            }
+        }
+
+        getPossibleFriends()
+        _l.postValue(false)
 
     }
 
@@ -99,13 +107,10 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     }
 
 
-
-
-
     fun refreshPossibleFriends(profile: Profile) {
 
         _possibleFriends.value = _possibleFriends.value!!.map {
-            if(it.email == profile.email) {
+            if (it.email == profile.email) {
                 profile
             } else {
                 it
@@ -126,7 +131,7 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun confirmRequest(email: String,  onSuccess: ()->Unit) {
+    fun confirmRequest(email: String, onSuccess: () -> Unit) {
         _lRequests.postValue(true)
         runBlocking {
             friendRepository.acceptFriendRequest(email)
@@ -159,7 +164,7 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
             friendRepository.postFriendRequest(email)
             _possibleFriends.value = _possibleFriends.value!!.map {
                 val p = it.copy()
-                if(p.email == email){
+                if (p.email == email) {
                     p.isPending = true
                 }
                 p
@@ -178,7 +183,7 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
 
             _possibleFriends.value = _possibleFriends.value!!.map {
                 val p = it.copy()
-                if(p.email == email){
+                if (p.email == email) {
                     p.isPending = false
                 }
                 p

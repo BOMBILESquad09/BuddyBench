@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DiffUtil
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.activities.friends.placeholder.PlaceholderContent
@@ -31,11 +32,14 @@ class FriendListFragment(val context: HomeActivity) : Fragment(R.layout.fragment
     private lateinit var emptyLL: LinearLayout
     private lateinit var emptyTv: TextView
     private val friendsViewModel by activityViewModels<FriendsViewModel>()
-
+    private lateinit var swipeRefresh : SwipeRefreshLayout
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        swipeRefresh = view.findViewById(R.id.swiperefresh)
+        swipeRefresh.setOnRefreshListener {
+            context.friendsViewModel.refreshAll{swipeRefresh.isRefreshing = false}
+        }
 
         // Set the adapter
         rvFriendList = view.findViewById(R.id.rv_friend_requests)

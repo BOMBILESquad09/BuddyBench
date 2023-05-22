@@ -17,6 +17,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.WeekDayPosition
 import com.kizitonwose.calendar.view.WeekCalendarView
@@ -43,10 +44,15 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
     private lateinit var progressBar: ProgressBar
     private lateinit var noCourts: TextView
     val imageViewModel by activityViewModels<ImageViewModel> ()
+    private lateinit var swipeRefresh : SwipeRefreshLayout
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
+        swipeRefresh = view.findViewById(R.id.swiperefresh)
+        swipeRefresh.setOnRefreshListener {
+            parent.viewModel.getCourtsBySport()
+            swipeRefresh.isRefreshing = false
+        }
         recyclerView = view.findViewById(R.id.searchRecyclerView)
         val b = view.findViewById<ImageView>(R.id.change_sport_button)
         val textNearButton = view.findViewById<TextView>(R.id.textView12)

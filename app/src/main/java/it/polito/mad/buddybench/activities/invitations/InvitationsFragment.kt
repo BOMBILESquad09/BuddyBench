@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
@@ -24,11 +25,17 @@ class InvitationsFragment(context: HomeActivity) : Fragment(R.layout.my_invitati
     private val reservationViewModel by activityViewModels<ReservationViewModel> ()
     private lateinit var recyclerViewInvitations: RecyclerView
     private lateinit var emptyLL: LinearLayout
+    private lateinit var swipeRefresh : SwipeRefreshLayout
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        swipeRefresh = view.findViewById(R.id.swiperefresh)
+        swipeRefresh.setOnRefreshListener {
+            viewModel.getAll()
+            swipeRefresh.isRefreshing = false
+        }
         recyclerViewInvitations = view.findViewById(R.id.invtationsRecyclerView)
         recyclerViewInvitations.layoutManager = LinearLayoutManager(context)
 

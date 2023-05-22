@@ -21,6 +21,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.CalendarMonth
 import com.kizitonwose.calendar.core.DayPosition
@@ -59,9 +60,15 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
     private lateinit var startMonth: YearMonth
     private lateinit var previousButton: ImageView
     private lateinit var nextButton: ImageView
+    private lateinit var swipeRefresh : SwipeRefreshLayout
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        swipeRefresh = view.findViewById(R.id.swiperefresh)
+        swipeRefresh.setOnRefreshListener {
+            viewModel.getAllByUser()
+            swipeRefresh.isRefreshing = false
+        }
 
         calendarView = view.findViewById(R.id.calendar)
         currentMonth = YearMonth.now()

@@ -9,48 +9,55 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_bold_700"
         android:padding="16dp"
         android:text="My invitations"
-        android:textSize="32sp"
-        android:fontFamily="@font/montserrat_bold_700">
+        android:textSize="32sp">
 
     </TextView>
-    <LinearLayout
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swiperefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
+
         <LinearLayout
-            android:id="@+id/empty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-            <View
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/empty"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/no_invitations_received"
-                android:textColor="@color/disabled"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                />
-            <View
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/no_invitations_received"
+                    android:textColor="@color/disabled"
+                    android:textSize="20sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/invtationsRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="16dp" />
         </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/invtationsRecyclerView"
-        android:layout_marginHorizontal="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-    </LinearLayout>
-
-
-
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
 </LinearLayout>

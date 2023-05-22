@@ -19,6 +19,7 @@ import androidx.core.view.doOnLayout
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.activities.friends.placeholder.PlaceholderContent
@@ -36,6 +37,7 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
     private lateinit var pbFriendRequests: ProgressBar
     private lateinit var emptyLL: LinearLayout
     private lateinit var emptyTv: TextView
+    private lateinit var swipeRefresh : SwipeRefreshLayout
 
     // ** View Model
     private val friendsViewModel by activityViewModels<FriendsViewModel>()
@@ -50,12 +52,17 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         rvFriendRequests = view.findViewById(R.id.rv_friend_requests)
         pbFriendRequests = view.findViewById(R.id.pb_friend_requests)
         emptyLL = view.findViewById(R.id.empty)
         emptyTv = view.findViewById(R.id.tv_empty)
         emptyLL.visibility = View.GONE
         emptyTv.text = getString(R.string.no_friend_requests)
+        swipeRefresh = view.findViewById(R.id.swiperefresh)
+        swipeRefresh.setOnRefreshListener {
+            (activity as HomeActivity).friendsViewModel.refreshAll{swipeRefresh.isRefreshing = false}
+        }
         // ** Loading state
         friendsViewModel.lRequests.observe(viewLifecycleOwner) {
             if (it) {
