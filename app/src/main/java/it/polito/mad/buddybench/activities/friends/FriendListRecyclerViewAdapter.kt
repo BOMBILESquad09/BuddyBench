@@ -62,10 +62,9 @@ class FriendListRecyclerViewAdapter(
                 {
                     ivImage.setImageResource(R.drawable.person)
                 }) {
-                val drawable = Glide.with(binding.root.context)
+                Glide.with(binding.root.context)
                     .load(it)
-                    .submit().get()
-                ivImage.setImageDrawable(drawable)
+                    .into(ivImage)
             }
 
             ivImage.setOnClickListener {
@@ -73,7 +72,7 @@ class FriendListRecyclerViewAdapter(
             }
             var sure = false
             btnRemove.setOnClickListener {
-                if (sure == false) {
+                if (!sure) {
                     sure = true
                     btnRemove.text = "Are you sure?"
                 } else {

@@ -27,7 +27,11 @@ import kotlinx.coroutines.runBlocking
  * [RecyclerView.Adapter] that can display a [PlaceholderItem].
  * TODO: Replace the implementation with code for your data type.
  */
-class FriendRequestRecyclerViewAdapter( var values: List<Profile>, private val viewModel: FriendsViewModel) : RecyclerView.Adapter<FriendRequestRecyclerViewAdapter.ViewHolder>() {
+class FriendRequestRecyclerViewAdapter(
+    var values: List<Profile>,
+    private val viewModel: FriendsViewModel,
+    val callback: (profile: Profile) -> Unit
+) : RecyclerView.Adapter<FriendRequestRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -46,17 +50,14 @@ class FriendRequestRecyclerViewAdapter( var values: List<Profile>, private val v
     }
 
 
-
-
-
     override fun getItemCount(): Int = values.size
 
-    private fun confirmRequest(email: String, context: Context, onSuccess: ()->Unit ) {
+    private fun confirmRequest(email: String, context: Context, onSuccess: () -> Unit) {
         viewModel.confirmRequest(email, onSuccess)
         Toast.makeText(context, "Friend request accepted", Toast.LENGTH_LONG).show()
     }
 
-    private fun rejectRequest(email: String, context: Context,  onSuccess: ()->Unit) {
+    private fun rejectRequest(email: String, context: Context, onSuccess: () -> Unit) {
         viewModel.rejectRequest(email, onSuccess)
         Toast.makeText(context, "Friend request declined", Toast.LENGTH_LONG).show()
     }
@@ -74,29 +75,32 @@ class FriendRequestRecyclerViewAdapter( var values: List<Profile>, private val v
         }
 
 
-        fun bind(profile: Profile){
+        fun bind(profile: Profile) {
             tvName.text = profile.fullName
-            ((FragmentComponentManager.findActivity(binding.root.context) as HomeActivity)).imageViewModel.getUserImage(profile.email,{
-                ivImage.setImageResource(R.drawable.person)
-            }){
-                val drawable = Glide.with(binding.root.context)
+            ((FragmentComponentManager.findActivity(binding.root.context) as HomeActivity)).imageViewModel.getUserImage(
+                profile.email,
+                {
+                    ivImage.setImageResource(R.drawable.person)
+                }) {
+                Glide.with(binding.root.context)
                     .load(it)
-                    .submit().get()
-                ivImage.setImageDrawable(drawable)
+                    .into(ivImage)
             }
-            btnConfirm.setOnClickListener{
+            ivImage.setOnClickListener {
+                callback(profile)
+            }
+            btnConfirm.setOnClickListener {
                 accepted = true
-                confirmRequest(profile.email, btnReject.context){
+                confirmRequest(profile.email, btnReject.context) {
                 }
             }
             btnReject.setOnClickListener {
                 accepted = false
-                rejectRequest(profile.email, btnReject.context){
+                rejectRequest(profile.email, btnReject.context) {
                 }
             }
         }
     }
-
 
 
 }

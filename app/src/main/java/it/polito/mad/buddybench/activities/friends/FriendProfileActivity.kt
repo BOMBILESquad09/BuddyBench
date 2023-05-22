@@ -35,7 +35,7 @@ class FriendProfileActivity : AppCompatActivity() {
             .add(binding.friendFragmentContainer.id, showProfileFragment)
             .commit()
         setContentView(binding.root)
-
+        
         userViewModel.getUser(profile.email).observe(this) {
             if(it == null)
                 return@observe

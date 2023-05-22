@@ -178,6 +178,18 @@ class UserViewModel @Inject constructor() : ViewModel() {
 
     }
 
+    fun acceptFriendRequest(onSuccess: (Profile) -> Unit) {
+        runBlocking {
+            friendRepository.acceptFriendRequest(user.value!!.email)
+            val p = user.value!!.copy()
+            p.isRequesting = false
+            p.isFriend = true
+            _user.postValue(p)
+            onSuccess(p)
+        }
+
+    }
+
     fun removeFriend(onSuccess: (Profile) -> Unit) {
         runBlocking {
             friendRepository.removeFriend(user.value!!.email)

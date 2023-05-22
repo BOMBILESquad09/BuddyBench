@@ -20,8 +20,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.activities.friends.placeholder.PlaceholderContent
 import it.polito.mad.buddybench.classes.Profile
+import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.FriendsViewModel
 
 /**
@@ -72,6 +74,12 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
             }
         }
 
+        val callback: (profile: Profile) -> Unit = {
+            println("---------------------")
+            println(it.isRequesting)
+            println("---------------------")
+            Utils.goToProfileFriend(activity as HomeActivity, it)
+        }
 
 
         with(rvFriendRequests) {
@@ -79,7 +87,8 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
                 columnCount <= 1 -> LinearLayoutManager(context)
                 else -> GridLayoutManager(context, columnCount)
             }
-            adapter = FriendRequestRecyclerViewAdapter(listOf(), friendsViewModel)
+
+            adapter = FriendRequestRecyclerViewAdapter(listOf(), friendsViewModel, callback)
             itemAnimator = object : DefaultItemAnimator() {
                 override fun animateRemove(holder: RecyclerView.ViewHolder?): Boolean {
                     if (holder != null) {

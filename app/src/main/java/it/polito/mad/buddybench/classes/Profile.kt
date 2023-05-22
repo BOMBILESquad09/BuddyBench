@@ -39,7 +39,8 @@ import java.time.temporal.ChronoUnit
 
 class Profile(var name: String?, var surname: String?, var nickname: String?, var email: String, var location: String?, var birthdate: LocalDate, var reliability: Int, var imageUri: Uri?, var sports: MutableList<Sport>,
             var friends: MutableList<Profile>, val pendings: MutableList<Profile>,
-            var isFriend: Boolean = false, var isPending: Boolean = false
+            var isFriend: Boolean = false, var isPending: Boolean = false,
+              var isRequesting: Boolean = false,
               ) {
 
 
@@ -73,6 +74,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
             val reliability = jsonProfile.getInt("reliability",0)
             val isPending = jsonProfile.getBoolean("isPending", false)
             val isFriend = jsonProfile.getBoolean("isFriend", false)
+            val isRequesting = jsonProfile.getBoolean("isRequesting", false)
             var imageUri:Uri? = null
             try {
                 imageUri = Uri.parse(jsonProfile.getString("imageUri"))
@@ -85,7 +87,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
                 val jsonSport = sportsList.getJSONObject(i)
                 sports.add(Sport.fromJSON(jsonSport))
             }
-            return Profile(name, surname, nickname, email, location, birthday, reliability, imageUri,sports, mutableListOf(), mutableListOf(), isFriend = isFriend, isPending = isPending)
+            return Profile(name, surname, nickname, email, location, birthday, reliability, imageUri,sports, mutableListOf(), mutableListOf(), isFriend = isFriend, isPending = isPending , isRequesting = isRequesting)
         }
 
 
@@ -122,12 +124,9 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
         json.put("email", email)
         json.put("birthdate", birthdate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
         json.put("reliability", reliability)
-        println("======INJSON===========")
-        println(isPending)
-        println(isFriend)
-        json.put("isPending", isPending)
         json.put("isFriend", isFriend)
-        println("======INJSON===========")
+        json.put("isRequesting", isRequesting)
+        json.put("isPending", isPending)
         if (imageUri == null){
             json.put("imageUri", JSONObject.NULL)
         } else {

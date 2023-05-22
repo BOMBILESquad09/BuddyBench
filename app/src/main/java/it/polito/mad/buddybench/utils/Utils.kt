@@ -168,6 +168,7 @@ class Utils {
 
         fun goToProfileFriend(context: HomeActivity, profile: Profile) {
             val i = Intent(context, FriendProfileActivity::class.java)
+            
             val bundle = bundleOf("profile" to profile.toJSON().toString())
             i.putExtras(bundle)
             context.launcherActivityFriendProfile.launch(i)

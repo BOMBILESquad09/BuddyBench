@@ -124,29 +124,33 @@ class ShowProfileFragment(
             friendButton.visibility = View.VISIBLE
             userViewModel.user.observe(this) {
                 if(it == null) return@observe
-                if(it.isPending) {
+                if(!it.isPending && !it.isFriend && !it.isRequesting) {
+                    friendButton.text = "Add Friend"
+                }
+                else if(it.isPending) {
                     friendButton.text = "Cancel Request"
                 } else if (it.isFriend) {
                     friendButton.text = "Friends"
-                } else {
-                    friendButton.text = "Add Friend"
+                } else if(it.isRequesting){
+                    friendButton.text = "Accept Request"
+                } else{
+                    friendButton.text = "Remove Friend"
                 }
-
                 (requireActivity() as FriendProfileActivity).bundle.remove("profile")
                 (requireActivity() as FriendProfileActivity).bundle.putString("profile", it.toJSON().toString())
 
             }
             friendButton.setOnClickListener {
                 val profileFriend = userViewModel.user.value!!
-                if(!profileFriend.isPending && !profileFriend.isFriend) {
+                if(!profileFriend.isPending && !profileFriend.isFriend && !profileFriend.isRequesting) {
                     userViewModel.sendFriendRequest {
-
                     }
                 } else if(profileFriend.isPending) {
                     userViewModel.removeFriendRequest {
-
                     }
-                } else {
+                } else if (profileFriend.isRequesting){
+                    userViewModel.acceptFriendRequest {  }
+                } else{
                     userViewModel.removeFriend {
 
                     }
