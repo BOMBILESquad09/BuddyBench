@@ -105,15 +105,6 @@ class CourtRepository {
 
                             finalCourts = finalCourts.filter {c->
                                 if (c.getId() == courtId) {
-                                    println((hm[courtId]?.first ?: 0))
-                                    println((hm[courtId]?.second ?: 0))
-                                    println(LocalTime.now().hour)
-
-                                    println(LocalTime.now().hour < (closingTime - 1))
-                                    println(hm[courtId]!!.second <  LocalTime.now().hour )
-                                    println((hm[courtId]!!.first>= LocalTime.now().hour))
-                                    println(LocalTime.now().hour < (closingTime - 1))
-                                    println(hm[courtId]!!.second <  LocalTime.now().hour || hm[courtId]!!.first>= LocalTime.now().hour)
 
                                     LocalTime.now().hour < (closingTime - 1) &&
                                             (hm[courtId]!!.second <  LocalTime.now().hour || hm[courtId]!!.first>= LocalTime.now().hour)
