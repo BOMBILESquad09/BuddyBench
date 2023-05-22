@@ -265,7 +265,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:hint="@string/birthdateLabel"
-                                android:backgroundTint="@color/disabled"
+
                                 app:boxStrokeColor="#FF0000"
                                 >
 
@@ -275,6 +275,7 @@
                                     android:layout_height="wrap_content"
                                     android:clickable="true"
                                     android:focusable="false"
+                                    android:backgroundTint="@color/disabled"
                                     android:fontFamily="@font/montserrat_medium_500"
                                     android:hint="@string/birthdateLabel"
                                     android:onClick="showDatePickerDialog"

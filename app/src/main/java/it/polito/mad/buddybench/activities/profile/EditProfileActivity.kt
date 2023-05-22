@@ -6,7 +6,9 @@ import android.app.DatePickerDialog
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BlendMode
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,6 +17,7 @@ import android.view.*
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
@@ -88,6 +91,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
     private val userViewModel by viewModels<UserViewModel>()
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.edit_profile)
@@ -103,6 +107,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         this.closeContextMenu()
         // ** Profile TextFields Edit
         val nameEdit = findViewById<EditText>(R.id.nameEdit)
+        nameEdit.backgroundTintMode = PorterDuff.Mode.CLEAR
+
         nameEdit.doOnTextChanged { text, _, _, _ ->
             changeColor(nameEdit, true, resources)
             profile.name = text.toString()
@@ -115,6 +121,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             profile.surname = text.toString()
         }
         surnameEdit.setText(profile.surname)
+        surnameEdit.backgroundTintMode = PorterDuff.Mode.CLEAR
 
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
         nicknameEdit.doOnTextChanged { text, _, _, _ ->
@@ -122,6 +129,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             profile.nickname = text.toString()
         }
         nicknameEdit.setText(profile.nickname)
+        nicknameEdit.backgroundTintMode = PorterDuff.Mode.CLEAR
 
         oldEmail = profile.email
         val emailEdit = findViewById<EditText>(R.id.Email)
@@ -130,6 +138,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             profile.email = text.toString()
         }
         emailEdit.setText(profile.email)
+        emailEdit.backgroundTintMode = PorterDuff.Mode.CLEAR
 
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
         localityEdit.setText(profile.location)
@@ -137,6 +146,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             changeColor(localityEdit, true, resources)
             profile.location = text.toString()
         }
+        localityEdit.backgroundTintMode = PorterDuff.Mode.CLEAR
 
 
         birthdateListener.value = profile.birthdate
@@ -145,6 +155,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             birthdayButtonEdit.setText(it.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
             profile.birthdate = it
         }
+        birthdayButtonEdit.backgroundTintMode = PorterDuff.Mode.CLEAR
+
         // ** Profile Image
         imageEdit = findViewById(R.id.profile_image)
         try{
