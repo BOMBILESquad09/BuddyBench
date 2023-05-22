@@ -66,19 +66,14 @@ class FriendListRecyclerViewAdapter(
                     .load(it)
                     .into(ivImage)
             }
-
-            ivImage.setOnClickListener {
+            tvName.setOnClickListener {
                 callback(profile)
             }
-            var sure = false
-            btnRemove.setOnClickListener {
-                if (!sure) {
-                    sure = true
-                    btnRemove.text = "Are you sure?"
-                } else {
-                    viewModel.removeFriend(profile.email)
-                }
+            ivImage.setOnClickListener {
+                callback(profile)
+
             }
+            btnRemove.visibility = View.GONE
 
         }
     }

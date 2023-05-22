@@ -33,6 +33,7 @@ class CourtDTO (
     var rating: Double = 0.0
     var nReviews: Int = 0
     var facilities: List<String>? = null
+    var timetable: HashMap<String, DayTimeTable> = hashMapOf()
     fun toEntity(): Court {
         return Court(
 
@@ -53,6 +54,12 @@ class CourtDTO (
     fun copy(): CourtDTO{
         return CourtDTO(name, address, location, feeHour, sport, phoneNumber, path, feeEquipment, rating, nReviews, facilities)
     }
+
+    fun getId(): String{
+        return this.name.replace(" ","_") + "_" + this.sport
+    }
+
+
 }
 
 

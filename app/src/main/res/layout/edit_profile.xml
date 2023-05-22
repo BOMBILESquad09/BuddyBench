@@ -195,8 +195,8 @@
                                 android:fontFamily="@font/montserrat_medium_500"
                                 android:gravity=""
                                 android:hint="@string/nicknameLabel"
-
-                                android:inputType="textNoSuggestions"
+                                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
+                                android:inputType="textFilter"
                                 android:singleLine="true"
                                 android:text="@string/nicknameLabel"
                                 android:textSize="15sp" />

@@ -53,7 +53,7 @@ class CourtRepository {
 
     fun getCourtTimeTable(name: String, sport: Sports, callback: (CourtTimeTableDTO) -> Unit) {
         val courtName = name.replace(" ", "_") + "_" + sport.name
-        val court = db.collection("courts").document(courtName).get()
+        db.collection("courts").document(courtName).get()
             .addOnSuccessListener{
                 val courtDTO = it.toObject(CourtDTO::class.java)!!
                 val timetable: HashMap<DayOfWeek, Pair<LocalTime, LocalTime>> = HashMap()
@@ -68,11 +68,35 @@ class CourtRepository {
                 callback(courtTimeTableDTO)
         }
 
-
     }
 
 
-    fun getCourtsByDay(sport: Sports, dayOfWeek: LocalDate, callback: (List<CourtDTO>) -> Unit ) {
+    fun getCourtsByDay(sport: Sports, dayOfWeek: LocalDate, onSuccess: (List<CourtDTO>) -> Unit ) {
+        fun filterByMaxReservation(courts: List<CourtDTO>, onSuccess: (List<CourtDTO>) -> Unit){
+            var finalCourts = courts
+            if(dayOfWeek == LocalDate.now() && courts.isNotEmpty()){
+                db
+                    .collection("reservations")
+                    .whereIn("court", courts.map { db.document("courts/${it.getId()}") })
+                    .whereEqualTo("date", LocalDate.now().toString()).get()
+                    .addOnSuccessListener {
+                        val hm: HashMap<String, Long> = HashMap()
+                        for (r in it){
+                            val endTime = r.data["endTime"] as Long
+                            val courtId = (r.data["court"] as String)
+                            hm[courtId] = maxOf(hm[courtId] ?: 0, endTime)
+                        }
+                        finalCourts = finalCourts.filter { c ->
+                            val courtId = c.getId()
+                            (hm[courtId] ?: 0) > LocalTime.now().hour
+                        }
+                        onSuccess(finalCourts)
+                    }
+            }
+            onSuccess(finalCourts)
+        }
+
+
         db.collection("courts")
             .whereEqualTo("sport", sport.name)
             .whereGreaterThan("timetable.${dayOfWeek.dayOfWeek.name}.openingTime", 0)
@@ -82,24 +106,32 @@ class CourtRepository {
                     .document(dayOfWeek.toString())
                     .get()
                     .addOnSuccessListener { it ->
-                        val courts = courtsDoc.toObjects(CourtDTO::class.java)
+                        var courts = courtsDoc.toObjects(CourtDTO::class.java)
+                        println(LocalDate.now())
+                        println(LocalTime.now().hour)
+                        println(dayOfWeek)
+                        println("-------------------------")
+                        if(dayOfWeek == LocalDate.now()){
+                            courts = courts.filter {
+                                (it.timetable[dayOfWeek.dayOfWeek.name]!!.closingTime - 1) > LocalTime.now().hour
+                            }
+                        }
                         if (it.data != null){
                             val courtsToDelete = (it.data!!["courts"] as List<DocumentReference>).map {
                                 val tokens = it.id.split("_").toMutableList()
                                 tokens.removeLast()
                                 tokens.joinToString(" ")
                             }
-                            callback(courts.filter { c -> !courtsToDelete.contains(c.name) })
+                            filterByMaxReservation(courts.filter { c -> !courtsToDelete.contains(c.name) }, onSuccess)
                         } else{
-                            callback(courts)
+                            filterByMaxReservation(courts, onSuccess)
                         }
-
                     }
             }
     }
 
     fun getTimeSlotsOccupiedForCourtAndDate(court: CourtDTO, date: LocalDate, callback: (List<LocalTime>) -> Unit) {
-        val courtName = court.name.replace(" ", "_") + "_" + court.sport
+        val courtName = court.getId()
         db
             .collection("reservations")
             .whereEqualTo("court", db.document("courts/$courtName"))

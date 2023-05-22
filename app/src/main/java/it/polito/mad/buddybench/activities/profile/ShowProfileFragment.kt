@@ -1,33 +1,30 @@
 package it.polito.mad.buddybench.activities.profile
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.activity.result.ActivityResult
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.Priority
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.signature.ObjectKey
 import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
-import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.activities.friends.FriendProfileActivity
 import it.polito.mad.buddybench.classes.Profile
-import it.polito.mad.buddybench.classes.Sport
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.viewmodels.FriendsViewModel
 import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
+
 
 @AndroidEntryPoint
 class ShowProfileFragment(
@@ -88,17 +85,28 @@ class ShowProfileFragment(
 
         val iv = thisView.findViewById<ImageView>(R.id.profile_image)
         //resizeImageView(iv)
-        try{
-            imageViewModel.getUserImage(profile.email,{iv.setImageResource(R.drawable.person)}){
 
-                Glide.with(this)
-                    .load(it)
-                    .skipMemoryCache(!seeProfile)
-                    .into(iv)
-            }
-        } catch (_: Exception){
-            iv.setImageResource(R.drawable.person)
+        imageViewModel.getUserImage(profile.email,{ iv.setImageResource(R.drawable.person)}) {
+            val options: RequestOptions = RequestOptions()
+
+
+            Glide.with(this)
+                .load(it)
+                .signature(ObjectKey(it))
+                .apply(options.centerCrop()
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.person)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .priority(Priority.HIGH)
+                    .dontAnimate()
+                    .dontTransform())
+                .error(R.drawable.person)
+                .into(iv)
         }
+
+
+
+
 
         val sportsRecyclerView = thisView.findViewById<RecyclerView>(R.id.sports_container)
         sportsRecyclerView.layoutManager = LinearLayoutManager(context).let {

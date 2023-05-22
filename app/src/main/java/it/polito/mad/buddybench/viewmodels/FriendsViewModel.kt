@@ -9,7 +9,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.persistence.firebaseRepositories.FriendRepository
 import it.polito.mad.buddybench.persistence.firebaseRepositories.UserRepository
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -45,19 +47,24 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     var oldFriendsRequests = friendRequests.value!!
     val friendRequests: LiveData<List<Profile>> get() = _friendRequests
 
+    val mainScope = MainScope()
 
 
     fun subscribeFriendsList() {
+
         var init = true
         friendRepository.subscribeFriends({
         }) {
 
-            runBlocking {
+            mainScope.launch {
                 suspend {
+
                     if(init){
                         getFriendsList()
                         getFriendRequests()
                         getPossibleFriends()
+                        println("fine")
+
                         init = false
                     } else{
                         userRepository.fetchUser {
@@ -77,6 +84,7 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     private fun getFriendsList() {
         runBlocking {
             userRepository.getUser {
+
                 oldFriends = _friends.value!!
                 _friends.postValue(it.friends)
             }

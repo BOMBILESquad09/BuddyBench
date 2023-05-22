@@ -26,7 +26,7 @@ class ReservationRepository {
         //return ReservationDTO.toHashmap(reservationDao.getAll().map { it.toReservationDTO() })
     }
 
-    suspend fun getAllByUser(): HashMap<LocalDate, List<ReservationDTO>> {
+    suspend fun getAllByUser(onSuccess:(HashMap<LocalDate, List<ReservationDTO>>) -> Unit)  {
         return withContext(Dispatchers.IO){
             val currentEmail = Firebase.auth.currentUser!!.email!!
             val result = db.collection("reservations").whereEqualTo("user", db.document("users/$currentEmail")).get()
@@ -66,11 +66,13 @@ class ReservationRepository {
 
 
 
-            ReservationDTO.toHashmap(reservations)
+            onSuccess(ReservationDTO.toHashmap(reservations))
         }
     }
 
-    suspend fun save(reservationDTO: ReservationDTO) { withContext(Dispatchers.IO) {
+    suspend fun save(reservationDTO: ReservationDTO) {
+        withContext(Dispatchers.IO) {
+            println("sto salvandoooooooooo")
             val reservationMap: HashMap<String, Any> = createReservationMap(reservationDTO)
             val reservationID = reservationMap["id"] as String
             val courtName =

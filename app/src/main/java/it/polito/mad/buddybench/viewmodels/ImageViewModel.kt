@@ -35,19 +35,19 @@ class ImageViewModel @Inject constructor() : ViewModel() {
         mainScope.launch {
             try{
                 imageRepository.getUserImage(path, onSuccess)
-            } catch (_:Exception){
+            } catch (e:Exception){
+                onFailure()
             }
         }
     }
 
     fun getCourtImage(path: String, onFailure: () -> Unit, onSuccess: (Uri) -> Unit) {
 
-
-        runBlocking {
-            try {
-                val image = imageRepository.getCourtImage(path)
-                onSuccess(image)
+        mainScope.launch {
+            try{
+                imageRepository.getCourtImage(path, onSuccess)
             } catch (_: Exception) {
+                onFailure()
             }
         }
     }

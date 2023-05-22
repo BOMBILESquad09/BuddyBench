@@ -25,7 +25,6 @@ import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.court.CourtActivity
 import it.polito.mad.buddybench.activities.court.ReviewsActivity
 import it.polito.mad.buddybench.activities.court.WeeklyCalendarDayBinder
-import it.polito.mad.buddybench.activities.findcourt.sportselection.CourtSearchAdapter
 import it.polito.mad.buddybench.activities.findcourt.sportselection.SportsSelectionFragment
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
@@ -146,6 +145,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             if(it.isEmpty()) {
                 recyclerView.visibility = View.GONE
                 noCourts.visibility = View.VISIBLE
+                noCourts.text = emptyString()
             } else {
                 recyclerView.visibility = View.VISIBLE
                 noCourts.visibility = View.GONE
@@ -203,6 +203,14 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
     override  fun onStart() {
         super.onStart()
         parent.viewModel.getCourtsBySport()
+    }
+
+     private fun emptyString(): String{
+        return if(parent.viewModel.filtersEnabled){
+            "No courts found based on the search criteria"
+        } else{
+            "No courts available"
+        }
     }
 
 }

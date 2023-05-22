@@ -21,7 +21,7 @@ class MyMonthHeaderFooterBinder: MonthHeaderFooterBinder<MonthViewContainer> {
             (container.titlesContainer.children.first() as ViewGroup).children.map { it as TextView }
                 .forEachIndexed { index, textView ->
                     val dayOfWeek = daysOfWeek[index]
-                    val title = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+                    val title = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
                     textView.text = title
                 }
         }

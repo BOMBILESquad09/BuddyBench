@@ -98,3 +98,4 @@ lint/tmp/
 /build
 /captures
 .cxx
+gradle.properties

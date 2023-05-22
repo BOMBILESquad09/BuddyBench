@@ -126,7 +126,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
         nicknameEdit.doOnTextChanged { text, _, _, _ ->
             changeColor(nicknameEdit, true, resources)
-            profile.nickname = text.toString()
+            profile.nickname = text.toString().trim()
         }
         nicknameEdit.setText(profile.nickname)
         nicknameEdit.backgroundTintMode = PorterDuff.Mode.CLEAR
@@ -134,6 +134,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         oldEmail = profile.email
         val emailEdit = findViewById<EditText>(R.id.Email)
         emailEdit.doOnTextChanged { text, _, _, _ ->
+
             changeColor(emailEdit, true, resources)
             profile.email = text.toString()
         }
