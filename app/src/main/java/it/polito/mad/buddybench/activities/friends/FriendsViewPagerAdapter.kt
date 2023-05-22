@@ -10,6 +10,8 @@ class FriendsViewPagerAdapter(val fragment: Fragment): FragmentStateAdapter(frag
     }
 
     override fun createFragment(position: Int): Fragment {
+
+
         return when (position) {
             0 -> FriendListFragment(fragment.requireActivity() as HomeActivity)
             1 -> FriendRequestFragment()

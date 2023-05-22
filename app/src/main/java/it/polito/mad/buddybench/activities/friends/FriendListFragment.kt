@@ -83,16 +83,10 @@ class FriendListFragment(val context: HomeActivity) : Fragment(R.layout.fragment
 
 
                     if (friendsViewModel.l.value != true) {
-                        if (it.isEmpty())
-                            Thread{
-                                Thread.sleep(500)
-                                handler.post {
-                                    if(it.isEmpty()){
-                                        emptyLL.visibility = View.VISIBLE
-                                        rvFriendList.visibility = View.GONE
-                                    }
-                                }
-                            }.start()
+                        if (it.isEmpty()) {
+                            emptyLL.visibility = View.VISIBLE
+                            rvFriendList.visibility = View.GONE
+                        }
 
                         if(it.isNotEmpty()){
                             emptyLL.visibility = View.GONE

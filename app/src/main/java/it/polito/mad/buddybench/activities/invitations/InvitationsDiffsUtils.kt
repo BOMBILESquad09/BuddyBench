@@ -12,9 +12,7 @@ class InvitationsDiffsUtils(
 ){
 
     override fun getOldListSize(): Int {
-        println("vecchiaa")
-        println(oldInvitations.size)
-        println("--------------------------------------")
+        
         return oldInvitations.size
     }
 
@@ -23,16 +21,12 @@ class InvitationsDiffsUtils(
     }
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        println(oldInvitations[oldItemPosition].id)
-        println(newInvitations[newItemPosition].id)
-        println("diocaneeeeeeeeeeeeeeeeeeeeee")
+        
         return oldInvitations[oldItemPosition].id == newInvitations[newItemPosition].id
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        println(oldInvitations[oldItemPosition].id)
-        println(newInvitations[newItemPosition].id)
-        println("diocaneeeeeeeeeeeeeeeeeeeeee")
+        
         return oldInvitations[oldItemPosition].date == newInvitations[newItemPosition].date
                 &&  oldInvitations[oldItemPosition].endTime == newInvitations[newItemPosition].endTime
                 && oldInvitations[oldItemPosition].startTime == newInvitations[newItemPosition].startTime

@@ -3,7 +3,7 @@ package it.polito.mad.buddybench.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
+import com.google.android.play.core.integrity.p
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.classes.Profile
@@ -78,7 +78,6 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
         runBlocking {
             userRepository.getUser {
                 oldFriends = _friends.value!!
-
                 _friends.postValue(it.friends)
             }
         }
@@ -87,40 +86,24 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     private fun getPossibleFriends() {
         runBlocking {
             oldPossibleFriends = possibleFriends.value!!
-
             _possibleFriends.postValue(friendRepository.getNotFriends())
-
-
         }
     }
 
 
-    fun refreshFriends(profile: Profile) {
-        val friend = friends.value?.find {
-            it.email == profile.email
-        }
-        _friends.value = _friends.value!!.map {
+
+
+
+    fun refreshPossibleFriends(profile: Profile) {
+
+        _possibleFriends.value = _possibleFriends.value!!.map {
             if(it.email == profile.email) {
-                profile.copy()
+                profile
             } else {
                 it
             }
         }
-        val possibleFriendsList = _possibleFriends.value!!.map { it }.toMutableList()
-        possibleFriendsList.add(friend!!)
-        _possibleFriends.value = possibleFriendsList
-    }
 
-    fun refreshPossibleFriends(profile: Profile) {
-        val friend = possibleFriends.value?.find {
-            it.email == profile.email
-        }
-        val possibleFriendsList = _possibleFriends.value!!.map { it }.toMutableList()
-        possibleFriendsList.remove(friend)
-        _possibleFriends.value = possibleFriendsList
-        val friendsList = _friends.value!!.map { it }.toMutableList()
-        friendsList.add(friend!!)
-        _possibleFriends.value = friendsList
     }
 
     private fun getFriendRequests() {

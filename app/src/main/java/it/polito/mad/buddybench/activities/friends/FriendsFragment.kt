@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.databinding.FragmentFriendsBinding
@@ -45,10 +46,12 @@ class FriendsFragment(val context: HomeActivity) : Fragment() {
     }
 
     private fun setupUI() {
+
         val viewPagerAdapter = FriendsViewPagerAdapter(this)
         binding.tabFriendsViewpager.adapter = viewPagerAdapter
         binding.tabFriends.addOnTabSelectedListener(FriendsTabListener(viewPager = binding.tabFriendsViewpager))
         binding.tabFriendsViewpager.registerOnPageChangeCallback(FriendsOnPageChangeCallback(binding.tabFriends))
+
 
         friendsViewModel.friendRequests.observe(viewLifecycleOwner) {
             if (it != null) {

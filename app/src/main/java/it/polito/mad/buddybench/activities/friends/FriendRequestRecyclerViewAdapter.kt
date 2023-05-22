@@ -79,9 +79,10 @@ class FriendRequestRecyclerViewAdapter( var values: List<Profile>, private val v
             ((FragmentComponentManager.findActivity(binding.root.context) as HomeActivity)).imageViewModel.getUserImage(profile.email,{
                 ivImage.setImageResource(R.drawable.person)
             }){
-                Glide.with(binding.root.context)
+                val drawable = Glide.with(binding.root.context)
                     .load(it)
-                    .into(ivImage)
+                    .submit().get()
+                ivImage.setImageDrawable(drawable)
             }
             btnConfirm.setOnClickListener{
                 accepted = true

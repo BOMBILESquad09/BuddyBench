@@ -21,7 +21,7 @@ import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
-import it.polito.mad.buddybench.activities.friends.FriendProfile
+import it.polito.mad.buddybench.activities.friends.FriendProfileActivity
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.classes.Sport
 import it.polito.mad.buddybench.enums.Skills
@@ -93,7 +93,7 @@ class ShowProfileFragment(
 
                 Glide.with(this)
                     .load(it)
-                    .skipMemoryCache(true)
+                    .skipMemoryCache(!seeProfile)
                     .into(iv)
             }
         } catch (_: Exception){
@@ -131,26 +131,24 @@ class ShowProfileFragment(
                 } else {
                     friendButton.text = "Add Friend"
                 }
+
+                (requireActivity() as FriendProfileActivity).bundle.remove("profile")
+                (requireActivity() as FriendProfileActivity).bundle.putString("profile", it.toJSON().toString())
+
             }
             friendButton.setOnClickListener {
                 val profileFriend = userViewModel.user.value!!
                 if(!profileFriend.isPending && !profileFriend.isFriend) {
                     userViewModel.sendFriendRequest {
-                        val friendProfileActivity = requireActivity() as FriendProfile
-                        friendProfileActivity.bundle.putString("profile", it.toJSON().toString())
-                        println("===================")
-                        println(it.isPending)
-                        println("===================")
+
                     }
                 } else if(profileFriend.isPending) {
                     userViewModel.removeFriendRequest {
-                        val friendProfileActivity = requireActivity() as FriendProfile
-                        friendProfileActivity.bundle.putString("profile", it.toJSON().toString())
+
                     }
                 } else {
                     userViewModel.removeFriend {
-                        val friendProfileActivity = requireActivity() as FriendProfile
-                        friendProfileActivity.bundle.putString("profile", it.toJSON().toString())
+
                     }
                 }
             }

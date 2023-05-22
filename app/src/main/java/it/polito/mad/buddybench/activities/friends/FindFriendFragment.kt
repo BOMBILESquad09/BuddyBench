@@ -56,12 +56,9 @@ class FindFriendFragment : Fragment() {
         friendsViewModel.l.observe(viewLifecycleOwner) {
             if (it) {
                 pbFindFriends.visibility = View.VISIBLE
-                rvFindFriends.visibility = View.GONE
-                emptyLL.visibility = View.GONE
+
             } else {
                 pbFindFriends.visibility = View.GONE
-                emptyLL.visibility = View.VISIBLE
-                rvFindFriends.visibility = View.VISIBLE
             }
         }
         with(rvFindFriends) {
@@ -77,15 +74,12 @@ class FindFriendFragment : Fragment() {
         // ** Data
         friendsViewModel.possibleFriends.observe(viewLifecycleOwner) {
             if (it != null) {
-
-
                 with(rvFindFriends) {
                     val oldList = (adapter as FindFriendRecyclerViewAdapter).values
                     val friendDiff = FriendListDiffUtils(oldList, it)
                     (adapter as FindFriendRecyclerViewAdapter).values = it
                     val diffs = DiffUtil.calculateDiff(friendDiff)
                     diffs.dispatchUpdatesTo(adapter!!)
-                    println(it.size)
                     if((rvFindFriends.adapter as FindFriendRecyclerViewAdapter).values.isEmpty()){
                         emptyLL.visibility = View.VISIBLE
                         rvFindFriends.visibility = View.GONE

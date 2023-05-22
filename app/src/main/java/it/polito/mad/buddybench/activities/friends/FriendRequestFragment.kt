@@ -114,26 +114,21 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
 
                     (adapter as FriendRequestRecyclerViewAdapter).values = it
                     diffs.dispatchUpdatesTo(adapter!!)
-                    rvFriendRequests.viewTreeObserver.addOnGlobalLayoutListener(
-                        object : OnGlobalLayoutListener {
-                            override fun onGlobalLayout() {
-                                if ((rvFriendRequests.adapter as FriendRequestRecyclerViewAdapter).values.isEmpty()) {
-                                    emptyLL.visibility = View.VISIBLE
-                                    rvFriendRequests.visibility = View.GONE
-                                } else {
-                                    emptyLL.visibility = View.GONE
-                                    rvFriendRequests.visibility = View.VISIBLE
-                                }
-                                rvFriendRequests.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                            }
-                        })
+
+                    if ((rvFriendRequests.adapter as FriendRequestRecyclerViewAdapter).values.isEmpty()) {
+                        emptyLL.visibility = View.VISIBLE
+                        rvFriendRequests.visibility = View.GONE
+                    } else {
+                        emptyLL.visibility = View.GONE
+                        rvFriendRequests.visibility = View.VISIBLE
+                    }
                 }
-
             }
-
         }
+
     }
 
-
 }
+
+
 

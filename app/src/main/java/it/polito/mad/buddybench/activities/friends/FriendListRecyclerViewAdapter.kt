@@ -62,10 +62,12 @@ class FriendListRecyclerViewAdapter(
                 {
                     ivImage.setImageResource(R.drawable.person)
                 }) {
-                Glide.with(binding.root.context)
+                val drawable = Glide.with(binding.root.context)
                     .load(it)
-                    .into(ivImage)
+                    .submit().get()
+                ivImage.setImageDrawable(drawable)
             }
+
             ivImage.setOnClickListener {
                 callback(profile)
             }

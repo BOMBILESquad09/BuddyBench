@@ -39,7 +39,7 @@
             android:screenOrientation="sensorPortrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".activities.friends.FriendProfile"
+            android:name=".activities.friends.FriendProfileActivity"
             android:exported="true"
             android:screenOrientation="sensorPortrait"
             android:windowSoftInputMode="adjustPan" />

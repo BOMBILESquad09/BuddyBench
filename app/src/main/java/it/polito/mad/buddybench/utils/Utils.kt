@@ -24,7 +24,7 @@ import com.google.android.material.progressindicator.CircularProgressIndicator
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.activities.court.CourtActivity
-import it.polito.mad.buddybench.activities.friends.FriendProfile
+import it.polito.mad.buddybench.activities.friends.FriendProfileActivity
 import it.polito.mad.buddybench.activities.myreservations.displayText
 import it.polito.mad.buddybench.classes.Profile
 import java.math.RoundingMode
@@ -167,7 +167,7 @@ class Utils {
         }
 
         fun goToProfileFriend(context: HomeActivity, profile: Profile) {
-            val i = Intent(context, FriendProfile::class.java)
+            val i = Intent(context, FriendProfileActivity::class.java)
             val bundle = bundleOf("profile" to profile.toJSON().toString())
             i.putExtras(bundle)
             context.launcherActivityFriendProfile.launch(i)

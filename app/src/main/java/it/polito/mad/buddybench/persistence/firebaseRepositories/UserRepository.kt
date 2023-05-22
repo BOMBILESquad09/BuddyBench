@@ -54,11 +54,7 @@ class UserRepository {
                     callback(profile!!)
                 }
             } else{
-                if(otherProfile == null || (otherProfile!!.email != email)){
-                    fetchUser(email, callback)
-                } else{
-                    callback(otherProfile!!)
-                }
+                fetchUser(email, callback)
             }
 
         }

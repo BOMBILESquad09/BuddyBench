@@ -16,16 +16,20 @@ class ImageRepository {
 
 
 
-    suspend fun getUserImage(path: String): Uri{
+    suspend fun getUserImage(path: String, onSuccess:(Uri) -> Unit = {}){
         if(cacheProfileImages[path] != null) {
-            return cacheProfileImages[path]!!
+            return onSuccess(cacheProfileImages[path]!!)
         }
         if(cacheProfileImages.keys.contains(path)) throw NotFoundException()
 
         return withContext(Dispatchers.IO){
             cacheProfileImages[path] = null
             cacheProfileImages[path] = storage.child("profile_images/$path").downloadUrl.await()
-            cacheProfileImages[path]!!
+
+            withContext(Dispatchers.Main){
+                onSuccess(cacheProfileImages[path]!!)
+            }
+
         }
     }
 

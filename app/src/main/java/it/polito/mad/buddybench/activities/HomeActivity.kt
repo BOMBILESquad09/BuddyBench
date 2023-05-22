@@ -150,23 +150,16 @@ class HomeActivity: AppCompatActivity() {
     }
 
     private fun onFriendsProfileReturn(response: ActivityResult?) {
+
         if(response?.data?.getStringExtra("profile") == null) {
             return
         }
         val profile = Profile.fromJSON(JSONObject(response.data!!.getStringExtra("profile")!!))
-        println(profile)
-        val oldProfile = Profile.fromJSON(JSONObject(response.data!!.getStringExtra("oldProfile")!!))
-        println(profile.isPending)
-        println(oldProfile.isPending)
+        val oldProfile = Profile.fromJSON(JSONObject(response!!.data!!.getStringExtra("oldProfile")!!))
+
+
         if(profile.isPending != oldProfile.isPending) {
-            println("Refresh possible friends")
             friendsViewModel.refreshPossibleFriends(profile)
-        } else if(profile.isFriend != oldProfile.isFriend) {
-            println("Refresh friends")
-            friendsViewModel.refreshFriends(profile)
-        } else {
-            println("Nopeeeeeeeee")
-            return
         }
     }
 
