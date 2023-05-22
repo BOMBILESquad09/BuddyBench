@@ -105,6 +105,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     fun updateSelectedDay(date: LocalDate) {
         oldDate = _selectedDate.value
         _selectedDate.value = date
+
     }
 
     fun getSelectedReservations(): List<ReservationDTO>? {

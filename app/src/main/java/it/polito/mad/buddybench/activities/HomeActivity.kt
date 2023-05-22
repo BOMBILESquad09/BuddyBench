@@ -141,8 +141,9 @@ class HomeActivity: AppCompatActivity() {
     private fun onReservationReturn(response: androidx.activity.result.ActivityResult){
         if(response.resultCode  == Activity.RESULT_OK){
             reservationViewModel.refresh = true
-            reservationViewModel.getAllByUser()
             reservationViewModel.updateSelectedDay( LocalDate.parse(response.data!!.getStringExtra("date"), DateTimeFormatter.ISO_LOCAL_DATE))
+            reservationViewModel.getAllByUser()
+
             bottomBar.replaceFragment(bottomBar.currentTab, Tabs.RESERVATIONS)
             bottomBar.currentTab = Tabs.RESERVATIONS
             bottomBar.bottomBar.selectTabAt(tabIndex = bottomBar.currentTab.getId())

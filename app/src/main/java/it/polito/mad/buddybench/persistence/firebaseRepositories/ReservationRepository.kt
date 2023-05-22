@@ -72,7 +72,6 @@ class ReservationRepository {
 
     suspend fun save(reservationDTO: ReservationDTO) {
         withContext(Dispatchers.IO) {
-            println("sto salvandoooooooooo")
             val reservationMap: HashMap<String, Any> = createReservationMap(reservationDTO)
             val reservationID = reservationMap["id"] as String
             val courtName =
@@ -230,7 +229,7 @@ class ReservationRepository {
         val reservationID = if (reservationDTO.id != "") {reservationDTO.id} else {Utils.generateUUID()}
         val reservationMap: HashMap<String, Any> = HashMap()
         reservationMap["court"] = db.document("courts/$courtName")
-        reservationMap["user"] = db.document("users/${reservationDTO.userOrganizer.email}")
+        reservationMap["user"] = db.document("users/${Firebase.auth.currentUser!!.email}")
         reservationMap["date"] = reservationDTO.date.toString()
         reservationMap["startTime"] = reservationDTO.startTime.hour
         reservationMap["endTime"] = reservationDTO.endTime.hour

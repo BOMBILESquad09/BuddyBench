@@ -66,6 +66,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         super.onViewCreated(view, savedInstanceState)
         swipeRefresh = view.findViewById(R.id.swiperefresh)
         swipeRefresh.setOnRefreshListener {
+            viewModel.updateSelectedDay(viewModel.selectedDate.value ?: LocalDate.now())
             viewModel.getAllByUser()
             swipeRefresh.isRefreshing = false
         }
