@@ -51,7 +51,7 @@ class BottomBar(val context: HomeActivity) {
     private fun addInitialFragment(){
         val transaction = context.supportFragmentManager.beginTransaction()
         val newFragment =  when(currentTab){
-            Tabs.PROFILE -> ShowProfileFragment(context)
+            Tabs.PROFILE -> ShowProfileFragment()
             Tabs.RESERVATIONS -> MyReservationsFragment(context)
             Tabs.FINDCOURT -> FindCourtFragment(context)
             Tabs.FRIENDS -> FriendsFragment(context)
@@ -76,7 +76,7 @@ class BottomBar(val context: HomeActivity) {
         context.supportFragmentManager.findFragmentByTag(newTag.name).let {
             if (it == null){
                 val newFragment =  when(newTag){
-                    Tabs.PROFILE -> ShowProfileFragment(context)
+                    Tabs.PROFILE -> ShowProfileFragment()
                     Tabs.RESERVATIONS -> MyReservationsFragment(context)
                     Tabs.FINDCOURT -> FindCourtFragment(context)
                     Tabs.INVITATIONS -> InvitationsFragment(context)

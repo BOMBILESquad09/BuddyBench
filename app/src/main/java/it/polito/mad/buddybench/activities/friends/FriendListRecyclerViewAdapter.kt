@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.activities.friends
 
+import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +21,8 @@ import it.polito.mad.buddybench.viewmodels.FriendsViewModel
 
 class FriendListRecyclerViewAdapter(
     var values: List<Profile>,
-    val viewModel: FriendsViewModel
+    val viewModel: FriendsViewModel,
+    val callback: (profile: Profile) -> Unit
 ) : RecyclerView.Adapter<FriendListRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -63,6 +65,9 @@ class FriendListRecyclerViewAdapter(
                 Glide.with(binding.root.context)
                     .load(it)
                     .into(ivImage)
+            }
+            ivImage.setOnClickListener {
+                callback(profile)
             }
             var sure = false
             btnRemove.setOnClickListener {
