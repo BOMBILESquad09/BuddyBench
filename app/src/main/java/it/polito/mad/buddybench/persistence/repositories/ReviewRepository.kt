@@ -42,14 +42,7 @@ class ReviewRepository @Inject constructor (
 
         // ** Insert new review
         if(review == null){
-            println("INSERTING:")
-            println(Review(
-                description = reviewDTO.description,
-                date = reviewDTO.date.format(DateTimeFormatter.ISO_LOCAL_DATE),
-                rating = reviewDTO.rating,
-                userId = user.id,
-                courtId = court.id
-            ))
+            
             reviewDao.save(
                 Review(
                     description = reviewDTO.description,
@@ -63,11 +56,7 @@ class ReviewRepository @Inject constructor (
         } else {
 
             // ** Update existing review
-            println(review.copy(
-                description = reviewDTO.description,
-                date = reviewDTO.date.format(DateTimeFormatter.ISO_LOCAL_DATE),
-                rating = reviewDTO.rating
-            ))
+            
             reviewDao.update(
                 review.copy(
                     id = review.id,
@@ -76,14 +65,7 @@ class ReviewRepository @Inject constructor (
                     rating = reviewDTO.rating,
 
                 )
-            ).let {
-                println("updated $it")
-                println(review.copy(
-                    description = reviewDTO.description,
-                    date = reviewDTO.date.format(DateTimeFormatter.ISO_LOCAL_DATE),
-                    rating = reviewDTO.rating,
-                ))
-            }
+            )
             val updatedSumOfRatings = (court.rating * court.nReviews - review.rating)
             reviewDao.updateRating(court.id, (court.nReviews), (updatedSumOfRatings + reviewDTO.rating) / (court.nReviews))
         }

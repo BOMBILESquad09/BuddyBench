@@ -127,10 +127,7 @@ class CourtRepository {
             .whereEqualTo("court", db.document("courts/$courtDocName"))
             .get()
             .addOnSuccessListener {
-                println("LA SIZE è")
-                println(courtDocName)
-                println(userEmail)
-                println(it.size())
+               
                 if (it.size() == 0) {
                     callback(false)
                     return@addOnSuccessListener

@@ -25,10 +25,6 @@ class FriendListDiffUtils(
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        println("---------------------------ggggggggg----------------------------")
-        println(lastFriends[oldItemPosition].email == newFriends[newItemPosition].email
-                && lastFriends[oldItemPosition].isPending == newFriends[newItemPosition].isPending)
-        println("------------------------------------dddd----------------")
 
         return lastFriends[oldItemPosition].email == newFriends[newItemPosition].email
                 && lastFriends[oldItemPosition].isPending == newFriends[newItemPosition].isPending
