@@ -409,10 +409,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             nicknameEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
             flag = false
         }
-        if (!changeColor(emailEdit, validateEmail(emailEdit.text.toString()), resources)) {
-            emailEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
-            flagEmail = false
-        }
+
         if (!changeColor(localityEdit, validateString(localityEdit.text.toString()), resources)) {
             localityBox.boxStrokeColor = Color.RED
             localityEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
