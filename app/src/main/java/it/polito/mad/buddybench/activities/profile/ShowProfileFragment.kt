@@ -16,36 +16,42 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
+import it.polito.mad.buddybench.activities.friends.FriendProfile
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.classes.Sport
 import it.polito.mad.buddybench.enums.Skills
 import it.polito.mad.buddybench.viewmodels.ImageViewModel
+import it.polito.mad.buddybench.viewmodels.UserViewModel
 
 @AndroidEntryPoint
-class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_profile) {
+class ShowProfileFragment(
+    var seeProfile: Boolean = false,
+    var friendProfile: Profile? = null
+): Fragment(R.layout.show_profile) {
 
     lateinit var profile: Profile
     private val imageViewModel by activityViewModels<ImageViewModel>()
+    private val userViewModel by activityViewModels<UserViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
     }
 
     override fun onResume() {
         super.onResume()
-        context.userViewModel.user.observe(this){
-            if (it != null){
-
-
-                profile = it
-
-                setGUI()
+        if(!seeProfile && friendProfile == null)
+            userViewModel.user.observe(this){
+                if (it != null){
+                    profile = it
+                    setGUI()
+                }
             }
+        else {
+            profile = friendProfile!!
+            setGUI()
         }
+
     }
-
-
 
 
     private fun setGUI(){
@@ -93,10 +99,10 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_pro
             it
         }
 
-        context.userViewModel.setSports(profile.sports)
+        userViewModel.setSports(profile.sports)
 
-        sportsRecyclerView.adapter = SportsAdapter(context.userViewModel.sports, false)
-        context.userViewModel.sports.observe(this){
+        sportsRecyclerView.adapter = SportsAdapter(userViewModel.sports, false)
+        userViewModel.sports.observe(this){
             if (it == null) return@observe
         }
         if(profile.sports.none { it.skill != Skills.NULL }){
@@ -104,8 +110,6 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_pro
         } else{
             thisView.findViewById<TextView>(R.id.empty_sports).visibility= View.GONE
         }
-
-
 
         // ** Populate sport cards
         //profile.populateSportCards(context, sportContainer)

@@ -97,6 +97,17 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
             mutableListOf(), mutableListOf()
             ).toJSON().toString()
         }
+
+        fun mockProfile(): Profile {
+            return Profile("Vittorio", "Arpino","TheNextLayer", "varpino@buddybench.it", "Scafati", LocalDate.parse("27/04/1999", DateTimeFormatter.ofPattern("dd/MM/yyyy")), 70,
+                null,
+                mutableListOf(
+                    Sport(Sports.TENNIS, Skills.SKILLED, 3, 2, mutableListOf("Coppa del Nonno")),
+                    Sport(Sports.FOOTBALL, Skills.NEWBIE, 7, 6, mutableListOf("Coppa Campionii"))
+                ),
+                mutableListOf(), mutableListOf()
+            )
+        }
     }
 
     fun toJSON(): JSONObject {

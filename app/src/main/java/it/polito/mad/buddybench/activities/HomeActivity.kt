@@ -62,7 +62,7 @@ class HomeActivity: AppCompatActivity() {
         bottomBar.setup()
 
         userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this){
-            profile = it ?: Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
+            profile = it ?: Profile.fromJSON(JSONObject(sharedPref.getString("profile", Profile.mockJSON())!!))
             friendsViewModel.subscribeFriendsList()
             invitationsViewModel.subscribeInvitations(){ s ->
                 if(s > 0){

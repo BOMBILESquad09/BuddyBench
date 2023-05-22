@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.activities.friends
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -11,14 +12,17 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DiffUtil
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.activities.friends.placeholder.PlaceholderContent
+import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.viewmodels.FriendsViewModel
 
 
-class FriendListFragment : Fragment(R.layout.fragment_friend_request_list) {
+class FriendListFragment(val context: HomeActivity) : Fragment(R.layout.fragment_friend_request_list) {
 
     private var columnCount = 1
     private lateinit var rvFriendList: RecyclerView
@@ -51,9 +55,14 @@ class FriendListFragment : Fragment(R.layout.fragment_friend_request_list) {
                 pbFriendList.visibility = View.GONE
                 emptyLL.visibility = View.VISIBLE
                 rvFriendList.visibility = View.VISIBLE
-
-
             }
+        }
+
+        val callback: (profile: Profile) -> Unit = {
+            val i = Intent(context, FriendProfile::class.java)
+            val bundle = bundleOf("profile" to it.toJSON().toString())
+            i.putExtras(bundle)
+            context.startActivity(i)
         }
 
         with(rvFriendList) {
@@ -61,7 +70,7 @@ class FriendListFragment : Fragment(R.layout.fragment_friend_request_list) {
                 columnCount <= 1 -> LinearLayoutManager(context)
                 else -> GridLayoutManager(context, columnCount)
             }
-            adapter = FriendListRecyclerViewAdapter(listOf(), friendsViewModel)
+            adapter = FriendListRecyclerViewAdapter(listOf(), friendsViewModel, callback)
         }
         // ** Data
         friendsViewModel.friends.observe(viewLifecycleOwner) {
