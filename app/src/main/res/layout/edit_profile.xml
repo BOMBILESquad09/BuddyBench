@@ -128,6 +128,7 @@
                             android:orientation="horizontal">
 
                             <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/first_name_box"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -156,6 +157,7 @@
 
                             <com.google.android.material.textfield.TextInputLayout
                                 android:layout_width="0dp"
+                                android:id="@+id/surname_box"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:hint="@string/surnameLabel"
@@ -181,6 +183,7 @@
                         <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:id="@+id/nickname_box"
                             android:layout_marginBottom="8dp"
                             android:layout_weight="1"
                             android:hint="@string/nicknameLabel"
@@ -236,6 +239,7 @@
                             <com.google.android.material.textfield.TextInputLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:id="@+id/locality_box"
                                 android:layout_weight="1"
                                 android:hint="@string/localityLabel"
                                 android:backgroundTint="@color/disabled"
@@ -263,6 +267,7 @@
 
                             <com.google.android.material.textfield.TextInputLayout
                                 android:layout_width="0dp"
+                                android:id="@+id/birthdate_box"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:hint="@string/birthdateLabel"
