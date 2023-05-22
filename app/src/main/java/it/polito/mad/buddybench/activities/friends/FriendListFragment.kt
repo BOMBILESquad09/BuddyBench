@@ -19,6 +19,7 @@ import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.activities.friends.placeholder.PlaceholderContent
 import it.polito.mad.buddybench.classes.Profile
+import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.FriendsViewModel
 
 
@@ -59,10 +60,7 @@ class FriendListFragment(val context: HomeActivity) : Fragment(R.layout.fragment
         }
 
         val callback: (profile: Profile) -> Unit = {
-            val i = Intent(context, FriendProfile::class.java)
-            val bundle = bundleOf("profile" to it.toJSON().toString())
-            i.putExtras(bundle)
-            context.startActivity(i)
+            Utils.goToProfileFriend(context, it.toJSON().toString())
         }
 
         with(rvFriendList) {

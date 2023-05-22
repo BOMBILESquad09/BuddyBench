@@ -43,6 +43,7 @@ class HomeActivity: AppCompatActivity() {
     private val launcherEdit = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onEditReturn(it)}
     val launcherReservation = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onReservationReturn(it)}
     val launcherReviews = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { onReviewsReturn(it) }
+    val launcherActivityFriendProfile = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
     val invitationsViewModel by viewModels<InvitationsViewModel>()
 
     lateinit var profile: Profile
@@ -52,6 +53,8 @@ class HomeActivity: AppCompatActivity() {
     val findCourtViewModel by viewModels<FindCourtViewModel>()
     val reservationViewModel by viewModels<ReservationViewModel>()
     val friendsViewModel by viewModels<FriendsViewModel>()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)

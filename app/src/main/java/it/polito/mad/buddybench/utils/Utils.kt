@@ -3,6 +3,7 @@ package it.polito.mad.buddybench.utils
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.icu.text.DecimalFormat
@@ -18,9 +19,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.core.animation.doOnEnd
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.os.bundleOf
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.activities.HomeActivity
+import it.polito.mad.buddybench.activities.court.CourtActivity
+import it.polito.mad.buddybench.activities.friends.FriendProfile
 import it.polito.mad.buddybench.activities.myreservations.displayText
+import it.polito.mad.buddybench.classes.Profile
 import java.math.RoundingMode
 import java.time.DayOfWeek
 import java.time.Duration
@@ -158,6 +164,13 @@ class Utils {
             dialog.setCancelable(false)
             dialog.show()
             return dialog
+        }
+
+        fun goToProfileFriend(context: HomeActivity, profile: String) {
+            val i = Intent(context, CourtActivity::class.java)
+            val bundle = bundleOf("profile" to profile)
+            i.putExtras(bundle)
+            context.launcherActivityFriendProfile.launch(i)
         }
 
         fun generateNickname(): String{
