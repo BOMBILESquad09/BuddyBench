@@ -48,13 +48,14 @@ class ShowProfileFragment(
             }
         else {
             profile = friendProfile!!
+
             setGUI()
         }
 
     }
 
 
-    private fun setGUI(){
+    fun setGUI(){
 
         val thisView = requireView()
 
