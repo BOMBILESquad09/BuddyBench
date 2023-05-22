@@ -17,8 +17,9 @@ import org.json.JSONObject
 @AndroidEntryPoint
 class FriendProfile: AppCompatActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        println("diocaneeeeeeeeeeee")
         setContentView(R.layout.friend_profile)
 
         val fragmentContainer = findViewById<FragmentContainerView>(R.id.friend_fragment_container)

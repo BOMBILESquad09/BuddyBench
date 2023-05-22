@@ -167,9 +167,10 @@ class Utils {
         }
 
         fun goToProfileFriend(context: HomeActivity, profile: String) {
-            val i = Intent(context, CourtActivity::class.java)
+            val i = Intent(context, FriendProfile::class.java)
             val bundle = bundleOf("profile" to profile)
             i.putExtras(bundle)
+            println("lanciandooooooooooooo")
             context.launcherActivityFriendProfile.launch(i)
         }
 
