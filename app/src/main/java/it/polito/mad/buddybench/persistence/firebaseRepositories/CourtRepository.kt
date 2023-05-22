@@ -86,10 +86,18 @@ class CourtRepository {
                     .whereIn("court", courts.map { db.document("courts/${it.getId()}") })
                     .whereEqualTo("date", LocalDate.now().toString()).get()
                     .addOnSuccessListener {
-                        val hm: HashMap<String, Long> = HashMap()
+                        val hm: HashMap<String,Pair<Long, Long>> = HashMap()
                         for (r in it) {
+                            val endTime = r.data["endTime"] as Long
+                            val startTime = r.data["startTime"] as Long
                             val courtId = (r.data["court"] as DocumentReference).id
-                            hm[courtId] = maxOf(hm[courtId] ?: 0)
+                            if(hm[courtId] == null){
+                                hm[courtId] = Pair(startTime, endTime)
+                            } else{
+                                if(endTime == maxOf(hm[courtId]!!.second, endTime)){
+                                    hm[courtId] = Pair(startTime, endTime)
+                                }
+                            }
                         }
                         for (r in it){
                             val courtId = (r.data["court"] as DocumentReference).id
@@ -97,7 +105,18 @@ class CourtRepository {
 
                             finalCourts = finalCourts.filter {c->
                                 if (c.getId() == courtId) {
-                                    (LocalTime.now().hour < (closingTime - 1) && (hm[courtId] ?: 0) <  LocalTime.now().hour)
+                                    println((hm[courtId]?.first ?: 0))
+                                    println((hm[courtId]?.second ?: 0))
+                                    println(LocalTime.now().hour)
+
+                                    println(LocalTime.now().hour < (closingTime - 1))
+                                    println(hm[courtId]!!.second <  LocalTime.now().hour )
+                                    println((hm[courtId]!!.first>= LocalTime.now().hour))
+                                    println(LocalTime.now().hour < (closingTime - 1))
+                                    println(hm[courtId]!!.second <  LocalTime.now().hour || hm[courtId]!!.first>= LocalTime.now().hour)
+
+                                    LocalTime.now().hour < (closingTime - 1) &&
+                                            (hm[courtId]!!.second <  LocalTime.now().hour || hm[courtId]!!.first>= LocalTime.now().hour)
                                 } else {
                                     true
                                 }
