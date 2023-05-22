@@ -43,7 +43,8 @@ class HomeActivity: AppCompatActivity() {
     private val launcherEdit = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onEditReturn(it)}
     val launcherReservation = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onReservationReturn(it)}
     val launcherReviews = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { onReviewsReturn(it) }
-    val launcherActivityFriendProfile = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
+    val launcherActivityFriendProfile = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { onFriendsProfileReturn(it) }
+
     val invitationsViewModel by viewModels<InvitationsViewModel>()
 
     lateinit var profile: Profile
@@ -148,6 +149,27 @@ class HomeActivity: AppCompatActivity() {
         }
     }
 
+    private fun onFriendsProfileReturn(response: ActivityResult?) {
+        if(response?.data?.getStringExtra("profile") == null) {
+            return
+        }
+        val profile = Profile.fromJSON(JSONObject(response.data!!.getStringExtra("profile")!!))
+        println(profile)
+        val oldProfile = Profile.fromJSON(JSONObject(response.data!!.getStringExtra("oldProfile")!!))
+        println(profile.isPending)
+        println(oldProfile.isPending)
+        if(profile.isPending != oldProfile.isPending) {
+            println("Refresh possible friends")
+            friendsViewModel.refreshPossibleFriends(profile)
+        } else if(profile.isFriend != oldProfile.isFriend) {
+            println("Refresh friends")
+            friendsViewModel.refreshFriends(profile)
+        } else {
+            println("Nopeeeeeeeee")
+            return
+        }
+    }
+
     private fun onReviewsReturn(response: ActivityResult) {
         if (response.resultCode  == Activity.RESULT_OK){
            // TODO: Maybe update
@@ -155,6 +177,8 @@ class HomeActivity: AppCompatActivity() {
 
 
     }
+
+
 
 
 

@@ -156,4 +156,38 @@ class UserViewModel @Inject constructor() : ViewModel() {
         }.toMutableList()
     }
 
+    fun sendFriendRequest(onSuccess: (Profile) -> Unit) {
+        runBlocking {
+            friendRepository.postFriendRequest(user.value!!.email)
+            val p = user.value!!.copy()
+            p.isPending = true
+            _user.postValue(p)
+            onSuccess(p)
+        }
+
+    }
+
+    fun removeFriendRequest(onSuccess: (Profile) -> Unit) {
+        runBlocking {
+            friendRepository.removeFriendRequest(user.value!!.email)
+            val p = user.value!!.copy()
+            p.isPending = false
+            _user.postValue(p)
+            onSuccess(p)
+        }
+
+    }
+
+    fun removeFriend(onSuccess: (Profile) -> Unit) {
+        runBlocking {
+            friendRepository.removeFriend(user.value!!.email)
+            val p = user.value!!.copy()
+            p.isFriend = false
+            p.isPending = false
+            _user.postValue(p)
+            onSuccess(p)
+        }
+
+    }
+
 }

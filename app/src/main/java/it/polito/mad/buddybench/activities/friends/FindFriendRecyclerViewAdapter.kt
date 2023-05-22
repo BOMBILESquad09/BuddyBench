@@ -13,6 +13,7 @@ import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.activities.friends.placeholder.PlaceholderContent.PlaceholderItem
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.databinding.FragmentFindFriendItemBinding
+import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.FriendsViewModel
 
 
@@ -86,6 +87,12 @@ class FindFriendRecyclerViewAdapter(
                 Glide.with(binding.root.context)
                     .load(it)
                     .into(ivImage)
+            }
+            ivImage.setOnClickListener {
+                Utils.goToProfileFriend(
+                    FragmentComponentManager.findActivity(binding.root.context) as HomeActivity,
+                    profile
+                )
             }
 
         }

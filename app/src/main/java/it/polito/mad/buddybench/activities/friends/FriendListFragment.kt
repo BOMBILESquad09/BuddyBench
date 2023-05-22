@@ -60,7 +60,7 @@ class FriendListFragment(val context: HomeActivity) : Fragment(R.layout.fragment
         }
 
         val callback: (profile: Profile) -> Unit = {
-            Utils.goToProfileFriend(context, it.toJSON().toString())
+            Utils.goToProfileFriend(context, it)
         }
 
         with(rvFriendList) {

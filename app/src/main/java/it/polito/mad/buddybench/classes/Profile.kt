@@ -20,6 +20,7 @@ import androidx.transition.Scene
 import androidx.transition.TransitionInflater
 import androidx.transition.TransitionManager
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.classes.JSONUtils.Companion.getBoolean
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getInt
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getJSONArray
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getString
@@ -70,6 +71,8 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
             val birthday = LocalDate.parse(jsonProfile.getString("birthdate", "27/04/1999"),  DateTimeFormatter.ofPattern("dd/MM/yyyy"))
             val location = jsonProfile.getString("location", "No location")
             val reliability = jsonProfile.getInt("reliability",0)
+            val isPending = jsonProfile.getBoolean("isPending", false)
+            val isFriend = jsonProfile.getBoolean("isFriend", false)
             var imageUri:Uri? = null
             try {
                 imageUri = Uri.parse(jsonProfile.getString("imageUri"))
@@ -82,7 +85,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
                 val jsonSport = sportsList.getJSONObject(i)
                 sports.add(Sport.fromJSON(jsonSport))
             }
-            return Profile(name, surname, nickname, email, location, birthday, reliability, imageUri,sports, mutableListOf(), mutableListOf())
+            return Profile(name, surname, nickname, email, location, birthday, reliability, imageUri,sports, mutableListOf(), mutableListOf(), isFriend = isFriend, isPending = isPending)
         }
 
 
@@ -119,6 +122,12 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
         json.put("email", email)
         json.put("birthdate", birthdate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
         json.put("reliability", reliability)
+        println("======INJSON===========")
+        println(isPending)
+        println(isFriend)
+        json.put("isPending", isPending)
+        json.put("isFriend", isFriend)
+        println("======INJSON===========")
         if (imageUri == null){
             json.put("imageUri", JSONObject.NULL)
         } else {

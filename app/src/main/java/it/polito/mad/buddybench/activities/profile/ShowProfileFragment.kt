@@ -1,11 +1,15 @@
 package it.polito.mad.buddybench.activities.profile
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.result.ActivityResult
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -13,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
@@ -20,6 +25,7 @@ import it.polito.mad.buddybench.activities.friends.FriendProfile
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.classes.Sport
 import it.polito.mad.buddybench.enums.Skills
+import it.polito.mad.buddybench.viewmodels.FriendsViewModel
 import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
 
@@ -32,6 +38,7 @@ class ShowProfileFragment(
     lateinit var profile: Profile
     private val imageViewModel by activityViewModels<ImageViewModel>()
     private val userViewModel by activityViewModels<UserViewModel>()
+    private val friendViewModel by activityViewModels<FriendsViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,7 +55,6 @@ class ShowProfileFragment(
             }
         else {
             profile = friendProfile!!
-
             setGUI()
         }
 
@@ -110,6 +116,44 @@ class ShowProfileFragment(
             thisView.findViewById<TextView>(R.id.empty_sports).visibility= View.VISIBLE
         } else{
             thisView.findViewById<TextView>(R.id.empty_sports).visibility= View.GONE
+        }
+
+
+        if(seeProfile) {
+            val friendButton = thisView.findViewById<MaterialButton>(R.id.friend_request_btn)
+            friendButton.visibility = View.VISIBLE
+            userViewModel.user.observe(this) {
+                if(it == null) return@observe
+                if(it.isPending) {
+                    friendButton.text = "Cancel Request"
+                } else if (it.isFriend) {
+                    friendButton.text = "Friends"
+                } else {
+                    friendButton.text = "Add Friend"
+                }
+            }
+            friendButton.setOnClickListener {
+                val profileFriend = userViewModel.user.value!!
+                if(!profileFriend.isPending && !profileFriend.isFriend) {
+                    userViewModel.sendFriendRequest {
+                        val friendProfileActivity = requireActivity() as FriendProfile
+                        friendProfileActivity.bundle.putString("profile", it.toJSON().toString())
+                        println("===================")
+                        println(it.isPending)
+                        println("===================")
+                    }
+                } else if(profileFriend.isPending) {
+                    userViewModel.removeFriendRequest {
+                        val friendProfileActivity = requireActivity() as FriendProfile
+                        friendProfileActivity.bundle.putString("profile", it.toJSON().toString())
+                    }
+                } else {
+                    userViewModel.removeFriend {
+                        val friendProfileActivity = requireActivity() as FriendProfile
+                        friendProfileActivity.bundle.putString("profile", it.toJSON().toString())
+                    }
+                }
+            }
         }
 
         // ** Populate sport cards

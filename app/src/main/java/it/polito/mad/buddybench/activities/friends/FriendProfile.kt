@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.activities.friends
 
+import android.app.Activity
 import android.os.Bundle
 import android.os.PersistableBundle
 import androidx.activity.viewModels
@@ -23,12 +24,16 @@ class FriendProfile : AppCompatActivity() {
 
     private lateinit var binding: FriendProfileBinding
     val userViewModel by viewModels<UserViewModel>()
+    val bundle = bundleOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = FriendProfileBinding.inflate(layoutInflater)
         val profile = Profile.fromJSON(JSONObject(intent.getStringExtra("profile")))
+        bundle.putString("oldProfile", profile.toJSON().toString())
+        intent.putExtras(bundle)
+        setResult(Activity.RESULT_OK, this.intent)
 
         val showProfileFragment = ShowProfileFragment(
             seeProfile = true,
@@ -47,5 +52,6 @@ class FriendProfile : AppCompatActivity() {
         }
 
     }
+
 
 }

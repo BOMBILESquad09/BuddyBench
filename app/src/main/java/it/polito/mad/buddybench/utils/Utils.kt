@@ -166,11 +166,10 @@ class Utils {
             return dialog
         }
 
-        fun goToProfileFriend(context: HomeActivity, profile: String) {
+        fun goToProfileFriend(context: HomeActivity, profile: Profile) {
             val i = Intent(context, FriendProfile::class.java)
-            val bundle = bundleOf("profile" to profile)
+            val bundle = bundleOf("profile" to profile.toJSON().toString())
             i.putExtras(bundle)
-            println("lanciandooooooooooooo")
             context.launcherActivityFriendProfile.launch(i)
         }
 
