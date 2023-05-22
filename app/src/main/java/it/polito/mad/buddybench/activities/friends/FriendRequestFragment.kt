@@ -117,7 +117,6 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
                     rvFriendRequests.viewTreeObserver.addOnGlobalLayoutListener(
                         object : OnGlobalLayoutListener {
                             override fun onGlobalLayout() {
-                                println("diocaneeeeeeeee")
                                 if ((rvFriendRequests.adapter as FriendRequestRecyclerViewAdapter).values.isEmpty()) {
                                     emptyLL.visibility = View.VISIBLE
                                     rvFriendRequests.visibility = View.GONE

@@ -40,8 +40,7 @@ data class Sport(val name: Sports, var skill: Skills, var matchesPlayed: Int, va
 
     fun toJSON(): JSONObject{
         val json = JSONObject()
-        println(skill)
-        println("-------------------------")
+        
         json.put("name", Sports.toJSON(name))
         json.put("skill", Skills.toJSON(skill))
         json.put("matchesPlayed", matchesPlayed)

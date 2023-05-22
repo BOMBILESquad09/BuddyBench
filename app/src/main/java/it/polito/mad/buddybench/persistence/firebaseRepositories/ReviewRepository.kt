@@ -50,7 +50,6 @@ class ReviewRepository {
 
 
     /*val reviews = reviewDao.getAllByCourt(courtDTO.name, courtDTO.sport)
-    reviews.map { println("Repository reviews: id ${it.review.id} rating ${it.review.rating}") }
     return reviews.map {
         ReviewDTO(
             it.user.toUserDTO(),
@@ -81,7 +80,6 @@ class ReviewRepository {
                         "description" to reviewDTO.description
                     )
                 )
-                println("ecccccccccooooooooooooo")
             } else {
                 val oldRating = (review.get("rating") as Long).toInt()
                 val updates: Map<String, Any> = mapOf(

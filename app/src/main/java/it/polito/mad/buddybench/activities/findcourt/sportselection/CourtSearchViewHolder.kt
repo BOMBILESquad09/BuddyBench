@@ -35,7 +35,6 @@ class CourtSearchViewHolder(val v: View, val callback: (String, Sports) -> Unit,
         feeHour.backgroundTintList = ColorStateList.valueOf(Sports.getSportColor(Sports.valueOf(court.sport), v.context))
         courtRating.text = DecimalFormat("#.0").format(court.rating)
         // ** Reviews
-        println(court.path)
         ((FragmentComponentManager.findActivity(v.context) as HomeActivity)).imageViewModel.getCourtImage(court.path + ".jpg",
             {
                 courtImage.setImageBitmap(BitmapFactory.decodeStream(courtImage.context?.assets?.open("courtImages/default_image.jpg")))

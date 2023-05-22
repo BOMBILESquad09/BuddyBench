@@ -74,9 +74,7 @@ class EditConfirmDialogSheet(
         // Setting the price details Dialog
         setPriceDetailCard(view)
 
-        println("------------------------")
-        println(selectedDate)
-        println("------------------------")
+        
 
 
         // CheckBox inside the Additional Information Card
