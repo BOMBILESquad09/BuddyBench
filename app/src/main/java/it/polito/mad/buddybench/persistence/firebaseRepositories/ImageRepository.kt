@@ -12,15 +12,12 @@ import kotlinx.coroutines.withContext
 class ImageRepository {
     private val storage = FirebaseStorage.getInstance().reference
 
-
-
     suspend fun getUserImage(path: String, onSuccess:(Uri) -> Unit = {}){
-        return withContext(Dispatchers.IO){
+        return withContext(Dispatchers.IO) {
             val uri = storage.child("profile_images/$path").downloadUrl.await()
             withContext(Dispatchers.Main){
                 onSuccess(uri)
             }
-
         }
     }
 
@@ -45,6 +42,5 @@ class ImageRepository {
             storage.child("profile_images/$path").putFile(image).await()
         }
     }
-
 
 }

@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.activities.friends
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -56,6 +57,7 @@ class FriendsFragment(val context: HomeActivity) : Fragment() {
         friendsViewModel.friendRequests.observe(viewLifecycleOwner) {
             if (it != null) {
                 val requestsBadge: BadgeDrawable? = binding.tabFriends.getTabAt(1)?.orCreateBadge
+                requestsBadge?.badgeTextColor = Color.WHITE
                 if (requestsBadge != null) {
                     requestsBadge.number = it.size
                     requestsBadge.isVisible = it.isNotEmpty()

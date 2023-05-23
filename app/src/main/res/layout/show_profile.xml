@@ -9,10 +9,49 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-
-
-
     >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_weight="0.2"
+            android:visibility="gone"
+            android:id = "@+id/come_back"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/right_arrow"
+            android:layout_marginStart="16dp"
+            android:layout_gravity="center"
+            android:scaleX="-1" />
+
+        <TextView
+            android:id="@+id/profile_title"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_bold_700"
+            android:padding="16sp"
+            android:maxLines="1"
+            android:text="My Profile"
+            android:textSize="32sp"
+            android:ellipsize="end"/>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/button_to_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            android:src="@drawable/round_edit_24"
+            />
+
+    </LinearLayout>
+
+
+
 
     <ScrollView
         android:layout_width="match_parent"
