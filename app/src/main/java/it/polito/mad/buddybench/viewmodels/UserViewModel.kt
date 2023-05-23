@@ -32,7 +32,7 @@ class UserViewModel @Inject constructor() : ViewModel() {
 
 
     @Inject
-    lateinit var  userRepositoryFirebase: UserRepository
+    lateinit var userRepositoryFirebase: UserRepository
     private val invitationsRepository = InvitationsRepository()
 
     private val friendRepository = FriendRepository()
@@ -52,23 +52,23 @@ class UserViewModel @Inject constructor() : ViewModel() {
     lateinit var sharedPref: SharedPreferences
 
 
-
-
     fun getUser(email: String = Firebase.auth.currentUser!!.email!!): LiveData<Profile> {
         runBlocking {
-                userRepositoryFirebase.getUser(email) {
-                    _user.postValue(it)
-                }
+            userRepositoryFirebase.getUser(email) {
+                _user.postValue(it)
+            }
         }
         return user
     }
 
     fun updateUserInfo(profile: Profile) {
+
         runBlocking {
-            userRepositoryFirebase.update(profile){
+            userRepositoryFirebase.update(profile) {
                 _user.postValue(it)
             }
         }
+
     }
 
     fun setUserName(name: String) {
@@ -93,12 +93,14 @@ class UserViewModel @Inject constructor() : ViewModel() {
         _invisibleSports.add(sport)
         return sports
     }
-    fun getAllSports(): List<Sport>{
+
+    fun getAllSports(): List<Sport> {
         val allSports = mutableListOf<Sport>()
         _invisibleSports.forEach { it.skill = Skills.NULL;allSports.add(it) }
         sports.value!!.forEach { allSports.add(it) }
         return allSports
     }
+
     fun updateSport(sport: Sport): LiveData<MutableList<Sport>> {
         oldSports = _sports.value!!.map { it.copy() }
 

@@ -16,6 +16,7 @@ import kotlin.concurrent.thread
 class ImageViewModel @Inject constructor() : ViewModel() {
 
     val mainScope = MainScope()
+
     @Inject
     lateinit var imageRepository: ImageRepository
 
@@ -33,9 +34,9 @@ class ImageViewModel @Inject constructor() : ViewModel() {
 
     fun getUserImage(path: String, onFailure: () -> Unit, onSuccess: (Uri) -> Unit) {
         mainScope.launch {
-            try{
+            try {
                 imageRepository.getUserImage(path, onSuccess)
-            } catch (e:Exception){
+            } catch (e: Exception) {
                 onFailure()
             }
         }
@@ -44,7 +45,7 @@ class ImageViewModel @Inject constructor() : ViewModel() {
     fun getCourtImage(path: String, onFailure: () -> Unit, onSuccess: (Uri) -> Unit) {
 
         mainScope.launch {
-            try{
+            try {
                 imageRepository.getCourtImage(path, onSuccess)
             } catch (_: Exception) {
                 onFailure()
