@@ -12,6 +12,7 @@ import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.RangeSlider
+import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.viewmodels.FindCourtViewModel
@@ -38,29 +39,27 @@ class FilterSheetDialog(
         val minRating: Float = findCourtViewModel.minRating
         val maxFee: Float = findCourtViewModel.maxFee
 
-        val rangeSliderPrice : RangeSlider = view.findViewById<RangeSlider>(R.id.range_slider_price)
+        val rangeSliderPrice : Slider = view.findViewById<Slider>(R.id.range_slider_price)
         rangeSliderPrice.labelBehavior = LabelFormatter.LABEL_GONE
-        rangeSliderPrice.setValues(maxFee)
-        rangeSliderPrice.stepSize = 1f
+        rangeSliderPrice.value = maxFee
 
-        val rangeSliderRating : RangeSlider = view.findViewById<RangeSlider>(R.id.range_slider_rating)
+        val rangeSliderRating : Slider = view.findViewById<Slider>(R.id.range_slider_rating)
         rangeSliderRating.labelBehavior = LabelFormatter.LABEL_GONE
-        rangeSliderRating.setValues(minRating)
-        rangeSliderRating.stepSize = 1f
+        rangeSliderRating.value = minRating
 
         val showMinRating = view.findViewById<TextView>(R.id.minRating)
         val showMaxPrice = view.findViewById<TextView>(R.id.maxFee)
         showMinRating.text = minRating.toInt().toString()
         showMaxPrice.text = maxFee.toInt().toString() + "€"
 
-        rangeSliderRating.addOnChangeListener(RangeSlider.OnChangeListener { _, value, _ -> showMinRating?.text = value.toInt().toString() })
+        rangeSliderRating.addOnChangeListener(Slider.OnChangeListener { _, value, _ -> showMinRating?.text = value.toInt().toString() })
 
-        rangeSliderPrice.addOnChangeListener(RangeSlider.OnChangeListener { _, value, _ -> showMaxPrice?.text = value.toInt().toString() + "€" })
+        rangeSliderPrice.addOnChangeListener(Slider.OnChangeListener { _, value, _ -> showMaxPrice?.text = value.toInt().toString() + "€" })
 
         val confirmButton = view.findViewById<Button>(R.id.confirmFilter)
         confirmButton?.setOnClickListener{
-            findCourtViewModel.minRating = rangeSliderRating.values.get(0)!!
-            findCourtViewModel.maxFee = rangeSliderPrice.values.get(0)!!
+            findCourtViewModel.minRating = rangeSliderRating.value
+            findCourtViewModel.maxFee = rangeSliderPrice.value
 
             findCourtViewModel.applyFilter()
             refClearButton.setBackgroundResource(R.drawable.circle_dark_bg)

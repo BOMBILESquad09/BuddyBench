@@ -15,12 +15,14 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.*
 import android.widget.*
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+//import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
+import androidx.core.os.bundleOf
 
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
@@ -29,6 +31,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
@@ -97,12 +100,16 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         super.onCreate(savedInstanceState)
         setContentView(R.layout.edit_profile)
 
-        // ** Toolbar
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        toolbar.title = "Profile"
-        setSupportActionBar(toolbar)
-        toolbar.setTitleTextColor(Color.WHITE)
-        toolbar.setNavigationOnClickListener { finish() }
+        val backToProfile = findViewById<ShapeableImageView>(R.id.come_back)
+        backToProfile.setOnClickListener {
+            finish()
+        }
+
+        val saveButton = findViewById<ShapeableImageView>(R.id.save_button)
+        saveButton.setOnClickListener {
+            saveProfile()
+        }
+
         // ** Profile Data
         val stringedProfile = savedInstanceState?.getString("profile") ?: intent.getStringExtra("profile")!!
         profile = Profile.fromJSON(JSONObject(stringedProfile))
@@ -386,12 +393,12 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
         val surnameBox = findViewById<TextInputLayout>(R.id.surname_box)
 
-        val emailEdit = findViewById<EditText>(R.id.Email)
+//        val emailEdit = findViewById<EditText>(R.id.Email)
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
         val localityBox = findViewById<TextInputLayout>(R.id.locality_box)
 
         var flag = true
-        var flagEmail = true
+        val flagEmail = true
         val drawableError = R.drawable.error
         if (!changeColor(nameEdit, validateString(nameEdit.text.toString()), resources)) {
             nameBox.boxStrokeColor = Color.RED
@@ -443,13 +450,13 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
-        val emailEdit = findViewById<EditText>(R.id.Email)
+//        val emailEdit = findViewById<EditText>(R.id.Email)
         profile.name = nameEdit.text.toString()
         profile.surname = surnameEdit.text.toString()
         profile.nickname = nicknameEdit.text.toString()
         profile.location = localityEdit.text.toString()
         profile.birthdate = birthdateListener.value!!
-        profile.email = emailEdit.text.toString()
+//        profile.email = emailEdit.text.toString()
         profile.imageUri = imageUri ?: profile.imageUri
         profile.sports = userViewModel.getAllSports().toMutableList()
         val newProfileJSON = profile.toJSON().toString()
@@ -622,12 +629,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         }
     }
 
-
-
-
-
-
-
     private fun restoreDialog(savedInstanceState: Bundle?){
         val dialogOpenPreviously = if (savedInstanceState?.getString("dialog") != null)
             ActivityState.valueOf(savedInstanceState.getString("dialog")!!) else dialogOpened
@@ -649,5 +650,13 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             tempSelectedSport = null
         }
 
+    }
+
+    private fun saveProfile() {
+        val intent = Intent()
+        val b = bundleOf("newProfile" to profile.toJSON().toString())
+        intent.putExtras(b)
+        setResult(-1, intent)
+        finish()
     }
 }

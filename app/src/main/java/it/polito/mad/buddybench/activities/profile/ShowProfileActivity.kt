@@ -13,7 +13,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
@@ -31,10 +30,12 @@ class ShowProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        toolbar.title = "Profile"
-        toolbar.setTitleTextColor(Color.WHITE)
-        setSupportActionBar(toolbar)
+
+//        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+//        toolbar.title = "Profile"
+//        toolbar.setTitleTextColor(Color.WHITE)
+//        setSupportActionBar(toolbar)
+
         sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
         // profile = Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
@@ -72,11 +73,11 @@ class ShowProfileActivity : AppCompatActivity() {
         setProfileImage(null)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.menu_profile, menu)
-        return true
-    }
+//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//        val inflater: MenuInflater = menuInflater
+//        inflater.inflate(R.menu.menu_profile, menu)
+//        return true
+//    }
 
     private fun setProfileImage(uri: Uri?) {
 
