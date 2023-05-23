@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="36dp"
+    android:height="36dp"
+    android:viewportWidth="36"
+    android:viewportHeight="36">
+
+    <group>
+        <path
+            android:fillColor="@color/cardview_light_background"
+            android:pathData="M34 28V32H10V28C10 28 10 20 22 20C34 20 34 28 34 28ZM28 10C28 8.81331 27.6481 7.65328 26.9888 6.66658C26.3295 5.67989 25.3925 4.91085 24.2961 4.45673C23.1997 4.0026 21.9933 3.88378 20.8295 4.11529C19.6656 4.3468 18.5965 4.91825 17.7574 5.75736C16.9182 6.59648 16.3468 7.66557 16.1153 8.82946C15.8838 9.99335 16.0026 11.1997 16.4567 12.2961C16.9108 13.3925 17.6799 14.3295 18.6666 14.9888C19.6533 15.6481 20.8133 16 22 16C23.5913 16 25.1174 15.3679 26.2426 14.2426C27.3679 13.1174 28 11.5913 28 10Z" />
+        <path
+            android:fillColor="@color/cardview_light_background"
+            android:pathData="M7.875 13.125H12V15.875H7.875V20H5.125V15.875H1V13.125H5.125V9H7.875V13.125Z" />
+    </group>
+</vector>
