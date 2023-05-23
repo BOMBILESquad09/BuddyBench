@@ -70,8 +70,7 @@ class FilterSheetDialog(
 
         val clearButton = view.findViewById<Button>(R.id.clearFilter)
         clearButton?.setOnClickListener{
-            findCourtViewModel.clearFilters()
-            findCourtViewModel.applyFilter()
+            findCourtViewModel.applyFilter(clear = true)
             refClearButton.setBackgroundResource(R.drawable.circle_light_bg)
             refFilterIcon.setImageResource(R.drawable.filter)
             dismiss()

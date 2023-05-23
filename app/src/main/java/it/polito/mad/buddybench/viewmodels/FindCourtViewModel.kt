@@ -6,9 +6,10 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
-import it.polito.mad.buddybench.persistence.repositories.CourtRepository
-import it.polito.mad.buddybench.persistence.repositories.CourtTimeRepository
+import it.polito.mad.buddybench.persistence.firebaseRepositories.CourtRepository
 import it.polito.mad.buddybench.persistence.repositories.SportRepository
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -30,49 +31,47 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     var maxFee: Float = 100f
     var name: String = ""
 
+    var filtersEnabled = false
 
     @Inject
     lateinit var sportRepository: SportRepository
 
 
-    @Inject
-    lateinit var courtRepository: CourtRepository
-    val courtRepositoryFirebase =  it.polito.mad.buddybench.persistence.firebaseRepositories.CourtRepository()
-    @Inject
-    lateinit var courtTimeRepository: CourtTimeRepository
+    private val courtRepositoryFirebase = CourtRepository()
+
+    private val mainScope = MainScope()
 
 
     fun getAllSports(): LiveData<List<Sports>>{
-        Thread{
-            _sports.postValue(  sportRepository.getAll().map { Sports.valueOf(it.name) })
-        }.start()
+        _sports.value = listOf(Sports.TENNIS, Sports.BASKETBALL, Sports.FOOTBALL, Sports.VOLLEYBALL)
         return sports
     }
     fun getCourtsBySport(): LiveData<List<CourtDTO>> {
-        courtRepositoryFirebase.getCourtsByDay(selectedSport.value!!, selectedDate){
-            list ->
-            loading.postValue(true)
-            _courts = list
-            val courts = applyFiltersOnCourts(_courts)
-            _currentCourts.postValue(courts)
+        mainScope.launch {
+            courtRepositoryFirebase.getCourtsByDay(selectedSport.value!!, selectedDate){
+                    list ->
+                    loading.postValue(true)
+                    _courts = list
+                    val courts = applyFiltersOnCourts(_courts)
+                    _currentCourts.postValue(courts)
+            }
         }
-        /*
-        Thread{
 
-            _courts = courtTimeRepository.getCourtTimesByDay(selectedSport.value!!, selectedDate)
-            val courts = applyFiltersOnCourts(_courts)
-            _currentCourts.postValue(courts)
-        }.start()*/
+
         return currentCourts
     }
 
     fun clearFilters(){
+        filtersEnabled = false
         minRating= 0f
         maxFee= 100f
         name= ""
     }
 
-    fun applyFilter(){
+    fun applyFilter(clear: Boolean = false){
+        filtersEnabled = true
+        if(clear)
+            clearFilters()
         _currentCourts.value = _courts.filter{
             (it.location.contains(name, ignoreCase = true) || it.name.contains(name, ignoreCase = true))
                     && it.rating >= minRating && it.feeHour <= maxFee
@@ -94,7 +93,7 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
         getCourtsBySport()
     }
 
-    fun applyFiltersOnCourts(courts: List<CourtDTO>): List<CourtDTO> {
+    private fun applyFiltersOnCourts(courts: List<CourtDTO>): List<CourtDTO> {
         return courts.filter{
             (it.location.contains(name, ignoreCase = true) || it.name.contains(name, ignoreCase = true))
                     && it.rating >= minRating &&  it.feeHour <= maxFee

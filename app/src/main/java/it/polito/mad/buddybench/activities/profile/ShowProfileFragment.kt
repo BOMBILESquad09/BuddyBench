@@ -8,46 +8,57 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.Priority
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.signature.ObjectKey
+import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
-import it.polito.mad.buddybench.activities.HomeActivity
+import it.polito.mad.buddybench.activities.friends.FriendProfileActivity
 import it.polito.mad.buddybench.classes.Profile
-import it.polito.mad.buddybench.classes.Sport
 import it.polito.mad.buddybench.enums.Skills
+import it.polito.mad.buddybench.viewmodels.FriendsViewModel
 import it.polito.mad.buddybench.viewmodels.ImageViewModel
+import it.polito.mad.buddybench.viewmodels.UserViewModel
+
 
 @AndroidEntryPoint
-class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_profile) {
+class ShowProfileFragment(
+    var seeProfile: Boolean = false,
+    var friendProfile: Profile? = null
+): Fragment(R.layout.show_profile) {
 
     lateinit var profile: Profile
     private val imageViewModel by activityViewModels<ImageViewModel>()
+    private val userViewModel by activityViewModels<UserViewModel>()
+    private val friendViewModel by activityViewModels<FriendsViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
     }
 
     override fun onResume() {
         super.onResume()
-        context.userViewModel.user.observe(this){
-            if (it != null){
-
-
-                profile = it
-
-                setGUI()
+        if(!seeProfile && friendProfile == null)
+            userViewModel.user.observe(this){
+                if (it != null){
+                    profile = it
+                    setGUI()
+                }
             }
+        else {
+            profile = friendProfile!!
+            setGUI()
         }
+
     }
 
 
-
-
-    private fun setGUI(){
+    fun setGUI(){
 
         val thisView = requireView()
 
@@ -74,15 +85,28 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_pro
 
         val iv = thisView.findViewById<ImageView>(R.id.profile_image)
         //resizeImageView(iv)
-        try{
-            imageViewModel.getUserImage(profile.email,{iv.setImageResource(R.drawable.person)}){
-                Glide.with(this)
-                    .load(it)
-                    .into(iv)
-            }
-        } catch (_: Exception){
-            iv.setImageResource(R.drawable.person)
+
+        imageViewModel.getUserImage(profile.email,{ iv.setImageResource(R.drawable.person)}) {
+            val options: RequestOptions = RequestOptions()
+
+
+            Glide.with(this)
+                .load(it)
+                .signature(ObjectKey(it))
+                .apply(options.centerCrop()
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.person)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .priority(Priority.HIGH)
+                    .dontAnimate()
+                    .dontTransform())
+                .error(R.drawable.person)
+                .into(iv)
         }
+
+
+
+
 
         val sportsRecyclerView = thisView.findViewById<RecyclerView>(R.id.sports_container)
         sportsRecyclerView.layoutManager = LinearLayoutManager(context).let {
@@ -90,10 +114,10 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_pro
             it
         }
 
-        context.userViewModel.setSports(profile.sports)
+        userViewModel.setSports(profile.sports)
 
-        sportsRecyclerView.adapter = SportsAdapter(context.userViewModel.sports, false)
-        context.userViewModel.sports.observe(this){
+        sportsRecyclerView.adapter = SportsAdapter(userViewModel.sports, false)
+        userViewModel.sports.observe(this){
             if (it == null) return@observe
         }
         if(profile.sports.none { it.skill != Skills.NULL }){
@@ -103,6 +127,44 @@ class ShowProfileFragment(val context: HomeActivity): Fragment(R.layout.show_pro
         }
 
 
+        if(seeProfile) {
+            val friendButton = thisView.findViewById<MaterialButton>(R.id.friend_request_btn)
+            friendButton.visibility = View.VISIBLE
+            userViewModel.user.observe(this) {
+                if(it == null) return@observe
+                if(!it.isPending && !it.isFriend && !it.isRequesting) {
+                    friendButton.text = "Add Friend"
+                }
+                else if(it.isPending) {
+                    friendButton.text = "Cancel Request"
+                } else if (it.isFriend) {
+                    friendButton.text = "Friends"
+                } else if(it.isRequesting){
+                    friendButton.text = "Accept Request"
+                } else{
+                    friendButton.text = "Remove Friend"
+                }
+                (requireActivity() as FriendProfileActivity).bundle.remove("profile")
+                (requireActivity() as FriendProfileActivity).bundle.putString("profile", it.toJSON().toString())
+
+            }
+            friendButton.setOnClickListener {
+                val profileFriend = userViewModel.user.value!!
+                if(!profileFriend.isPending && !profileFriend.isFriend && !profileFriend.isRequesting) {
+                    userViewModel.sendFriendRequest {
+                    }
+                } else if(profileFriend.isPending) {
+                    userViewModel.removeFriendRequest {
+                    }
+                } else if (profileFriend.isRequesting){
+                    userViewModel.acceptFriendRequest {  }
+                } else{
+                    userViewModel.removeFriend {
+
+                    }
+                }
+            }
+        }
 
         // ** Populate sport cards
         //profile.populateSportCards(context, sportContainer)

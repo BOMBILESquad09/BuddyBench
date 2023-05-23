@@ -3,12 +3,15 @@ package it.polito.mad.buddybench.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.play.core.integrity.p
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.persistence.firebaseRepositories.FriendRepository
 import it.polito.mad.buddybench.persistence.firebaseRepositories.UserRepository
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -44,31 +47,44 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     var oldFriendsRequests = friendRequests.value!!
     val friendRequests: LiveData<List<Profile>> get() = _friendRequests
 
+    val mainScope = MainScope()
 
 
     fun subscribeFriendsList() {
+
         var init = true
         friendRepository.subscribeFriends({
         }) {
-            println("AGGIORNOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
-            runBlocking {
-                suspend {
-                    if(init){
-                        getFriendsList()
-                        getFriendRequests()
-                        getPossibleFriends()
-                        init = false
-                    } else{
-                        println("prendiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
-                        userRepository.fetchUser {
-                            getFriendRequests()
-                            getFriendsList()
-                        }
-                        getPossibleFriends()
-                    }
-                }.invoke()
+
+            mainScope.launch {
+                if (init) {
+                    getFriendsList()
+                    getFriendRequests()
+                    getPossibleFriends()
+                    println("fine")
+                    init = false
+                } else {
+                    refreshAll {}
+                }
+                _l.postValue(false)
+
             }
         }
+
+    }
+
+    fun refreshAll(onSuccess: () -> Unit) {
+        _l.postValue(true)
+        mainScope.launch {
+            userRepository.fetchUser {
+                getFriendRequests()
+                getFriendsList()
+                onSuccess()
+            }
+        }
+
+        getPossibleFriends()
+        _l.postValue(false)
 
     }
 
@@ -76,26 +92,32 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     private fun getFriendsList() {
         runBlocking {
             userRepository.getUser {
-                oldFriends = _friends.value!!
 
+                oldFriends = _friends.value!!
                 _friends.postValue(it.friends)
             }
         }
     }
 
     private fun getPossibleFriends() {
-        _l.postValue(true)
         runBlocking {
             oldPossibleFriends = possibleFriends.value!!
-
             _possibleFriends.postValue(friendRepository.getNotFriends())
-
-
-            _l.postValue(false)
         }
     }
 
 
+    fun refreshPossibleFriends(profile: Profile) {
+
+        _possibleFriends.value = _possibleFriends.value!!.map {
+            if (it.email == profile.email) {
+                profile
+            } else {
+                it
+            }
+        }
+
+    }
 
     private fun getFriendRequests() {
         if (currentUser != null) {
@@ -104,27 +126,28 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
                     oldFriendsRequests = _friendRequests.value!!
                     _friendRequests.postValue(it.pendings)
                 }
-                _lRequests.postValue(false)
             }
 
         }
     }
 
-    fun confirmRequest(email: String,  onSuccess: ()->Unit) {
+    fun confirmRequest(email: String, onSuccess: () -> Unit) {
         _lRequests.postValue(true)
         runBlocking {
             friendRepository.acceptFriendRequest(email)
             onSuccess()
+            _lRequests.postValue(false)
+
         }
-        _lRequests.postValue(false)
     }
 
     fun rejectRequest(email: String, onSuccess: () -> Unit) {
         _lRequests.postValue(true)
         runBlocking {
             friendRepository.refuseFriendRequest(email)
-            onSuccess()
             _lRequests.postValue(false)
+            onSuccess()
+
         }
     }
 
@@ -141,13 +164,14 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
             friendRepository.postFriendRequest(email)
             _possibleFriends.value = _possibleFriends.value!!.map {
                 val p = it.copy()
-                if(p.email == email){
+                if (p.email == email) {
                     p.isPending = true
                 }
                 p
             }
-            callback()
             _lAdd.postValue(false)
+            callback()
+
         }
     }
 
@@ -159,7 +183,7 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
 
             _possibleFriends.value = _possibleFriends.value!!.map {
                 val p = it.copy()
-                if(p.email == email){
+                if (p.email == email) {
                     p.isPending = false
                 }
                 p

@@ -20,6 +20,7 @@ import androidx.transition.Scene
 import androidx.transition.TransitionInflater
 import androidx.transition.TransitionManager
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.classes.JSONUtils.Companion.getBoolean
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getInt
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getJSONArray
 import it.polito.mad.buddybench.classes.JSONUtils.Companion.getString
@@ -38,7 +39,8 @@ import java.time.temporal.ChronoUnit
 
 class Profile(var name: String?, var surname: String?, var nickname: String?, var email: String, var location: String?, var birthdate: LocalDate, var reliability: Int, var imageUri: Uri?, var sports: MutableList<Sport>,
             var friends: MutableList<Profile>, val pendings: MutableList<Profile>,
-            var isFriend: Boolean = false, var isPending: Boolean = false
+            var isFriend: Boolean = false, var isPending: Boolean = false,
+              var isRequesting: Boolean = false,
               ) {
 
 
@@ -70,6 +72,9 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
             val birthday = LocalDate.parse(jsonProfile.getString("birthdate", "27/04/1999"),  DateTimeFormatter.ofPattern("dd/MM/yyyy"))
             val location = jsonProfile.getString("location", "No location")
             val reliability = jsonProfile.getInt("reliability",0)
+            val isPending = jsonProfile.getBoolean("isPending", false)
+            val isFriend = jsonProfile.getBoolean("isFriend", false)
+            val isRequesting = jsonProfile.getBoolean("isRequesting", false)
             var imageUri:Uri? = null
             try {
                 imageUri = Uri.parse(jsonProfile.getString("imageUri"))
@@ -82,7 +87,7 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
                 val jsonSport = sportsList.getJSONObject(i)
                 sports.add(Sport.fromJSON(jsonSport))
             }
-            return Profile(name, surname, nickname, email, location, birthday, reliability, imageUri,sports, mutableListOf(), mutableListOf())
+            return Profile(name, surname, nickname, email, location, birthday, reliability, imageUri,sports, mutableListOf(), mutableListOf(), isFriend = isFriend, isPending = isPending , isRequesting = isRequesting)
         }
 
 
@@ -97,6 +102,17 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
             mutableListOf(), mutableListOf()
             ).toJSON().toString()
         }
+
+        fun mockProfile(): Profile {
+            return Profile("Vittorio", "Arpino","TheNextLayer", "varpino@buddybench.it", "Scafati", LocalDate.parse("27/04/1999", DateTimeFormatter.ofPattern("dd/MM/yyyy")), 70,
+                null,
+                mutableListOf(
+                    Sport(Sports.TENNIS, Skills.SKILLED, 3, 2, mutableListOf("Coppa del Nonno")),
+                    Sport(Sports.FOOTBALL, Skills.NEWBIE, 7, 6, mutableListOf("Coppa Campionii"))
+                ),
+                mutableListOf(), mutableListOf()
+            )
+        }
     }
 
     fun toJSON(): JSONObject {
@@ -108,6 +124,9 @@ class Profile(var name: String?, var surname: String?, var nickname: String?, va
         json.put("email", email)
         json.put("birthdate", birthdate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
         json.put("reliability", reliability)
+        json.put("isFriend", isFriend)
+        json.put("isRequesting", isRequesting)
+        json.put("isPending", isPending)
         if (imageUri == null){
             json.put("imageUri", JSONObject.NULL)
         } else {

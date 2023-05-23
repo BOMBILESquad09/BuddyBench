@@ -25,6 +25,7 @@ import it.polito.mad.buddybench.persistence.entities.UserWithSports
 import it.polito.mad.buddybench.persistence.entities.UserWithSportsDTO
 import it.polito.mad.buddybench.persistence.entities.toUserDTO
 import it.polito.mad.buddybench.persistence.entities.toUserSportDTO
+import it.polito.mad.buddybench.utils.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -53,11 +54,7 @@ class UserRepository {
                     callback(profile!!)
                 }
             } else{
-                if(otherProfile == null){
-                    fetchUser(email, callback)
-                } else{
-                    callback(otherProfile!!)
-                }
+                fetchUser(email, callback)
             }
 
         }
@@ -71,13 +68,19 @@ class UserRepository {
                 if(email == Firebase.auth.currentUser!!.email!!){
                     (profile.data!!["friends"] as List<DocumentReference>).map { it.get() }
                         .map { it.await() }.forEach {
-                            serializedProfile.friends.add(serializeUser(it.data as Map<String, Object>))
+                            if(it != null)
+                                serializedProfile.friends.add(serializeUser(it.data as Map<String, Object>))
                         }
                     (profile.data!!["friend_requests_pending"] as List<DocumentReference>).map { it.get() }
                         .map { it.await() }.forEach {
-                            serializedProfile.pendings.add(serializeUser(it.data as Map<String, Object>))
+                            if(it!=null)
+                                serializedProfile.pendings.add(serializeUser(it.data as Map<String, Object>) )
                         }
+                } else{
+                    serializedProfile.isRequesting = this@UserRepository.profile?.pendings?.any { it.email == serializedProfile.email }?:false
                 }
+
+
                 if (profile.data!!["last_update"] == null || LocalDate.parse(profile.data!!["last_update"] as String, DateTimeFormatter.ISO_LOCAL_DATE) != LocalDate.now()) {
                     val organized = db.collection("reservations")
                         .whereEqualTo("user", db.document("users/$email")).get()
@@ -158,8 +161,10 @@ class UserRepository {
         val user = Firebase.auth.currentUser!!
         val name = user.displayName!!.substringBefore(" ")
         val surname = user.displayName!!.substringAfter(" ")
+
+        val generatedNickname = Utils.generateNickname()
         return ProfileData(
-            name, surname, "BuddyBenchGuest", user.email!!,
+            name, surname, generatedNickname, user.email!!,
             "Turin", LocalDate.of(1999, 4, 27).toString(), 80,
             "", mutableListOf()
             , listOf(), listOf(), LocalDate.now()
@@ -193,7 +198,7 @@ class UserRepository {
 
     }
 
-    fun checkReservationIsPassed(reservation: Map<String, Any>): Boolean{
+    private fun checkReservationIsPassed(reservation: Map<String, Any>): Boolean{
         val date = LocalDate.parse(reservation["date"] as String, DateTimeFormatter.ISO_LOCAL_DATE)
         if (date < LocalDate.now()) return true
         if(date == LocalDate.now()) return (reservation["endTime"] as Long).toInt() < LocalTime.now().hour
@@ -225,7 +230,7 @@ class UserRepository {
     }
 
     companion object {
-        fun serializeUser(map: Map<String, Any>): Profile {
+        fun serializeUser(map: Map<String, Any>, myProfile: Profile? =null) : Profile {
             val sports = mutableListOf<Sport>()
             val fbSports = map["sports"] as List<Map<String, Any>>
             for (s in fbSports) {
@@ -241,7 +246,6 @@ class UserRepository {
                     )
                 )
             }
-
 
             return Profile(
                 name = map["name"] as String,
@@ -259,7 +263,7 @@ class UserRepository {
                 friends = mutableListOf(),
                 pendings = mutableListOf(),
                 isFriend = (map["friends"] as List<DocumentReference>).any { it.id == Firebase.auth.currentUser!!.email },
-                isPending = (map["friend_requests_pending"] as List<DocumentReference>).any { it.id == Firebase.auth.currentUser!!.email }
+                isPending = (map["friend_requests_pending"] as List<DocumentReference>).any { it.id == Firebase.auth.currentUser!!.email },
             )
         }
     }

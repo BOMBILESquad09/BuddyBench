@@ -1,9 +1,8 @@
-package it.polito.mad.buddybench.activities.findcourt.sportselection
+package it.polito.mad.buddybench.activities.findcourt
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LiveData
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.persistence.dto.CourtDTO

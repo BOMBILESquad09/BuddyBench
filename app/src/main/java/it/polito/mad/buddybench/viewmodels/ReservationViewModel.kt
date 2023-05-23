@@ -11,6 +11,8 @@ import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.firebaseRepositories.ReservationRepository
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.LocalTime
@@ -52,14 +54,17 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     var oldNotInvitedFriends: List<Pair<Profile, Boolean>> = _notInvitedFriends.value!!
     val notInvitedFriends: LiveData<List<Pair<Profile, Boolean>>> = _notInvitedFriends
 
+    val mainScope = MainScope()
 
 
     fun getAllByUser(): LiveData<HashMap<LocalDate, List<ReservationDTO>>> {
         loading.value = (true)
-        runBlocking {
-            val reservations = reservationRepositoryFirebase.getAllByUser()
-            _reservations.postValue(reservations)
-            loading.postValue(false)
+        mainScope.launch {
+            reservationRepositoryFirebase.getAllByUser(){
+                _reservations.postValue(it)
+                loading.postValue(false)
+            }
+
         }
 
 
@@ -76,8 +81,12 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         runBlocking {
             try{
                 if (!edit) {
-                    reservationRepositoryFirebase.save(reservation)
-                    loading.postValue(false)
+                    try {
+                        reservationRepositoryFirebase.save(reservation)
+                        loading.postValue(false)
+                    } catch (e: Exception){
+                    }
+
 
                 } else {
                     reservationRepositoryFirebase.update(
@@ -96,10 +105,11 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     fun updateSelectedDay(date: LocalDate) {
         oldDate = _selectedDate.value
         _selectedDate.value = date
-        getAllByUser()
+
     }
 
     fun getSelectedReservations(): List<ReservationDTO>? {
+
         return reservations.value?.get(selectedDate.value ?: LocalDate.now())
     }
 

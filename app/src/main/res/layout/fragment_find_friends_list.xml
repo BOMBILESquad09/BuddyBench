@@ -1,24 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:name="it.polito.mad.buddybench.activities.friends.FindFriendFragment"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swiperefresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="match_parent">
 
-    <ProgressBar
-        android:id="@+id/pb_find_friends"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:visibility="gone"
-        android:id="@+id/rv_find_friends"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:name="it.polito.mad.buddybench.activities.friends.FindFriendFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        />
+        android:orientation="horizontal">
 
-</LinearLayout>
+        <ProgressBar
+            android:id="@+id/pb_find_friends"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+        <LinearLayout
+            android:id="@+id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_empty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/you_have_no_friends"
+                android:textColor="@color/disabled"
+                android:textSize="20sp" />
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_find_friends"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -13,6 +13,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.activityViewModels
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -42,6 +43,8 @@ class HomeActivity: AppCompatActivity() {
     private val launcherEdit = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onEditReturn(it)}
     val launcherReservation = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ onReservationReturn(it)}
     val launcherReviews = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { onReviewsReturn(it) }
+    val launcherActivityFriendProfile = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { onFriendsProfileReturn(it) }
+
     val invitationsViewModel by viewModels<InvitationsViewModel>()
 
     lateinit var profile: Profile
@@ -51,20 +54,25 @@ class HomeActivity: AppCompatActivity() {
     val findCourtViewModel by viewModels<FindCourtViewModel>()
     val reservationViewModel by viewModels<ReservationViewModel>()
     val friendsViewModel by viewModels<FriendsViewModel>()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
         setContentView(R.layout.home)
         sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         reservationViewModel.email = Firebase.auth.currentUser!!.email!!
         bottomBar.setup()
 
         userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this){
-            profile = it ?: Profile.fromJSON(JSONObject( sharedPref.getString("profile", Profile.mockJSON())!!))
+            profile = it ?: Profile.fromJSON(JSONObject(sharedPref.getString("profile", Profile.mockJSON())!!))
             friendsViewModel.subscribeFriendsList()
-            invitationsViewModel.subscribeInvitations(){
-                if(it > 0){
-                    bottomBar.counter[Tabs.INVITATIONS.getId()] = it
-                    bottomBar.bottomBar.setBadgeAtTabIndex(Tabs.INVITATIONS.getId(), AnimatedBottomBar.Badge(it.toString()))
+            invitationsViewModel.subscribeInvitations(){ s ->
+                if(s > 0){
+                    bottomBar.counter[Tabs.INVITATIONS.getId()] = s
+                    if(bottomBar.currentTab != Tabs.INVITATIONS)
+                        bottomBar.bottomBar.setBadgeAtTabIndex(Tabs.INVITATIONS.getId(), AnimatedBottomBar.Badge(s.toString()))
                 } else{
                     bottomBar.counter[Tabs.INVITATIONS.getId()] = 0
                 }
@@ -76,7 +84,8 @@ class HomeActivity: AppCompatActivity() {
         friendsViewModel.friendRequests.observe(this){
             if(it.isNotEmpty()){
                 bottomBar.counter[Tabs.FRIENDS.getId()] = it.size
-                bottomBar.bottomBar.setBadgeAtTabIndex(Tabs.FRIENDS.getId(), AnimatedBottomBar.Badge(it.size.toString()))
+                if(bottomBar.currentTab != Tabs.FRIENDS)
+                    bottomBar.bottomBar.setBadgeAtTabIndex(Tabs.FRIENDS.getId(), AnimatedBottomBar.Badge(it.size.toString()))
             } else{
                 bottomBar.counter[Tabs.FRIENDS.getId()] = 0
                 bottomBar.bottomBar.clearBadgeAtTabIndex(Tabs.FRIENDS.getId())
@@ -132,11 +141,26 @@ class HomeActivity: AppCompatActivity() {
     private fun onReservationReturn(response: androidx.activity.result.ActivityResult){
         if(response.resultCode  == Activity.RESULT_OK){
             reservationViewModel.refresh = true
-
             reservationViewModel.updateSelectedDay( LocalDate.parse(response.data!!.getStringExtra("date"), DateTimeFormatter.ISO_LOCAL_DATE))
+            reservationViewModel.getAllByUser()
+
             bottomBar.replaceFragment(bottomBar.currentTab, Tabs.RESERVATIONS)
             bottomBar.currentTab = Tabs.RESERVATIONS
             bottomBar.bottomBar.selectTabAt(tabIndex = bottomBar.currentTab.getId())
+        }
+    }
+
+    private fun onFriendsProfileReturn(response: ActivityResult?) {
+
+        if(response?.data?.getStringExtra("profile") == null) {
+            return
+        }
+        val profile = Profile.fromJSON(JSONObject(response.data!!.getStringExtra("profile")!!))
+        val oldProfile = Profile.fromJSON(JSONObject(response!!.data!!.getStringExtra("oldProfile")!!))
+
+
+        if(profile.isPending != oldProfile.isPending) {
+            friendsViewModel.refreshPossibleFriends(profile)
         }
     }
 
@@ -147,6 +171,8 @@ class HomeActivity: AppCompatActivity() {
 
 
     }
+
+
 
 
 

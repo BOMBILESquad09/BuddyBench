@@ -18,7 +18,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.apachat.loadingbutton.core.customViews.ProgressButton
 import com.bumptech.glide.Glide
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.WeekDayPosition
@@ -36,7 +35,6 @@ import it.polito.mad.buddybench.viewmodels.CourtViewModel
 import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import org.json.JSONObject
-import java.io.FileNotFoundException
 import java.text.DecimalFormat
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -250,7 +248,7 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
             }
         }
         imageViewModel.getCourtImage(court.path  + ".jpg", {
-            binding.backgroundImage.setImageBitmap(BitmapFactory.decodeStream(view?.context?.assets?.open("courtImages/default_image.jpg")))
+            binding.backgroundImage.setImageBitmap(BitmapFactory.decodeStream(view?.context?.assets?.open("drawable/default_image.jpg")))
         }) {
             Glide.with(this)
                 .load(it)

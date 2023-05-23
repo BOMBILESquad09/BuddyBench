@@ -28,6 +28,8 @@ class InvitationsRepository {
             }
         }
     }
+
+
     suspend fun getInvitations(): List<ReservationDTO>{
         return withContext(Dispatchers.IO){
             val currentEmail = Firebase.auth.currentUser!!.email!!

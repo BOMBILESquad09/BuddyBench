@@ -22,6 +22,14 @@ class JSONUtils {
             }
         }
 
+        fun JSONObject.getBoolean(key: String, defaultValue: Boolean): Boolean {
+            return try{
+                this.getBoolean(key)
+            } catch (_:JSONException){
+                defaultValue
+            }
+        }
+
         fun JSONObject.getJSONArray(key: String, defaultValue: JSONArray): JSONArray{
             return try{
                 this.getJSONArray(key)

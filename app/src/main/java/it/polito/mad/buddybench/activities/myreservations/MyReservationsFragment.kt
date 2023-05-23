@@ -21,6 +21,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.CalendarMonth
 import com.kizitonwose.calendar.core.DayPosition
@@ -59,20 +60,38 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
     private lateinit var startMonth: YearMonth
     private lateinit var previousButton: ImageView
     private lateinit var nextButton: ImageView
+    private lateinit var swipeRefresh : SwipeRefreshLayout
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        swipeRefresh = view.findViewById(R.id.swiperefresh)
+        swipeRefresh.setOnRefreshListener {
+            viewModel.updateSelectedDay(viewModel.selectedDate.value ?: LocalDate.now())
+            viewModel.getAllByUser()
+            swipeRefresh.isRefreshing = false
+        }
 
         calendarView = view.findViewById(R.id.calendar)
+        currentMonth = YearMonth.now()
+
+        startMonth = currentMonth.minusMonths(0)  // Adjust as needed
+        endMonth = currentMonth.plusMonths(1)  // Adjust as needed
+        val daysOfWeek = daysOfWeek(DayOfWeek.MONDAY)
+        calendarView.setup(startMonth, endMonth, daysOfWeek.first()) // Available from the library
+        calendarView.scrollToMonth(currentMonth)
         recyclerViewReservations = view.findViewById(R.id.reservations)
         recyclerViewReservations.layoutManager = LinearLayoutManager(context)
         recyclerViewReservations.adapter = ReservationAdapter(  listOf(), context.launcherReservation)
+        calendarView.dayBinder = MyMonthDayBinder(this, calendarView, recyclerViewReservations, context.launcherReservation)
+        calendarView.monthHeaderBinder = MyMonthHeaderFooterBinder()
+        recyclerViewReservations.isNestedScrollingEnabled = false
+
+
 
 
         val dayTitle = view.findViewById<TextView>(R.id.dayTitle)
-        dayTitle.text = LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, d MMMM y"))
+        dayTitle.text = LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, d MMMM y", Locale.ENGLISH))
 
-        calendarView.dayBinder = MyMonthDayBinder(this, calendarView, recyclerViewReservations, context.launcherReservation)
 
         progressLayout = view.findViewById(R.id.progess_layout)
         progressBar = progressLayout.findViewById(R.id.progress_circular)
@@ -86,6 +105,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
                 progressLayout.visibility = View.VISIBLE
             } else {
                 if(viewModel.getSelectedReservations().isNullOrEmpty()){
+
                     context.findViewById<View>(R.id.emptyReservations).visibility = View.VISIBLE
                     recyclerViewReservations.visibility = View.GONE
 
@@ -97,16 +117,9 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
             }
         }
 
-        currentMonth = YearMonth.now()
 
-        startMonth = currentMonth.minusMonths(0)  // Adjust as needed
-        endMonth = currentMonth.plusMonths(1)  // Adjust as needed
-        val daysOfWeek = daysOfWeek(DayOfWeek.MONDAY)
-        calendarView.setup(startMonth, endMonth, daysOfWeek.first()) // Available from the library
-        calendarView.scrollToMonth(currentMonth)
         val monthName = view.findViewById<TextView>(R.id.monthName)
 
-        calendarView.monthHeaderBinder = MyMonthHeaderFooterBinder()
 
         previousButton = view.findViewById<ImageView>(R.id.previousButton)
         nextButton = view.findViewById<ImageView>(R.id.nextButton)
@@ -117,10 +130,10 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         }
 
 
-
-
         refreshNextCalendarButton(currentMonth)
         refreshPreviousCalendarButton(currentMonth)
+
+
 
         previousButton.setOnClickListener {
             calendarView.findFirstVisibleMonth()?.let {
@@ -139,6 +152,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
                 refreshCalendar()
             }
         }
+
         viewModel.getAllByUser().observe(viewLifecycleOwner){
             if(it == null)return@observe
             refreshCalendar()
@@ -148,10 +162,9 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
 
     private fun refresh(){
         val selectedReservations = viewModel.getSelectedReservations()?.sortedBy { it.endTime } ?: listOf()
-
         if (viewModel.oldDate != null){
-            val firstDay = calendarView.findFirstVisibleMonth()?.yearMonth!!.atDay(1)
-            val lastDay = calendarView.findFirstVisibleMonth()?.yearMonth!!.atEndOfMonth()
+            val firstDay = calendarView.findFirstVisibleMonth()?.yearMonth?.atDay(1) ?: YearMonth.now().atDay(1)
+            val lastDay = calendarView.findFirstVisibleMonth()?.yearMonth?.atEndOfMonth() ?: YearMonth.now().atEndOfMonth()
             if (firstDay <= viewModel.oldDate && viewModel.oldDate!! <= lastDay)
                 calendarView.notifyDayChanged(CalendarDay(viewModel.oldDate!!, DayPosition.MonthDate))
             else if (firstDay > viewModel.oldDate){
@@ -165,12 +178,26 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
             calendarView.notifyDayChanged(CalendarDay(viewModel.selectedDate.value!!, DayPosition.MonthDate))
         }
 
-        context.reservationViewModel.loading.postValue(false)
+        if(selectedReservations.isEmpty()){
+            context.findViewById<View>(R.id.emptyReservations).visibility = View.VISIBLE
+            recyclerViewReservations.visibility = View.GONE
+            (recyclerViewReservations.adapter as ReservationAdapter).reservations = selectedReservations
+            recyclerViewReservations.adapter!!.notifyDataSetChanged()
 
-        val diffUtils = InvitationsDiffsUtils((recyclerViewReservations.adapter as ReservationAdapter).reservations, selectedReservations)
-        val diff = DiffUtil.calculateDiff(diffUtils)
-        (recyclerViewReservations.adapter as ReservationAdapter).reservations = selectedReservations
-        diff.dispatchUpdatesTo(recyclerViewReservations.adapter!!)
+        } else {
+            if(!viewModel.loading.value!!){
+                recyclerViewReservations.visibility = View.VISIBLE
+                context.findViewById<View>(R.id.emptyReservations).visibility = View.GONE
+            }
+            val diffUtils = InvitationsDiffsUtils((recyclerViewReservations.adapter as ReservationAdapter).reservations, selectedReservations)
+            val diff = DiffUtil.calculateDiff(diffUtils)
+            (recyclerViewReservations.adapter as ReservationAdapter).reservations = selectedReservations
+            diff.dispatchUpdatesTo(recyclerViewReservations.adapter!!)
+        }
+
+
+
+
 
     }
 
@@ -179,9 +206,8 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         val reservations = viewModel.reservations.value ?: return
 
         for(entries in reservations.entries){
-
-            val firstDay = calendarView.findFirstVisibleMonth()?.yearMonth!!.atDay(1)
-            val lastDay = calendarView.findFirstVisibleMonth()?.yearMonth!!.atEndOfMonth()
+            val firstDay = calendarView.findFirstVisibleMonth()?.yearMonth?.atDay(1) ?: YearMonth.now().atDay(1)
+            val lastDay = calendarView.findFirstVisibleMonth()?.yearMonth?.atEndOfMonth() ?: YearMonth.now().atEndOfMonth()
 
             val calendarDay = if (firstDay <= entries.key && entries.key <= lastDay ){
                 CalendarDay(entries.key, DayPosition.MonthDate)
@@ -202,15 +228,14 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         super.onStart()
 
         viewModel.selectedDate.observe(viewLifecycleOwner){
-            if (it != null && viewModel.refresh){
+            if (it != null){
+
                 calendarView.scrollToDate(it)
                 calendarView.scrollToMonth(YearMonth.from(it))
                 refreshPreviousCalendarButton(YearMonth.from(it))
                 refreshNextCalendarButton(YearMonth.from(it))
                 refresh()
-                viewModel.refresh = false
             } else {
-                viewModel.refresh = false
                 refresh()
             }
         }

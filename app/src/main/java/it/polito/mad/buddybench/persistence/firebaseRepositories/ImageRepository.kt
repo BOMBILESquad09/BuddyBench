@@ -11,34 +11,26 @@ import kotlinx.coroutines.withContext
 
 class ImageRepository {
     private val storage = FirebaseStorage.getInstance().reference
-    private val cacheCourtImages: HashMap<String, Uri?> = HashMap()
-    private val cacheProfileImages: HashMap<String, Uri?> = HashMap()
 
 
 
-    suspend fun getUserImage(path: String): Uri{
-        if(cacheProfileImages[path] != null) {
-            return cacheProfileImages[path]!!
-        }
-        if(cacheProfileImages.keys.contains(path)) throw NotFoundException()
-
+    suspend fun getUserImage(path: String, onSuccess:(Uri) -> Unit = {}){
         return withContext(Dispatchers.IO){
-            cacheProfileImages[path] = null
-            cacheProfileImages[path] = storage.child("profile_images/$path").downloadUrl.await()
-            cacheProfileImages[path]!!
+            val uri = storage.child("profile_images/$path").downloadUrl.await()
+            withContext(Dispatchers.Main){
+                onSuccess(uri)
+            }
+
         }
     }
 
-    suspend fun getCourtImage(path: String): Uri{
-        if(cacheCourtImages[path] != null) {
-            return cacheCourtImages[path]!!
-        }
-        if(cacheCourtImages.keys.contains(path)) throw NotFoundException()
+    suspend fun getCourtImage(path: String, onSuccess: (Uri) -> Unit){
         return withContext(Dispatchers.IO){
-            cacheCourtImages[path] = null
-            cacheCourtImages[path] = storage.child("court_images/$path").downloadUrl.await()
-            cacheCourtImages[path]!!
 
+            val uri = storage.child("court_images/$path").downloadUrl.await()
+            withContext(Dispatchers.Main){
+                onSuccess(uri)
+            }
         }
     }
 

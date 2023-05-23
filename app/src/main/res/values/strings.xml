@@ -238,5 +238,10 @@
     <string name="send_request">Send request</string>
     <string name="loading">Loading...</string>
     <string name="domenica_30_aprile_2023">Domenica 30 Aprile 2023</string>
+    <string name="you_have_no_friends">You have no friends yet</string>
+    <string name="no_friends_to_find">No friends to find</string>
+    <string name="you_have_no_friends_yet">You have no friends yet</string>
+    <string name="no_friend_requests">No friend requests</string>
+    <string name="no_invitations_received">No invitations received</string>
 
 </resources>

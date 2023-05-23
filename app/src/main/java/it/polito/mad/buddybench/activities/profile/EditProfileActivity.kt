@@ -6,7 +6,9 @@ import android.app.DatePickerDialog
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BlendMode
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,6 +17,7 @@ import android.view.*
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
@@ -26,12 +29,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.findcourt.CourtsDiffUtils
 import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.classes.Sport
+import it.polito.mad.buddybench.classes.ValidationUtils
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.changeColor
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateEmail
 import it.polito.mad.buddybench.classes.ValidationUtils.Companion.validateString
@@ -91,6 +96,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.edit_profile)
+
         // ** Toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.title = "Profile"
@@ -103,41 +109,54 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         this.closeContextMenu()
         // ** Profile TextFields Edit
         val nameEdit = findViewById<EditText>(R.id.nameEdit)
+        val nameEditBox = findViewById<TextInputLayout>(R.id.first_name_box)
+        nameEdit.backgroundTintMode = PorterDuff.Mode.CLEAR
         nameEdit.doOnTextChanged { text, _, _, _ ->
             changeColor(nameEdit, true, resources)
+            val validated = validateString(text.toString())
+            //if(!validated) nameEditBox.boxStrokeColor = Color.RED else
+            nameEditBox.boxStrokeColor = Color.BLUE
             profile.name = text.toString()
         }
         nameEdit.setText(profile.name)
 
+        val surnameEditBox = findViewById<TextInputLayout>(R.id.surname_box)
         val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
         surnameEdit.doOnTextChanged { text, _, _, _ ->
             changeColor(surnameEdit, true, resources)
+            val validated = validateString(text.toString())
+            //if(!validated) surnameEditBox.boxStrokeColor = Color.RED else
+            surnameEditBox.boxStrokeColor = Color.BLUE
             profile.surname = text.toString()
         }
+        surnameEdit.backgroundTintMode = PorterDuff.Mode.CLEAR
         surnameEdit.setText(profile.surname)
 
+        val nicknameEditBox = findViewById<TextInputLayout>(R.id.nickname_box)
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
         nicknameEdit.doOnTextChanged { text, _, _, _ ->
             changeColor(nicknameEdit, true, resources)
-            profile.nickname = text.toString()
+            val validated = validateString(text.toString())
+            //if(!validated) nicknameEditBox.boxStrokeColor = Color.RED else
+            nicknameEditBox.boxStrokeColor = Color.BLUE
+            profile.nickname = text.toString().trim()
         }
+        nicknameEdit.backgroundTintMode = PorterDuff.Mode.CLEAR
         nicknameEdit.setText(profile.nickname)
 
-        oldEmail = profile.email
-        val emailEdit = findViewById<EditText>(R.id.Email)
-        emailEdit.doOnTextChanged { text, _, _, _ ->
-            changeColor(emailEdit, true, resources)
-            profile.email = text.toString()
-        }
-        emailEdit.setText(profile.email)
 
+
+        val localityBox = findViewById<TextInputLayout>(R.id.locality_box)
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
+        localityEdit.backgroundTintMode = PorterDuff.Mode.CLEAR
         localityEdit.setText(profile.location)
         localityEdit.doOnTextChanged { text, _, _, _ ->
             changeColor(localityEdit, true, resources)
+            val validated = validateString(text.toString())
+            //if(!validated) localityBox.boxStrokeColor = Color.RED else
+            localityBox.boxStrokeColor = Color.BLUE
             profile.location = text.toString()
         }
-
 
         birthdateListener.value = profile.birthdate
         val birthdayButtonEdit = findViewById<EditText>(R.id.birthdayEditButton)
@@ -145,6 +164,8 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             birthdayButtonEdit.setText(it.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
             profile.birthdate = it
         }
+        birthdayButtonEdit.backgroundTintMode = PorterDuff.Mode.CLEAR
+
         // ** Profile Image
         imageEdit = findViewById(R.id.profile_image)
         try{
@@ -357,31 +378,40 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
 
     private fun formValidation(): Boolean {
         val nameEdit = findViewById<EditText>(R.id.nameEdit)
+        val nameBox = findViewById<TextInputLayout>(R.id.first_name_box)
+
         val nicknameEdit = findViewById<EditText>(R.id.nicknameEdit)
+        val nicknameBox = findViewById<TextInputLayout>(R.id.nickname_box)
+
         val surnameEdit = findViewById<EditText>(R.id.surnameEdit)
+        val surnameBox = findViewById<TextInputLayout>(R.id.surname_box)
+
         val emailEdit = findViewById<EditText>(R.id.Email)
         val localityEdit = findViewById<EditText>(R.id.localityEdit)
+        val localityBox = findViewById<TextInputLayout>(R.id.locality_box)
+
         var flag = true
         var flagEmail = true
         val drawableError = R.drawable.error
         if (!changeColor(nameEdit, validateString(nameEdit.text.toString()), resources)) {
+            nameBox.boxStrokeColor = Color.RED
             nameEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
             flag = false
         }
 
         if(!changeColor(surnameEdit, validateString(surnameEdit.text.toString()), resources)){
+            surnameBox.boxStrokeColor = Color.RED
             surnameEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
             flag = false
         }
         if (!changeColor(nicknameEdit, validateString(nicknameEdit.text.toString()), resources)) {
+            nicknameBox.boxStrokeColor = Color.RED
             nicknameEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
             flag = false
         }
-        if (!changeColor(emailEdit, validateEmail(emailEdit.text.toString()), resources)) {
-            emailEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
-            flagEmail = false
-        }
+
         if (!changeColor(localityEdit, validateString(localityEdit.text.toString()), resources)) {
+            localityBox.boxStrokeColor = Color.RED
             localityEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.error, 0)
             flag = false
         }

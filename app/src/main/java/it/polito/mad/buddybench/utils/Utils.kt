@@ -3,6 +3,7 @@ package it.polito.mad.buddybench.utils
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.icu.text.DecimalFormat
@@ -18,9 +19,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.core.animation.doOnEnd
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.os.bundleOf
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.activities.HomeActivity
+import it.polito.mad.buddybench.activities.court.CourtActivity
+import it.polito.mad.buddybench.activities.friends.FriendProfileActivity
 import it.polito.mad.buddybench.activities.myreservations.displayText
+import it.polito.mad.buddybench.classes.Profile
 import java.math.RoundingMode
 import java.time.DayOfWeek
 import java.time.Duration
@@ -29,6 +35,7 @@ import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 import java.time.temporal.WeekFields
 import java.util.Locale
+import java.util.Random
 import java.util.UUID
 
 
@@ -159,6 +166,33 @@ class Utils {
             return dialog
         }
 
+        fun goToProfileFriend(context: HomeActivity, profile: Profile) {
+            val i = Intent(context, FriendProfileActivity::class.java)
+            
+            val bundle = bundleOf("profile" to profile.toJSON().toString())
+            i.putExtras(bundle)
+            context.launcherActivityFriendProfile.launch(i)
+        }
+
+        fun generateNickname(): String{
+            fun generateRandomNicknames(count: Int): List<String> {
+                val adjectives = listOf("Pazzo", "Sgravato", "Great", "Funny", "Brave", "Shiny", "Lucky", "Awesome", "Charming", "Gentle")
+                val nouns = listOf("Cat", "Dog", "Tiger", "Lion", "Elephant", "Monkey", "Kangaroo", "Panda", "Dolphin", "Owl")
+                val nicknames = mutableListOf<String>()
+
+                repeat(count) {
+                    val adjective = adjectives.random()
+                    val noun = nouns.random()
+                    val nickname = "$adjective$noun"
+                    nicknames.add(nickname)
+                }
+
+                return nicknames
+            }
+            val nicknames = generateRandomNicknames(100)
+            Random().setSeed(LocalDate.now().toEpochDay())
+            return nicknames.get(Random().nextInt(100))
+        }
         fun generateUUID(): String {
             val uuid = UUID.randomUUID()
             return uuid.toString()

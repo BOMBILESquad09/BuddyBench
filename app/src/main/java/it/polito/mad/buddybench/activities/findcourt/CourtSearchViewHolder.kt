@@ -1,21 +1,20 @@
-package it.polito.mad.buddybench.activities.findcourt.sportselection
+package it.polito.mad.buddybench.activities.findcourt
 
 import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.findFragment
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.Priority
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import dagger.hilt.android.internal.managers.FragmentComponentManager
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
-import it.polito.mad.buddybench.activities.findcourt.SearchFragment
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
-import java.io.FileNotFoundException
 import java.text.DecimalFormat
 
 class CourtSearchViewHolder(val v: View, val callback: (String, Sports) -> Unit, val reviewsCallback: (String, Sports) -> Unit): RecyclerView.ViewHolder(v){
@@ -35,14 +34,22 @@ class CourtSearchViewHolder(val v: View, val callback: (String, Sports) -> Unit,
         feeHour.backgroundTintList = ColorStateList.valueOf(Sports.getSportColor(Sports.valueOf(court.sport), v.context))
         courtRating.text = DecimalFormat("#.0").format(court.rating)
         // ** Reviews
-        println(court.path)
         ((FragmentComponentManager.findActivity(v.context) as HomeActivity)).imageViewModel.getCourtImage(court.path + ".jpg",
             {
-                courtImage.setImageBitmap(BitmapFactory.decodeStream(courtImage.context?.assets?.open("courtImages/default_image.jpg")))
+                courtImage.setImageBitmap(BitmapFactory.decodeStream(courtImage.context?.assets?.open("drawable/default_image.jpg")))
             }){
+            val options = RequestOptions()
             Glide.with(v.context)
                 .load(it)
+                .apply(options.centerCrop()
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.default_image)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .priority(Priority.HIGH)
+                    .dontAnimate()
+                    .dontTransform())
                 .into(courtImage)
+
         }
 
         courtRating.setOnClickListener { reviewsCallback(court.name, Sports.valueOf(court.sport)) }

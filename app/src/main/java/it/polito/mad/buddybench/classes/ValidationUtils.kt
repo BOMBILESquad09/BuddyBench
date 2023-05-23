@@ -13,7 +13,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 class ValidationUtils {
     companion object{
-        fun validateString(string: String?): Boolean{
+        fun validateString(string: String?): Boolean {
             return string != null && string.trim().isNotEmpty()
         }
 

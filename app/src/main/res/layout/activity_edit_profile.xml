@@ -2,7 +2,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -127,7 +126,7 @@
                                     android:gravity=""
                                     android:inputType="textNoSuggestions"
                                     android:singleLine="true"
-                                    android:text="@string/nameLabel"
+                                    android:text=""
                                     android:textSize="15sp" />
 
                             </com.google.android.material.textfield.TextInputLayout>
@@ -141,7 +140,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:hint="@string/surnameLabel"
+                                android:hint="diocane"
                                 android:textColorHint="@color/md_theme_dark_inverseOnSurface"
                                 app:boxStrokeColor="#FF0000">
 
@@ -152,11 +151,10 @@
                                     android:backgroundTint="@color/md_theme_dark_onPrimary"
                                     android:fontFamily="@font/montserrat_medium_500"
                                     android:gravity=""
-                                    android:hint="@string/surnameLabel"
                                     android:inputType="textNoSuggestions"
                                     android:singleLine="true"
-                                    android:text="@string/surnameLabel"
                                     android:textSize="15sp" />
+
                             </com.google.android.material.textfield.TextInputLayout>
                         </LinearLayout>
 
@@ -176,11 +174,8 @@
                                 android:backgroundTint="@color/md_theme_dark_onPrimary"
                                 android:fontFamily="@font/montserrat_medium_500"
                                 android:gravity=""
-                                android:hint="@string/nicknameLabel"
-
                                 android:inputType="textNoSuggestions"
                                 android:singleLine="true"
-                                android:text="@string/nicknameLabel"
                                 android:textSize="15sp" />
 
 
@@ -200,7 +195,6 @@
                                 android:layout_height="wrap_content"
                                 android:backgroundTint="@color/md_theme_dark_onPrimary"
                                 android:fontFamily="@font/montserrat_medium_500"
-                                android:hint="@string/emailLabel"
                                 android:inputType="textEmailAddress"
                                 android:singleLine="true"
                                 android:text="@string/emailLabel"
@@ -228,7 +222,6 @@
                                     android:layout_height="wrap_content"
                                     android:backgroundTint="@color/md_theme_dark_onPrimary"
                                     android:fontFamily="@font/montserrat_medium_500"
-                                    android:hint="@string/localityLabel"
                                     android:inputType="textNoSuggestions"
                                     android:singleLine="true"
                                     android:text="@string/localityLabel"

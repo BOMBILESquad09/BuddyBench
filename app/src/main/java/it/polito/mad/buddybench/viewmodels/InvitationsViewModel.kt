@@ -7,6 +7,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.persistence.firebaseRepositories.InvitationsRepository
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -19,19 +21,26 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
     val invitations: LiveData<List<ReservationDTO>> = _invitations
 
     private val invitationSize: MutableLiveData<Int> = MutableLiveData(0)
-
+    val mainScope = MainScope()
     fun subscribeInvitations(onSuccess: (Int) -> Unit): LiveData<List<ReservationDTO>>{
         invitationsRepository.subscribeInvitations( onSuccess = {
             onSuccess(it)
             invitationSize.postValue(it)
         })
         invitationSize.observeForever{
-            if(it != null)
-                runBlocking {
-                    _invitations.postValue(invitationsRepository.getInvitations())
-                }
+            if(it != null && it != 0)
+                getAll()
+            else{
+                _invitations.postValue(listOf())
+            }
         }
         return invitations
+    }
+
+    fun getAll(){
+        mainScope.launch {
+            _invitations.postValue(invitationsRepository.getInvitations())
+        }
     }
 
     fun acceptInvitation(reservationDTO: ReservationDTO){

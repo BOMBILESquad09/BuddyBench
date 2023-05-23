@@ -31,33 +31,8 @@ class ReservationDTO(
     lateinit var pendings: List<Profile>
     companion object{
 
-        private fun createUser(): User {
-            return User(
-                name = "Vittorio",
-                surname = "Arpino",
-                nickname = "Victor",
-                birthdate = LocalDate.now().toString(),
-                location = "Scafati",
-                email = "vittorio@polito.it",
-                reliability = 10,
-                imagePath = null
-            )
-        }
 
-        private fun createCourt(sport: String, feeHour: Int = 20, feeEquipment: Int = 10): Court {
-            return Court(
-                name = "CourtSampleName",
-                address = "ExampleRoad",
-                feeHour = feeHour,
-                sport = sport,
-                phoneNumber = "ExampleNumber",
-                location= "ExampleLocation",
-                path = "court1",
-                feeEquipment = feeEquipment,
-                rating = 4.2,
-                nReviews = 15
-            )
-        }
+
 
         fun toHashmap(list: List<ReservationDTO>): HashMap<LocalDate,List<ReservationDTO>>{
 
