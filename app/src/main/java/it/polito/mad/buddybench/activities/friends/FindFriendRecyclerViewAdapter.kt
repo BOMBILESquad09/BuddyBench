@@ -47,7 +47,8 @@ class FindFriendRecyclerViewAdapter(
         val tvUsername = binding.tvFriendUsername
         val ivImage = binding.ivFriendImage
 
-        val btnAdd = binding.btnAddFriendTrue
+        val btnAdd = binding.btnAddFriend
+        val btnAddimage = binding.btnAddFriendImage
 
 
         override fun toString(): String {
@@ -99,13 +100,13 @@ class FindFriendRecyclerViewAdapter(
 
         private fun updateAddBtn(state: Boolean) {
             if (state) {
-                this.btnAdd.backgroundTintList = ColorStateList.valueOf(Color.LTGRAY)
-                this.btnAdd.setImageResource(R.drawable.person)
-                this.btnAdd.drawable.setTint(Color.WHITE)
+                this.btnAddimage.backgroundTintList =
+                        ColorStateList.valueOf(binding.root.context.getColor(R.color.disabled))
+                this.btnAddimage.setImageResource(R.drawable.request_sent)
             } else {
                 this.btnAdd.backgroundTintList =
                     ColorStateList.valueOf(binding.root.context.getColor(R.color.md_theme_light_primary))
-                this.btnAdd.setImageResource(R.drawable.add_friend)
+                this.btnAddimage.setImageResource(R.drawable.add_friend)
             }
 
         }
