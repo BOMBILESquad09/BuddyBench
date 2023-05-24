@@ -16,6 +16,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.activityViewModels
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
@@ -172,9 +173,9 @@ class HomeActivity : AppCompatActivity() {
                         false
                     ) == true
                 ) {
-                    imageViewModel.postUserImage(profile.email, profile.imageUri!!)
+                    imageViewModel.postUserImage(profile.email, profile.imageUri!!, {}) {}
                 }
-                userViewModel.updateUserInfo(profile)
+                userViewModel.updateUserInfo(profile, {}) {}
             }
         }
     }
@@ -215,8 +216,6 @@ class HomeActivity : AppCompatActivity() {
         if (response.resultCode == Activity.RESULT_OK) {
             // TODO: Maybe update
         }
-
-
     }
 
 

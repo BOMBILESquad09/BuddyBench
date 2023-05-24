@@ -37,9 +37,16 @@ class ImageRepository {
         }
     }
 
-    suspend fun postUserImage(path:String,image: Uri){
+//    suspend fun postUserImage(path:String,image: Uri){
+//        withContext(Dispatchers.IO){
+//            storage.child("profile_images/$path").putFile(image).await()
+//        }
+//    }
+
+    suspend fun postUserImage(path:String,image: Uri, onSuccess: () -> Unit){
         withContext(Dispatchers.IO){
             storage.child("profile_images/$path").putFile(image).await()
+            onSuccess()
         }
     }
 

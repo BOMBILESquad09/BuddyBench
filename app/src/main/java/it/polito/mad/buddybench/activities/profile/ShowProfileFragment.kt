@@ -2,6 +2,7 @@ package it.polito.mad.buddybench.activities.profile
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
@@ -50,22 +51,22 @@ class ShowProfileFragment(
 
     override fun onResume() {
         super.onResume()
-        if (!seeProfile && friendProfile == null)
+        if (!seeProfile && friendProfile == null) {
             userViewModel.user.observe(this) {
                 if (it != null) {
                     profile = it
-                    setGUI()
+                    loadImage(it.imageUri)
+                    setGUI(it.imageUri)
                 }
             }
-        else {
+        } else {
             profile = friendProfile!!
             setGUI()
         }
-
     }
 
 
-    fun setGUI() {
+    fun setGUI(imageUri: Uri? = null) {
 
         val thisView = requireView()
 
@@ -91,27 +92,28 @@ class ShowProfileFragment(
         reliabilityTv.text = getString(R.string.reliabilityValue).format(profile.reliability)
 
         val iv = thisView.findViewById<ImageView>(R.id.profile_image)
+        loadImage(profile.imageUri)
+
         //resizeImageView(iv)
 
-        imageViewModel.getUserImage(profile.email, { iv.setImageResource(R.drawable.person) }) {
-            val options: RequestOptions = RequestOptions()
-
-
-            Glide.with(this)
-                .load(it)
-                .signature(ObjectKey(it))
-                .apply(
-                    options.centerCrop()
-                        .placeholder(R.drawable.loading)
-                        .error(R.drawable.person)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .priority(Priority.HIGH)
-                        .dontAnimate()
-                        .dontTransform()
-                )
-                .error(R.drawable.person)
-                .into(iv)
-        }
+        if(imageUri == null)
+            imageViewModel.getUserImage(profile.email, { iv.setImageResource(R.drawable.person) }) {
+                val options: RequestOptions = RequestOptions()
+                Glide.with(this)
+                    .load(it)
+                    .signature(ObjectKey(it))
+                    .apply(
+                        options.centerCrop()
+                            .placeholder(R.drawable.loading)
+                            .error(R.drawable.person)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .priority(Priority.HIGH)
+                            .dontAnimate()
+                            .dontTransform()
+                    )
+                    .error(R.drawable.person)
+                    .into(iv)
+            }
 
         val sportsRecyclerView = thisView.findViewById<RecyclerView>(R.id.sports_container)
         sportsRecyclerView.layoutManager = LinearLayoutManager(context).let {
@@ -218,6 +220,25 @@ class ShowProfileFragment(
             iv.layoutParams = FrameLayout.LayoutParams(diameter, diameter)
             iv.requestLayout()
         }
+    }
+
+    private fun loadImage(imageUri: Uri?) {
+        println("ImageURI $imageUri")
+        val options: RequestOptions = RequestOptions()
+        Glide.with(this)
+            .load(imageUri)
+            .signature(ObjectKey(imageUri.toString()))
+            .apply(
+                options.centerCrop()
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.person)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .priority(Priority.HIGH)
+                    .dontAnimate()
+                    .dontTransform()
+            )
+            .error(R.drawable.person)
+            .into(requireView().findViewById(R.id.profile_image))
     }
 
 

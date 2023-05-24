@@ -178,7 +178,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
         try{
             imageViewModel.getUserImage(profile.email,{
                 imageEdit.setImageResource(R.drawable.person)
-
             }){
                 Glide.with(this)
                     .load(it)
@@ -655,7 +654,7 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     private fun saveProfile() {
         val intent = Intent()
         val b = bundleOf("newProfile" to profile.toJSON().toString())
-        if(imageUri != null ){
+        if(imageUri != null ) {
             b.putBoolean("newImage", true)
         }
         intent.putExtras(b)

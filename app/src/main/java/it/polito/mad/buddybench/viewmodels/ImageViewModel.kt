@@ -1,8 +1,11 @@
 package it.polito.mad.buddybench.viewmodels
 
 import android.net.Uri
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.persistence.firebaseRepositories.ImageRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -20,9 +23,23 @@ class ImageViewModel @Inject constructor() : ViewModel() {
     @Inject
     lateinit var imageRepository: ImageRepository
 
-    fun postUserImage(path: String, uri: Uri) {
-        runBlocking {
-            imageRepository.postUserImage(path, uri)
+    private val _path: MutableLiveData<String> = MutableLiveData(null)
+    val path: LiveData<String> = _path
+
+//    fun postUserImage(path: String, uri: Uri) {
+//        runBlocking {
+//            imageRepository.postUserImage(path, uri)
+//        }
+//    }
+
+    fun postUserImage(path: String, uri: Uri, onFailure: () -> Unit, onSuccess: () -> Unit) {
+        mainScope.launch {
+            try {
+                imageRepository.postUserImage(path, uri, onSuccess)
+                _path.postValue(path)
+            } catch (_: Exception) {
+                onFailure()
+            }
         }
     }
 
