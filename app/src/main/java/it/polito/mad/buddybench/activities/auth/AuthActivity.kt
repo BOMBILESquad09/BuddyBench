@@ -1,18 +1,24 @@
 package it.polito.mad.buddybench.activities.auth
 
+import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.content.IntentSender
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.ktx.Firebase
@@ -23,6 +29,8 @@ class AuthActivity : AppCompatActivity() {
     private lateinit var oneTapClient: SignInClient
     private lateinit var signInRequest: BeginSignInRequest
     private lateinit var signUpRequest: BeginSignInRequest
+    private lateinit var signInButton: MaterialButton
+    private lateinit var progressBar: ProgressBar
 
     private val REQ_ONE_TAP = 2
 
@@ -35,26 +43,33 @@ class AuthActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_auth)
 
-        val signInButton = findViewById<SignInButton>(R.id.sign_in_button)
-        signInButton.setSize(SignInButton.SIZE_WIDE)
+        signInButton = findViewById<MaterialButton>(R.id.sign_in_button)
+        progressBar = findViewById<ProgressBar>(R.id.progress_bar)
+//        signInButton.setSize(SignInButton.SIZE_WIDE)
 
-        signInButton.setOnClickListener{
+        signInButton.setOnClickListener {
             signIn()
         }
 
         auth = FirebaseAuth.getInstance()
 
-        if(auth.currentUser == null && !intent.getBooleanExtra("fromLogout",false))
+        if (auth.currentUser == null && !intent.getBooleanExtra("fromLogout", false))
             signIn()
         else if (auth.currentUser != null) {
             // User already logged-in, close this activity
+            signInButton.visibility = View.GONE
+            progressBar.visibility = View.VISIBLE
             val i = Intent(applicationContext, HomeActivity::class.java)
+            i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(i)
+            signInButton.visibility = View.VISIBLE
+            progressBar.visibility = View.GONE
         }
     }
 
     private fun signIn() {
         /* Building sign-up request code */
+
         oneTapClient = Identity.getSignInClient(this)
         signUpRequest = BeginSignInRequest.builder()
             .setGoogleIdTokenRequestOptions(
@@ -94,8 +109,9 @@ class AuthActivity : AppCompatActivity() {
                 try {
                     startIntentSenderForResult(
                         result.pendingIntent.intentSender, REQ_ONE_TAP,
-                        null, 0, 0, 0, null
+                        null, 0, Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK, 0, null
                     )
+
                 } catch (e: IntentSender.SendIntentException) {
                     Log.e(ContentValues.TAG, "Couldn't start One Tap UI: ${e.localizedMessage}")
                 }
@@ -136,10 +152,11 @@ class AuthActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         when (requestCode) {
             REQ_ONE_TAP -> {
                 try {
+                    signInButton.visibility = View.GONE
+                    progressBar.visibility = View.VISIBLE
                     val credential = oneTapClient.getSignInCredentialFromIntent(data)
                     val idToken = credential.googleIdToken
                     val username = credential.id
@@ -155,25 +172,43 @@ class AuthActivity : AppCompatActivity() {
                                         // Sign in success, update UI with the signed-in user's information
                                         Log.d(ContentValues.TAG, "signInWithCredential:success")
                                         val user = auth.currentUser
-
                                         val i = Intent(applicationContext, HomeActivity::class.java)
+                                        i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                         startActivity(i)
                                     } else {
                                         // If sign in fails, display a message to the user.
-                                        Log.w(ContentValues.TAG, "signInWithCredential:failure", task.exception)
+                                        signInButton.visibility = View.VISIBLE
+                                        progressBar.visibility = View.GONE
+                                        Log.w(
+                                            ContentValues.TAG,
+                                            "signInWithCredential:failure",
+                                            task.exception
+                                        )
                                         //updateUI(null)
                                     }
                                 }
                             Log.d(ContentValues.TAG, "Got ID token.")
                         }
+
                         else -> {
                             // Shouldn't happen.
                             Log.d(ContentValues.TAG, "No ID token or password!")
+                            signInButton.visibility = View.VISIBLE
+                            progressBar.visibility = View.GONE
                         }
                     }
                 } catch (e: ApiException) {
-                    Toast.makeText(this,"Google account is necessary to use the app.",Toast.LENGTH_LONG).show()
-                    Log.d(ContentValues.TAG, "Api exception thrown from activityResult: ${e.message}")
+                    Toast.makeText(
+                        this,
+                        "Google account is necessary to use the app.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    Log.d(
+                        ContentValues.TAG,
+                        "Api exception thrown from activityResult: ${e.message}"
+                    )
+                    signInButton.visibility = View.VISIBLE
+                    progressBar.visibility = View.GONE
                 }
             }
         }
