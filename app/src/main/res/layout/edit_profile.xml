@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        style="@style/TabLayout"
         android:layout_gravity="center">
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -20,32 +21,27 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:src="@drawable/right_arrow_edit"
-            android:layout_margin="16dp"
             android:layout_gravity="center"
             android:scaleX="-1" />
 
         <TextView
             android:id="@+id/profile_title"
             android:layout_width="0dp"
-            android:layout_height="74dp"
+            android:layout_height="wrap_content"
             android:layout_weight="2"
             android:layout_marginHorizontal="16dp"
             android:gravity="center"
             android:fontFamily="@font/montserrat_bold_700"
             android:maxLines="1"
-            android:text="Edit Profile"
-            android:autoSizeTextType="uniform"
-            android:autoSizeMaxTextSize="32sp"
-            android:autoSizeMinTextSize="20sp"
+            style="@style/TabName"
+            android:text="@string/edit_profile"
             android:ellipsize="end"/>
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/save_button"
             android:layout_width="0dp"
             android:layout_weight="0.5"
-            android:layout_height="36dp"
-            android:layout_margin="16dp"
-            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
             android:src="@drawable/save" />
 
 
@@ -350,14 +346,13 @@
                     app:layout_constraintTop_toTopOf="parent" />
                 <ImageButton
                     android:id="@+id/add_sport_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/TabButton"
                     android:background="@drawable/rounded_shape"
                     android:layout_gravity="center_vertical"
                     android:backgroundTint="@color/md_theme_light_primary"
                     android:contentDescription="@string/add"
                     android:src="@drawable/round_add_24_white"
-                    android:layout_marginLeft="5dp"/>
+                    android:layout_marginStart="5dp"/>
             </LinearLayout>
 
 

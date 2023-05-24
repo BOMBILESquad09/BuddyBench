@@ -244,5 +244,6 @@
     <string name="no_friend_requests">No friend requests</string>
     <string name="no_invitations_received">No invitations received</string>
     <string name="nickname_example">\@Jeffardio</string>
+    <string name="edit_profile">Edit Profile</string>
 
 </resources>

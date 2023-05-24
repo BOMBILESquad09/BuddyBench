@@ -6,6 +6,9 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
     <ScrollView
         android:id="@+id/parent_scroll_view"
 
@@ -182,6 +185,7 @@
                         android:layout_marginBottom="12dp"
                         android:clickable="true"
                         android:text="@string/see_all"
+                        android:textSize="18sp"
                         app:layout_constraintBottom_toTopOf="@+id/spacer_2"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/rating_layout" />
@@ -193,6 +197,7 @@
                         android:background="@drawable/round_arrow_back_24_primary"
                         android:contentDescription="@string/write_your_review"
                         android:rotation="180"
+                        android:padding="20dp"
                         app:layout_constraintBottom_toTopOf="@+id/spacer_2"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/rating_layout" />

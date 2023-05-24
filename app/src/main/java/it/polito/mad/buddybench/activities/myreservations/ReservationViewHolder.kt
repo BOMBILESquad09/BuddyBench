@@ -73,6 +73,8 @@ class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent
         iconSport.setImageDrawable(wrappedDrawable)
         slot.text = "${reservation.startTime.format(formatter)} - ${reservation.endTime.format(formatter)}"
 
+        friendsButton.drawable.setTint(Sports.getSportColor(Sports.valueOf(reservation.court.sport), view.context))
+
         if(!reservation.isUserOrganizerInitialized()){
             friendsButton.setOnClickListener {
                 SendInvitationsBottomSheet(reservation).show((FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager, "InvitationBottomSheet")

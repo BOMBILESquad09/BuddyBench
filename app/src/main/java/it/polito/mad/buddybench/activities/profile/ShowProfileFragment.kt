@@ -145,7 +145,7 @@ class ShowProfileFragment(
             }
         } else {
 
-            buttonEdit.visibility = View.GONE
+            buttonEdit.visibility = View.INVISIBLE
             val profileTitle = thisView.findViewById<TextView>(R.id.profile_title)
             profileTitle.text = "@" + profile.nickname
 
