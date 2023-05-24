@@ -243,5 +243,6 @@
     <string name="you_have_no_friends_yet">You have no friends yet</string>
     <string name="no_friend_requests">No friend requests</string>
     <string name="no_invitations_received">No invitations received</string>
+    <string name="nickname_example">\@Jeffardio</string>
 
 </resources>
