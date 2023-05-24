@@ -25,24 +25,29 @@
             android:scaleX="-1" />
 
         <TextView
+            android:id="@+id/profile_title"
             android:layout_width="0dp"
+            android:layout_height="74dp"
             android:layout_weight="2"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat_bold_700"
-            android:padding="16dp"
+            android:layout_marginHorizontal="16dp"
             android:gravity="center"
-            android:text="My Profile"
-            android:textSize="32sp"/>
+            android:fontFamily="@font/montserrat_bold_700"
+            android:maxLines="1"
+            android:text="Edit Profile"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMaxTextSize="32sp"
+            android:autoSizeMinTextSize="20sp"
+            android:ellipsize="end"/>
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/save_button"
             android:layout_width="0dp"
             android:layout_weight="0.5"
-            android:layout_height="wrap_content"
+            android:layout_height="36dp"
             android:layout_margin="16dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/round_save_24"
-             />
+            android:src="@drawable/save" />
+
 
     </LinearLayout>
 
