@@ -143,7 +143,7 @@ class ShowProfileFragment(
 
             buttonEdit.visibility = View.GONE
             val profileTitle = thisView.findViewById<TextView>(R.id.profile_title)
-            profileTitle.text = profile.nickname
+            profileTitle.text = "@" + profile.nickname
 
             val arrow = thisView.findViewById<ShapeableImageView>(R.id.come_back)
             arrow.visibility = View.VISIBLE
