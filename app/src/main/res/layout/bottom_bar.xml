@@ -14,7 +14,7 @@
         app:abb_indicatorColor="@color/md_theme_light_primary"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        app:abb_textSize="14sp"
+        app:abb_textSize="13sp"
         app:abb_selectedTabType="text"
         app:abb_indicatorAppearance="round"
         app:abb_indicatorMargin="16dp"
