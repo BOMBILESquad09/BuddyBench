@@ -64,16 +64,6 @@ class UserViewModel @Inject constructor() : ViewModel() {
         return user
     }
 
-//    fun updateUserInfo(profile: Profile) {
-//
-//        runBlocking {
-//            userRepositoryFirebase.update(profile) {
-//                _user.postValue(it)
-//            }
-//        }
-//
-//    }
-
     fun updateUserInfo(profile: Profile, onFailure: () -> Unit, onSuccess: () -> Unit) {
         mainScope.launch {
             try {
