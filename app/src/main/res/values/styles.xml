@@ -19,4 +19,17 @@
         <item name="textAllCaps">false</item>
     </style>
 
+    <style name="TabName" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:textSize">22sp</item>
+    </style>
+
+    <style name="TabButton" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:layout_width">20sp</item>
+        <item name="android:layout_height">20sp</item>
+    </style>
+    <style name="TabLayout" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:paddingHorizontal">5sp</item>
+        <item name="android:paddingVertical">16sp</item>
+    </style>
+
 </resources>
