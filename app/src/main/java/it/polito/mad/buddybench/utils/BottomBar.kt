@@ -53,7 +53,7 @@ class BottomBar(val context: HomeActivity) {
         val newFragment = when (currentTab) {
             Tabs.PROFILE -> ShowProfileFragment()
             Tabs.RESERVATIONS -> MyReservationsFragment(context)
-            Tabs.FINDCOURT -> FindCourtFragment(context)
+            Tabs.FIND -> FindCourtFragment(context)
             Tabs.FRIENDS -> FriendsFragment(context)
             Tabs.INVITATIONS -> InvitationsFragment(context)
         }
@@ -78,7 +78,7 @@ class BottomBar(val context: HomeActivity) {
                 val newFragment = when (newTag) {
                     Tabs.PROFILE -> ShowProfileFragment()
                     Tabs.RESERVATIONS -> MyReservationsFragment(context)
-                    Tabs.FINDCOURT -> FindCourtFragment(context)
+                    Tabs.FIND -> FindCourtFragment(context)
                     Tabs.INVITATIONS -> InvitationsFragment(context)
                     Tabs.FRIENDS -> FriendsFragment(context)
                 }
