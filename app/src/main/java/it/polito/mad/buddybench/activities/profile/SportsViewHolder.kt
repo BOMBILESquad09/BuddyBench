@@ -24,6 +24,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -101,8 +102,6 @@ class SportsViewHolder(val v: View,
 
     }
 
-
-    @RequiresApi(Build.VERSION_CODES.P)
     private fun setAchievementCard(view: View, sport: Sport, edit: Boolean){
 
         val cardLayout = view.findViewById<LinearLayout>(R.id.card_layout)
@@ -112,7 +111,7 @@ class SportsViewHolder(val v: View,
         newAchievement.backgroundTintMode = PorterDuff.Mode.CLEAR
         val newAchievementBox = view.findViewById<TextInputLayout>(R.id.new_achievement_box)
         newAchievementBox.boxStrokeColor = Color.WHITE
-        newAchievementBox.outlineSpotShadowColor = Color.WHITE
+        
 
         val noAchievements = view.findViewById<TextView>(R.id.no_achivements)
 
