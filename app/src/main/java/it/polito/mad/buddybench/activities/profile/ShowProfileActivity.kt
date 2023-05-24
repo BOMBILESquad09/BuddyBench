@@ -27,6 +27,7 @@ class ShowProfileActivity : AppCompatActivity() {
     private lateinit var sharedPref: SharedPreferences
     private val userViewModel by viewModels<UserViewModel>()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)

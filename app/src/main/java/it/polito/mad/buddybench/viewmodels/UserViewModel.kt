@@ -22,6 +22,8 @@ import it.polito.mad.buddybench.persistence.entities.UserWithSportsDTO
 import it.polito.mad.buddybench.persistence.firebaseRepositories.FriendRepository
 import it.polito.mad.buddybench.persistence.firebaseRepositories.InvitationsRepository
 import it.polito.mad.buddybench.persistence.firebaseRepositories.UserRepository
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
@@ -34,6 +36,7 @@ class UserViewModel @Inject constructor() : ViewModel() {
     @Inject
     lateinit var userRepositoryFirebase: UserRepository
     private val invitationsRepository = InvitationsRepository()
+    val mainScope = MainScope()
 
     private val friendRepository = FriendRepository()
 
@@ -61,13 +64,30 @@ class UserViewModel @Inject constructor() : ViewModel() {
         return user
     }
 
-    fun updateUserInfo(profile: Profile) {
+//    fun updateUserInfo(profile: Profile) {
+//
+//        runBlocking {
+//            userRepositoryFirebase.update(profile) {
+//                _user.postValue(it)
+//            }
+//        }
+//
+//    }
 
-        runBlocking {
-            userRepositoryFirebase.update(profile) {
-                _user.postValue(it)
+    fun updateUserInfo(profile: Profile, onFailure: () -> Unit, onSuccess: () -> Unit) {
+        mainScope.launch {
+            try {
+                userRepositoryFirebase.update(profile) {
+                    _user.postValue(it)
+                }
+                onSuccess()
+            } catch (_: Exception) {
+                onFailure()
             }
         }
+
+
+
 
     }
 
