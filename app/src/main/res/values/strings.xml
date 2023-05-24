@@ -81,7 +81,7 @@
     <string name="wednesday_19_april">%1$s</string>
     <string name="confirm">Confirm</string>
     <string name="which_sport_do_you_want_to_play">Which sport do you want to play?</string>
-    <string name="court_search_phrase">You are currently looking for %1$s court</string>
+    <string name="court_search_phrase">You are currently looking for %1$s courts</string>
     <string name="user_hello">Hi, %1$s!</string>
     <string name="equipment">All the equipment will be available at the price of</string>
     <string name="filters">Filters</string>

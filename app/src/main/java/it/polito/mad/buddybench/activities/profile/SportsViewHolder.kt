@@ -2,11 +2,14 @@ package it.polito.mad.buddybench.activities.profile
 
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.ColorFilter
 import android.graphics.Paint
+import android.graphics.PorterDuff
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
+import android.os.Build
 import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -18,11 +21,13 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textfield.TextInputLayout
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Sport
 import it.polito.mad.buddybench.enums.Skills
@@ -97,12 +102,18 @@ class SportsViewHolder(val v: View,
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.P)
     private fun setAchievementCard(view: View, sport: Sport, edit: Boolean){
 
         val cardLayout = view.findViewById<LinearLayout>(R.id.card_layout)
         val sportIcon = view.findViewById<ImageView>(R.id.sport_card_icon)
         val addButton = view.findViewById<TextView>(R.id.add_achievements)
         val newAchievement = view.findViewById<EditText>(R.id.new_achievement)
+        newAchievement.backgroundTintMode = PorterDuff.Mode.CLEAR
+        val newAchievementBox = view.findViewById<TextInputLayout>(R.id.new_achievement_box)
+        newAchievementBox.boxStrokeColor = Color.WHITE
+        newAchievementBox.outlineSpotShadowColor = Color.WHITE
+
         val noAchievements = view.findViewById<TextView>(R.id.no_achivements)
 
         cardLayout.setBackgroundColor(Sports.getSportColor(sport.name, v.context))
