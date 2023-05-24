@@ -22,7 +22,7 @@
             android:id = "@+id/come_back"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/right_arrow"
+            android:src="@drawable/right_arrow_edit"
             android:layout_marginStart="16dp"
             android:layout_gravity="center"
             android:scaleX="-1" />

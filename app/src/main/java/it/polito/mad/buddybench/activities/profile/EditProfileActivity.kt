@@ -655,6 +655,9 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
     private fun saveProfile() {
         val intent = Intent()
         val b = bundleOf("newProfile" to profile.toJSON().toString())
+        if(imageUri != null ){
+            b.putBoolean("newImage", true)
+        }
         intent.putExtras(b)
         setResult(-1, intent)
         finish()
