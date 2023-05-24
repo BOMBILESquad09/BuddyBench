@@ -67,6 +67,7 @@ class ShowProfileFragment(
         } else {
             profile = friendProfile!!
             setGUI()
+            loadImage()
         }
     }
 
