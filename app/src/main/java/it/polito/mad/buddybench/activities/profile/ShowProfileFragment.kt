@@ -36,6 +36,7 @@ import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
 import org.json.JSONObject
 import org.w3c.dom.Text
+import java.time.LocalTime
 
 
 @AndroidEntryPoint
@@ -96,7 +97,6 @@ class ShowProfileFragment(
         reliabilityTv.text = getString(R.string.reliabilityValue).format(profile.reliability)
 
         val iv = thisView.findViewById<ImageView>(R.id.profile_image)
-        loadImage(profile.imageUri)
 
         //resizeImageView(iv)
 
@@ -245,20 +245,15 @@ class ShowProfileFragment(
     }
 
     private fun loadImage(imageUri: Uri?) {
-        println("ImageURI $imageUri")
-        val options: RequestOptions = RequestOptions()
         Glide.with(this)
             .load(imageUri)
-            .signature(ObjectKey(imageUri.toString()))
-            .apply(
-                options.centerCrop()
-                    .placeholder(R.drawable.loading)
-                    .error(R.drawable.person)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .priority(Priority.HIGH)
-                    .dontAnimate()
-                    .dontTransform()
-            )
+                .placeholder(R.drawable.loading)
+                .error(R.drawable.person)
+                .skipMemoryCache(!seeProfile)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .priority(Priority.HIGH)
+                .dontAnimate()
+                .dontTransform()
             .error(R.drawable.person)
             .into(requireView().findViewById(R.id.profile_image))
     }

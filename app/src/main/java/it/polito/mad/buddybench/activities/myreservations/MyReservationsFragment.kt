@@ -66,7 +66,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         super.onViewCreated(view, savedInstanceState)
         swipeRefresh = view.findViewById(R.id.swiperefresh)
         swipeRefresh.setOnRefreshListener {
-            //viewModel.updateSelectedDay(viewModel.selectedDate.value ?: LocalDate.now())
+            viewModel.updateSelectedDay(viewModel.selectedDate.value ?: LocalDate.now())
             viewModel.getAllByUser()
             swipeRefresh.isRefreshing = false
         }
@@ -242,7 +242,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
 
     }
 
-    fun refreshNextCalendarButton(date: YearMonth){
+    private fun refreshNextCalendarButton(date: YearMonth){
         if (date == endMonth){
             nextButton.setColorFilter(ContextCompat.getColor(context,R.color.md_theme_dark_primary))
             nextButton.isEnabled = false
@@ -257,7 +257,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         }
     }
 
-    fun refreshPreviousCalendarButton(date: YearMonth){
+    private fun refreshPreviousCalendarButton(date: YearMonth){
         if (date == startMonth){
             previousButton.setColorFilter(ContextCompat.getColor(context,R.color.md_theme_dark_primary))
             previousButton.isEnabled = false

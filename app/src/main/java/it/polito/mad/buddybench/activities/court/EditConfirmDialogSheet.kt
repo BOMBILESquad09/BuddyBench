@@ -9,12 +9,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.Switch
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.ResourcesCompat
@@ -22,7 +20,6 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.NestedScrollView
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
 import com.apachat.loadingbutton.core.customViews.CircularProgressButton
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
@@ -50,6 +47,8 @@ class EditConfirmDialogSheet(
 
     private lateinit var switch: Switch
     private lateinit var sheet: NestedScrollView
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -104,35 +103,31 @@ class EditConfirmDialogSheet(
                 switch.isEnabled = false
                 checkboxAccept.isEnabled = false
 
+                confirmButton.startAnimation()
 
 
                 reservationViewModel.saveReservation(
                     reservation,
                     editMode,
                     oldDate,
-
-                ) {
+                    {
                     buildAlertDialog("Ops","Seems that the time slots selected are not available",requireContext()).show()
-                }
-
-                reservationViewModel.loading.observe(viewLifecycleOwner) {
-
-                    if (!it) {
-                        val bitmap =
-                            AppCompatResources.getDrawable(
-                                requireContext(),
-                                R.drawable.done_foreground
-                            )!!
-                                .toBitmap()
-                        confirmButton.doneLoadingAnimation(Color.BLUE, bitmap)
+                }){
+                    val bitmap =
+                        AppCompatResources.getDrawable(
+                            requireContext(),
+                            R.drawable.done_foreground
+                        )!!
+                            .toBitmap()
+                    confirmButton.postOnAnimation {
                         Thread {
-                            Thread.sleep(700)
+                            Thread.sleep(1000)
                             callback()
                         }.start()
-
-                    } else {
-                        confirmButton.startAnimation()
                     }
+
+                    confirmButton.doneLoadingAnimation(0, bitmap)
+
                 }
             }
         }
@@ -244,6 +239,10 @@ class EditConfirmDialogSheet(
 
     override fun isSheetAlwaysExpanded(): Boolean {
         return true
+    }
+
+    override fun animateCornerRadius(): Boolean {
+        return false
     }
 
 

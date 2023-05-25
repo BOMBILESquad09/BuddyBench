@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -37,7 +38,7 @@ import java.util.Locale
 
 class SendInvitationsBottomSheet(
     private val reservationDTO: ReservationDTO,
-    private val invited: Boolean = false): SuperBottomSheetFragment() {
+    private val invited: Boolean = false): BottomSheetDialogFragment() {
 
 
     private val userViewModel by activityViewModels<UserViewModel>()
@@ -56,15 +57,7 @@ class SendInvitationsBottomSheet(
     }
 
 
-    override fun isSheetAlwaysExpanded(): Boolean {
-        return true
-    }
 
-
-
-    override fun getExpandedHeight(): Int {
-        return -2
-    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

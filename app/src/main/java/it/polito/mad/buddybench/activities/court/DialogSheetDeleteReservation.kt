@@ -43,31 +43,29 @@ class DialogSheetDeleteReservation(
         super.onViewCreated(view, savedInstanceState)
         val button = view.findViewById<CircularProgressButton>(R.id.confirm_cancel)
         button.setOnClickListener {
-            reservationViewModel.loading.observe(viewLifecycleOwner) {
-                if (it) {
-                    val bitmap =
-                        AppCompatResources.getDrawable(
-                            requireContext(),
-                            R.drawable.done_foreground
-                        )!!
-                            .toBitmap()
-                    button.doneLoadingAnimation(Color.RED, bitmap)
+            this.isCancelable = false
 
-                } else {
-                    button.startAnimation()
+            button.startAnimation()
+
+            reservationViewModel.deleteReservation(reservationDTO, oldDate, {}) {
+                button.postOnAnimation {
                     Thread {
-                        Thread.sleep(700)
+                        Thread.sleep(1000)
                         callback()
                     }.start()
                 }
+                val bitmap =
+                    AppCompatResources.getDrawable(
+                        requireContext(),
+                        R.drawable.done_foreground
+                    )!!
+                        .toBitmap()
+                button.doneLoadingAnimation(0, bitmap)
+
             }
-            reservationViewModel.deleteReservation(
-                reservationDTO,
-                oldDate,
-                this,
-            )
         }
+
     }
-
-
 }
+
+
