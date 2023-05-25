@@ -213,7 +213,7 @@
                 app:drawableStartCompat="@drawable/round_error_24" />
 
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_new_review"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
