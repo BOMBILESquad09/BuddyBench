@@ -81,7 +81,7 @@
     <string name="wednesday_19_april">%1$s</string>
     <string name="confirm">Confirm</string>
     <string name="which_sport_do_you_want_to_play">Which sport do you want to play?</string>
-    <string name="court_search_phrase">You are currently looking for %1$s court</string>
+    <string name="court_search_phrase">You are currently looking for %1$s courts</string>
     <string name="user_hello">Hi, %1$s!</string>
     <string name="equipment">All the equipment will be available at the price of</string>
     <string name="filters">Filters</string>
@@ -226,7 +226,7 @@
     <string name="new_achievement">New Achievement</string>
     <string name="profile">Profile</string>
     <string name="reservations">Reservations</string>
-    <string name="find_court">Find Court</string>
+    <string name="find_court">Find</string>
     <string name="friends">Friends</string>
     <string name="requests">Requests</string>
     <string name="list">List</string>
@@ -244,5 +244,9 @@
     <string name="no_friend_requests">No friend requests</string>
     <string name="no_invitations_received">No invitations received</string>
     <string name="nickname_example">\@Jeffardio</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="edit_reservation">Edit reservation</string>
+    <string name="invite_friends">Invite friends</string>
+    <string name="change_visibility">Change visibility</string>
 
 </resources>

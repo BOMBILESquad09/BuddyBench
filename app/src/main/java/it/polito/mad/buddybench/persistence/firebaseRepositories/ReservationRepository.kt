@@ -70,7 +70,7 @@ class ReservationRepository {
         }
     }
 
-    suspend fun save(reservationDTO: ReservationDTO) {
+    suspend fun save(reservationDTO: ReservationDTO, onFailure: () -> Unit, onSuccess: () -> Unit) {
         withContext(Dispatchers.IO) {
             val reservationMap: HashMap<String, Any> = createReservationMap(reservationDTO)
             val reservationID = reservationMap["id"] as String
@@ -104,8 +104,6 @@ class ReservationRepository {
                 count = (count + (endTime - startTime)).toInt()
 
             }
-
-
             val postResponse = db.collection("reservations")
                 .document(reservationID)
                 .set(reservationMap)
@@ -118,8 +116,9 @@ class ReservationRepository {
                         ).await()
             }
             postResponse.await()
+            onSuccess()
+            return@withContext
         }
-
     }
 
 
@@ -127,6 +126,8 @@ class ReservationRepository {
     suspend fun update(
         reservationDTO: ReservationDTO,
         oldDate: LocalDate,
+        onFailure: () -> Unit,
+        onSuccess: () -> Unit
     ){
         withContext(Dispatchers.IO){
             try {
@@ -172,6 +173,7 @@ class ReservationRepository {
                     ).await()
             }
             postResponse.await()
+            onSuccess()
         }
     }
 
@@ -181,6 +183,8 @@ class ReservationRepository {
     suspend fun delete(
         reservationDTO: ReservationDTO,
         oldDate: LocalDate,
+        onFailure: () -> Unit,
+        onSuccess: () -> Unit
     ) {
 
         withContext(Dispatchers.IO){
@@ -189,10 +193,16 @@ class ReservationRepository {
             val responseOne = db.collection("reservations").document(docName).delete()
             val responseTwo = db.collection("unavailable_courts").document(oldDate.toString()).update("courts", FieldValue.arrayRemove(db.document("courts/$docCourtName")))
             responseOne.await()
+            println("deletinggggggggg")
+
             try{
                 responseTwo.await()
+
             } catch (_: Exception){
+
             }
+            onSuccess()
+
         }
     }
 

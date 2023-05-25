@@ -3,6 +3,7 @@ package it.polito.mad.buddybench.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.bumptech.glide.load.model.UnitModelLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.activities.court.DialogSheetDeleteReservation
 import it.polito.mad.buddybench.classes.Profile
@@ -75,24 +76,29 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         reservation: ReservationDTO,
         edit: Boolean,
         oldDate: LocalDate?,
-        failureCallback: () -> Unit
+        failureCallback: () -> Unit,
+        onSuccess: () -> Unit
     ) {
         loading.value = true
-        runBlocking {
+        mainScope.launch {
             try{
                 if (!edit) {
                     try {
-                        reservationRepositoryFirebase.save(reservation)
-                        loading.postValue(false)
+                        reservationRepositoryFirebase.save(reservation, {}) {
+                            println("diocaneeeeeee")
+                            loading.postValue(false)
+                            onSuccess()
+                        }
                     } catch (e: Exception){
                     }
-
 
                 } else {
                     reservationRepositoryFirebase.update(
                         reservation,
-                        oldDate!!)
-                    loading.postValue(false)
+                        oldDate!!,{}){
+                        loading.postValue(false)
+                        onSuccess()
+                    }
 
                 }
             } catch (tex: TimeSlotsNotAvailableException){
@@ -140,15 +146,15 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     fun deleteReservation(
         reservationDTO: ReservationDTO,
         date: LocalDate,
-        dialogSheetDeleteReservation: DialogSheetDeleteReservation,
+        onFailure:() -> Unit,
+        onSuccess: () -> Unit
     ) {
-        //da chiamare nella view NON QUI
-        dialogSheetDeleteReservation.isCancelable = false
-        loading.postValue(true)
-        runBlocking {
-            reservationRepositoryFirebase.delete(reservationDTO, date)
-            loading.postValue(false)
-
+        loading.value = true
+        mainScope.launch {
+            println("deletingggggggggggggg")
+            reservationRepositoryFirebase.delete(reservationDTO, date, onFailure){
+                onSuccess()
+            }
         }
     }
 

@@ -23,12 +23,12 @@ class ImageViewModel @Inject constructor() : ViewModel() {
     @Inject
     lateinit var imageRepository: ImageRepository
 
-    private val _path: MutableLiveData<String> = MutableLiveData(null)
-    val path: LiveData<String> = _path
+    private val _loading: MutableLiveData<Boolean> = MutableLiveData(true)
+    val loading: LiveData<Boolean> = _loading
 
 //    fun postUserImage(path: String, uri: Uri) {
 //        runBlocking {
-//            imageRepository.postUserImage(path, uri)
+//            imageRepository.postUserImage(path, uri, {})
 //        }
 //    }
 
@@ -36,7 +36,7 @@ class ImageViewModel @Inject constructor() : ViewModel() {
         mainScope.launch {
             try {
                 imageRepository.postUserImage(path, uri, onSuccess)
-                _path.postValue(path)
+                _loading.postValue(false)
             } catch (_: Exception) {
                 onFailure()
             }
@@ -52,6 +52,7 @@ class ImageViewModel @Inject constructor() : ViewModel() {
     fun getUserImage(path: String, onFailure: () -> Unit, onSuccess: (Uri) -> Unit) {
         mainScope.launch {
             try {
+
                 imageRepository.getUserImage(path, onSuccess)
             } catch (e: Exception) {
                 onFailure()

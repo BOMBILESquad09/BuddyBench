@@ -2,6 +2,7 @@ package it.polito.mad.buddybench.activities.profile
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -9,11 +10,13 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.util.getColumnIndex
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -24,6 +27,7 @@ import com.google.android.material.imageview.ShapeableImageView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
+import it.polito.mad.buddybench.activities.findcourt.FilterSheetDialog
 import it.polito.mad.buddybench.activities.friends.FriendProfileActivity
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.enums.Skills
@@ -32,6 +36,7 @@ import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
 import org.json.JSONObject
 import org.w3c.dom.Text
+import java.time.LocalTime
 
 
 @AndroidEntryPoint
@@ -55,18 +60,21 @@ class ShowProfileFragment(
             userViewModel.user.observe(this) {
                 if (it != null) {
                     profile = it
-                    loadImage(it.imageUri)
-                    setGUI(it.imageUri)
+                    setGUI()
+                    loadImage()
+
                 }
             }
+
         } else {
             profile = friendProfile!!
             setGUI()
+            loadImage()
         }
     }
 
 
-    fun setGUI(imageUri: Uri? = null) {
+    fun setGUI() {
 
         val thisView = requireView()
 
@@ -90,30 +98,6 @@ class ShowProfileFragment(
 
         val reliabilityTv = thisView.findViewById<TextView>(R.id.reliability)
         reliabilityTv.text = getString(R.string.reliabilityValue).format(profile.reliability)
-
-        val iv = thisView.findViewById<ImageView>(R.id.profile_image)
-        loadImage(profile.imageUri)
-
-        //resizeImageView(iv)
-
-        if(imageUri == null)
-            imageViewModel.getUserImage(profile.email, { iv.setImageResource(R.drawable.person) }) {
-                val options: RequestOptions = RequestOptions()
-                Glide.with(this)
-                    .load(it)
-                    .signature(ObjectKey(it))
-                    .apply(
-                        options.centerCrop()
-                            .placeholder(R.drawable.loading)
-                            .error(R.drawable.person)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .priority(Priority.HIGH)
-                            .dontAnimate()
-                            .dontTransform()
-                    )
-                    .error(R.drawable.person)
-                    .into(iv)
-            }
 
         val sportsRecyclerView = thisView.findViewById<RecyclerView>(R.id.sports_container)
         sportsRecyclerView.layoutManager = LinearLayoutManager(context).let {
@@ -141,7 +125,7 @@ class ShowProfileFragment(
             }
         } else {
 
-            buttonEdit.visibility = View.GONE
+            buttonEdit.visibility = View.INVISIBLE
             val profileTitle = thisView.findViewById<TextView>(R.id.profile_title)
             profileTitle.text = "@" + profile.nickname
 
@@ -157,14 +141,59 @@ class ShowProfileFragment(
                 if (it == null) return@observe
                 if (!it.isPending && !it.isFriend && !it.isRequesting) {
                     friendButton.text = "Add Friend"
+                    friendButton.backgroundTintList =
+                        ColorStateList.valueOf(requireContext().getColor(R.color.md_theme_light_primary))
+                    var drawable = requireContext().getDrawable(R.drawable.add_friend)
+                    friendButton.setCompoundDrawablesWithIntrinsicBounds(
+                        drawable,
+                        null,
+                        null,
+                        null
+                    );
                 } else if (it.isPending) {
                     friendButton.text = "Cancel Request"
+                    friendButton.backgroundTintList =
+                        ColorStateList.valueOf(requireContext().getColor(R.color.disabled))
+                    var drawable = requireContext().getDrawable(R.drawable.remove_friend)
+                    friendButton.setCompoundDrawablesWithIntrinsicBounds(
+                        drawable,
+                        null,
+                        null,
+                        null
+                    );
                 } else if (it.isFriend) {
                     friendButton.text = "Friends"
+                    friendButton.backgroundTintList =
+                        ColorStateList.valueOf(requireContext().getColor(R.color.md_theme_light_primary))
+                    var drawable = requireContext().getDrawable(R.drawable.friends)
+                    friendButton.setCompoundDrawablesWithIntrinsicBounds(
+                        drawable,
+                        null,
+                        null,
+                        null
+                    );
                 } else if (it.isRequesting) {
                     friendButton.text = "Accept Request"
+                    friendButton.backgroundTintList =
+                        ColorStateList.valueOf(requireContext().getColor(R.color.confirm))
+                    var drawable = requireContext().getDrawable(R.drawable.accept_friend_request)
+                    friendButton.setCompoundDrawablesWithIntrinsicBounds(
+                        drawable,
+                        null,
+                        null,
+                        null
+                    );
                 } else {
                     friendButton.text = "Remove Friend"
+                    friendButton.backgroundTintList =
+                        ColorStateList.valueOf(requireContext().getColor(R.color.error))
+                    var drawable = requireContext().getDrawable(R.drawable.remove_friend)
+                    friendButton.setCompoundDrawablesWithIntrinsicBounds(
+                        drawable,
+                        null,
+                        null,
+                        null
+                    );
                 }
                 (requireActivity() as FriendProfileActivity).bundle.remove("profile")
                 (requireActivity() as FriendProfileActivity).bundle.putString(
@@ -184,9 +213,7 @@ class ShowProfileFragment(
                 } else if (profileFriend.isRequesting) {
                     userViewModel.acceptFriendRequest { }
                 } else {
-                    userViewModel.removeFriend {
-
-                    }
+                    showBottomSheetDialog()
                 }
             }
         }
@@ -222,23 +249,37 @@ class ShowProfileFragment(
         }
     }
 
-    private fun loadImage(imageUri: Uri?) {
-        println("ImageURI $imageUri")
-        val options: RequestOptions = RequestOptions()
-        Glide.with(this)
-            .load(imageUri)
-            .signature(ObjectKey(imageUri.toString()))
-            .apply(
-                options.centerCrop()
-                    .placeholder(R.drawable.loading)
-                    .error(R.drawable.person)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .priority(Priority.HIGH)
-                    .dontAnimate()
-                    .dontTransform()
-            )
-            .error(R.drawable.person)
-            .into(requireView().findViewById(R.id.profile_image))
+    private fun loadImage() {
+        val iv = requireView().findViewById<ImageView>(R.id.profile_image)
+        imageViewModel.getUserImage(profile.email, { iv.setImageResource(R.drawable.person) }) {
+            val options: RequestOptions = RequestOptions()
+            Glide.with(this)
+                .load(it)
+                .signature(ObjectKey(it))
+                .apply(
+                    options.centerCrop()
+                        .placeholder(R.drawable.loading)
+                        .error(R.drawable.person)
+                        .skipMemoryCache(true)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .priority(Priority.HIGH)
+                        .dontAnimate()
+                        .dontTransform()
+                )
+                .error(R.drawable.person)
+                .into(iv)
+        }
+    }
+
+    private fun showBottomSheetDialog() {
+
+
+        val bottomSheet = RemoveFriendDialog(
+            userViewModel,
+        )
+
+        bottomSheet.show(parentFragmentManager, "filterSheet")
+
     }
 
 

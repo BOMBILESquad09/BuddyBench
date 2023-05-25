@@ -14,41 +14,35 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/TabLayout"
         android:orientation="horizontal">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:layout_weight="0.2"
+            android:layout_weight="0.5"
             android:id = "@+id/come_back"
             android:layout_width="0dp"
-            android:visibility="gone"
+            android:visibility="invisible"
             android:layout_height="wrap_content"
             android:src="@drawable/right_arrow_edit"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="2dp"
-            android:layout_gravity="center"
             android:scaleX="-1" />
 
         <TextView
             android:id="@+id/profile_title"
             android:layout_width="0dp"
-            android:layout_height="74dp"
-            android:layout_weight="1"
-            android:layout_marginHorizontal="16dp"
-            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
             android:fontFamily="@font/montserrat_bold_700"
             android:maxLines="1"
-            android:text="Profile"
-            android:autoSizeTextType="uniform"
-            android:autoSizeMaxTextSize="32sp"
-            android:autoSizeMinTextSize="20sp"
+            android:text="@string/profile"
+            style="@style/TabName"
             android:ellipsize="end"/>
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/button_to_edit"
-            android:layout_width="wrap_content"
+            android:layout_weight="0.5"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginHorizontal="16dp"
             android:src="@drawable/round_edit_24"
             />
 
@@ -202,13 +196,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:visibility="gone"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="12dp"
+                            android:background="@drawable/rounded_shape"
                             android:text="Add Friend"
-                            android:drawableLeft="@drawable/person"
+                            android:drawableLeft="@drawable/add_friend"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/constraintLayout3"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.498"
+                            app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>

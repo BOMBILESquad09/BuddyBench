@@ -31,6 +31,7 @@ import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.ImageViewModel
+import it.polito.mad.buddybench.viewmodels.UserViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -44,6 +45,8 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
     private lateinit var progressBar: ProgressBar
     private lateinit var noCourts: TextView
     val imageViewModel by activityViewModels<ImageViewModel> ()
+    val userViewModel by activityViewModels<UserViewModel> ()
+
     private lateinit var swipeRefresh : SwipeRefreshLayout
 
 
@@ -123,7 +126,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             fragmentTransaction.addToBackStack(null)
             fragmentTransaction.commit()
 
-            textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
+            textUser.text = parent.context.getString(R.string.user_hello, userViewModel.user.value)
             // When I return to sport selection, clear filter
             parent.context.findCourtViewModel.clearFilters()
             filterButton?.setBackgroundResource(R.drawable.circle_light_bg)
@@ -173,7 +176,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
             textNearButton.text = getString(R.string.court_search_phrase, it.toString().lowercase().replaceFirstChar { c -> c.uppercase() })
 
-            textUser.text = parent.context.getString(R.string.user_hello, parent.context.profile.name)
+            textUser.text = parent.context.getString(R.string.user_hello, userViewModel.user.value!!.name)
             parent.context.findViewById<ImageView>(R.id.close_selection).visibility = View.VISIBLE
 
             searchEditText.addTextChangedListener(object: TextWatcher {

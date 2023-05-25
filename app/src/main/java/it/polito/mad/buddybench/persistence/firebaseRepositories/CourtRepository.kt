@@ -105,7 +105,6 @@ class CourtRepository {
 
                             finalCourts = finalCourts.filter {c->
                                 if (c.getId() == courtId) {
-
                                     LocalTime.now().hour < (closingTime - 1) &&
                                             (hm[courtId]!!.second <  LocalTime.now().hour || hm[courtId]!!.first>= LocalTime.now().hour)
                                 } else {
@@ -113,12 +112,10 @@ class CourtRepository {
                                 }
                             }
                         }
-
                         onSuccess(finalCourts)
                         return@addOnSuccessListener
                     }
             }
-
             onSuccess(finalCourts)
         }
 

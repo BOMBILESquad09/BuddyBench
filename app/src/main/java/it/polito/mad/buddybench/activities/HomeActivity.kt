@@ -27,6 +27,7 @@ import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.enums.Tabs
 import it.polito.mad.buddybench.utils.BottomBar
+import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.FindCourtViewModel
 import it.polito.mad.buddybench.viewmodels.FriendsViewModel
 import it.polito.mad.buddybench.viewmodels.ImageViewModel
@@ -60,7 +61,6 @@ class HomeActivity : AppCompatActivity() {
 
     val invitationsViewModel by viewModels<InvitationsViewModel>()
 
-    lateinit var profile: Profile
     private lateinit var sharedPref: SharedPreferences
     val imageViewModel by viewModels<ImageViewModel>()
     val userViewModel by viewModels<UserViewModel>()
@@ -80,14 +80,15 @@ class HomeActivity : AppCompatActivity() {
         bottomBar.setup()
 
         userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this) {
-            profile = it ?: Profile.fromJSON(
+            if (it != null) return@observe
+            userViewModel.fromSharedPreferences( Profile.fromJSON(
                 JSONObject(
                     sharedPref.getString(
                         "profile",
                         Profile.mockJSON()
                     )!!
                 )
-            )
+            ))
             friendsViewModel.subscribeFriendsList()
             invitationsViewModel.subscribeInvitations() { s ->
                 if (s > 0) {
@@ -138,16 +139,8 @@ class HomeActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.edit -> {
                 val intent = Intent(this, EditProfileActivity::class.java)
-                if (!::profile.isInitialized)
-                    profile = Profile.fromJSON(
-                        JSONObject(
-                            sharedPref.getString(
-                                "profile",
-                                Profile.mockJSON()
-                            )!!
-                        )
-                    )
-                intent.putExtra("profile", profile.toJSON().toString())
+                if (userViewModel.user.value == null) return false
+                intent.putExtra("profile", userViewModel.user.value!!.toJSON().toString())
                 launcherEdit.launch(intent)
                 return true
             }
@@ -164,18 +157,22 @@ class HomeActivity : AppCompatActivity() {
                         response.data?.getStringExtra("newProfile").toString()
                     )
                 )
-                profile = newProfile
-                putString("profile", profile.toJSON().toString())
+                putString("profile", newProfile.toJSON().toString())
                 apply()
-                userViewModel.setSports(profile.sports)
-                if (profile.imageUri != null && response.data?.getBooleanExtra(
+                userViewModel.setSports(newProfile.sports)
+                if (newProfile.imageUri != null && response.data?.getBooleanExtra(
                         "newImage",
                         false
                     ) == true
                 ) {
-                    imageViewModel.postUserImage(profile.email, profile.imageUri!!, {}) {}
+
+                    imageViewModel.postUserImage(newProfile.email, newProfile.imageUri!!, {
+                        userViewModel.getUser()
+                    }) {}
                 }
-                userViewModel.updateUserInfo(profile, {}) {}
+                userViewModel.updateUserInfo(newProfile,{}){}
+
+
             }
         }
     }
@@ -216,6 +213,11 @@ class HomeActivity : AppCompatActivity() {
         if (response.resultCode == Activity.RESULT_OK) {
             // TODO: Maybe update
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Utils.closeProgressDialog()
     }
 
 

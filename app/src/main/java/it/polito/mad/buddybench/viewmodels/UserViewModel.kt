@@ -64,6 +64,10 @@ class UserViewModel @Inject constructor() : ViewModel() {
         return user
     }
 
+    fun fromSharedPreferences(profile: Profile){
+        _user.value = profile
+    }
+
 //    fun updateUserInfo(profile: Profile) {
 //
 //        runBlocking {

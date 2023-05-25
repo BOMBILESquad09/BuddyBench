@@ -41,6 +41,8 @@ import java.util.UUID
 
 class Utils {
     companion object {
+
+        var progressDialog: AlertDialog? = null
         fun capitalize(string: String): String {
             return string.lowercase(Locale.ENGLISH)
                 .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ENGLISH) else it.toString() }
@@ -156,14 +158,25 @@ class Utils {
         }
 
         fun openProgressDialog(context: Context): AlertDialog{
-            val dialogCard = LayoutInflater.from(context).inflate(R.layout.loading, null)
-            val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-            builder.setView(dialogCard)
-            val dialog: AlertDialog = builder.create()
-            dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-            dialog.setCancelable(false)
-            dialog.show()
-            return dialog
+            if(progressDialog == null){
+                val dialogCard = LayoutInflater.from(context).inflate(R.layout.loading, null)
+                val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+                builder.setView(dialogCard)
+                val dialog: AlertDialog = builder.create()
+                dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+                dialog.setCancelable(false)
+                progressDialog = dialog
+            }
+            progressDialog!!.show()
+
+            return progressDialog!!
+        }
+
+        fun closeProgressDialog(){
+            if(progressDialog == null) return
+            progressDialog!!.dismiss()
+            progressDialog = null
+            return
         }
 
         fun goToProfileFriend(context: HomeActivity, profile: Profile) {

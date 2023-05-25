@@ -229,7 +229,6 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
 
         viewModel.selectedDate.observe(viewLifecycleOwner){
             if (it != null){
-
                 calendarView.scrollToDate(it)
                 calendarView.scrollToMonth(YearMonth.from(it))
                 refreshPreviousCalendarButton(YearMonth.from(it))
@@ -243,7 +242,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
 
     }
 
-    fun refreshNextCalendarButton(date: YearMonth){
+    private fun refreshNextCalendarButton(date: YearMonth){
         if (date == endMonth){
             nextButton.setColorFilter(ContextCompat.getColor(context,R.color.md_theme_dark_primary))
             nextButton.isEnabled = false
@@ -258,7 +257,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         }
     }
 
-    fun refreshPreviousCalendarButton(date: YearMonth){
+    private fun refreshPreviousCalendarButton(date: YearMonth){
         if (date == startMonth){
             previousButton.setColorFilter(ContextCompat.getColor(context,R.color.md_theme_dark_primary))
             previousButton.isEnabled = false
