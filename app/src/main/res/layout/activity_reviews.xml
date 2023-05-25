@@ -4,45 +4,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.court.ReviewsActivity"
-    android:orientation="vertical">
-
+    android:orientation="vertical"
+    tools:context=".activities.court.ReviewsActivity">
 
 
     <LinearLayout
+        style="@style/TabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TabLayout"
         android:orientation="horizontal">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:layout_weight="0.5"
             android:id="@+id/back_button_reviews"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/right_arrow_edit"
-            android:scaleX="-1" />
+            android:layout_weight="0.5"
+            android:scaleX="-1"
+            android:src="@drawable/right_arrow_edit" />
 
         <TextView
             android:id="@+id/tv_court_name_reviews"
+            style="@style/TabName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:gravity="center"
+            android:ellipsize="end"
             android:fontFamily="@font/montserrat_bold_700"
+            android:gravity="center"
             android:maxLines="2"
-            android:text="@string/profile"
-            style="@style/TabName"
-            android:ellipsize="end"/>
+            android:text="@string/profile" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/button_to_edit"
-            android:layout_weight="0.5"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="0.5"
             android:src="@drawable/round_edit_24"
-            android:visibility="invisible"
-            />
+            android:visibility="invisible" />
 
     </LinearLayout>
 
@@ -51,25 +49,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:paddingVertical="16dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingVertical="16dp">
 
         <TextView
             android:id="@+id/tv_review_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/court_rating"
             android:layout_gravity="center"
+            android:text="@string/court_rating"
             android:textSize="36sp" />
 
         <RatingBar
             android:id="@+id/rb_review_total"
+            style="@style/Widget.AppCompat.RatingBar.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="8dp"
             android:layout_gravity="center"
-            android:progressTint="@color/gold"
-            style="@style/Widget.AppCompat.RatingBar.Small" />
+            android:layout_marginVertical="8dp"
+            android:progressTint="@color/gold" />
 
         <TextView
             android:id="@+id/tv_num_reviews"
@@ -82,26 +80,26 @@
 
 
     <TextView
-        android:visibility="gone"
         android:id="@+id/tv_cannot_review"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="textStart"
+        android:drawablePadding="8dp"
         android:padding="16dp"
         android:text="@string/cannot_review"
-        android:drawablePadding="8dp"
+        android:textAlignment="textStart"
+        android:visibility="gone"
         app:drawableStartCompat="@drawable/round_info_24" />
 
 
-    <androidx.cardview.widget.CardView
-        android:visibility="gone"
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_your_review"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
         android:elevation="2dp"
         android:padding="8dp"
-        app:cardCornerRadius="15dp"
-        android:layout_marginHorizontal="16dp">
+        android:visibility="gone"
+        app:cardCornerRadius="15dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -118,8 +116,8 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center"
+                    android:layout_weight="1"
                     android:fontFamily="@font/montserrat_semibold_600"
                     android:text="@string/your_review" />
 
@@ -128,8 +126,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/round_edit_24"
-                    android:contentDescription="@string/edit"
-                    android:backgroundTint="@color/md_theme_light_primary" />
+                    android:backgroundTint="@color/md_theme_light_primary"
+                    android:contentDescription="@string/edit" />
 
             </LinearLayout>
 
@@ -137,9 +135,9 @@
                 android:id="@+id/rb_your_review"
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:paddingVertical="8dp"
-                android:progressTint="@color/gold"
-                android:layout_height="wrap_content" />
+                android:progressTint="@color/gold" />
 
             <TextView
                 android:id="@+id/tv_your_review"
@@ -151,17 +149,17 @@
         </LinearLayout>
 
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
 
-    <androidx.cardview.widget.CardView
-        android:visibility="visible"
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_new_review"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:elevation="2dp"
         android:padding="8dp"
+        android:visibility="visible"
         app:cardCornerRadius="15dp">
 
         <LinearLayout
@@ -181,39 +179,38 @@
                 android:id="@+id/rb_new_review"
                 style="@style/Widget.AppCompat.RatingBar.Indicator"
                 android:layout_width="wrap_content"
-                android:paddingVertical="8dp"
+                android:layout_height="wrap_content"
                 android:isIndicator="false"
+                android:paddingVertical="8dp"
                 android:progressTint="@color/gold"
-                android:stepSize="1"
-                android:layout_height="wrap_content" />
+                android:stepSize="1" />
 
 
             <EditText
                 android:id="@+id/et_new_review"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_medium_500"
                 android:gravity="top|start"
                 android:hint="@string/write_your_review"
-                android:fontFamily="@font/montserrat_medium_500"
-                android:textSize="14sp"
                 android:importantForAutofill="no"
                 android:inputType="textMultiLine"
                 android:lines="3"
                 android:maxLines="5"
                 android:scrollbars="vertical"
+                android:textSize="14sp"
                 tools:ignore="LabelFor" />
 
             <TextView
                 android:id="@+id/tv_error_review"
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/missing_rating"
                 android:layout_marginBottom="8dp"
-                android:textColor="@color/error"
                 android:drawablePadding="8dp"
+                android:text="@string/missing_rating"
+                android:textColor="@color/error"
+                android:visibility="gone"
                 app:drawableStartCompat="@drawable/round_error_24" />
-
 
 
             <Button
@@ -222,14 +219,14 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_shape"
                 android:backgroundTint="@color/md_theme_light_primary"
-                android:textColor="@color/md_theme_light_background"
                 android:fontFamily="@font/montserrat_semibold_600"
+                android:text="@string/review"
                 android:textAllCaps="false"
-                android:text="@string/review" />
+                android:textColor="@color/md_theme_light_background" />
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
     <ProgressBar
         android:id="@+id/pb_reviews"
@@ -239,20 +236,18 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_no_reviews"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:text="@string/no_reviews"
         android:textAlignment="center"
-        android:gravity="center"
         android:textColor="@color/md_theme_light_outline"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_reviews"
