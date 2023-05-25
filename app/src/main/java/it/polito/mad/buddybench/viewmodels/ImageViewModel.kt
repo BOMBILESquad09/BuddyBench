@@ -54,11 +54,7 @@ class ImageViewModel @Inject constructor() : ViewModel() {
 
                 imageRepository.getUserImage(path,onFailure, onSuccess)
 
-            try {
-                imageRepository.getUserImage(path, onSuccess)
-            } catch (e: Exception) {
-                onFailure()
-            }
+
         }
     }
 

@@ -77,7 +77,6 @@ class HomeActivity : AppCompatActivity() {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         onNetworkProblemHandler()
-        FirebaseFirestore.getInstance().disableNetwork()
         setContentView(R.layout.home)
         sharedPref =
             getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
