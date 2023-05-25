@@ -52,7 +52,6 @@ class ImageViewModel @Inject constructor() : ViewModel() {
     fun getUserImage(path: String, onFailure: () -> Unit, onSuccess: (Uri) -> Unit) {
         mainScope.launch {
             try {
-
                 imageRepository.getUserImage(path, onSuccess)
             } catch (e: Exception) {
                 onFailure()
