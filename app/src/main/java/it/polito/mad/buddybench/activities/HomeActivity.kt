@@ -166,10 +166,12 @@ class HomeActivity : AppCompatActivity() {
                     ) == true
                 ) {
 
-                    imageViewModel.postUserImage(profile.email, profile.imageUri!!, {
+                    imageViewModel.postUserImage(newProfile.email, newProfile.imageUri!!, {
                         userViewModel.getUser()
                     }) {}
                 }
+                userViewModel.updateUserInfo(newProfile,{}){}
+
 
             }
         }

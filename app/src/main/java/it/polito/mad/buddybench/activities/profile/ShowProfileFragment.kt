@@ -60,8 +60,9 @@ class ShowProfileFragment(
             userViewModel.user.observe(this) {
                 if (it != null) {
                     profile = it
-                    loadImage()
                     setGUI()
+                    loadImage()
+
                 }
             }
 
