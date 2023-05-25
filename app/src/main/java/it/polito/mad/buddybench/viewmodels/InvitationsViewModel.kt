@@ -22,8 +22,9 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
 
     private val invitationSize: MutableLiveData<Int> = MutableLiveData(0)
     val mainScope = MainScope()
+    var onFailure = {}
     fun subscribeInvitations(onSuccess: (Int) -> Unit): LiveData<List<ReservationDTO>>{
-        invitationsRepository.subscribeInvitations( onSuccess = {
+        invitationsRepository.subscribeInvitations( onFailure = onFailure, onSuccess = {
             onSuccess(it)
             invitationSize.postValue(it)
         })
@@ -34,44 +35,45 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
                 _invitations.postValue(listOf())
             }
         }
+        println("diocaneeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
         return invitations
     }
 
     fun getAll(){
         mainScope.launch {
-            _invitations.postValue(invitationsRepository.getInvitations())
+            _invitations.postValue(invitationsRepository.getInvitations(onFailure))
         }
     }
 
     fun acceptInvitation(reservationDTO: ReservationDTO){
         runBlocking {
-            invitationsRepository.acceptInvitation(reservationDTO)
+            invitationsRepository.acceptInvitation(reservationDTO, onFailure)
         }
     }
 
     fun refuseInvitation(reservationDTO: ReservationDTO){
         runBlocking {
-            invitationsRepository.refuseInvitation(reservationDTO)
+            invitationsRepository.refuseInvitation(reservationDTO, onFailure)
         }
     }
 
     fun sendInvitations(reservationDTO: ReservationDTO, invitedUsers: List<String>, onSuccess: () -> Unit){
         runBlocking {
-            invitationsRepository.sendInvitations(reservationDTO, invitedUsers)
+            invitationsRepository.sendInvitations(reservationDTO, invitedUsers, onFailure)
             onSuccess()
         }
     }
 
     fun removeInvitations(reservationDTO: ReservationDTO, invitedUsers: List<String>, onSuccess: () -> Unit){
         runBlocking {
-            invitationsRepository.removeInvitations(reservationDTO, invitedUsers)
+            invitationsRepository.removeInvitations(reservationDTO, invitedUsers, onFailure)
             onSuccess()
         }
     }
 
     fun removeAcceptedInvitations(reservationDTO: ReservationDTO, invitedUsers: List<String>, onSuccess: () -> Unit){
         runBlocking {
-            invitationsRepository.removeAcceptedInvitations(reservationDTO, invitedUsers)
+            invitationsRepository.removeAcceptedInvitations(reservationDTO, invitedUsers, onFailure)
             onSuccess()
         }
     }

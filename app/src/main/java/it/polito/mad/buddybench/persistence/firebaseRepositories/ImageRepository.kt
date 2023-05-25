@@ -12,22 +12,36 @@ import kotlinx.coroutines.withContext
 class ImageRepository {
     private val storage = FirebaseStorage.getInstance().reference
 
-    suspend fun getUserImage(path: String, onSuccess:(Uri) -> Unit = {}){
+    suspend fun getUserImage(path: String, onFailure: () -> Unit,onSuccess:(Uri) -> Unit = {}){
         return withContext(Dispatchers.IO) {
-            val uri = storage.child("profile_images/$path").downloadUrl.await()
-            withContext(Dispatchers.Main){
-                onSuccess(uri)
+            try{
+                val uri = storage.child("profile_images/$path").downloadUrl.await()
+                withContext(Dispatchers.Main){
+                    onSuccess(uri)
+                }
+            } catch (e: Exception){
+                withContext(Dispatchers.Main){
+                    onFailure()
+
+                }
             }
+
         }
     }
 
-    suspend fun getCourtImage(path: String, onSuccess: (Uri) -> Unit){
+    suspend fun getCourtImage(path: String, onFailure: () -> Unit, onSuccess: (Uri) -> Unit){
         return withContext(Dispatchers.IO){
-
+        try{
             val uri = storage.child("court_images/$path").downloadUrl.await()
             withContext(Dispatchers.Main){
                 onSuccess(uri)
             }
+        } catch (e:Exception){
+            withContext(Dispatchers.Main){
+                onFailure()
+            }
+        }
+
         }
     }
 
@@ -43,10 +57,15 @@ class ImageRepository {
 //        }
 //    }
 
-    suspend fun postUserImage(path:String,image: Uri, onSuccess: () -> Unit){
+    suspend fun postUserImage(path:String,image: Uri, onFailure: () -> Unit, onSuccess: () -> Unit){
         withContext(Dispatchers.IO){
-            storage.child("profile_images/$path").putFile(image).await()
-            onSuccess()
+            try {
+                storage.child("profile_images/$path").putFile(image).await()
+                onSuccess()
+            } catch (_: Exception){
+                onFailure()
+            }
+
         }
     }
 

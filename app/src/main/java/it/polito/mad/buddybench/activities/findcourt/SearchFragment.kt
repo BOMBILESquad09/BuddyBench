@@ -53,8 +53,10 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         swipeRefresh = view.findViewById(R.id.swiperefresh)
         swipeRefresh.setOnRefreshListener {
-            parent.viewModel.getCourtsBySport()
+            parent.viewModel.getCourtsBySport(){
+            }
             swipeRefresh.isRefreshing = false
+
         }
         recyclerView = view.findViewById(R.id.searchRecyclerView)
         val b = view.findViewById<ImageView>(R.id.change_sport_button)
@@ -135,12 +137,10 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
         parent.context.findCourtViewModel.loading.observe(viewLifecycleOwner) {
             if(it) {
-                recyclerView.visibility = View.GONE
-                noCourts.visibility = View.GONE
+
                 progressLayout.visibility = View.VISIBLE
             } else {
                 progressLayout.visibility = View.GONE
-                recyclerView.visibility = View.VISIBLE
             }
         }
 
@@ -150,7 +150,6 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             lastCourts = it
             diffResult.dispatchUpdatesTo(recyclerView.adapter!!)
             recyclerView.scrollToPosition(0)
-            parent.context.findCourtViewModel.loading.postValue(false)
             if(it.isEmpty()) {
                 recyclerView.visibility = View.GONE
                 noCourts.visibility = View.VISIBLE
@@ -211,7 +210,9 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
     override  fun onStart() {
         super.onStart()
-        parent.viewModel.getCourtsBySport()
+        parent.viewModel.getCourtsBySport(){
+
+        }
     }
 
      private fun emptyString(): String{

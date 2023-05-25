@@ -53,11 +53,11 @@ class UserViewModel @Inject constructor() : ViewModel() {
     val sports: LiveData<MutableList<Sport>> = _sports
 
     lateinit var sharedPref: SharedPreferences
+    var onFailure = {}
 
-
-    fun getUser(email: String = Firebase.auth.currentUser!!.email!!): LiveData<Profile> {
-        runBlocking {
-            userRepositoryFirebase.getUser(email) {
+    fun getUser(email: String = Firebase.auth.currentUser!!.email!!, ): LiveData<Profile> {
+        mainScope.launch {
+            userRepositoryFirebase.getUser(email, onFailure) {
                 _user.postValue(it)
             }
         }
@@ -81,7 +81,7 @@ class UserViewModel @Inject constructor() : ViewModel() {
     fun updateUserInfo(profile: Profile, onFailure: () -> Unit, onSuccess: () -> Unit) {
         mainScope.launch {
             try {
-                userRepositoryFirebase.update(profile) {
+                userRepositoryFirebase.update(profile,onFailure) {
                     _user.postValue(it)
                 }
                 onSuccess()
@@ -183,47 +183,53 @@ class UserViewModel @Inject constructor() : ViewModel() {
     }
 
     fun sendFriendRequest(onSuccess: (Profile) -> Unit) {
-        runBlocking {
-            friendRepository.postFriendRequest(user.value!!.email)
-            val p = user.value!!.copy()
-            p.isPending = true
-            _user.postValue(p)
-            onSuccess(p)
+        mainScope.launch {
+            friendRepository.postFriendRequest(user.value!!.email,onFailure){
+                val p = user.value!!.copy()
+                p.isPending = true
+                _user.postValue(p)
+                onSuccess(p)
+            }
         }
-
     }
 
     fun removeFriendRequest(onSuccess: (Profile) -> Unit) {
         runBlocking {
-            friendRepository.removeFriendRequest(user.value!!.email)
-            val p = user.value!!.copy()
-            p.isPending = false
-            _user.postValue(p)
-            onSuccess(p)
+            friendRepository.removeFriendRequest(user.value!!.email, onFailure){
+                val p = user.value!!.copy()
+                p.isPending = false
+                _user.postValue(p)
+                onSuccess(p)
+            }
+
         }
 
     }
 
     fun acceptFriendRequest(onSuccess: (Profile) -> Unit) {
-        runBlocking {
-            friendRepository.acceptFriendRequest(user.value!!.email)
-            val p = user.value!!.copy()
-            p.isRequesting = false
-            p.isFriend = true
-            _user.postValue(p)
-            onSuccess(p)
+        mainScope.launch {
+            friendRepository.acceptFriendRequest(user.value!!.email, onFailure){
+                val p = user.value!!.copy()
+                p.isRequesting = false
+                p.isFriend = true
+                _user.postValue(p)
+                onSuccess(p)
+            }
+
         }
 
     }
 
     fun removeFriend(onSuccess: (Profile) -> Unit) {
-        runBlocking {
-            friendRepository.removeFriend(user.value!!.email)
-            val p = user.value!!.copy()
-            p.isFriend = false
-            p.isPending = false
-            _user.postValue(p)
-            onSuccess(p)
+        mainScope.launch {
+            friendRepository.removeFriend(user.value!!.email, onFailure){
+                val p = user.value!!.copy()
+                p.isFriend = false
+                p.isPending = false
+                _user.postValue(p)
+                onSuccess(p)
+            }
+
         }
 
     }

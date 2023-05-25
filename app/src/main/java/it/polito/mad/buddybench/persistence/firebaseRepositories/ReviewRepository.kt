@@ -19,32 +19,35 @@ class ReviewRepository {
     val db = FirebaseFirestore.getInstance()
 
 
-    suspend fun getAllByCourt(courtDTO: CourtDTO, callback: (List<ReviewDTO>) -> Unit) {
+    suspend fun getAllByCourt(courtDTO: CourtDTO, onFailure:() -> Unit, onSuccess: (List<ReviewDTO>) -> Unit) {
         withContext(Dispatchers.IO) {
-            val courtDocName = courtDTO.name.replace(" ", "_") + "_" + courtDTO.sport
-            val res =
-                db.collection("courts").document(courtDocName).collection("reviews").get().await()
-            val reviews = mutableListOf<ReviewDTO>()
-            val usersResponse = res.map { r -> db.collection("users").document(r.id).get() }
-            val users =
-                usersResponse.map { it.await() }.map { UserRepository.serializeUser(it.data!!) }
-            for (r in res) {
-                val user = users.find { u -> u.email == r.id }
-                reviews.add(
-                    ReviewDTO(
-                        user!!,
-                        LocalDate.parse(
-                            r.data["date"] as String,
-                            DateTimeFormatter.ISO_LOCAL_DATE
-                        ),
-                        (r.data["rating"] as Long).toInt(),
-                        r.data["description"] as String,
-                        courtDTO
+            try {
+                val courtDocName = courtDTO.name.replace(" ", "_") + "_" + courtDTO.sport
+                val res =
+                    db.collection("courts").document(courtDocName).collection("reviews").get().await()
+                val reviews = mutableListOf<ReviewDTO>()
+                val usersResponse = res.map { r -> db.collection("users").document(r.id).get() }
+                val users =
+                    usersResponse.map { it.await() }.map { UserRepository.serializeUser(it.data!!) }
+                for (r in res) {
+                    val user = users.find { u -> u.email == r.id }
+                    reviews.add(
+                        ReviewDTO(
+                            user!!,
+                            LocalDate.parse(
+                                r.data["date"] as String,
+                                DateTimeFormatter.ISO_LOCAL_DATE
+                            ),
+                            (r.data["rating"] as Long).toInt(),
+                            r.data["description"] as String,
+                            courtDTO
+                        )
                     )
-                )
+                }
+                onSuccess(reviews)
+            } catch (_: Exception){
+                onFailure()
             }
-            callback(reviews)
-
         }
     }
 
@@ -60,7 +63,7 @@ class ReviewRepository {
         )
     }*/
 
-    fun saveReview(reviewDTO: ReviewDTO, callback: () -> Unit) {
+    fun saveReview(reviewDTO: ReviewDTO, onFailure: () -> Unit,onSuccess: () -> Unit) {
         val courtName = reviewDTO.courtDTO.name.replace(" ", "_") + "_" + reviewDTO.courtDTO.sport
         db.runTransaction { t ->
             val courtDoc = db.collection("courts").document(courtName)
@@ -88,7 +91,9 @@ class ReviewRepository {
                 t.update(courtDoc, updates)
 
             }
-            callback()
+            onSuccess()
+        }.addOnFailureListener {
+            onFailure()
         }
 
     }

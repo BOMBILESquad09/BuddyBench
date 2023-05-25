@@ -73,6 +73,8 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     var startTime: LocalTime? = null
     var endTime: LocalTime? = null
 
+    var onFailure: () -> Unit = {}
+
 
     /**
      * Select day from the list
@@ -153,7 +155,7 @@ class CourtViewModel @Inject constructor() : ViewModel() {
 
 
     fun getTimeTables(name: String, sport: Sports): LiveData<CourtTimeTableDTO> {
-        courtRepositoryFirebase.getCourtTimeTable(name, sport){
+        courtRepositoryFirebase.getCourtTimeTable(name, sport, this.onFailure){
             courtRepositoryFirebase.addTimetable(it)
             _timetable.postValue(it)
             _court.postValue( it.court)
@@ -173,7 +175,7 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     }
 
     fun getTimeSlotsAvailable(courtDTO: CourtDTO, date: LocalDate, reservationDate: LocalDate?): LiveData<List<LocalTime>> {
-        courtRepositoryFirebase.getTimeSlotsOccupiedForCourtAndDate(courtDTO, date ){
+        courtRepositoryFirebase.getTimeSlotsOccupiedForCourtAndDate(courtDTO, date, this.onFailure){
             val timeSlotsOccupied = it
             val timeslotsDayOfWeek = openingAndClosingTimeForCourt(date.dayOfWeek)
 

@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
@@ -34,6 +35,8 @@ import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import it.polito.mad.buddybench.viewmodels.InvitationsViewModel
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import nl.joery.animatedbottombar.AnimatedBottomBar
 import org.json.JSONObject
 import java.time.LocalDate
@@ -71,60 +74,67 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        onNetworkProblemHandler()
+        FirebaseFirestore.getInstance().disableNetwork()
         setContentView(R.layout.home)
         sharedPref =
             getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         reservationViewModel.email = Firebase.auth.currentUser!!.email!!
         bottomBar.setup()
 
+
         userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this) {
-            if (it != null) return@observe
-            userViewModel.fromSharedPreferences( Profile.fromJSON(
-                JSONObject(
-                    sharedPref.getString(
-                        "profile",
-                        Profile.mockJSON()
-                    )!!
-                )
-            ))
-            friendsViewModel.subscribeFriendsList()
-            invitationsViewModel.subscribeInvitations() { s ->
-                if (s > 0) {
-                    bottomBar.counter[Tabs.INVITATIONS.getId()] = s
-                    if (bottomBar.currentTab != Tabs.INVITATIONS)
-                        bottomBar.bottomBar.setBadgeAtTabIndex(
-                            Tabs.INVITATIONS.getId(), AnimatedBottomBar.Badge(
-                                text = s.toString(),
-                                textColor = Color.WHITE
+            if (it != null){
+                friendsViewModel.subscribeFriendsList()
+                invitationsViewModel.subscribeInvitations() { s ->
+                    if (s > 0) {
+                        bottomBar.counter[Tabs.INVITATIONS.getId()] = s
+                        if (bottomBar.currentTab != Tabs.INVITATIONS)
+                            bottomBar.bottomBar.setBadgeAtTabIndex(
+                                Tabs.INVITATIONS.getId(), AnimatedBottomBar.Badge(
+                                    text = s.toString(),
+                                    textColor = Color.WHITE
+                                )
                             )
-                        )
-                } else {
-                    bottomBar.counter[Tabs.INVITATIONS.getId()] = 0
+                    } else {
+                        bottomBar.counter[Tabs.INVITATIONS.getId()] = 0
+                    }
+                    friendsViewModel.friendRequests.observe(this) {
+                        if (it.isNotEmpty()) {
+                            bottomBar.counter[Tabs.FRIENDS.getId()] = it.size
+                            if (bottomBar.currentTab != Tabs.FRIENDS)
+                                bottomBar.bottomBar.setBadgeAtTabIndex(
+                                    Tabs.FRIENDS.getId(),
+                                    AnimatedBottomBar.Badge(
+                                        text = it.size.toString(),
+                                        textColor = Color.WHITE
+                                    )
+                                )
+                        } else {
+                            bottomBar.counter[Tabs.FRIENDS.getId()] = 0
+                            bottomBar.bottomBar.clearBadgeAtTabIndex(Tabs.FRIENDS.getId())
+
+                        }
+                    }
                 }
+                return@observe
             }
-
-        }
-
-
-        friendsViewModel.friendRequests.observe(this) {
-            if (it.isNotEmpty()) {
-                bottomBar.counter[Tabs.FRIENDS.getId()] = it.size
-                if (bottomBar.currentTab != Tabs.FRIENDS)
-                    bottomBar.bottomBar.setBadgeAtTabIndex(
-                        Tabs.FRIENDS.getId(),
-                        AnimatedBottomBar.Badge(
-                            text = it.size.toString(),
-                            textColor = Color.WHITE
-                        )
+            userViewModel.fromSharedPreferences(
+                Profile.fromJSON(
+                    JSONObject(
+                        sharedPref.getString(
+                            "profile",
+                            Profile.mockJSON()
+                        )!!
                     )
-            } else {
-                bottomBar.counter[Tabs.FRIENDS.getId()] = 0
-                bottomBar.bottomBar.clearBadgeAtTabIndex(Tabs.FRIENDS.getId())
-
-            }
+                )
+            )
         }
+
+
+
 
     }
 
@@ -170,7 +180,7 @@ class HomeActivity : AppCompatActivity() {
                         userViewModel.getUser()
                     }) {}
                 }
-                userViewModel.updateUserInfo(newProfile,{}){}
+                userViewModel.updateUserInfo(newProfile, {}) {}
 
 
             }
@@ -220,5 +230,27 @@ class HomeActivity : AppCompatActivity() {
         Utils.closeProgressDialog()
     }
 
+    fun onNetworkProblemHandler() {
+
+
+        imageViewModel.onFailure = {
+            Utils.openNetworkProblemDialog(this)
+        }
+        reservationViewModel.onFailure = {
+            Utils.openNetworkProblemDialog(this)
+        }
+        userViewModel.onFailure = {
+            Utils.openNetworkProblemDialog(this)
+
+        }
+        findCourtViewModel.onFailure = {
+            println("diocaneeeeeeeeeeee")
+            Utils.openNetworkProblemDialog(this)
+        }
+        friendsViewModel.onFailure = {
+            Utils.openNetworkProblemDialog(this)
+        }
+
+    }
 
 }

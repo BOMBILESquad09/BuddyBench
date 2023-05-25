@@ -45,7 +45,7 @@ class ReviewsActivity : AppCompatActivity() {
         courtName = intent.getStringExtra("court_name")
         courtSport = intent.getStringExtra("court_sport")
         progressDialog = Utils.openProgressDialog(this)
-        reviewViewModel.getCourtReviews(courtName!!, courtSport!!, this)
+        reviewViewModel.getCourtReviews(courtName!!, courtSport!!)
     }
 
     // ** UI Elements binding
