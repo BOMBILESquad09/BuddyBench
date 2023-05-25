@@ -93,6 +93,7 @@
                             app:backgroundTint="@color/white"
                             android:fontFamily="@font/montserrat_medium_500"
                             android:inputType="textNoSuggestions"
+                            android:shadowColor="@color/white"
                             android:singleLine="true"
                             android:background="@color/white"
                             android:textAlignment="textStart"

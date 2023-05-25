@@ -165,10 +165,10 @@ class HomeActivity : AppCompatActivity() {
                         false
                     ) == true
                 ) {
-                    imageViewModel.postUserImage(newProfile.email, newProfile.imageUri!!, {}) {
-                    }
-                    userViewModel.updateUserInfo(newProfile, {}) {}
 
+                    imageViewModel.postUserImage(profile.email, profile.imageUri!!, {
+                        userViewModel.getUser()
+                    }) {}
                 }
 
             }
