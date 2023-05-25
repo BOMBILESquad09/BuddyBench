@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
+import android.widget.RadioGroup
 import android.widget.Switch
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -20,6 +21,8 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.NestedScrollView
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
 import com.apachat.loadingbutton.core.customViews.CircularProgressButton
+import com.google.android.material.checkbox.MaterialCheckBox
+import com.google.android.material.radiobutton.MaterialRadioButton
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
@@ -45,7 +48,7 @@ class EditConfirmDialogSheet(
     private val callback: () -> Unit
 ) : SuperBottomSheetFragment() {
 
-    private lateinit var switch: Switch
+    private lateinit var switch: MaterialCheckBox
     private lateinit var sheet: NestedScrollView
 
 
@@ -113,21 +116,19 @@ class EditConfirmDialogSheet(
                     {
                     buildAlertDialog("Ops","Seems that the time slots selected are not available",requireContext()).show()
                 }){
-                    val bitmap =
-                        AppCompatResources.getDrawable(
-                            requireContext(),
-                            R.drawable.done_foreground
-                        )!!
-                            .toBitmap()
                     confirmButton.postOnAnimation {
                         Thread {
                             Thread.sleep(1000)
                             callback()
                         }.start()
                     }
-
+                    val bitmap =
+                        AppCompatResources.getDrawable(
+                            requireContext(),
+                            R.drawable.done_foreground
+                        )!!
+                            .toBitmap()
                     confirmButton.doneLoadingAnimation(0, bitmap)
-
                 }
             }
         }
@@ -208,9 +209,10 @@ class EditConfirmDialogSheet(
             totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
         }
 
-        switch.setOnCheckedChangeListener { _, isChecked ->
+        switch.setOnCheckedChangeListener { button, isChecked ->
             // If the equipment is not selected the linear layout will go out
             // Else it's visible
+            println(isChecked)
             if (isChecked) {
                 val feeEquipment = courtToReserve.feeEquipment
                 equipmentField?.text =
@@ -218,6 +220,7 @@ class EditConfirmDialogSheet(
                 totalCost = (feeHour + feeEquipment) * nHours
                 totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
             } else {
+                button.isChecked = false
                 equipmentField?.text = String.format(getString(R.string.cost_example, 0))
                 totalCost = feeHour * nHours
                 totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
