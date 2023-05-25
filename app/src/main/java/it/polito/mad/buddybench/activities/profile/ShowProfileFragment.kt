@@ -205,6 +205,7 @@ class ShowProfileFragment(
             friendButton.setOnClickListener {
                 val profileFriend = userViewModel.user.value!!
                 if (!profileFriend.isPending && !profileFriend.isFriend && !profileFriend.isRequesting) {
+
                     userViewModel.sendFriendRequest {
                     }
                 } else if (profileFriend.isPending) {

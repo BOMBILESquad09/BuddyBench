@@ -65,7 +65,7 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
         }
         // ** Loading state
         friendsViewModel.lRequests.observe(viewLifecycleOwner) {
-            if (it) {
+            if (it == null || it) {
                 pbFriendRequests.visibility = View.VISIBLE
                 rvFriendRequests.visibility = View.GONE
             } else {
@@ -82,9 +82,6 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
         }
 
         val callback: (profile: Profile) -> Unit = {
-            println("---------------------")
-            println(it.isRequesting)
-            println("---------------------")
             Utils.goToProfileFriend(activity as HomeActivity, it)
         }
 

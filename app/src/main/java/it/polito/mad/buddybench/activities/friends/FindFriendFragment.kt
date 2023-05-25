@@ -56,12 +56,14 @@ class FindFriendFragment : Fragment() {
         emptyTv = view.findViewById(R.id.tv_empty)
         emptyTv.text = getString(R.string.no_friends_to_find)
         swipeRefresh = view.findViewById(R.id.swiperefresh)
+        swipeRefresh
         swipeRefresh.setOnRefreshListener {
             (activity as HomeActivity).friendsViewModel.refreshAll{swipeRefresh.isRefreshing = false}
         }
         // ** Loading state
-        friendsViewModel.l.observe(viewLifecycleOwner) {
-            if (it) {
+        friendsViewModel.lPossible.observe(viewLifecycleOwner) {
+            println(it ?: null)
+            if (it == null || it) {
                 pbFindFriends.visibility = View.VISIBLE
 
             } else {

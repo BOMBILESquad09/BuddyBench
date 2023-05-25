@@ -30,13 +30,13 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
 
     private val _currentReservation: MutableLiveData<ReservationDTO?> = MutableLiveData(null)
     val currentReservation: LiveData<ReservationDTO?> get() = _currentReservation
-    val loading = MutableLiveData(false)
+    val loading: MutableLiveData<Boolean> = MutableLiveData(null)
 
     var refresh: Boolean = false
     var email: String = ""
 
     lateinit var  profile: Profile
-
+    var onFailure = {}
 
     val reservationRepositoryFirebase = ReservationRepository()
 
@@ -59,14 +59,18 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
 
 
     fun getAllByUser(): LiveData<HashMap<LocalDate, List<ReservationDTO>>> {
-        loading.value = (true)
+        loading.value = true
+        println("getting")
         mainScope.launch {
-            reservationRepositoryFirebase.getAllByUser(){
-                _reservations.postValue(it)
+            reservationRepositoryFirebase.getAllByUser({
+                onFailure()
                 loading.postValue(false)
+            } ){
+                loading.postValue(false)
+                _reservations.postValue(it)
             }
-
         }
+        println("returningggggggggggg")
 
 
         return _reservations
@@ -84,7 +88,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
             try{
                 if (!edit) {
                     try {
-                        reservationRepositoryFirebase.save(reservation, {}) {
+                        reservationRepositoryFirebase.save(reservation,  onFailure, onError = failureCallback) {
                             println("diocaneeeeeee")
                             loading.postValue(false)
                             onSuccess()
@@ -95,7 +99,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
                 } else {
                     reservationRepositoryFirebase.update(
                         reservation,
-                        oldDate!!,{}){
+                        oldDate!!, onFailure, onError = failureCallback){
                         loading.postValue(false)
                         onSuccess()
                     }
@@ -123,11 +127,14 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         reservationID: String,
     ): MutableLiveData<ReservationDTO?> {
         runBlocking {
-            val res = reservationRepositoryFirebase.getReservation(reservationID)
-            _currentReservation.postValue(res)
-            initAcceptedFriends(res)
-            initPendingFriends(res)
-            initNotInvitedFriends()
+            val res = reservationRepositoryFirebase.getReservation(reservationID, onFailure = onFailure)
+            if(res != null){
+                _currentReservation.postValue(res)
+                initAcceptedFriends(res)
+                initPendingFriends(res)
+                initNotInvitedFriends()
+            }
+
 
         }
         return _currentReservation
@@ -151,7 +158,6 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     ) {
         loading.value = true
         mainScope.launch {
-            println("deletingggggggggggggg")
             reservationRepositoryFirebase.delete(reservationDTO, date, onFailure){
                 onSuccess()
             }

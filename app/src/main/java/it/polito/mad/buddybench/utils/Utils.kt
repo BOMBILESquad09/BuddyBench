@@ -27,6 +27,8 @@ import it.polito.mad.buddybench.activities.court.CourtActivity
 import it.polito.mad.buddybench.activities.friends.FriendProfileActivity
 import it.polito.mad.buddybench.activities.myreservations.displayText
 import it.polito.mad.buddybench.classes.Profile
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.math.RoundingMode
 import java.time.DayOfWeek
 import java.time.Duration
@@ -43,6 +45,7 @@ class Utils {
     companion object {
 
         var progressDialog: AlertDialog? = null
+        var networkProblemDialog: AlertDialog? = null
         fun capitalize(string: String): String {
             return string.lowercase(Locale.ENGLISH)
                 .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ENGLISH) else it.toString() }
@@ -77,7 +80,7 @@ class Utils {
             return list // generate a list of hourly time slots using a range operator and the map() function
         }
 
-        fun getStringifyTimeTable(timeTable: HashMap<DayOfWeek, Pair<LocalTime, LocalTime>>): Pair<String,String> {
+        fun getStringifyTimeTable(timeTable: HashMap<DayOfWeek, Pair<LocalTime, LocalTime>>): Pair<String, String> {
             val hm: HashMap<Pair<LocalTime, LocalTime>, MutableList<DayOfWeek>> = HashMap()
             for (day in timeTable) {
                 hm.get(Pair(day.value.first, day.value.second)).let {
@@ -110,18 +113,17 @@ class Utils {
 
             return Pair(
 
-            adiacentMap.entries.toList().sortedBy {
-                it.key
-            }.joinToString("\n") {
-                it.value.split(":").first()
-            },
+                adiacentMap.entries.toList().sortedBy {
+                    it.key
+                }.joinToString("\n") {
+                    it.value.split(":").first()
+                },
 
-            adiacentMap.entries.toList().sortedBy {
-                it.key
-            }.joinToString("\n") {
-                it.value.split("!").last()
-            })
-
+                adiacentMap.entries.toList().sortedBy {
+                    it.key
+                }.joinToString("\n") {
+                    it.value.split("!").last()
+                })
 
 
         }
@@ -145,7 +147,7 @@ class Utils {
         fun getDateRanges(): Pair<LocalDate, LocalDate> {
             val now = LocalDate.now()
             val fieldISO = WeekFields.of(Locale.FRANCE).dayOfWeek()
-            val start = now.with(fieldISO,1)
+            val start = now.with(fieldISO, 1)
             val end = now.plusWeeks(4).with(fieldISO, 7)
             return Pair(start, end)
         }
@@ -157,8 +159,34 @@ class Utils {
             return df.format(number).toDouble()
         }
 
-        fun openProgressDialog(context: Context): AlertDialog{
-            if(progressDialog == null){
+         fun openNetworkProblemDialog(context: Context): AlertDialog {
+
+            if (networkProblemDialog == null) {
+                val dialogCard = LayoutInflater.from(context).inflate(R.layout.network_error, null)
+                val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+                builder.setView(dialogCard)
+                val dialog: AlertDialog = builder.create()
+                dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+                dialog.setCancelable(true)
+                dialogCard.findViewById<View>(R.id.ok).setOnClickListener {
+                    closeNetworkProblemDialog()
+                }
+                networkProblemDialog = dialog
+            }
+            networkProblemDialog!!.show()
+            println("connessione down")
+            return networkProblemDialog!!
+        }
+
+        fun closeNetworkProblemDialog(){
+            if (networkProblemDialog == null) return
+            networkProblemDialog!!.dismiss()
+            networkProblemDialog = null
+            return
+        }
+
+        fun openProgressDialog(context: Context): AlertDialog {
+            if (progressDialog == null) {
                 val dialogCard = LayoutInflater.from(context).inflate(R.layout.loading, null)
                 val builder: AlertDialog.Builder = AlertDialog.Builder(context)
                 builder.setView(dialogCard)
@@ -172,8 +200,8 @@ class Utils {
             return progressDialog!!
         }
 
-        fun closeProgressDialog(){
-            if(progressDialog == null) return
+        fun closeProgressDialog() {
+            if (progressDialog == null) return
             progressDialog!!.dismiss()
             progressDialog = null
             return
@@ -181,16 +209,38 @@ class Utils {
 
         fun goToProfileFriend(context: HomeActivity, profile: Profile) {
             val i = Intent(context, FriendProfileActivity::class.java)
-            
+
             val bundle = bundleOf("profile" to profile.toJSON().toString())
             i.putExtras(bundle)
             context.launcherActivityFriendProfile.launch(i)
         }
 
-        fun generateNickname(): String{
+        fun generateNickname(): String {
             fun generateRandomNicknames(count: Int): List<String> {
-                val adjectives = listOf("Pazzo", "Sgravato", "Great", "Funny", "Brave", "Shiny", "Lucky", "Awesome", "Charming", "Gentle")
-                val nouns = listOf("Cat", "Dog", "Tiger", "Lion", "Elephant", "Monkey", "Kangaroo", "Panda", "Dolphin", "Owl")
+                val adjectives = listOf(
+                    "Pazzo",
+                    "Sgravato",
+                    "Great",
+                    "Funny",
+                    "Brave",
+                    "Shiny",
+                    "Lucky",
+                    "Awesome",
+                    "Charming",
+                    "Gentle"
+                )
+                val nouns = listOf(
+                    "Cat",
+                    "Dog",
+                    "Tiger",
+                    "Lion",
+                    "Elephant",
+                    "Monkey",
+                    "Kangaroo",
+                    "Panda",
+                    "Dolphin",
+                    "Owl"
+                )
                 val nicknames = mutableListOf<String>()
 
                 repeat(count) {
@@ -202,10 +252,12 @@ class Utils {
 
                 return nicknames
             }
+
             val nicknames = generateRandomNicknames(100)
             Random().setSeed(LocalDate.now().toEpochDay())
             return nicknames.get(Random().nextInt(100))
         }
+
         fun generateUUID(): String {
             val uuid = UUID.randomUUID()
             return uuid.toString()

@@ -25,7 +25,7 @@ class ImageViewModel @Inject constructor() : ViewModel() {
 
     private val _loading: MutableLiveData<Boolean> = MutableLiveData(true)
     val loading: LiveData<Boolean> = _loading
-
+    var onFailure = {}
 //    fun postUserImage(path: String, uri: Uri) {
 //        runBlocking {
 //            imageRepository.postUserImage(path, uri, {})
@@ -35,7 +35,7 @@ class ImageViewModel @Inject constructor() : ViewModel() {
     fun postUserImage(path: String, uri: Uri, onFailure: () -> Unit, onSuccess: () -> Unit) {
         mainScope.launch {
             try {
-                imageRepository.postUserImage(path, uri, onSuccess)
+                imageRepository.postUserImage(path, uri, onFailure, onSuccess)
                 _loading.postValue(false)
             } catch (_: Exception) {
                 onFailure()
@@ -51,6 +51,9 @@ class ImageViewModel @Inject constructor() : ViewModel() {
 
     fun getUserImage(path: String, onFailure: () -> Unit, onSuccess: (Uri) -> Unit) {
         mainScope.launch {
+
+                imageRepository.getUserImage(path,onFailure, onSuccess)
+
             try {
                 imageRepository.getUserImage(path, onSuccess)
             } catch (e: Exception) {
@@ -62,11 +65,8 @@ class ImageViewModel @Inject constructor() : ViewModel() {
     fun getCourtImage(path: String, onFailure: () -> Unit, onSuccess: (Uri) -> Unit) {
 
         mainScope.launch {
-            try {
-                imageRepository.getCourtImage(path, onSuccess)
-            } catch (_: Exception) {
-                onFailure()
-            }
+                imageRepository.getCourtImage(path, onFailure ,onSuccess)
+
         }
     }
 

@@ -1,6 +1,7 @@
 
 <resources>
     <color name="disabled">#808080</color>
+    <color name="light_gray">#d3d3d3</color>
     <color name="basketball_sport">#E3B505</color>
     <color name="tennis_sport">#006D77</color>
     <color name="football_sport">#3B953E</color>

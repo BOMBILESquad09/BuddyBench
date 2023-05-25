@@ -12,10 +12,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.compose.material3.contentColorFor
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
@@ -51,8 +53,9 @@ import java.util.Locale
 @AndroidEntryPoint
 class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_reservations) {
     private lateinit var recyclerViewReservations: RecyclerView
+    val viewModel by activityViewModels<ReservationViewModel>()
+
     private lateinit var calendarView: CalendarView
-    val viewModel = context.reservationViewModel
     private lateinit var progressBar: ProgressBar
     private lateinit var progressLayout: LinearLayout
     private lateinit var currentMonth: YearMonth
@@ -98,21 +101,15 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
 
 
 
+        progressLayout.visibility = View.VISIBLE
         context.reservationViewModel.loading.observe(viewLifecycleOwner) {
-            if(it) {
-                context.findViewById<View>(R.id.emptyReservations).visibility = View.GONE
+
+            println(it ?: null)
+            if(it == null || it) {
+                view.findViewById<View>(R.id.emptyReservations).visibility = View.GONE
                 recyclerViewReservations.visibility = View.GONE
                 progressLayout.visibility = View.VISIBLE
             } else {
-                if(viewModel.getSelectedReservations().isNullOrEmpty()){
-
-                    context.findViewById<View>(R.id.emptyReservations).visibility = View.VISIBLE
-                    recyclerViewReservations.visibility = View.GONE
-
-                } else {
-                    recyclerViewReservations.visibility = View.VISIBLE
-                    context.findViewById<View>(R.id.emptyReservations).visibility = View.GONE
-                }
                 progressLayout.visibility = View.GONE
             }
         }
@@ -161,6 +158,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
     }
 
     private fun refresh(){
+        if (viewModel.loading.value != false) return
         val selectedReservations = viewModel.getSelectedReservations()?.sortedBy { it.endTime } ?: listOf()
         if (viewModel.oldDate != null){
             val firstDay = calendarView.findFirstVisibleMonth()?.yearMonth?.atDay(1) ?: YearMonth.now().atDay(1)
@@ -185,10 +183,10 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
             recyclerViewReservations.adapter!!.notifyDataSetChanged()
 
         } else {
-            if(!viewModel.loading.value!!){
-                recyclerViewReservations.visibility = View.VISIBLE
-                context.findViewById<View>(R.id.emptyReservations).visibility = View.GONE
-            }
+
+            recyclerViewReservations.visibility = View.VISIBLE
+            context.findViewById<View>(R.id.emptyReservations).visibility = View.GONE
+
             val diffUtils = InvitationsDiffsUtils((recyclerViewReservations.adapter as ReservationAdapter).reservations, selectedReservations)
             val diff = DiffUtil.calculateDiff(diffUtils)
             (recyclerViewReservations.adapter as ReservationAdapter).reservations = selectedReservations

@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,7 +21,7 @@ import it.polito.mad.buddybench.viewmodels.UserViewModel
 @AndroidEntryPoint
 class RemoveFriendDialog(
     private val userViewModel: UserViewModel,
-): SuperBottomSheetFragment() {
+): BottomSheetDialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,8 +42,8 @@ class RemoveFriendDialog(
         val confirmButton = view.findViewById<Button>(R.id.btn_confirm)
         confirmButton?.setOnClickListener{
             userViewModel.removeFriend {
+                dismiss()
             }
-            dismiss()
         }
 
         val cancelButton = view.findViewById<Button>(R.id.btn_cancel)
@@ -52,13 +53,7 @@ class RemoveFriendDialog(
 
     }
 
-    override fun isSheetAlwaysExpanded(): Boolean {
-        return true
-    }
 
-    override fun getExpandedHeight(): Int {
-        return -2
-    }
 
 
 }
