@@ -178,6 +178,21 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
             requireActivity().finish()
         }
 
+        courtViewModel.loading.observe(this.viewLifecycleOwner){
+
+            if(it == null || !it){
+
+                binding.progressLayout.visibility = View.GONE
+
+            } else{
+                binding.root.findViewById<ConstraintLayout>(R.id.empty_timeslots).visibility =
+                    View.GONE
+                recyclerView.visibility = View.GONE
+                binding.progressLayout.visibility = View.VISIBLE
+
+            }
+        }
+
         // Retrieve the time tables associated to a Court
         courtViewModel.getTimeTables(courtName, sport).observe(viewLifecycleOwner) {
             if (it == null) return@observe
@@ -190,11 +205,16 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
                     if (timeSlots.isEmpty()) {
                         binding.root.findViewById<ConstraintLayout>(R.id.empty_timeslots).visibility =
                             View.VISIBLE
+
+                        recyclerView.visibility = View.GONE
                     } else {
                         binding.root.findViewById<ConstraintLayout>(R.id.empty_timeslots).visibility =
                             View.GONE
+                        recyclerView.visibility = View.VISIBLE
+
                     }
                     recyclerView.adapter?.notifyDataSetChanged()
+
                 }
         }
 

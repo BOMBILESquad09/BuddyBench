@@ -151,10 +151,11 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
 
 
     fun refreshPossibleFriends(profile: Profile) {
-
+        println("diocaneeeeeeeeeeeeeeeee")
         _possibleFriends.value = _possibleFriends.value!!.map {
             if (it.email == profile.email) {
-                profile
+                println(profile.isPending)
+                profile.copy()
             } else {
                 it
             }

@@ -1,6 +1,7 @@
 package it.polito.mad.buddybench.activities.friends
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.addCallback
 import androidx.activity.viewModels
@@ -42,7 +43,13 @@ class FriendProfileActivity : AppCompatActivity() {
             showProfileFragment.profile = it
             showProfileFragment.setGUI()
         }
+
+
+
+
         onBackPressedDispatcher.addCallback {
+            val intent = Intent()
+            bundle.putString("profile", showProfileFragment.profile.toJSON().toString())
             intent.putExtras(bundle)
             setResult(Activity.RESULT_OK, intent)
             finish()

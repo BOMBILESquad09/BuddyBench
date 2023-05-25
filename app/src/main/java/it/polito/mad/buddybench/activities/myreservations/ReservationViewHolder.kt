@@ -30,7 +30,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 
-class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent>) :
+class ReservationViewHolder(v: View, private val launcher: ActivityResultLauncher<Intent>) :
     RecyclerView.ViewHolder(v) {
 
     private val courtName: TextView = v.findViewById(R.id.card_invitation_court)

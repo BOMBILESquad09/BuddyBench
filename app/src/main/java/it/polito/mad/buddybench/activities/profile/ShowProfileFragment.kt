@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.activities.profile
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -195,11 +196,6 @@ class ShowProfileFragment(
                         null
                     );
                 }
-                (requireActivity() as FriendProfileActivity).bundle.remove("profile")
-                (requireActivity() as FriendProfileActivity).bundle.putString(
-                    "profile",
-                    it.toJSON().toString()
-                )
 
             }
             friendButton.setOnClickListener {
@@ -233,6 +229,11 @@ class ShowProfileFragment(
 
     private fun returnFromFriendProfile() {
         val friendProfileActivity = activity as FriendProfileActivity
+        friendProfileActivity.bundle.putString("profile", profile.toJSON().toString())
+        friendProfileActivity.bundle.getString("profile")!!
+        friendProfileActivity.bundle.getString("oldProfile")!!
+        friendProfileActivity.intent.putExtras(friendProfileActivity.bundle)
+        friendProfileActivity.setResult(Activity.RESULT_OK, friendProfileActivity.intent)
         friendProfileActivity.finish()
     }
 

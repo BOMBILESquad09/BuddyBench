@@ -204,18 +204,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun onFriendsProfileReturn(response: ActivityResult?) {
-
-        if (response?.data?.getStringExtra("profile") == null) {
-            return
-        }
-        val profile = Profile.fromJSON(JSONObject(response.data!!.getStringExtra("profile")!!))
-        val oldProfile =
-            Profile.fromJSON(JSONObject(response.data!!.getStringExtra("oldProfile")!!))
-
-
-        if (profile.isPending != oldProfile.isPending) {
-            friendsViewModel.refreshPossibleFriends(profile)
-        }
+        friendsViewModel.refreshAll {  }
     }
 
     private fun onReviewsReturn(response: ActivityResult) {
@@ -229,21 +218,22 @@ class HomeActivity : AppCompatActivity() {
         Utils.closeProgressDialog()
     }
 
-    fun onNetworkProblemHandler() {
+    private fun onNetworkProblemHandler() {
 
 
         imageViewModel.onFailure = {
             Utils.openNetworkProblemDialog(this)
         }
+
         reservationViewModel.onFailure = {
             Utils.openNetworkProblemDialog(this)
         }
+
         userViewModel.onFailure = {
             Utils.openNetworkProblemDialog(this)
-
         }
+
         findCourtViewModel.onFailure = {
-            println("diocaneeeeeeeeeeee")
             Utils.openNetworkProblemDialog(this)
         }
         friendsViewModel.onFailure = {

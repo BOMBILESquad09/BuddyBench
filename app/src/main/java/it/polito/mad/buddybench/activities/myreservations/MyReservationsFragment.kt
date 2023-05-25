@@ -96,7 +96,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         dayTitle.text = LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, d MMMM y", Locale.ENGLISH))
 
 
-        progressLayout = view.findViewById(R.id.progess_layout)
+        progressLayout = view.findViewById(R.id.progress_layout)
         progressBar = progressLayout.findViewById(R.id.progress_circular)
 
 

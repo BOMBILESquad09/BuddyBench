@@ -24,7 +24,8 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     val currentCourts: LiveData<List<CourtDTO>> = _currentCourts
 
     private var selectedDate: LocalDate = LocalDate.now()
-    var loading = MutableLiveData(false)
+    private val _loading:MutableLiveData<Boolean> = MutableLiveData(null)
+    val loading: LiveData<Boolean> = _loading
 
     //filters
     var minRating: Float = 0f
@@ -49,17 +50,17 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
         return sports
     }
     fun getCourtsBySport(onSuccess: () -> Unit): LiveData<List<CourtDTO>> {
-        loading.postValue(true)
+        _loading.value = true
 
         mainScope.launch {
 
             courtRepositoryFirebase.getCourtsByDay(selectedSport.value!!, selectedDate, {
-                loading.postValue(false)
+                _loading.postValue(false)
                 _currentCourts.postValue(listOf())
                 onFailure()
             }){
                     list ->
-                    loading.postValue(false)
+                    _loading.postValue(false)
                     _courts = list
                     val courts = applyFiltersOnCourts(_courts)
                     _currentCourts.postValue(courts)

@@ -70,7 +70,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             textUser.text = parent.context.getString(R.string.user_hello, it.name)
         }
 
-        progressLayout = view.findViewById(R.id.progess_layout)
+        progressLayout = view.findViewById(R.id.progress_layout)
         progressBar = progressLayout.findViewById(R.id.progress_circular)
 
         noCourts = view.findViewById(R.id.no_courts_available)
@@ -137,7 +137,8 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
         parent.context.findCourtViewModel.loading.observe(viewLifecycleOwner) {
             if(it) {
-
+                recyclerView.visibility = View.GONE
+                noCourts.visibility = View.GONE
                 progressLayout.visibility = View.VISIBLE
             } else {
                 progressLayout.visibility = View.GONE
