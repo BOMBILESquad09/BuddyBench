@@ -48,7 +48,6 @@ class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent
 
     fun bind(reservation: ReservationDTO) {
 
-
         // ** Card color
         val card = view.findViewById<CardView>(R.id.card_inner)
         card.setCardBackgroundColor(
@@ -112,7 +111,9 @@ class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent
                 Sports.valueOf(reservation.court.sport),
                 view.context
             ))
+        manageBtn.text = "Manage"
         if (reservation.isUserOrganizerInitialized() && reservation.userOrganizer.email != Firebase.auth.currentUser!!.email!!) {
+
             manageBtn.text = "Invited"
             manageBtn.setOnClickListener {
                 SendInvitationsBottomSheet(reservation, true).show(

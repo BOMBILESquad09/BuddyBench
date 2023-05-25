@@ -3,20 +3,17 @@ package it.polito.mad.buddybench.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.bumptech.glide.load.model.UnitModelLoader
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.buddybench.activities.court.DialogSheetDeleteReservation
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.classes.TimeSlotsNotAvailableException
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 
-import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.firebaseRepositories.ReservationRepository
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
-import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,7 +35,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     lateinit var  profile: Profile
     var onFailure = {}
 
-    val reservationRepositoryFirebase = ReservationRepository()
+    private val reservationRepository = ReservationRepository()
 
     // ** Expose to other classes (view)
     val reservations: LiveData<HashMap<LocalDate, List<ReservationDTO>>> get() = _reservations
@@ -55,14 +52,13 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     var oldNotInvitedFriends: List<Pair<Profile, Boolean>> = _notInvitedFriends.value!!
     val notInvitedFriends: LiveData<List<Pair<Profile, Boolean>>> = _notInvitedFriends
 
-    val mainScope = MainScope()
+    private val mainScope = viewModelScope
 
 
     fun getAllByUser(): LiveData<HashMap<LocalDate, List<ReservationDTO>>> {
         loading.value = true
-        println("getting")
         mainScope.launch {
-            reservationRepositoryFirebase.getAllByUser({
+            reservationRepository.getAllByUser({
                 onFailure()
                 loading.postValue(false)
             } ){
@@ -70,7 +66,6 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
                 _reservations.postValue(it)
             }
         }
-        println("returningggggggggggg")
 
 
         return _reservations
@@ -88,7 +83,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
             try{
                 if (!edit) {
                     try {
-                        reservationRepositoryFirebase.save(reservation,  onFailure, onError = failureCallback) {
+                        reservationRepository.save(reservation,  onFailure, onError = failureCallback) {
                             println("diocaneeeeeee")
                             loading.postValue(false)
                             onSuccess()
@@ -97,7 +92,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
                     }
 
                 } else {
-                    reservationRepositoryFirebase.update(
+                    reservationRepository.update(
                         reservation,
                         oldDate!!, onFailure, onError = failureCallback){
                         loading.postValue(false)
@@ -127,7 +122,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         reservationID: String,
     ): MutableLiveData<ReservationDTO?> {
         runBlocking {
-            val res = reservationRepositoryFirebase.getReservation(reservationID, onFailure = onFailure)
+            val res = reservationRepository.getReservation(reservationID, onFailure = onFailure)
             if(res != null){
                 _currentReservation.postValue(res)
                 initAcceptedFriends(res)
@@ -158,7 +153,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     ) {
         loading.value = true
         mainScope.launch {
-            reservationRepositoryFirebase.delete(reservationDTO, date, onFailure){
+            reservationRepository.delete(reservationDTO, date, onFailure){
                 onSuccess()
             }
         }
