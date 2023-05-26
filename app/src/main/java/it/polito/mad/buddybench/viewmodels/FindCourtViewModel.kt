@@ -112,4 +112,6 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
                     && it.rating >= minRating &&  it.feeHour <= maxFee
         }.sortedBy { it.name }
     }
+
+
 }

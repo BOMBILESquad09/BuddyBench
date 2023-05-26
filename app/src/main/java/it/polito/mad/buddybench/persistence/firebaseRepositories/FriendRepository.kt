@@ -62,7 +62,6 @@ class FriendRepository {
     /*manda una richiesta d'amicizia*/
     fun postFriendRequest(friendEmail: String, onFailure: () -> Unit, onSuccess: () -> Unit) {
 
-        println("ioaioaidopaidap")
         db.runTransaction { t ->
 
             val currentEmail = Firebase.auth.currentUser!!.email!!
@@ -78,7 +77,6 @@ class FriendRepository {
             onFailure()
         }
 
-        println("fineeee")
 
     }
 

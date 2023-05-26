@@ -52,7 +52,6 @@ class EditConfirmDialogSheet(
     private lateinit var sheet: NestedScrollView
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -75,8 +74,6 @@ class EditConfirmDialogSheet(
         setAdditionalInformationCard(view)
         // Setting the price details Dialog
         setPriceDetailCard(view)
-
-        
 
 
         // CheckBox inside the Additional Information Card
@@ -114,8 +111,16 @@ class EditConfirmDialogSheet(
                     editMode,
                     oldDate,
                     {
-                    buildAlertDialog("Ops","Seems that the time slots selected are not available",requireContext()).show()
-                }){
+                        confirmButton.stopAnimation()
+                        buildAlertDialog(
+                            "Ops",
+                            "Seems that the time slots selected are not available",
+                            requireActivity()
+                        ).show()
+                        courtViewModel.getTimeSlotsAvailable(courtToReserve, selectedDate, null)
+                        this.dismiss()
+
+                    }) {
                     confirmButton.postOnAnimation {
                         Thread {
                             Thread.sleep(1000)
@@ -247,8 +252,6 @@ class EditConfirmDialogSheet(
     override fun animateCornerRadius(): Boolean {
         return false
     }
-
-
 
 
 }

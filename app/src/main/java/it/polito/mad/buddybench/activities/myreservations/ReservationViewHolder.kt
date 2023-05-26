@@ -122,13 +122,16 @@ class ReservationViewHolder(v: View, private val launcher: ActivityResultLaunche
                     ) as AppCompatActivity).supportFragmentManager, "InvitationBottomSheet")
 
             }
-        } else if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime)){
+        } else if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.endTime)){
             manageBtn.text = "Review"
 
             manageBtn.setOnClickListener{
                 launchReview(reservation)
             }
-        } else {
+        } else if(LocalDate.now() == reservation.date && LocalTime.now() < reservation.endTime &&  LocalTime.now() > reservation.startTime ){
+            manageBtn.text = "Started"
+        }
+        else {
             manageBtn.setOnClickListener {
                 if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime)) {
                     launchReview(reservation)

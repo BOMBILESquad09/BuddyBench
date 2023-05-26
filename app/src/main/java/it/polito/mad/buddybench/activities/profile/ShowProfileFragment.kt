@@ -32,6 +32,7 @@ import it.polito.mad.buddybench.activities.findcourt.FilterSheetDialog
 import it.polito.mad.buddybench.activities.friends.FriendProfileActivity
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.enums.Skills
+import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.FriendsViewModel
 import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
@@ -199,9 +200,13 @@ class ShowProfileFragment(
 
             }
             friendButton.setOnClickListener {
-                val profileFriend = userViewModel.user.value!!
+                 val profileFriend = try {
+                     userViewModel.user.value!!
+                } catch (_: Exception){
+                    Utils.openNetworkProblemDialog(this.requireContext())
+                    return@setOnClickListener
+                }
                 if (!profileFriend.isPending && !profileFriend.isFriend && !profileFriend.isRequesting) {
-
                     userViewModel.sendFriendRequest {
                     }
                 } else if (profileFriend.isPending) {

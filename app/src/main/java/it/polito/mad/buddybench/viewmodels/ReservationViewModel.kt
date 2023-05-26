@@ -79,6 +79,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         onSuccess: () -> Unit
     ) {
         loading.value = true
+
         mainScope.launch {
             try{
                 if (!edit) {
@@ -89,8 +90,9 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
                             onSuccess()
                         }
                     } catch (e: Exception){
-                    }
+                        failureCallback()
 
+                    }
                 } else {
                     reservationRepository.update(
                         reservation,

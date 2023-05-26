@@ -30,6 +30,7 @@ import it.polito.mad.buddybench.activities.findcourt.sportselection.SportsSelect
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.utils.Utils
+import it.polito.mad.buddybench.viewmodels.FindCourtViewModel
 import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
 import java.time.DayOfWeek
@@ -46,6 +47,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
     private lateinit var noCourts: TextView
     val imageViewModel by activityViewModels<ImageViewModel> ()
     val userViewModel by activityViewModels<UserViewModel> ()
+    val findCourtViewModel by activityViewModels<FindCourtViewModel>()
 
     private lateinit var swipeRefresh : SwipeRefreshLayout
 
@@ -58,6 +60,8 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             swipeRefresh.isRefreshing = false
 
         }
+
+
         recyclerView = view.findViewById(R.id.searchRecyclerView)
         val b = view.findViewById<ImageView>(R.id.change_sport_button)
         val textNearButton = view.findViewById<TextView>(R.id.textView12)
@@ -120,6 +124,12 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         }
 
         b.setOnClickListener{
+            val name = userViewModel.user.value!!.name
+            textUser.text = parent.context.getString(R.string.user_hello, name)
+            // When I return to sport selection, clear filter
+            parent.context.findCourtViewModel.clearFilters()
+            filterButton?.setBackgroundResource(R.drawable.circle_light_bg)
+            filterIcon?.setImageResource(R.drawable.filter)
             //parent.fragmentManager.switchFragment(States.SPORTS_SELECTION)
             val fragmentTransaction = parent.parentFragmentManager.beginTransaction()
             val sportsSelectionFragment = SportsSelectionFragment(parent)
@@ -128,14 +138,9 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             fragmentTransaction.addToBackStack(null)
             fragmentTransaction.commit()
 
-            textUser.text = parent.context.getString(R.string.user_hello, userViewModel.user.value)
-            // When I return to sport selection, clear filter
-            parent.context.findCourtViewModel.clearFilters()
-            filterButton?.setBackgroundResource(R.drawable.circle_light_bg)
-            filterIcon?.setImageResource(R.drawable.filter)
         }
 
-        parent.context.findCourtViewModel.loading.observe(viewLifecycleOwner) {
+        findCourtViewModel.loading.observe(viewLifecycleOwner) {
             if(it) {
                 recyclerView.visibility = View.GONE
                 noCourts.visibility = View.GONE
@@ -145,7 +150,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             }
         }
 
-        parent.viewModel.currentCourts.observe(viewLifecycleOwner){
+        findCourtViewModel.currentCourts.observe(viewLifecycleOwner){
             val diff = CourtsDiffUtils(lastCourts, it)
             val diffResult = DiffUtil.calculateDiff(diff)
             lastCourts = it
@@ -161,7 +166,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             }
         }
 
-        parent.viewModel.selectedSport.observe(viewLifecycleOwner){
+        findCourtViewModel.selectedSport.observe(viewLifecycleOwner){
             val iconDrawable = ContextCompat.getDrawable(view.context,
                 Sports.sportToIconDrawableAlternative(
                     it

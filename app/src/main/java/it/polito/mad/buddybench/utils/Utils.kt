@@ -174,7 +174,6 @@ class Utils {
                 networkProblemDialog = dialog
             }
             networkProblemDialog!!.show()
-            println("connessione down")
             return networkProblemDialog!!
         }
 
