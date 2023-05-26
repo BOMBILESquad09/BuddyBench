@@ -40,16 +40,21 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
 
-                <ImageButton
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/back_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:background="@drawable/rounded_shape"
                     android:backgroundTint="@color/md_theme_light_background"
+                    app:icon="@drawable/round_arrow_back_24"
+                    android:focusable="true"
+                    app:cornerRadius="400dp"
+                    android:clickable="true"
+                    app:iconTint="@color/md_theme_dark_inverseOnSurface"
+                    app:iconSize="60dp"
                     android:contentDescription="@string/close"
-                    android:padding="16dp"
-                    android:src="@drawable/round_arrow_back_24_primary"
+                    android:padding ="20dp"
+                    android:scaleX="0.7"
+                    android:scaleY="0.7"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
