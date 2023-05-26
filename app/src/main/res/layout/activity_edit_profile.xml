@@ -1,54 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/md_theme_light_primary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/round_arrow_back_24" />
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/md_theme_light_primary"
-            app:layout_constraintTop_toTopOf="parent"
-            app:navigationIcon="@drawable/round_arrow_back_24" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingVertical="16dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true"
-            >
-
+            <!-- Image View -->
             <LinearLayout
+                android:id="@+id/imageContainer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingVertical="16dp">
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center">
 
-                <!-- Image View -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:id ="@+id/imageContainer"
-                    >
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="3dp"
+                    app:cardBackgroundColor="@android:color/transparent"
+                    app:cardCornerRadius="255dp"
+                    app:cardElevation="3dp">
 
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_margin="3dp"
-                        app:cardBackgroundColor="@android:color/transparent"
-                        app:cardCornerRadius="255dp"
-                        app:cardElevation="3dp">
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -63,10 +59,10 @@
                             android:id="@+id/profile_image"
                             android:layout_width="200dp"
                             android:layout_height="200dp"
+                            android:background="@drawable/person"
                             android:contentDescription="@string/profile_photo_cd"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/person"
-                            android:background="@drawable/person"/>
+                            android:src="@drawable/person" />
 
                         <include
                             layout="@layout/camera_button"
@@ -75,100 +71,76 @@
                             android:layout_gravity="center" />
 
 
-                    </androidx.cardview.widget.CardView>
-                    </androidx.cardview.widget.CardView>
-                </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
 
-                <!-- Profile Data -->
+            <!-- Profile Data -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:orientation="vertical"
+
+                >
+
                 <LinearLayout
+                    android:id="@+id/linearLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="2"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:orientation="vertical"
+                    app:layout_constraintBottom_toTopOf="@+id/textView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cardView">
 
-                    >
 
                     <LinearLayout
-                        android:id="@+id/linearLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
                         android:layout_marginTop="10dp"
-                        app:layout_constraintBottom_toTopOf="@+id/textView"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/cardView">
-
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginBottom="8dp"
-                            android:layout_weight="1"
-                            android:orientation="horizontal">
-
-                            <com.google.android.material.textfield.TextInputLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:hint="@string/nameLabel"
-                                android:textColorHint="@color/md_theme_dark_inverseOnSurface"
-                                app:boxStrokeColor="#FF0000">
-
-                                <EditText
-                                    android:id="@+id/nameEdit"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:backgroundTint="@color/md_theme_dark_onPrimary"
-                                    android:fontFamily="@font/montserrat_medium_500"
-                                    android:gravity=""
-                                    android:inputType="textNoSuggestions"
-                                    android:singleLine="true"
-                                    android:text=""
-                                    android:textSize="15sp" />
-
-                            </com.google.android.material.textfield.TextInputLayout>
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="0.25" />
-
-                            <com.google.android.material.textfield.TextInputLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:hint="diocane"
-                                android:textColorHint="@color/md_theme_dark_inverseOnSurface"
-                                app:boxStrokeColor="#FF0000">
-
-                                <EditText
-                                    android:id="@+id/surnameEdit"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:backgroundTint="@color/md_theme_dark_onPrimary"
-                                    android:fontFamily="@font/montserrat_medium_500"
-                                    android:gravity=""
-                                    android:inputType="textNoSuggestions"
-                                    android:singleLine="true"
-                                    android:textSize="15sp" />
-
-                            </com.google.android.material.textfield.TextInputLayout>
-                        </LinearLayout>
+                        android:layout_marginBottom="8dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
 
                         <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
                             android:layout_weight="1"
-                            android:hint="@string/nicknameLabel"
+                            android:hint="@string/nameLabel"
                             android:textColorHint="@color/md_theme_dark_inverseOnSurface"
                             app:boxStrokeColor="#FF0000">
 
                             <EditText
-                                android:id="@+id/nicknameEdit"
+                                android:id="@+id/nameEdit"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="@color/md_theme_dark_onPrimary"
+                                android:fontFamily="@font/montserrat_medium_500"
+                                android:gravity=""
+                                android:inputType="textNoSuggestions"
+                                android:singleLine="true"
+                                android:text=""
+                                android:textSize="15sp" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.25" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColorHint="@color/md_theme_dark_inverseOnSurface"
+                            app:boxStrokeColor="#FF0000">
+
+                            <EditText
+                                android:id="@+id/surnameEdit"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:backgroundTint="@color/md_theme_dark_onPrimary"
@@ -178,155 +150,107 @@
                                 android:singleLine="true"
                                 android:textSize="15sp" />
 
-
                         </com.google.android.material.textfield.TextInputLayout>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            android:hint="@string/emailLabel"
-                            android:textColorHint="@color/md_theme_dark_inverseOnSurface"
-                            app:boxStrokeColor="#FF0000">
-
-                            <EditText
-                                android:id="@+id/Email"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:backgroundTint="@color/md_theme_dark_onPrimary"
-                                android:fontFamily="@font/montserrat_medium_500"
-                                android:inputType="textEmailAddress"
-                                android:singleLine="true"
-                                android:text="@string/emailLabel"
-                                android:textSize="15sp"
-                                android:autofillHints="emailAddress" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="horizontal">
-
-                            <com.google.android.material.textfield.TextInputLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:hint="@string/localityLabel"
-                                android:textColorHint="@color/md_theme_dark_inverseOnSurface"
-                                app:boxStrokeColor="#FF0000">
-
-                                <EditText
-                                    android:id="@+id/localityEdit"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:backgroundTint="@color/md_theme_dark_onPrimary"
-                                    android:fontFamily="@font/montserrat_medium_500"
-                                    android:inputType="textNoSuggestions"
-                                    android:singleLine="true"
-                                    android:text="@string/localityLabel"
-                                    android:textAlignment="textStart"
-                                    android:textSize="15sp"
-                                    />
-                            </com.google.android.material.textfield.TextInputLayout>
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="0.25" />
-
-                            <com.google.android.material.textfield.TextInputLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:hint="@string/birthdateLabel"
-                                android:textColorHint="@color/md_theme_dark_inverseOnSurface"
-                                app:boxStrokeColor="#FF0000"
-                                >
-
-                                <EditText
-                                    android:id="@+id/birthdayEditButton"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:clickable="true"
-                                    android:focusable="false"
-                                    android:fontFamily="@font/montserrat_medium_500"
-                                    android:hint="@string/birthdateLabel"
-                                    android:onClick="showDatePickerDialog"
-                                    android:text="01/01/2001"
-                                    android:textAlignment="textStart"
-                                    android:textSize="15sp"
-                                    />
-
-                            </com.google.android.material.textfield.TextInputLayout>
-
-
-                        </LinearLayout>
-
-
                     </LinearLayout>
 
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_weight="1"
+                        android:hint="@string/nicknameLabel"
+                        android:textColorHint="@color/md_theme_dark_inverseOnSurface"
+                        app:boxStrokeColor="#FF0000">
+
+                        <EditText
+                            android:id="@+id/nicknameEdit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@color/md_theme_dark_onPrimary"
+                            android:fontFamily="@font/montserrat_medium_500"
+                            android:gravity=""
+                            android:inputType="textNoSuggestions"
+                            android:singleLine="true"
+                            android:textSize="15sp" />
+
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:hint="@string/emailLabel"
+                        android:textColorHint="@color/md_theme_dark_inverseOnSurface"
+                        app:boxStrokeColor="#FF0000">
+
+                        <EditText
+                            android:id="@+id/Email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:autofillHints="emailAddress"
+                            android:backgroundTint="@color/md_theme_dark_onPrimary"
+                            android:fontFamily="@font/montserrat_medium_500"
+                            android:inputType="textEmailAddress"
+                            android:singleLine="true"
+                            android:text="@string/emailLabel"
+                            android:textSize="15sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginTop="5dp"
-                        >
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:orientation="horizontal"
-                            android:paddingBottom="10dp"
-                            >
+                            android:layout_weight="1"
+                            android:hint="@string/localityLabel"
+                            android:textColorHint="@color/md_theme_dark_inverseOnSurface"
+                            app:boxStrokeColor="#FF0000">
 
-                            <TextView
-                                android:id="@+id/textView"
-                                android:layout_width="wrap_content"
+                            <EditText
+                                android:id="@+id/localityEdit"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:fontFamily="@font/montserrat_bold_700"
-                                android:text="@string/sports_section"
-                                android:textSize="17sp"
-                                app:layout_constraintBottom_toTopOf="@+id/sports_horizontal_scroll"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.5"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+                                android:backgroundTint="@color/md_theme_dark_onPrimary"
+                                android:fontFamily="@font/montserrat_medium_500"
+                                android:inputType="textNoSuggestions"
+                                android:singleLine="true"
+                                android:text="@string/localityLabel"
+                                android:textAlignment="textStart"
+                                android:textSize="15sp" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                            <ImageButton
-                                android:id="@+id/add_sport_button"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/rounded_shape"
-                                android:layout_gravity="center_vertical"
-                                android:backgroundTint="@color/md_theme_light_primary"
-                                android:contentDescription="@string/add"
-                                android:src="@drawable/round_add_24_white"
-                                android:layout_marginLeft="5dp"/>
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.25" />
 
-                        </LinearLayout>
-
-                        <HorizontalScrollView
-                            android:id="@+id/sports_horizontal_scroll"
-                            android:layout_width="wrap_content"
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:hint="@string/birthdateLabel"
+                            android:textColorHint="@color/md_theme_dark_inverseOnSurface"
+                            app:boxStrokeColor="#FF0000">
 
-                            >
-
-                            <LinearLayout
-                                android:id="@+id/sportsContainerEdit"
-                                android:layout_width="wrap_content"
+                            <EditText
+                                android:id="@+id/birthdayEditButton"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:baselineAligned="false"
-                                android:orientation="horizontal"
-                                >
+                                android:clickable="true"
+                                android:focusable="false"
+                                android:fontFamily="@font/montserrat_medium_500"
+                                android:hint="@string/birthdateLabel"
+                                android:onClick="showDatePickerDialog"
+                                android:text="01/01/2001"
+                                android:textAlignment="textStart"
+                                android:textSize="15sp" />
 
-                               
-
-                            </LinearLayout>
-                        </HorizontalScrollView>
+                        </com.google.android.material.textfield.TextInputLayout>
 
 
                     </LinearLayout>
@@ -334,11 +258,75 @@
 
                 </LinearLayout>
 
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingBottom="10dp">
+
+                        <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_bold_700"
+                            android:text="@string/sports_section"
+                            android:textSize="17sp"
+                            app:layout_constraintBottom_toTopOf="@+id/sports_horizontal_scroll"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+                        <ImageButton
+                            android:id="@+id/add_sport_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="5dp"
+                            android:background="@drawable/rounded_shape"
+                            android:backgroundTint="@color/md_theme_light_primary"
+                            android:contentDescription="@string/add"
+                            android:src="@drawable/round_add_24_white" />
+
+                    </LinearLayout>
+
+                    <HorizontalScrollView
+                        android:id="@+id/sports_horizontal_scroll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        >
+
+                        <LinearLayout
+                            android:id="@+id/sportsContainerEdit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:baselineAligned="false"
+                            android:orientation="horizontal">
+
+
+                        </LinearLayout>
+                    </HorizontalScrollView>
+
+
+                </LinearLayout>
+
+
             </LinearLayout>
 
-        </ScrollView>
+        </LinearLayout>
 
-    </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
 
 
 

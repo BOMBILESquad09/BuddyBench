@@ -107,7 +107,7 @@
     <string name="time_selected"> %1$s - %2$s</string>
     <string name="delete"> Delete </string>
     <string name="confirm_delete">Are you sure to delete the reservation?</string>
-    <string name="search">Search</string>
+    <string name="search">Search by locality or court name</string>
     <string name="confirmation_delete">Yes, delete the reservation</string>
 
     <string name="no_courts">No courts found based on the search criteria</string>
@@ -248,5 +248,7 @@
     <string name="edit_reservation">Edit reservation</string>
     <string name="invite_friends">Invite friends</string>
     <string name="change_visibility">Change visibility</string>
+    <string name="there_seems_to_be_a_problem_check_your_connection">There seems to be a problem,
+        check your connection.</string>
 
 </resources>

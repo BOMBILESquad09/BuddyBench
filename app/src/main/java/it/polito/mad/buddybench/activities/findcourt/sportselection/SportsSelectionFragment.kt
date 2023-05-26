@@ -40,7 +40,6 @@ class SportsSelectionFragment(val parent: FindCourtFragment): Fragment(R.layout.
 
             parent.viewModel.getAllSports().observe(viewLifecycleOwner) {
                 sportsRecyclerView.adapter = SportsSelectionAdapter(it) { sport ->
-                    parent.viewModel.loading.postValue(true)
                     parent.viewModel.setSport(sport)
                     val fragmentTransaction = parent.parentFragmentManager.beginTransaction()
                     fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)

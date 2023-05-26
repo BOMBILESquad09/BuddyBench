@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
@@ -38,121 +39,151 @@ import java.time.format.DateTimeFormatter
 import java.util.Objects
 
 
-
 class UserRepository {
     val db = FirebaseFirestore.getInstance()
     var profile: Profile? = null
     var otherProfile: Profile? = null
 
-    suspend fun getUser(email: String = Firebase.auth.currentUser!!.email!!, callback: (Profile) -> Unit){
-        withContext(Dispatchers.IO){
-            if(email == Firebase.auth.currentUser!!.email!!){
-                if(profile == null){
-                    fetchUser(email,callback)
-                } else
-                {
-                    callback(profile!!)
+    suspend fun getUser(
+        email: String = Firebase.auth.currentUser!!.email!!,
+        onFailure: () -> Unit,
+        onSuccess: (Profile) -> Unit
+    ) {
+        withContext(Dispatchers.IO) {
+            try {
+                if (email == Firebase.auth.currentUser!!.email!!) {
+                    if (profile == null) {
+                        fetchUser(email, onFailure,onSuccess)
+                    } else {
+                        onSuccess(profile!!)
+                    }
+                } else {
+                    fetchUser(email, onFailure, onSuccess)
                 }
-            } else{
-                fetchUser(email, callback)
+            } catch (_: Exception) {
+                withContext(Dispatchers.Main){
+                    onFailure()
+
+                }
             }
 
         }
     }
 
-    suspend fun fetchUser(email: String = Firebase.auth.currentUser!!.email!!, callback: (Profile) -> Unit) {
+    suspend fun fetchUser(
+        email: String = Firebase.auth.currentUser!!.email!!,
+        onFailure: () -> Unit,
+        onSuccess: (Profile) -> Unit
+    ) {
         withContext(Dispatchers.IO) {
-            val profile = db.collection("users").document(email).get().await()
-            if (profile.data != null) {
-                val serializedProfile = serializeUser(profile.data as Map<String, Object>)
-                if(email == Firebase.auth.currentUser!!.email!!){
-                    (profile.data!!["friends"] as List<DocumentReference>).map { it.get() }
-                        .map { it.await() }.forEach {
-                            if(it != null)
-                                serializedProfile.friends.add(serializeUser(it.data as Map<String, Object>))
+            try {
+                //lancia un eccezione se la connessione non esiste
+
+                val profile = db.collection("users").document(email).get().await()
+                if (profile.data != null) {
+                    val serializedProfile = serializeUser(profile.data as Map<String, Object>)
+                    if (email == Firebase.auth.currentUser!!.email!!) {
+                        (profile.data!!["friends"] as List<DocumentReference>).map { it.get() }
+                            .map { it.await() }.forEach {
+                                if (it != null)
+                                    serializedProfile.friends.add(serializeUser(it.data as Map<String, Object>))
+                            }
+                        (profile.data!!["friend_requests_pending"] as List<DocumentReference>).map { it.get() }
+                            .map { it.await() }.forEach {
+                                if (it != null)
+                                    serializedProfile.pendings.add(serializeUser(it.data as Map<String, Object>))
+                            }
+                    } else {
+                        serializedProfile.isRequesting =
+                            this@UserRepository.profile?.pendings?.any { it.email == serializedProfile.email }
+                                ?: false
+                    }
+
+
+                    if (profile.data!!["last_update"] == null || LocalDate.parse(
+                            profile.data!!["last_update"] as String,
+                            DateTimeFormatter.ISO_LOCAL_DATE
+                        ) != LocalDate.now()
+                    ) {
+                        val organized = db.collection("reservations")
+                            .whereEqualTo("user", db.document("users/$email")).get()
+                        val invited = db.collection("reservations")
+                            .whereArrayContains("accepted", db.document("users/$email")).get()
+                        organized.await()
+                        invited.await()
+                        val counters: HashMap<Sports, Pair<Int, Int>> = HashMap()
+                        for (o in organized.result) {
+                            if (!checkReservationIsPassed(o.data)) continue
+                            val sport = Sports.valueOf(
+                                (o.data!!["court"] as DocumentReference).id.split("_").last()
+                            )
+                            if (counters[sport] == null) {
+                                counters[sport] = Pair(1, 1)
+                            } else {
+                                counters[sport] =
+                                    Pair(counters[sport]!!.first + 1, counters[sport]!!.second + 1)
+                            }
                         }
-                    (profile.data!!["friend_requests_pending"] as List<DocumentReference>).map { it.get() }
-                        .map { it.await() }.forEach {
-                            if(it!=null)
-                                serializedProfile.pendings.add(serializeUser(it.data as Map<String, Object>) )
+                        for (i in invited.result) {
+                            if (!checkReservationIsPassed(i.data)) continue
+                            val sport = Sports.valueOf(
+                                (i.data!!["court"] as DocumentReference).id.split("_").last()
+                            )
+                            if (counters[sport] == null) {
+                                counters[sport] = Pair(0, 1)
+                            } else {
+                                counters[sport] =
+                                    Pair(counters[sport]!!.first, counters[sport]!!.second + 1)
+                            }
                         }
-                } else{
-                    serializedProfile.isRequesting = this@UserRepository.profile?.pendings?.any { it.email == serializedProfile.email }?:false
+
+                        serializedProfile.sports.forEach {
+                            it.matchesOrganized = counters[it.name]?.first ?: 0
+                            it.matchesPlayed = counters[it.name]?.second ?: 0
+                        }
+
+                        update(serializedProfile, onFailure, onSuccess)
+
+                        return@withContext
+                    }
+                    if (email == Firebase.auth.currentUser!!.email)
+                        this@UserRepository.profile = serializedProfile
+                    else
+                        this@UserRepository.otherProfile = serializedProfile
+                    onSuccess(serializedProfile)
+                } else {
+                    val newProfile = createProfile()
+                    val x = db.collection("users").document(newProfile.email).set(
+                        newProfile
+                    ).await()
+
+                    this@UserRepository.profile = Profile(
+                        newProfile.name,
+                        newProfile.surname,
+                        newProfile.nickname,
+                        newProfile.email,
+                        newProfile.location,
+                        LocalDate.parse(
+                            newProfile.birthdate,
+                            DateTimeFormatter.ISO_LOCAL_DATE
+                        ),
+                        newProfile.reliability,
+                        null,
+                        newProfile.sports,
+                        mutableListOf(),
+                        mutableListOf()
+                    )
+                    onSuccess(
+                        this@UserRepository.profile!!
+                    )
                 }
-
-
-                if (profile.data!!["last_update"] == null || LocalDate.parse(profile.data!!["last_update"] as String, DateTimeFormatter.ISO_LOCAL_DATE) != LocalDate.now()) {
-                    val organized = db.collection("reservations")
-                        .whereEqualTo("user", db.document("users/$email")).get()
-                    val invited = db.collection("reservations")
-                        .whereArrayContains("accepted", db.document("users/$email")).get()
-                    organized.await()
-                    invited.await()
-                    val counters: HashMap<Sports, Pair<Int, Int>> = HashMap()
-                    for (o in organized.result) {
-                        if(!checkReservationIsPassed(o.data)) continue
-                        val sport = Sports.valueOf(
-                            (o.data!!["court"] as DocumentReference).id.split("_").last()
-                        )
-                        if (counters[sport] == null) {
-                            counters[sport] = Pair(1, 1)
-                        } else {
-                            counters[sport] =
-                                Pair(counters[sport]!!.first + 1, counters[sport]!!.second + 1)
-                        }
-                    }
-                    for (i in invited.result) {
-                        if(!checkReservationIsPassed(i.data)) continue
-                        val sport = Sports.valueOf(
-                            (i.data!!["court"] as DocumentReference).id.split("_").last()
-                        )
-                        if (counters[sport] == null) {
-                            counters[sport] = Pair(0, 1)
-                        } else {
-                            counters[sport] =
-                                Pair(counters[sport]!!.first, counters[sport]!!.second + 1)
-                        }
-                    }
-
-                    serializedProfile.sports.forEach {
-                        it.matchesOrganized = counters[it.name]?.first ?: 0
-                        it.matchesPlayed = counters[it.name]?.second ?: 0
-                    }
-
-                    update(serializedProfile, callback)
-
-                    return@withContext
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main){
+                    println(e)
+                    println("-------------------------------")
+                    println("fetch user connessione down")
+                    onFailure()
                 }
-                if(email == Firebase.auth.currentUser!!.email)
-                    this@UserRepository.profile = serializedProfile
-                else
-                    this@UserRepository.otherProfile = serializedProfile
-                callback(serializedProfile)
-            } else {
-                val newProfile = createProfile()
-                val x = db.collection("users").document(newProfile.email).set(
-                    newProfile
-                ).await()
-
-                this@UserRepository.profile = Profile(
-                    newProfile.name,
-                    newProfile.surname,
-                    newProfile.nickname,
-                    newProfile.email,
-                    newProfile.location,
-                    LocalDate.parse(
-                        newProfile.birthdate,
-                        DateTimeFormatter.ISO_LOCAL_DATE
-                    ),
-                    newProfile.reliability,
-                    null,
-                    newProfile.sports,
-                    mutableListOf(),
-                    mutableListOf()
-                )
-                callback(
-                    this@UserRepository.profile!!
-                )
             }
         }
     }
@@ -166,42 +197,46 @@ class UserRepository {
         return ProfileData(
             name, surname, generatedNickname, user.email!!,
             "Turin", LocalDate.of(1999, 4, 27).toString(), 80,
-            "", mutableListOf()
-            , listOf(), listOf(), LocalDate.now()
+            "", mutableListOf(), listOf(), listOf(), LocalDate.now()
         )
     }
 
 
-    suspend fun update(user: Profile, callback: (Profile) -> Unit) {
+    suspend fun update(user: Profile, onFailure: () -> Unit,onSuccess: (Profile) -> Unit) {
         withContext(Dispatchers.IO) {
-            db.collection("users")
-                .document(user.email).update(
-                    mapOf(
-                        "name" to user.name,
-                        "surname" to user.surname,
-                        "nickname" to user.nickname,
-                        "location" to user.location,
-                        "birthdate" to user.birthdate.toString(),
-                        "sports" to user.sports,
-                        "imageUri" to user.imageUri.toString(),
-                        "last_update" to LocalDate.now().toString()
-                    )
-                ).await()
-            if(user.email == Firebase.auth.currentUser!!.email)
-                this@UserRepository.profile = user
-            else{
-                this@UserRepository.otherProfile = user
+            try {
+                db.collection("users")
+                    .document(user.email).update(
+                        mapOf(
+                            "name" to user.name,
+                            "surname" to user.surname,
+                            "nickname" to user.nickname,
+                            "location" to user.location,
+                            "birthdate" to user.birthdate.toString(),
+                            "sports" to user.sports,
+                            "imageUri" to user.imageUri.toString(),
+                            "last_update" to LocalDate.now().toString()
+                        )
+                    ).await()
+                if (user.email == Firebase.auth.currentUser!!.email)
+                    this@UserRepository.profile = user
+                else {
+                    this@UserRepository.otherProfile = user
+                }
+                onSuccess(user)
+            } catch (_: Exception){
+                onFailure()
             }
-            callback(user)
+
         }
 
 
     }
 
-    private fun checkReservationIsPassed(reservation: Map<String, Any>): Boolean{
+    private fun checkReservationIsPassed(reservation: Map<String, Any>): Boolean {
         val date = LocalDate.parse(reservation["date"] as String, DateTimeFormatter.ISO_LOCAL_DATE)
         if (date < LocalDate.now()) return true
-        if(date == LocalDate.now()) return (reservation["endTime"] as Long).toInt() < LocalTime.now().hour
+        if (date == LocalDate.now()) return (reservation["endTime"] as Long).toInt() < LocalTime.now().hour
         return false
     }
 
@@ -230,7 +265,7 @@ class UserRepository {
     }
 
     companion object {
-        fun serializeUser(map: Map<String, Any>, myProfile: Profile? =null) : Profile {
+        fun serializeUser(map: Map<String, Any>, myProfile: Profile? = null): Profile {
             val sports = mutableListOf<Sport>()
             val fbSports = map["sports"] as List<Map<String, Any>>
             for (s in fbSports) {

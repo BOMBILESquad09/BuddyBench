@@ -34,7 +34,7 @@ class FindFriendRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
-        holder.bind(item, position)
+        holder.bind(item)
 
     }
 
@@ -55,7 +55,7 @@ class FindFriendRecyclerViewAdapter(
             return super.toString() + " '" + tvName.text + "'"
         }
 
-        fun bind(profile: Profile, position: Int) {
+        fun bind(profile: Profile) {
             tvName.text = profile.fullName
             tvUsername.text = profile.nickname
 
@@ -65,29 +65,22 @@ class FindFriendRecyclerViewAdapter(
             btnAdd.setOnClickListener {
                 if (profile.isPending) {
                     viewModel.removeFriendRequest(profile.email) {
-
                     }
                 } else {
                     viewModel.sendRequest(profile.email) {
-                        Toast.makeText(
-                            btnAdd.context,
-                            "A friend request has been sent to ${profile.fullName}",
-                            Toast.LENGTH_LONG
-                        ).show()
                     }
-
                 }
-
-
             }
             (FragmentComponentManager.findActivity(binding.root.context) as HomeActivity).imageViewModel.getUserImage(
                 profile.email,
                 {
                     ivImage.setImageResource(R.drawable.person)
                 }) {
+
                 Glide.with(binding.root.context)
                     .load(it)
                     .into(ivImage)
+
             }
             ivImage.setOnClickListener {
                 Utils.goToProfileFriend(
@@ -99,11 +92,13 @@ class FindFriendRecyclerViewAdapter(
         }
 
         private fun updateAddBtn(state: Boolean) {
+            this.btnAddimage.backgroundTintList = ColorStateList.valueOf(binding.root.context.getColor(android.R.color.transparent))
             if (state) {
                 this.btnAddimage.backgroundTintList =
                         ColorStateList.valueOf(binding.root.context.getColor(R.color.disabled))
                 this.btnAddimage.setImageResource(R.drawable.request_sent)
             } else {
+
                 this.btnAdd.backgroundTintList =
                     ColorStateList.valueOf(binding.root.context.getColor(R.color.md_theme_light_primary))
                 this.btnAddimage.setImageResource(R.drawable.add_friend)

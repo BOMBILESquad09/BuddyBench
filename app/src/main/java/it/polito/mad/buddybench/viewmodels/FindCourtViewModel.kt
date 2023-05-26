@@ -24,7 +24,8 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     val currentCourts: LiveData<List<CourtDTO>> = _currentCourts
 
     private var selectedDate: LocalDate = LocalDate.now()
-    var loading = MutableLiveData(false)
+    private val _loading:MutableLiveData<Boolean> = MutableLiveData(null)
+    val loading: LiveData<Boolean> = _loading
 
     //filters
     var minRating: Float = 0f
@@ -41,19 +42,29 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
 
     private val mainScope = MainScope()
 
+    var onFailure: () -> Unit = {}
+
 
     fun getAllSports(): LiveData<List<Sports>>{
         _sports.value = listOf(Sports.TENNIS, Sports.BASKETBALL, Sports.FOOTBALL, Sports.VOLLEYBALL)
         return sports
     }
-    fun getCourtsBySport(): LiveData<List<CourtDTO>> {
+    fun getCourtsBySport(onSuccess: () -> Unit): LiveData<List<CourtDTO>> {
+        _loading.value = true
+
         mainScope.launch {
-            courtRepositoryFirebase.getCourtsByDay(selectedSport.value!!, selectedDate){
+
+            courtRepositoryFirebase.getCourtsByDay(selectedSport.value!!, selectedDate, {
+                _loading.postValue(false)
+                _currentCourts.postValue(listOf())
+                onFailure()
+            }){
                     list ->
-                    loading.postValue(true)
+                    _loading.postValue(false)
                     _courts = list
                     val courts = applyFiltersOnCourts(_courts)
                     _currentCourts.postValue(courts)
+                    onSuccess()
             }
         }
 
@@ -80,7 +91,9 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
 
     fun setSelectedDate(date: LocalDate){
         selectedDate = date
-        getCourtsBySport()
+        getCourtsBySport(){
+
+        }
 
     }
 
@@ -90,7 +103,7 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
 
     fun setSport(sport: Sports){
         selectedSport.value = sport
-        getCourtsBySport()
+        getCourtsBySport(){}
     }
 
     private fun applyFiltersOnCourts(courts: List<CourtDTO>): List<CourtDTO> {
@@ -99,4 +112,6 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
                     && it.rating >= minRating &&  it.feeHour <= maxFee
         }.sortedBy { it.name }
     }
+
+
 }

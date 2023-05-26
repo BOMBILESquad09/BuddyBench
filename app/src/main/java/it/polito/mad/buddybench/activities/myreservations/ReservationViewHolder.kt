@@ -30,7 +30,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 
-class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent>) :
+class ReservationViewHolder(v: View, private val launcher: ActivityResultLauncher<Intent>) :
     RecyclerView.ViewHolder(v) {
 
     private val courtName: TextView = v.findViewById(R.id.card_invitation_court)
@@ -47,7 +47,6 @@ class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent
     val view: View = v
 
     fun bind(reservation: ReservationDTO) {
-
 
         // ** Card color
         val card = view.findViewById<CardView>(R.id.card_inner)
@@ -112,7 +111,9 @@ class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent
                 Sports.valueOf(reservation.court.sport),
                 view.context
             ))
+        manageBtn.text = "Manage"
         if (reservation.isUserOrganizerInitialized() && reservation.userOrganizer.email != Firebase.auth.currentUser!!.email!!) {
+
             manageBtn.text = "Invited"
             manageBtn.setOnClickListener {
                 SendInvitationsBottomSheet(reservation, true).show(
@@ -121,13 +122,16 @@ class ReservationViewHolder(v: View, val launcher: ActivityResultLauncher<Intent
                     ) as AppCompatActivity).supportFragmentManager, "InvitationBottomSheet")
 
             }
-        } else if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime)){
+        } else if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.endTime)){
             manageBtn.text = "Review"
 
             manageBtn.setOnClickListener{
                 launchReview(reservation)
             }
-        } else {
+        } else if(LocalDate.now() == reservation.date && LocalTime.now() < reservation.endTime &&  LocalTime.now() > reservation.startTime ){
+            manageBtn.text = "Started"
+        }
+        else {
             manageBtn.setOnClickListener {
                 if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime)) {
                     launchReview(reservation)
