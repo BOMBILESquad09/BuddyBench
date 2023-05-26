@@ -106,6 +106,8 @@
                         android:id="@+id/add_achievements"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginBottom="5dp"
                         android:background="@drawable/rounded_shape"
                         android:backgroundTint="@color/md_theme_light_background"
                         android:fontFamily="@font/montserrat_semibold_600"
