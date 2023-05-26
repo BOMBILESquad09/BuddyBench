@@ -20,14 +20,14 @@
         android:layout_marginHorizontal="2dp"
         card_view:cardElevation="0dp">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:clickable="true"
             android:id="@+id/court_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingVertical="4dp"
             android:paddingHorizontal="10dp"
-            android:elevation="1dp"
+            android:elevation="10dp"
             android:layout_gravity="end"
             android:layout_margin="10dp"
             android:background="@drawable/rounded_shape_card"
@@ -38,7 +38,7 @@
             android:textSize="20sp"
             android:drawablePadding="5dp"
             card_view:drawableEndCompat="@drawable/star_24">
-        </TextView>
+        </com.google.android.material.textview.MaterialTextView>
 
         <LinearLayout
             android:layout_width="match_parent"

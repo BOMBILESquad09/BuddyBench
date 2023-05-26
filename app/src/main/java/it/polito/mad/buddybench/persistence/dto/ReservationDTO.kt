@@ -18,6 +18,7 @@ class ReservationDTO(
         this.equipment = equipment
         this.accepted = listOf()
         this.pendings = listOf()
+
     }
 
     lateinit var id: String

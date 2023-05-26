@@ -46,18 +46,18 @@ class ReviewViewModel @Inject constructor() : ViewModel() {
 
     private val _done: MutableLiveData<Boolean> = MutableLiveData(false)
     val done: LiveData<Boolean> = _done
-
-    fun getCourtReviews(name: String, sport: String, context: Context): LiveData<List<ReviewDTO>> {
+    var onFailure = {}
+    fun getCourtReviews(name: String, sport: String): LiveData<List<ReviewDTO>> {
         _done.postValue(false)
         _l.postValue(true)
         runBlocking {
             val currentUser = Firebase.auth.currentUser!!.email!!
             lateinit var courtFetched: CourtDTO
-            courtRepository.getCourt(name, sport) {
+            courtRepository.getCourt(name, sport, onFailure) {
                 courtFetched = it
                 _court.postValue(it)
             }
-            reviewRepository.getAllByCourt(courtFetched) { reviewsDocs ->
+            reviewRepository.getAllByCourt(courtFetched, onFailure) { reviewsDocs ->
                 if (reviewsDocs.any { r -> r.user.email == currentUser }) {
                     val userReview = reviewsDocs.first { r -> r.user.email == currentUser }
                     _canReview.postValue(true)
@@ -65,7 +65,7 @@ class ReviewViewModel @Inject constructor() : ViewModel() {
                     _l.postValue(false)
                     _done.postValue(true)
                 } else {
-                    userCanReview(name, sport, context)
+                    userCanReview(name, sport)
                 }
                 val reviews = reviewsDocs.filter { r -> r.user.email != currentUser }
                 _reviews.postValue(reviews)
@@ -81,11 +81,11 @@ class ReviewViewModel @Inject constructor() : ViewModel() {
         _l.value = true
         runBlocking {
             lateinit var currentUser: Profile
-            userRepository.getUser() {
+            userRepository.getUser(onFailure = onFailure) {
                 currentUser = it
             }
             val review = ReviewDTO(currentUser, LocalDate.now(), rating, description, court.value!!)
-            reviewRepository.saveReview(review) {}
+            reviewRepository.saveReview(review, onFailure) {}
 
             val pair: Pair<Double, Int> = if (userReview.value == null) {
                 val newNReviews = court.value!!.nReviews + 1
@@ -107,10 +107,10 @@ class ReviewViewModel @Inject constructor() : ViewModel() {
         return _userReview
     }
 
-    private fun userCanReview(name: String, sport: String, context: Context): LiveData<Boolean> {
+    private fun userCanReview(name: String, sport: String): LiveData<Boolean> {
         _l.postValue(true)
         val currentUser = Firebase.auth.currentUser!!.email!!
-        courtRepository.checkIfPlayed(name, sport, currentUser) {
+        courtRepository.checkIfPlayed(name, sport, currentUser, onFailure = onFailure) {
             _canReview.postValue(it)
             _l.postValue(false)
             _done.postValue(true)

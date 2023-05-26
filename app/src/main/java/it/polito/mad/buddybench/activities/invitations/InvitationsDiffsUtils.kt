@@ -30,7 +30,6 @@ class InvitationsDiffsUtils(
         return oldInvitations[oldItemPosition].date == newInvitations[newItemPosition].date
                 &&  oldInvitations[oldItemPosition].endTime == newInvitations[newItemPosition].endTime
                 && oldInvitations[oldItemPosition].startTime == newInvitations[newItemPosition].startTime
-                && oldInvitations[oldItemPosition].equipment == newInvitations[newItemPosition].equipment
 
     }
 

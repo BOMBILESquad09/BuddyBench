@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/skill_level_card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,5 +31,5 @@
             android:drawablePadding="8dp"
             app:drawableEndCompat="@drawable/round_arrow_drop_down_circle_24"
             />
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

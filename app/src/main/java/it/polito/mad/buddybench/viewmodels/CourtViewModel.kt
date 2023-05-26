@@ -3,6 +3,7 @@ package it.polito.mad.buddybench.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.persistence.dto.CourtTimeTableDTO
@@ -58,6 +59,9 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     private val _selectedDay: MutableLiveData<LocalDate> = MutableLiveData(null)
     // ** Expose to other classes (view)
 
+    private val _loading: MutableLiveData<Boolean> = MutableLiveData(false)
+    val loading: LiveData<Boolean> = _loading
+
     val selectedTimes: List<LocalTime> get() = _timeSlots.value!!.filter { it.second }.map { it.first }
     val court: LiveData<CourtDTO> get() = _court
     val days: List<LocalDate> get() = _days
@@ -72,6 +76,8 @@ class CourtViewModel @Inject constructor() : ViewModel() {
 
     var startTime: LocalTime? = null
     var endTime: LocalTime? = null
+    private val mainScope = viewModelScope
+    var onFailure: () -> Unit = {}
 
 
     /**
@@ -153,18 +159,13 @@ class CourtViewModel @Inject constructor() : ViewModel() {
 
 
     fun getTimeTables(name: String, sport: Sports): LiveData<CourtTimeTableDTO> {
-        courtRepositoryFirebase.getCourtTimeTable(name, sport){
+        courtRepositoryFirebase.getCourtTimeTable(name, sport, {
+
+            this.onFailure()}){
             courtRepositoryFirebase.addTimetable(it)
             _timetable.postValue(it)
             _court.postValue( it.court)
         }
-        /*
-        Thread{
-            val tt = courtTimeRepository.getCourtTimeTable(name, sport)
-            courtRepositoryFirebase.addTimetable(tt)
-            _timetable.postValue(tt)
-            _court.postValue( tt.court)
-        }.start()*/
         return _timetable
     }
 
@@ -173,7 +174,8 @@ class CourtViewModel @Inject constructor() : ViewModel() {
     }
 
     fun getTimeSlotsAvailable(courtDTO: CourtDTO, date: LocalDate, reservationDate: LocalDate?): LiveData<List<LocalTime>> {
-        courtRepositoryFirebase.getTimeSlotsOccupiedForCourtAndDate(courtDTO, date ){
+        _loading.value = true
+        courtRepositoryFirebase.getTimeSlotsOccupiedForCourtAndDate(courtDTO, date, this.onFailure){
             val timeSlotsOccupied = it
             val timeslotsDayOfWeek = openingAndClosingTimeForCourt(date.dayOfWeek)
 
@@ -193,6 +195,7 @@ class CourtViewModel @Inject constructor() : ViewModel() {
                     it.first.isAfter(LocalTime.now())
                 } as MutableList<Pair<LocalTime, Boolean>>
             }
+            _loading.postValue(false)
             _timeSlots.postValue(finalTimeSlots)
             _plainTimeSlots.postValue(finalTimeSlots.map { it.first })
         }

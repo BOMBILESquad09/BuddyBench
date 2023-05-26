@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.activities.profile
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -31,6 +32,7 @@ import it.polito.mad.buddybench.activities.findcourt.FilterSheetDialog
 import it.polito.mad.buddybench.activities.friends.FriendProfileActivity
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.enums.Skills
+import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.FriendsViewModel
 import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
@@ -195,15 +197,15 @@ class ShowProfileFragment(
                         null
                     );
                 }
-                (requireActivity() as FriendProfileActivity).bundle.remove("profile")
-                (requireActivity() as FriendProfileActivity).bundle.putString(
-                    "profile",
-                    it.toJSON().toString()
-                )
 
             }
             friendButton.setOnClickListener {
-                val profileFriend = userViewModel.user.value!!
+                 val profileFriend = try {
+                     userViewModel.user.value!!
+                } catch (_: Exception){
+                    Utils.openNetworkProblemDialog(this.requireContext())
+                    return@setOnClickListener
+                }
                 if (!profileFriend.isPending && !profileFriend.isFriend && !profileFriend.isRequesting) {
                     userViewModel.sendFriendRequest {
                     }
@@ -232,6 +234,11 @@ class ShowProfileFragment(
 
     private fun returnFromFriendProfile() {
         val friendProfileActivity = activity as FriendProfileActivity
+        friendProfileActivity.bundle.putString("profile", profile.toJSON().toString())
+        friendProfileActivity.bundle.getString("profile")!!
+        friendProfileActivity.bundle.getString("oldProfile")!!
+        friendProfileActivity.intent.putExtras(friendProfileActivity.bundle)
+        friendProfileActivity.setResult(Activity.RESULT_OK, friendProfileActivity.intent)
         friendProfileActivity.finish()
     }
 

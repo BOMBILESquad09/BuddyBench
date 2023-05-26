@@ -15,7 +15,9 @@ import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
+import it.polito.mad.buddybench.utils.Utils
 import java.text.DecimalFormat
+import kotlin.concurrent.thread
 
 class CourtSearchViewHolder(val v: View, val callback: (String, Sports) -> Unit, val reviewsCallback: (String, Sports) -> Unit): RecyclerView.ViewHolder(v){
 
@@ -27,7 +29,10 @@ class CourtSearchViewHolder(val v: View, val callback: (String, Sports) -> Unit,
 
     fun bind(court: CourtDTO){
 
-        v.setOnClickListener { callback(court.name, Sports.valueOf(court.sport)) }
+        v.setOnClickListener {
+            Utils.openProgressDialog(v.context)
+            callback(court.name, Sports.valueOf(court.sport))
+        }
         name.text = court.name
         address.text = String.format(v.context.getString(R.string.court_address_card), court.location, court.address)
         feeHour.text = String.format(v.context.getString(R.string.court_fee), court.feeHour.toString())
