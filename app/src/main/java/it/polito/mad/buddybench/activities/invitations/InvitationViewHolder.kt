@@ -3,10 +3,13 @@ package it.polito.mad.buddybench.activities.invitations
 import android.animation.ValueAnimator
 import android.opengl.Visibility
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.compose.animation.fadeIn
 import androidx.compose.ui.text.capitalize
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -18,7 +21,10 @@ import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
+import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.ImageViewModel
+import net.cachapa.expandablelayout.ExpandableLayout
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import kotlin.math.exp
@@ -27,7 +33,7 @@ class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Uni
                            val onDecline: (ReservationDTO) -> Unit,): RecyclerView.ViewHolder(view) {
 
     private val cardInvitation: CardView = view.findViewById(R.id.card_invitation)
-    private val cardInner: CardView = view.findViewById(R.id.card_inner)
+    private val cardInner: ExpandableLayout = view.findViewById(R.id.card_inner)
     private val inviterPicture: ImageView = view.findViewById(R.id.inviter_picture)
     private val inviteText: TextView = view.findViewById(R.id.invite_text)
     private val courtName: TextView = view.findViewById(R.id.card_invitation_court)
@@ -47,7 +53,7 @@ class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Uni
 
         //set color bg
         cardInvitation.setCardBackgroundColor(Sports.getSportColor(Sports.valueOf(invitation.court.sport), view.context))
-        cardInner.setCardBackgroundColor(Sports.getSportColor(Sports.valueOf(invitation.court.sport),view.context))
+        //cardInner.setCardBackgroundColor(Sports.getSportColor(Sports.valueOf(invitation.court.sport),view.context))
 
         //set inviter
         ((FragmentComponentManager.findActivity(view.context) as HomeActivity)).imageViewModel.getUserImage(invitation.userOrganizer.email,{
@@ -57,9 +63,14 @@ class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Uni
                 .load(it)
                 .into(inviterPicture)
         }
+
+        inviterPicture.setOnClickListener {
+
+            Utils.goToProfileFriend(FragmentComponentManager.findActivity(view.context) as AppCompatActivity,
+            invitation.userOrganizer)
+        }
         //set invite text
-        inviteText.text = "${invitation.userOrganizer.name} invites you to play ${invitation.court.sport.lowercase().capitalize(Locale.ENGLISH
-        )}!"
+        inviteText.text = "${invitation.userOrganizer.nickname} invited you to play ${invitation.court.sport.lowercase().capitalize(Locale.ENGLISH)}!"
 
         //set court
         courtName.text = invitation.court.name
@@ -68,8 +79,7 @@ class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Uni
         address.text = invitation.court.address
 
         //set date
-        date.text = "${invitation.date.format(dateFormatter)}"
-
+        date.text = "${invitation.date.format(DateTimeFormatter.ofPattern("EEEE, d MMMM y", Locale.ENGLISH))}"
         //set hours
         slot.text = "${invitation.startTime.format(slotFormatter)} - ${invitation.endTime.format(slotFormatter)}"
 
@@ -81,15 +91,16 @@ class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Uni
             onDecline(invitation)
         }
 
-        val expandDuration = 200L // Durata dell'animazione di espansione in millisecondi
-
+        cardInner.duration = 400
         expandButton.setOnClickListener{
-            if (cardInner.isVisible) {
-                cardInner.visibility = View.GONE
-                expandButton.setImageResource(R.drawable.expand_down)
-            } else {
-                cardInner.visibility = View.VISIBLE
+            if (!cardInner.isExpanded) {
+                cardInner.expand()
+                cardInner.startAnimation(AnimationUtils.loadAnimation(view.context, android.R.anim.fade_in))
                 expandButton.setImageResource(R.drawable.expand_up)
+            } else {
+                cardInner.startAnimation(AnimationUtils.loadAnimation(view.context, android.R.anim.fade_out))
+                cardInner.collapse()
+                expandButton.setImageResource(R.drawable.expand_down)
             }
         }
 

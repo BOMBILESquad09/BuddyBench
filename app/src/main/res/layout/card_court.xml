@@ -15,30 +15,32 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="2dp"
         android:orientation="vertical"
         card_view:cardCornerRadius="20dp"
-        android:layout_marginHorizontal="2dp"
         card_view:cardElevation="0dp">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:clickable="true"
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/court_rating"
+            style="@style/Widget.App.Button.BorderColored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingVertical="4dp"
-            android:paddingHorizontal="10dp"
-            android:elevation="10dp"
             android:layout_gravity="end"
             android:layout_margin="10dp"
-            android:background="@drawable/rounded_shape_card"
-            android:backgroundTint="#000000"
-            android:textColor="#FFFFFF"
+            android:backgroundTint="@color/black"
+            android:clickable="true"
+            android:drawableTint="@color/gold"
+            android:elevation="30dp"
             android:fontFamily="@font/montserrat_semibold_600"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"
             android:text="@string/court_rating"
+            android:textColor="#FFFFFF"
             android:textSize="20sp"
-            android:drawablePadding="5dp"
-            card_view:drawableEndCompat="@drawable/star_24">
-        </com.google.android.material.textview.MaterialTextView>
+            android:textStyle="bold"
+            card_view:cornerRadius="200dp"
+            card_view:drawableEndCompat="@drawable/star_24" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -74,11 +76,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:fontFamily="@font/montserrat_semibold_600"
-                    android:text="@string/court_name"
                     android:layout_marginTop="12dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/montserrat_semibold_600"
+                    android:maxLines="1"
+                    android:text="@string/court_name"
                     android:textColor="@color/md_theme_light_text"
                     android:textSize="20sp"
                     card_view:layout_constraintBottom_toTopOf="@+id/court_address"
@@ -101,8 +103,8 @@
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="8dp"
                     android:text="@string/court_price"
-                    android:textSize="16sp"
                     android:textColor="@color/md_theme_light_background"
+                    android:textSize="16sp"
                     card_view:layout_constraintBottom_toBottomOf="parent"
                     card_view:layout_constraintEnd_toEndOf="parent"
                     card_view:layout_constraintTop_toBottomOf="@+id/court_name"
@@ -130,9 +132,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
-
-
-
 
 
     </androidx.cardview.widget.CardView>

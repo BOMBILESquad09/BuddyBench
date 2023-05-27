@@ -50,6 +50,7 @@ class ReviewsActivity : AppCompatActivity() {
 
     // ** UI Elements binding
     private fun uiSetup() {
+        Utils.openProgressDialog(binding.root.context)
         binding.tvCourtNameReviews.text = courtName
         binding.backButtonReviews.setOnClickListener { finish() }
 
@@ -68,20 +69,17 @@ class ReviewsActivity : AppCompatActivity() {
         binding.rbYourReview.stepSize = 1F
         binding.rbNewReview.stepSize = 1F
 
-        reviewViewModel.done.observe(this){
-            if(it){
-                progressDialog.dismiss()
-            }
-        }
+
 
         reviewViewModel.l.observe(this) {
-            if (it) {
+
+            if (it == null || it) {
                 binding.pbReviews.visibility = View.VISIBLE
-                binding.rvReviews.visibility = View.GONE
-                binding.tvNoReviews.visibility = View.GONE
+
             } else {
                 binding.pbReviews.visibility = View.GONE
-                binding.rvReviews.visibility = View.VISIBLE
+                Utils.closeProgressDialog()
+
             }
         }
 
@@ -147,6 +145,7 @@ class ReviewsActivity : AppCompatActivity() {
         reviewViewModel.insertReview(binding.etNewReview.text.toString(), binding.rbNewReview.rating.toInt(), this)
     }
 
+
     private fun editReviewUI() {
         val userReviewData = reviewViewModel.userReview.value!!
         binding.etNewReview.text = SpannableStringBuilder(userReviewData.description)
@@ -154,5 +153,11 @@ class ReviewsActivity : AppCompatActivity() {
 
         binding.cardYourReview.visibility = View.GONE
         binding.cardNewReview.visibility = View.VISIBLE
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Utils.closeProgressDialog()
     }
 }

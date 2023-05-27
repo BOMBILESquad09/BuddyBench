@@ -84,7 +84,7 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     }
 
     fun refreshAll(onSuccess: () -> Unit) {
-
+        println("refreshinggg")
         mainScope.launch {
             userRepository.fetchUser(onFailure =
             {
@@ -112,9 +112,9 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
                 _lFriends.postValue(false)
                 onFailure()
             }) {
+                _lFriends.postValue(false)
 
                 oldFriends = _friends.value!!
-                _lFriends.postValue(false)
                 _friends.postValue(it.friends)
 
             }
@@ -138,8 +138,8 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
         if (currentUser != null) {
             runBlocking {
                 userRepository.getUser(currentUser.email!!,onFailure = {
-                    _lRequests.postValue(false)
                     onFailure() }) {
+                    println("eccomiii")
                     oldFriendsRequests = _friendRequests.value!!
                     _lRequests.postValue(false)
                     _friendRequests.postValue(it.pendings)
@@ -151,7 +151,6 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
 
 
     fun refreshPossibleFriends(profile: Profile) {
-        println("diocaneeeeeeeeeeeeeeeee")
         _possibleFriends.value = _possibleFriends.value!!.map {
             if (it.email == profile.email) {
                 println(profile.isPending)

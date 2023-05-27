@@ -15,7 +15,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.animation.doOnEnd
 import androidx.core.graphics.drawable.DrawableCompat
@@ -46,6 +48,8 @@ class Utils {
 
         var progressDialog: AlertDialog? = null
         var networkProblemDialog: AlertDialog? = null
+        var generalProblemDialog: AlertDialog? = null
+
         fun capitalize(string: String): String {
             return string.lowercase(Locale.ENGLISH)
                 .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ENGLISH) else it.toString() }
@@ -159,7 +163,37 @@ class Utils {
             return df.format(number).toDouble()
         }
 
-         fun openNetworkProblemDialog(context: Context): AlertDialog {
+        fun openGeneralProblemDialog(title: String, body: String, context: Context): AlertDialog {
+
+            if (generalProblemDialog == null) {
+                val dialogCard =
+                    LayoutInflater.from(context).inflate(R.layout.general_problem, null)
+                val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+                builder.setView(dialogCard)
+                val dialog: AlertDialog = builder.create()
+                val titleView = dialogCard.findViewById<TextView>(R.id.title)
+                titleView.text = title
+                val bodyView = dialogCard.findViewById<TextView>(R.id.text_problem)
+                bodyView.text = body
+                dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+                dialog.setCancelable(true)
+                dialogCard.findViewById<View>(R.id.ok).setOnClickListener {
+                    closeGeneralDialog()
+                }
+                generalProblemDialog = dialog
+            }
+            generalProblemDialog!!.show()
+            return generalProblemDialog!!
+        }
+
+        fun closeGeneralDialog() {
+            if (generalProblemDialog == null) return
+            generalProblemDialog!!.dismiss()
+            generalProblemDialog = null
+            return
+        }
+
+        fun openNetworkProblemDialog(context: Context): AlertDialog {
 
             if (networkProblemDialog == null) {
                 val dialogCard = LayoutInflater.from(context).inflate(R.layout.network_error, null)
@@ -177,7 +211,7 @@ class Utils {
             return networkProblemDialog!!
         }
 
-        fun closeNetworkProblemDialog(){
+        fun closeNetworkProblemDialog() {
             if (networkProblemDialog == null) return
             networkProblemDialog!!.dismiss()
             networkProblemDialog = null
@@ -206,12 +240,16 @@ class Utils {
             return
         }
 
-        fun goToProfileFriend(context: HomeActivity, profile: Profile) {
+        fun goToProfileFriend(context: AppCompatActivity, profile: Profile) {
             val i = Intent(context, FriendProfileActivity::class.java)
-
+            openProgressDialog(context)
             val bundle = bundleOf("profile" to profile.toJSON().toString())
             i.putExtras(bundle)
-            context.launcherActivityFriendProfile.launch(i)
+            if (context is HomeActivity)
+                context.launcherActivityFriendProfile.launch(i)
+            else{
+                context.startActivity(i)
+            }
         }
 
         fun generateNickname(): String {

@@ -42,7 +42,6 @@ class ReservationViewHolder(v: View, private val launcher: ActivityResultLaunche
     private var manageBtn: TextView = v.findViewById(R.id.manage_btn)
     private var telephoneIcon: ImageView = v.findViewById(R.id.telephone)
     private var positionIcon: ImageView = v.findViewById(R.id.position)
-    private var friendsButton: ImageView = v.findViewById(R.id.show_reservation_friend_button)
 
     val view: View = v
 
@@ -86,26 +85,9 @@ class ReservationViewHolder(v: View, private val launcher: ActivityResultLaunche
         iconSport.setImageDrawable(wrappedDrawable)
         slot.text = "${reservation.startTime.format(formatter)} - ${reservation.endTime.format(formatter)}"
 
-        friendsButton.drawable.setTint(
-            Sports.getSportColor(
-                Sports.valueOf(reservation.court.sport),
-                view.context
-            )
-        )
 
-        if (reservation.isUserOrganizerInitialized()) {
-            friendsButton.setOnClickListener {
-                SendInvitationsBottomSheet(
-                    reservation,
-                    true
-                ).show(
-                    (FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager,
-                    "InvitationBottomSheet"
-                )
-            }
-        } else {
-            friendsButton.visibility = View.INVISIBLE
-        }
+
+
         manageBtn.setTextColor(
             Sports.getSportColor(
                 Sports.valueOf(reservation.court.sport),
@@ -124,7 +106,6 @@ class ReservationViewHolder(v: View, private val launcher: ActivityResultLaunche
             }
         } else if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.endTime)){
             manageBtn.text = "Review"
-
             manageBtn.setOnClickListener{
                 launchReview(reservation)
             }

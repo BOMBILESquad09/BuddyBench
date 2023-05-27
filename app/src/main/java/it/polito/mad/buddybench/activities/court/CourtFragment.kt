@@ -237,7 +237,7 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
         binding.buttonFirst.setOnClickListener {
             if (courtViewModel.selectedTimes.isEmpty()) {
                 val textError = getString(R.string.error_book)
-                buildAlertDialog("Pick a timeslot", textError, requireContext()).show()
+                Utils.openGeneralProblemDialog("Pick a timeslot", textError, requireContext())
             } else {
                 showBottomSheetDialog()
             }
@@ -317,17 +317,6 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
             binding.parentScrollView.post {
                 binding.parentScrollView.smoothScrollBy(0, Int.MAX_VALUE)
             }
-    }
-
-    private fun buildAlertDialog(title: String, text: String, context: Context): AlertDialog {
-
-        return AlertDialog.Builder(context)
-            .setTitle(title)
-            .setMessage(text)
-            .setPositiveButton("Ok") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .create()
     }
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")

@@ -64,8 +64,10 @@ class ReviewRepository {
     }*/
 
     fun saveReview(reviewDTO: ReviewDTO, onFailure: () -> Unit,onSuccess: () -> Unit) {
-        val courtName = reviewDTO.courtDTO.name.replace(" ", "_") + "_" + reviewDTO.courtDTO.sport
+        val courtName = reviewDTO.courtDTO.getId()
         db.runTransaction { t ->
+
+
             val courtDoc = db.collection("courts").document(courtName)
             val court = t.get(courtDoc).toObject(CourtDTO::class.java)
             val reviewDoc = courtDoc.collection("reviews").document(reviewDTO.user.email)
@@ -86,9 +88,19 @@ class ReviewRepository {
             } else {
                 val oldRating = (review.get("rating") as Long).toInt()
                 val updates: Map<String, Any> = mapOf(
-                    "rating" to ((court!!.rating * (court.nReviews) - oldRating + reviewDTO.rating) / court.nReviews)
+                    "rating" to ((court!!.rating * (court.nReviews) - oldRating + reviewDTO.rating) / court.nReviews),
                 )
+
+
+                println(reviewDTO.description)
                 t.update(courtDoc, updates)
+                val reviewUpdate:Map<String, Any> = mapOf(
+                        "date" to reviewDTO.date.toString(),
+                        "rating" to reviewDTO.rating,
+                        "description" to reviewDTO.description
+
+                )
+                t.update(reviewDoc, reviewUpdate)
 
             }
             onSuccess()

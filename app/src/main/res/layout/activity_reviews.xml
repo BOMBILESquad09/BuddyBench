@@ -78,185 +78,232 @@
 
     </LinearLayout>
 
-
-    <TextView
-        android:id="@+id/tv_cannot_review"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawablePadding="8dp"
-        android:padding="16dp"
-        android:text="@string/cannot_review"
-        android:textAlignment="textStart"
-        android:visibility="gone"
-        app:drawableStartCompat="@drawable/round_info_24" />
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/pb_reviews"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
 
+            <ProgressBar
+                android:id="@+id/progress_circular"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_your_review"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:elevation="2dp"
-        android:padding="8dp"
-        android:visibility="gone"
-        app:cardCornerRadius="15dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/loading"
+                android:textSize="17sp"
+                />
 
+        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp">
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv_cannot_review"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="8dp"
+                android:padding="16dp"
+                android:text="@string/cannot_review"
+                android:textAlignment="textStart"
+                android:visibility="gone"
+                app:drawableStartCompat="@drawable/round_info_24" />
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_your_review"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:elevation="2dp"
+                android:padding="8dp"
+                android:visibility="gone"
+                app:cardCornerRadius="15dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/montserrat_semibold_600"
+                            android:text="@string/your_review" />
+
+                        <ImageButton
+                            android:id="@+id/btn_edit_review"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_edit_24"
+                            android:backgroundTint="@color/md_theme_light_primary"
+                            android:contentDescription="@string/edit" />
+
+                    </LinearLayout>
+
+                    <RatingBar
+                        android:id="@+id/rb_your_review"
+                        style="@style/Widget.AppCompat.RatingBar.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp"
+                        android:progressTint="@color/gold" />
+
+                    <TextView
+                        android:id="@+id/tv_your_review"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/write_your_review"
+                        android:textColor="@color/md_theme_light_outline" />
+
+                </LinearLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_new_review"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:elevation="2dp"
+                android:padding="8dp"
+                android:visibility="visible"
+                app:cardCornerRadius="15dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_semibold_600"
+                        android:text="@string/leave_a_review" />
+
+                    <RatingBar
+                        android:id="@+id/rb_new_review"
+                        style="@style/Widget.AppCompat.RatingBar.Indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:isIndicator="false"
+                        android:paddingVertical="8dp"
+                        android:progressTint="@color/gold"
+                        android:stepSize="1" />
+
+
+                    <EditText
+                        android:id="@+id/et_new_review"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_medium_500"
+                        android:gravity="top|start"
+                        android:hint="@string/write_your_review"
+                        android:importantForAutofill="no"
+                        android:inputType="textMultiLine"
+                        android:lines="3"
+                        android:maxLines="5"
+                        android:scrollbars="vertical"
+                        android:textSize="14sp"
+                        tools:ignore="LabelFor" />
+
+                    <TextView
+                        android:id="@+id/tv_error_review"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:drawablePadding="8dp"
+                        android:text="@string/missing_rating"
+                        android:textColor="@color/error"
+                        android:visibility="gone"
+                        app:drawableStartCompat="@drawable/round_error_24" />
+
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_new_review"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/rounded_shape"
+                        android:backgroundTint="@color/md_theme_light_primary"
+                        android:fontFamily="@font/montserrat_semibold_600"
+                        android:text="@string/review"
+                        android:textAllCaps="false"
+                        android:textColor="@color/md_theme_light_background" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+
 
             <LinearLayout
+                android:id="@+id/tv_no_reviews"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_semibold_600"
-                    android:text="@string/your_review" />
-
-                <ImageButton
-                    android:id="@+id/btn_edit_review"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/round_edit_24"
-                    android:backgroundTint="@color/md_theme_light_primary"
-                    android:contentDescription="@string/edit" />
+                    android:layout_gravity="center"
+                    android:textSize="20sp"
+                    android:text="@string/no_reviews"
+                    android:textAlignment="center"
+                    android:textColor="@color/disabled"
 
+                    android:visibility="gone" />
+
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
             </LinearLayout>
 
-            <RatingBar
-                android:id="@+id/rb_your_review"
-                style="@style/Widget.AppCompat.RatingBar.Small"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingVertical="8dp"
-                android:progressTint="@color/gold" />
-
-            <TextView
-                android:id="@+id/tv_your_review"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_reviews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/write_your_review"
-                android:textColor="@color/md_theme_light_outline" />
-
+                android:layout_marginVertical="16dp"
+                android:paddingHorizontal="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_new_review" />
         </LinearLayout>
 
+    </LinearLayout>
 
-    </com.google.android.material.card.MaterialCardView>
-
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_new_review"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:elevation="2dp"
-        android:padding="8dp"
-        android:visibility="visible"
-        app:cardCornerRadius="15dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_semibold_600"
-                android:text="@string/leave_a_review" />
-
-            <RatingBar
-                android:id="@+id/rb_new_review"
-                style="@style/Widget.AppCompat.RatingBar.Indicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:isIndicator="false"
-                android:paddingVertical="8dp"
-                android:progressTint="@color/gold"
-                android:stepSize="1" />
-
-
-            <EditText
-                android:id="@+id/et_new_review"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_medium_500"
-                android:gravity="top|start"
-                android:hint="@string/write_your_review"
-                android:importantForAutofill="no"
-                android:inputType="textMultiLine"
-                android:lines="3"
-                android:maxLines="5"
-                android:scrollbars="vertical"
-                android:textSize="14sp"
-                tools:ignore="LabelFor" />
-
-            <TextView
-                android:id="@+id/tv_error_review"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:drawablePadding="8dp"
-                android:text="@string/missing_rating"
-                android:textColor="@color/error"
-                android:visibility="gone"
-                app:drawableStartCompat="@drawable/round_error_24" />
-
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_new_review"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/rounded_shape"
-                android:backgroundTint="@color/md_theme_light_primary"
-                android:fontFamily="@font/montserrat_semibold_600"
-                android:text="@string/review"
-                android:textAllCaps="false"
-                android:textColor="@color/md_theme_light_background" />
-
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <ProgressBar
-        android:id="@+id/pb_reviews"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_no_reviews"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/no_reviews"
-        android:textAlignment="center"
-        android:textColor="@color/md_theme_light_outline"
-        android:visibility="gone" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_reviews"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="16dp"
-        android:paddingHorizontal="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/card_new_review" />
 
 </LinearLayout>
