@@ -65,7 +65,7 @@ class BottomBar(val context: HomeActivity) {
             adjustExternalComponents()
     }
 
-    fun replaceFragment(lastTag: Tabs, newTag: Tabs) {
+    fun replaceFragment(lastTag: Tabs, newTag: Tabs, update: Boolean = false) {
         val transaction = context.supportFragmentManager.beginTransaction()
         context.supportFragmentManager.findFragmentByTag(lastTag.name).let {
 
@@ -89,6 +89,8 @@ class BottomBar(val context: HomeActivity) {
             }
         }
         transaction.commit()
+        if(update == true)
+            currentTab = newTag
         adjustExternalComponents()
 
 

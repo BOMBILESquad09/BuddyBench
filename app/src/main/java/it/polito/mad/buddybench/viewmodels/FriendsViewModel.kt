@@ -7,6 +7,7 @@ import com.google.android.play.core.integrity.p
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.classes.Profile
+import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.persistence.firebaseRepositories.FriendRepository
 import it.polito.mad.buddybench.persistence.firebaseRepositories.UserRepository
 import kotlinx.coroutines.MainScope
@@ -56,6 +57,8 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
 
     val mainScope = MainScope()
     var onFailure: () -> Unit = {}
+    lateinit var popNotification: (Profile) -> Unit
+
     var init = true
 
     fun subscribeFriendsList() {
@@ -109,7 +112,6 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
                 onFailure()
             }) {
                 _lFriends.postValue(false)
-
                 oldFriends = _friends.value!!
                 _friends.postValue(it.friends)
 
@@ -124,7 +126,6 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
                 _lPossible.postValue(false)
                 onFailure() }){
                 _lPossible.postValue(false)
-
             }
             )
         }
@@ -134,10 +135,26 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
         if (currentUser != null) {
             runBlocking {
                 userRepository.getUser(currentUser.email!!,onFailure = {
-                    onFailure() }) {
+                    _lRequests.postValue(false)
+                    onFailure() }) { it ->
+                    println("dsalkdlafksdlkflskflskflskdflsdklfkdslfkdlfkslfkdlkfldskfslklsflsd")
+                    println(oldFriendsRequests.size)
+                    println((it.pendings.size))
+                    if(oldFriendsRequests.size < (it.pendings.size)){
+                        //I need to send notifications only to very new one that I received
+                        val freshRequestsEmail = it.pendings.map { it.email }
+                        val oldRequestsEmail = oldFriendsRequests.map { it.email }
+                        freshRequestsEmail.filter { !oldRequestsEmail.contains(it) }.map { fEmail ->
+                            it.pendings.find { f ->  fEmail == f.email }
+                        }.forEach{ p ->
+                            println(p!!.email)
+                            popNotification(p!!)
+                        }
 
+                    }
 
                     oldFriendsRequests = _friendRequests.value!!
+
 
                     _lRequests.postValue(false)
                     _friendRequests.postValue(it.pendings)

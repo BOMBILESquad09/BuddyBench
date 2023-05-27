@@ -251,5 +251,11 @@
     <string name="there_seems_to_be_a_problem_check_your_connection">There seems to be a problem,
         check your connection.</string>
     <string name="rent_equipment">Rent equipment</string>
+    <string name="channel_name">notifications</string>
+    <string name="friend_channel_description">New Friend Request</string>
+    <string name="invitation_channel_description">New Invitation</string>
+    <string name="join_channel_description">New Join Request</string>
+
+
 
 </resources>

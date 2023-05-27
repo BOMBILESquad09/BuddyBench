@@ -1,10 +1,16 @@
 package it.polito.mad.buddybench.activities
 
+import android.Manifest
 import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -15,6 +21,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.ui.text.capitalize
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.ktx.auth
@@ -27,6 +37,7 @@ import it.polito.mad.buddybench.activities.profile.ShowProfileFragment
 import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.enums.Tabs
+import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.utils.BottomBar
 import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.FindCourtViewModel
@@ -41,6 +52,7 @@ import nl.joery.animatedbottombar.AnimatedBottomBar
 import org.json.JSONObject
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
@@ -70,23 +82,27 @@ class HomeActivity : AppCompatActivity() {
     val findCourtViewModel by viewModels<FindCourtViewModel>()
     val reservationViewModel by viewModels<ReservationViewModel>()
     val friendsViewModel by viewModels<FriendsViewModel>()
-
+    var initInvitations = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         onNetworkProblemHandler()
+        createNotificationChannels()
+
         setContentView(R.layout.home)
         sharedPref =
             getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         reservationViewModel.email = Firebase.auth.currentUser!!.email!!
         bottomBar.setup()
 
-
+        invitationsViewModel.popNotification  = { it -> createInvitationNotification(it)}
+        friendsViewModel.popNotification = {it -> createFriendRequestNotification(it)}
         userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this) {
             if (it != null){
+
                 friendsViewModel.subscribeFriendsList()
+
                 invitationsViewModel.subscribeInvitations() { s ->
                     if (s > 0) {
                         bottomBar.counter[Tabs.INVITATIONS.getId()] = s
@@ -97,6 +113,8 @@ class HomeActivity : AppCompatActivity() {
                                     textColor = Color.WHITE
                                 )
                             )
+
+                        initInvitations = true
                     } else {
                         bottomBar.counter[Tabs.INVITATIONS.getId()] = 0
                         bottomBar.bottomBar.clearBadgeAtTabIndex(Tabs.INVITATIONS.getId())
@@ -216,8 +234,11 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        println("disadjaiofjojfojfos")
         Utils.closeProgressDialog()
     }
+
+
 
     private fun onNetworkProblemHandler() {
 
@@ -247,6 +268,139 @@ class HomeActivity : AppCompatActivity() {
             Utils.openNetworkProblemDialog(this)
         }
 
+    }
+
+    private fun createNotificationChannels(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = getString(R.string.channel_name)
+            val descriptionText = getString(R.string.friend_channel_description)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel("friendRequests", name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = getString(R.string.channel_name)
+            val descriptionText = getString(R.string.invitation_channel_description)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel("invitationRequests", name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            val name = getString(R.string.channel_name)
+            val descriptionText = getString(R.string.invitation_channel_description)
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel("joinRequests", name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+
+
+    private fun createInvitationNotification(reservationDTO: ReservationDTO){
+        println("invitationssss")
+
+        val intent = Intent(this, HomeActivity::class.java).apply {
+        }
+        intent.putExtra("tab", Tabs.INVITATIONS.name)
+
+        val text = "%s invited you to play %s!".format(reservationDTO.userOrganizer.nickname,
+            reservationDTO.court.sport.lowercase().replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.ENGLISH
+                ) else it.toString()
+            })
+
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(
+            this,
+            Tabs.INVITATIONS.getId(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val builder = NotificationCompat.Builder(this, "invitationRequests")
+            .setSmallIcon(R.drawable.tennis)
+            .setContentTitle(getString(R.string.invitation_channel_description))
+            .setContentText(text)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+
+            // Set the intent that will fire when the user taps the notification
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+
+        try {
+            with(NotificationManagerCompat.from(this)) {
+                notify(reservationDTO.id.hashCode(), builder.build())
+            }
+
+        }catch (_: SecurityException){
+            println("diociofpsf")
+        }
+    }
+
+    private fun createFriendRequestNotification(profile: Profile){
+        val intent = Intent(this, HomeActivity::class.java).apply {
+        }
+        intent.putExtra("tab", Tabs.FRIENDS.name)
+        println("friendssss")
+        val text = "%s sent you a friend request!".format(profile.fullName)
+
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(
+            this,
+            Tabs.FRIENDS.getId(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val builder = NotificationCompat.Builder(this, "friendRequests")
+            .setSmallIcon(R.drawable.add_friend)
+            .setContentTitle(getString(R.string.friend_channel_description))
+            .setContentText(text)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+
+            // Set the intent that will fire when the user taps the notification
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+
+        try {
+            with(NotificationManagerCompat.from(this)) {
+                notify(profile.email.hashCode(), builder.build())
+            }
+
+        }catch (_: SecurityException){
+            println("diociofpsf")
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        println("dsdsdsdsdsdsd")
+        if(intent?.getStringExtra("tab") == null) return
+
+        val tab = intent.getStringExtra("tab")!!
+        println(Tabs.valueOf(tab))
+        bottomBar.replaceFragment(bottomBar.currentTab, Tabs.valueOf(tab), true)
     }
 
 }
