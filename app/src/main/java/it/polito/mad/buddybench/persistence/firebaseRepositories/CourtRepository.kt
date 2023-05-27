@@ -72,7 +72,6 @@ class CourtRepository {
         db.collection("courts").document(courtName).get()
             .addOnSuccessListener {
                 try {
-
                     val courtDTO = it.toObject(CourtDTO::class.java)!!
                     val timetable: HashMap<DayOfWeek, Pair<LocalTime, LocalTime>> = HashMap()
                     for (s in it.data!!["timetable"] as HashMap<String, HashMap<String, Long>>) {

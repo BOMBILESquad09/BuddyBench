@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.activities.myreservations
 
+import it.polito.mad.buddybench.enums.Visibilities
 import java.time.DayOfWeek
 import java.time.Month
 import java.time.YearMonth
@@ -20,4 +21,5 @@ fun DayOfWeek.displayText(uppercase: Boolean = false): String {
         if (uppercase) value.uppercase(Locale.ENGLISH) else value
     }
 }
+
 
