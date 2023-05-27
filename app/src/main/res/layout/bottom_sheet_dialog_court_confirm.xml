@@ -132,6 +132,7 @@
                             android:layout_weight="5"
                             android:text="Equipment"
                             android:textAlignment="textStart"
+                            android:textColor="@color/black"
                             android:textSize="15sp"
                             android:textStyle="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -143,6 +144,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
+                            android:buttonTint="@color/md_theme_light_primary"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/material_text_equipment"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -196,6 +198,7 @@
                     android:id="@+id/accept_checkbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:buttonTint="@color/md_theme_light_primary"
                     android:text="@string/accept_informations"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

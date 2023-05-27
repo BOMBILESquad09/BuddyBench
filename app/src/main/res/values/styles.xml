@@ -41,4 +41,11 @@
         <item name="cornerSize">24dp</item>
     </style>
 
+    <style name="Widget.App.Button.BorderColored" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="strokeColor">@color/light_gray</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="cornerRadius">30dp</item>
+    </style>
+
 </resources>
