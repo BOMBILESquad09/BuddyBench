@@ -251,5 +251,6 @@
     <string name="there_seems_to_be_a_problem_check_your_connection">There seems to be a problem,
         check your connection.</string>
     <string name="rent_equipment">Rent equipment</string>
+    <string name="invitation_text_example">Gerry invited you to play a game!</string>
 
 </resources>
