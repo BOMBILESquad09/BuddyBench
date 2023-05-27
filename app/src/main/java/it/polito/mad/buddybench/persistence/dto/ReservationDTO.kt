@@ -3,6 +3,7 @@ package it.polito.mad.buddybench.persistence.dto
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.persistence.entities.*
 import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.enums.Visibilities
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -30,6 +31,10 @@ class ReservationDTO(
     var equipment: Boolean = false
     lateinit var accepted: List<Profile>
     lateinit var pendings: List<Profile>
+    lateinit var requests: List<Profile>
+    var visibility: Visibilities = Visibilities.PRIVATE
+
+
     companion object{
 
 
