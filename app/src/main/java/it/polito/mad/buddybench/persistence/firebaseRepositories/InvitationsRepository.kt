@@ -36,19 +36,17 @@ class InvitationsRepository {
         return withContext(Dispatchers.IO){
             try {
                 val currentEmail = Firebase.auth.currentUser!!.email!!
-                val invitations = (db.collection("users")
-                    .document(currentEmail)
+                val invitations = (db.collection("users").document(currentEmail)
                     .get().await().data!!["play_request_pendings"] as List<DocumentReference>).map {
-                    reservationRepository.getReservation(it.id, userOrganizer = true, onFailure)
-                }
-                invitations
+                    reservationRepository.getReservation(it.id, userOrganizer = true, onFailure)}.filterNotNull()
+                    return@withContext invitations
             } catch (_: Exception){
                 onFailure()
             }
             listOf()
         }
     }
-    suspend fun sendInvitations(reservationDTO: ReservationDTO,usersToInvite: List<String> , onFailure: () -> Unit){
+    suspend fun sendInvitations(reservationDTO: ReservationDTO,usersToInvite: List<String> , onFailure: () -> Unit, onSuccess: () -> Unit){
         withContext(Dispatchers.IO){
             try {
                 val currentEmail = Firebase.auth.currentUser!!.email!!
@@ -62,13 +60,14 @@ class InvitationsRepository {
                         .update("play_request_pendings", FieldValue.arrayUnion(db.document("reservations/${reservationDTO.id}")))
                 }.forEach { it.await() }
                 invitationsResponse.await()
+                onSuccess()
             } catch (_: Exception){
                 onFailure()
             }
         }
     }
 
-    suspend fun removeInvitations(reservationDTO: ReservationDTO,usersToInvite: List<String>, onFailure: () -> Unit){
+    suspend fun removeInvitations(reservationDTO: ReservationDTO,usersToInvite: List<String>, onFailure: () -> Unit, onSuccess: ()-> Unit){
         withContext(Dispatchers.IO){
             try {
                 val currentEmail = Firebase.auth.currentUser!!.email!!
@@ -86,6 +85,7 @@ class InvitationsRepository {
                         .update("play_request_pendings", FieldValue.arrayRemove(db.document("reservations/${reservationDTO.id}")))
                 }.forEach { it.await() }
                 invitationsResponse.await()
+                onSuccess()
             } catch (_: Exception){
                 onFailure()
             }
@@ -94,7 +94,7 @@ class InvitationsRepository {
         }
     }
 
-    suspend fun removeAcceptedInvitations(reservationDTO: ReservationDTO,usersToInvite: List<String>, onFailure: () -> Unit){
+    suspend fun removeAcceptedInvitations(reservationDTO: ReservationDTO,usersToInvite: List<String>, onFailure: () -> Unit, onSuccess: () -> Unit){
         withContext(Dispatchers.IO){
             try{
                 val currentEmail = Firebase.auth.currentUser!!.email!!
@@ -104,6 +104,7 @@ class InvitationsRepository {
                     .document(reservationDocName)
                     .update("accepted", FieldValue.arrayRemove(*usersToInvite.map { u -> db.document("users/$u") }.toTypedArray()))
                 invitationsResponse.await()
+                onSuccess()
             } catch (_: Exception){
                 onFailure()
             }

@@ -124,7 +124,6 @@ class ReservationViewHolder(v: View, private val launcher: ActivityResultLaunche
             }
         } else if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.endTime)){
             manageBtn.text = "Review"
-
             manageBtn.setOnClickListener{
                 launchReview(reservation)
             }
