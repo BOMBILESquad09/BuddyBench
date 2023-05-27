@@ -104,7 +104,6 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         progressLayout.visibility = View.VISIBLE
         context.reservationViewModel.loading.observe(viewLifecycleOwner) {
 
-            println(it ?: null)
             if(it == null || it) {
                 view.findViewById<View>(R.id.emptyReservations).visibility = View.GONE
                 recyclerViewReservations.visibility = View.GONE

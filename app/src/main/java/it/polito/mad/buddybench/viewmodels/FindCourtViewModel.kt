@@ -51,6 +51,7 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     }
     fun getCourtsBySport(onSuccess: () -> Unit): LiveData<List<CourtDTO>> {
         _loading.value = true
+        println("okokokokokok")
 
         mainScope.launch {
 
@@ -62,6 +63,8 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
                     list ->
                     _loading.postValue(false)
                     _courts = list
+                    println(selectedDate)
+                    println( selectedSport.value)
                     val courts = applyFiltersOnCourts(_courts)
                     _currentCourts.postValue(courts)
                     onSuccess()
@@ -80,6 +83,7 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     }
 
     fun applyFilter(clear: Boolean = false){
+        println("filteringgggg")
         filtersEnabled = true
         if(clear)
             clearFilters()
@@ -92,7 +96,6 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     fun setSelectedDate(date: LocalDate){
         selectedDate = date
         getCourtsBySport(){
-
         }
 
     }
@@ -103,7 +106,7 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
 
     fun setSport(sport: Sports){
         selectedSport.value = sport
-        getCourtsBySport(){}
+
     }
 
     private fun applyFiltersOnCourts(courts: List<CourtDTO>): List<CourtDTO> {

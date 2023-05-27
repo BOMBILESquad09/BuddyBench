@@ -86,7 +86,6 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
                 if (!edit) {
                     try {
                         reservationRepository.save(reservation,  onFailure, onError = failureCallback) {
-                            println("diocaneeeeeee")
                             loading.postValue(false)
                             onSuccess()
                         }

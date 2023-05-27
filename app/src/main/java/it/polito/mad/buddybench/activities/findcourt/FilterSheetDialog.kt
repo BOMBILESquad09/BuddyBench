@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
@@ -22,7 +23,7 @@ class FilterSheetDialog(
     val findCourtViewModel: FindCourtViewModel,
     val refClearButton: CardView,
     val refFilterIcon: ImageView
-): SuperBottomSheetFragment() {
+): BottomSheetDialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,7 +36,6 @@ class FilterSheetDialog(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val minRating: Float = findCourtViewModel.minRating
         val maxFee: Float = findCourtViewModel.maxFee
 
@@ -77,13 +77,7 @@ class FilterSheetDialog(
 
     }
 
-    override fun isSheetAlwaysExpanded(): Boolean {
-        return true
-    }
 
-    override fun getExpandedHeight(): Int {
-        return -2
-    }
 
 
 }

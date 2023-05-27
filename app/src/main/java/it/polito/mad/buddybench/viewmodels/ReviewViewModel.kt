@@ -55,7 +55,6 @@ class ReviewViewModel @Inject constructor() : ViewModel() {
             lateinit var courtFetched: CourtDTO
 
             courtRepository.getCourt(name, sport, onFailure) {
-                println(Thread.currentThread())
                 courtFetched = it
                 _court.postValue(it)
             }

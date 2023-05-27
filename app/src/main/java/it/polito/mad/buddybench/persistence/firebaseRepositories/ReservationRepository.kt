@@ -61,9 +61,7 @@ class ReservationRepository {
                     reservationDTO.endTime = LocalTime.of((res.data["endTime"] as Long).toInt(),0)
                     reservationDTO.equipment = res.data["equipment"] as Boolean
                     reservationDTO.id = res.data["id"] as String
-                    println("ok")
                     val court = (res.data["court"] as DocumentReference).get().await()
-                    println("not okk")
                     val acceptedUsers = (res.data["accepted"] as List<DocumentReference>).map { it.get() }.map { it.await() }.map { UserRepository.serializeUser(it.data as Map<String, Object>) }
                     reservationDTO.court = court.toObject(CourtDTO::class.java)!!
                     reservationDTO.accepted = acceptedUsers

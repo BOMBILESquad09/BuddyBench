@@ -35,13 +35,11 @@ class InvitationsRepository {
     suspend fun getInvitations(onFailure: () -> Unit): List<ReservationDTO> {
         return withContext(Dispatchers.IO) {
             try {
-                println("invitationssss")
                 val currentEmail = Firebase.auth.currentUser!!.email!!
                 val invitations = (db.collection("users").document(currentEmail)
                     .get().await().data!!["play_request_pendings"] as List<DocumentReference>).map {
                     reservationRepository.getReservation(it.id, userOrganizer = true, onFailure)
                 }.filterNotNull()
-                println("get invit")
 
                 return@withContext invitations
             } catch (_: Exception) {
@@ -156,7 +154,7 @@ class InvitationsRepository {
         }
     }
 
-    suspend fun acceptInvitation(reservationDTO: ReservationDTO, onFailure: () -> Unit) {
+    suspend fun acceptInvitation(reservationDTO: ReservationDTO, onFailure: () -> Unit, onSuccess: () -> Unit) {
         withContext(Dispatchers.IO) {
             try {
                 val currentEmailDoc =
@@ -173,6 +171,7 @@ class InvitationsRepository {
                     .update("play_request_pendings", FieldValue.arrayRemove(reservationDoc))
                 firstResponse.await()
                 secondResponse.await()
+                onSuccess()
             } catch (_: Exception) {
                 onFailure()
             }

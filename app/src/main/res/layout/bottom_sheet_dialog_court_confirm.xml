@@ -1,33 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bottom_sheet_scroll_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/standard_bottom_sheet"
+        style="@style/Theme.MaterialComponents.BottomSheetDialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat_semibold_600"
-            android:text="@string/recap_and_confirm"
-            android:textSize="24sp" />
 
-        <!-- Reservation Info Card -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="2dp"
-            android:layout_marginVertical="8dp"
-            android:backgroundTint="@color/cardview_light_background"
-            app:cardCornerRadius="30dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -36,335 +22,362 @@
                 android:padding="16dp">
 
 
-                <LinearLayout
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_semibold_600"
+                    android:text="@string/recap_and_confirm"
+                    android:textSize="24sp" />
+
+                <!-- Reservation Info Card -->
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:padding="8dp">
-
-                    <ImageView
-                        android:id="@+id/icon_sport"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_marginEnd="16dp"
-                        android:src="@drawable/tennis"
-                        app:tint="@color/md_theme_light_text" />
+                    android:layout_marginHorizontal="2dp"
+                    android:layout_marginVertical="8dp"
+                    android:backgroundTint="@color/cardview_light_background"
+                    app:cardCornerRadius="30dp">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:padding="8dp">
+
+                            <ImageView
+                                android:id="@+id/icon_sport"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:layout_marginEnd="16dp"
+                                android:src="@drawable/tennis"
+                                app:tint="@color/md_theme_light_text" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/court_name_confirm_tv"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/montserrat_medium_500"
+                                    android:text="@string/court_name"
+                                    android:textColor="@color/md_theme_light_text"
+                                    android:textSize="16sp" />
+
+                                <TextView
+                                    android:id="@+id/court_address_confirm_tv"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/via_roma_16_torino"
+                                    android:textColor="@color/md_theme_light_outline"
+                                    android:textSize="12sp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
 
                         <TextView
-                            android:id="@+id/court_name_confirm_tv"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/dateSelected"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:drawablePadding="16dp"
                             android:fontFamily="@font/montserrat_medium_500"
-                            android:text="@string/court_name"
+                            android:padding="8dp"
+                            android:text="@string/wednesday_19_april"
                             android:textColor="@color/md_theme_light_text"
-                            android:textSize="16sp" />
+                            android:textSize="16sp"
+                            app:drawableStartCompat="@drawable/calendar_primary" />
 
-                        <TextView
-                            android:id="@+id/court_address_confirm_tv"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/via_roma_16_torino"
-                            android:textColor="@color/md_theme_light_outline"
-                            android:textSize="12sp" />
+                            android:layout_gravity="start"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/timeSelected"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:drawablePadding="16dp"
+                                android:drawableTint="@color/md_theme_light_text"
+                                android:fontFamily="@font/montserrat_medium_500"
+                                android:padding="8dp"
+                                android:text="@string/hour_range"
+                                android:textColor="@color/md_theme_light_text"
+                                android:textSize="16sp"
+                                app:drawableStartCompat="@drawable/round_access_time_24" />
+
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <ImageView
+                                    android:id="@+id/shopping_bag"
+                                    android:layout_width="25dp"
+                                    android:layout_height="25dp"
+                                    android:layout_marginStart="8dp"
+                                    android:layout_weight="1"
+                                    android:src="@drawable/baseline_shopping_bag_24"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintVertical_bias="0.521" />
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    android:id="@+id/material_text_equipment"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginStart="16dp"
+                                    android:layout_weight="5"
+                                    android:fontFamily="@font/montserrat_medium_500"
+                                    android:text="@string/rent_equipment"
+                                    android:textAlignment="textStart"
+                                    android:textColor="@color/black"
+                                    android:textSize="16sp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toEndOf="@+id/shopping_bag"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <com.google.android.material.checkbox.MaterialCheckBox
+                                    android:id="@+id/switch_equipment"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:buttonTint="@color/md_theme_light_primary"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toEndOf="@+id/material_text_equipment"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                        </LinearLayout>
+
 
                     </LinearLayout>
 
-                </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                <TextView
-                    android:id="@+id/dateSelected"
+
+                <androidx.cardview.widget.CardView
+
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawablePadding="16dp"
-                    android:fontFamily="@font/montserrat_medium_500"
-                    android:padding="8dp"
-                    android:text="@string/wednesday_19_april"
-                    android:textColor="@color/md_theme_light_text"
-                    android:textSize="16sp"
-                    app:drawableStartCompat="@drawable/calendar_primary" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:orientation="vertical">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/timeSelected"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="16dp"
-                        android:drawableTint="@color/md_theme_light_text"
-                        android:fontFamily="@font/montserrat_medium_500"
-                        android:padding="8dp"
-                        android:text="@string/hour_range"
-                        android:textColor="@color/md_theme_light_text"
-                        android:textSize="16sp"
-                        app:drawableStartCompat="@drawable/round_access_time_24" />
-
+                    android:layout_marginHorizontal="2dp"
+                    android:layout_marginVertical="8dp"
+                    app:cardCornerRadius="40dp">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:padding="10dp">
 
-                        <ImageView
-                            android:id="@+id/shopping_bag"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_weight="1"
-                            android:src="@drawable/baseline_shopping_bag_24"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_bias="0.521" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/material_text_equipment"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="16dp"
-                            android:layout_weight="5"
-                            android:fontFamily="@font/montserrat_medium_500"
-                            android:text="@string/rent_equipment"
-                            android:textAlignment="textStart"
-                            android:textColor="@color/black"
-                            android:textSize="16sp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/shopping_bag"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <com.google.android.material.checkbox.MaterialCheckBox
-                            android:id="@+id/switch_equipment"
-                            android:layout_width="wrap_content"
+                        <TextView
+                            android:id="@+id/textView9"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:buttonTint="@color/md_theme_light_primary"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/material_text_equipment"
+                            android:text="@string/price_details_title"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
+
+                        <LinearLayout
+                            android:id="@+id/field_details"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:paddingTop="10dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/textView9">
+
+                            <TextView
+                                tools:layout_editor_absoluteX="-12dp"
+                                tools:layout_editor_absoluteY="34dp"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/field_cost"
+                                android:textAlignment="textStart"
+                                android:textColor="@color/md_theme_light_text"
+                                android:textSize="15sp"
+                                android:textStyle="normal" />
+
+                            <TextView
+                                android:id="@+id/cost_field"
+                                tools:layout_editor_absoluteX="10dp"
+                                tools:layout_editor_absoluteY="71dp"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/cost_example"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/md_theme_light_text"
+                                android:textSize="17sp"
+                                android:textStyle="normal" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/equipment_details"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/field_details">
+
+                            <TextView
+                                tools:layout_editor_absoluteX="-12dp"
+                                tools:layout_editor_absoluteY="34dp"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/equipment_cost"
+                                android:textAlignment="textStart"
+                                android:textColor="@color/md_theme_light_text"
+                                android:textSize="15sp"
+                                android:textStyle="normal" />
+
+                            <TextView
+                                android:id="@+id/equipment_field"
+                                tools:layout_editor_absoluteX="10dp"
+                                tools:layout_editor_absoluteY="71dp"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/cost_example"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/md_theme_light_text"
+                                android:textSize="17sp"
+                                android:textStyle="normal" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:paddingTop="10dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/equipment_details">
+
+                            <TextView
+                                tools:layout_editor_absoluteX="-12dp"
+                                tools:layout_editor_absoluteY="34dp"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/total_cost"
+                                android:textAlignment="textStart"
+                                android:textColor="@color/md_theme_light_text"
+                                android:textSize="17sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/total_euros"
+                                tools:layout_editor_absoluteX="10dp"
+                                tools:layout_editor_absoluteY="71dp"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/cost_example"
+                                android:textAlignment="textEnd"
+                                android:textSize="17sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
 
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-                </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Invite Buddies Card (?) -->
+
+                <!-- Confirm Button -->
+                <com.apachat.loadingbutton.core.customViews.CircularProgressButton
+                    android:id="@+id/confirmPrenotation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="16dp"
+                    android:background="@drawable/rounded_shape"
+                    android:backgroundTint="@color/md_theme_light_primary"
+                    android:text="@string/confirm"
+                    android:textAllCaps="false"
+                    android:textColor="@color/md_theme_light_background" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="2dp"
+                    app:cardCornerRadius="40dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:padding="10dp">
+
+                        <TextView
+                            android:id="@+id/textView7"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/additional_information"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/additional_body"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/informations_body"
+                            android:textColor="@color/md_theme_light_text"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+                        <CheckBox
+                            android:id="@+id/accept_checkbox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/md_theme_light_primary"
+                            android:text="@string/accept_informations"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintVertical_bias="0.888" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                </androidx.cardview.widget.CardView>
+
 
 
             </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="2dp"
-            app:cardCornerRadius="40dp">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                android:padding="10dp">
-
-                <TextView
-                    android:id="@+id/textView7"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/additional_information"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/additional_body"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/informations_body"
-                    android:textColor="@color/md_theme_light_text"
-                    android:textSize="15sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView7" />
-
-                <CheckBox
-                    android:id="@+id/accept_checkbox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:buttonTint="@color/md_theme_light_primary"
-                    android:text="@string/accept_informations"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintVertical_bias="0.888" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="2dp"
-            android:layout_marginVertical="8dp"
-            app:cardCornerRadius="40dp">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                android:padding="10dp">
-
-                <TextView
-                    android:id="@+id/textView9"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/price_details_title"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <LinearLayout
-                    android:id="@+id/field_details"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingTop="10dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/textView9">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/field_cost"
-                        android:textAlignment="textStart"
-                        android:textColor="@color/md_theme_light_text"
-                        android:textSize="15sp"
-                        android:textStyle="normal"
-                        tools:layout_editor_absoluteX="-12dp"
-                        tools:layout_editor_absoluteY="34dp" />
-
-                    <TextView
-                        android:id="@+id/cost_field"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/cost_example"
-                        android:textAlignment="textEnd"
-                        android:textColor="@color/md_theme_light_text"
-                        android:textSize="17sp"
-                        android:textStyle="normal"
-                        tools:layout_editor_absoluteX="10dp"
-                        tools:layout_editor_absoluteY="71dp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/equipment_details"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/field_details">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/equipment_cost"
-                        android:textAlignment="textStart"
-                        android:textColor="@color/md_theme_light_text"
-                        android:textSize="15sp"
-                        android:textStyle="normal"
-                        tools:layout_editor_absoluteX="-12dp"
-                        tools:layout_editor_absoluteY="34dp" />
-
-                    <TextView
-                        android:id="@+id/equipment_field"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/cost_example"
-                        android:textAlignment="textEnd"
-                        android:textColor="@color/md_theme_light_text"
-                        android:textSize="17sp"
-                        android:textStyle="normal"
-                        tools:layout_editor_absoluteX="10dp"
-                        tools:layout_editor_absoluteY="71dp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingTop="10dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/equipment_details">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/total_cost"
-                        android:textAlignment="textStart"
-                        android:textColor="@color/md_theme_light_text"
-                        android:textSize="17sp"
-                        android:textStyle="bold"
-                        tools:layout_editor_absoluteX="-12dp"
-                        tools:layout_editor_absoluteY="34dp" />
-
-                    <TextView
-                        android:id="@+id/total_euros"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/cost_example"
-                        android:textAlignment="textEnd"
-                        android:textSize="17sp"
-                        android:textStyle="bold"
-                        tools:layout_editor_absoluteX="10dp"
-                        tools:layout_editor_absoluteY="71dp" />
-
-                </LinearLayout>
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        </androidx.cardview.widget.CardView>
-
-        <!-- Invite Buddies Card (?) -->
-
-        <!-- Confirm Button -->
-        <com.apachat.loadingbutton.core.customViews.CircularProgressButton
-            android:id="@+id/confirmPrenotation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginVertical="16dp"
-            android:background="@drawable/rounded_shape"
-            android:backgroundTint="@color/md_theme_light_primary"
-            android:text="@string/confirm"
-            android:textAllCaps="false"
-            android:textColor="@color/md_theme_light_background" />
-
-
-    </LinearLayout>
-
-</androidx.core.widget.NestedScrollView>

@@ -45,15 +45,14 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
     fun getAll(){
         mainScope.launch {
             _invitations.postValue(invitationsRepository.getInvitations(onFailure))
-            println("ddddddd")
             if(_loading.value == true)
                 _loading.postValue(false)
         }
     }
 
-    fun acceptInvitation(reservationDTO: ReservationDTO){
+    fun acceptInvitation(reservationDTO: ReservationDTO, onSuccess: () -> Unit){
         mainScope.launch {
-            invitationsRepository.acceptInvitation(reservationDTO, onFailure)
+            invitationsRepository.acceptInvitation(reservationDTO, onFailure, onSuccess)
         }
     }
 

@@ -15,6 +15,7 @@ import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.compose.animation.fadeIn
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -128,27 +129,35 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
             if (it != null) {
 
                 with(rvFriendRequests) {
+
                     val oldList = friendsViewModel.oldFriendsRequests
+                    val oldEmail  = oldList.map { o -> o.email }
+                    val newEmail = it.map { n-> n.email }
+
                     val friendDiff = FriendListDiffUtils(oldList, it)
                     val diffs = DiffUtil.calculateDiff(friendDiff)
 
                     (adapter as FriendRequestRecyclerViewAdapter).values = it
                     diffs.dispatchUpdatesTo(adapter!!)
 
+
                     if ((rvFriendRequests.adapter as FriendRequestRecyclerViewAdapter).values.isEmpty()) {
-                        println("sto qui dsdsdsn")
+                        val fadeOut = AnimationUtils.loadAnimation(context, android.R.anim.fade_out)
+                        val fadeIn = AnimationUtils.loadAnimation(context, android.R.anim.fade_in)
+
                         rvFriendRequests.postOnAnimation {
-                            println("recu")
                             rvFriendRequests.visibility = View.GONE
                             emptyLL.postOnAnimation {
-                                println("empty")
                                 emptyLL.visibility = View.VISIBLE
                             }
-                            emptyLL.startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.fade_out))
+                            emptyLL.startAnimation(fadeIn)
 
                         }
-                        rvFriendRequests.startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.fade_out))
-                    } else {
+                        fadeIn.duration = 400
+                        fadeOut.duration = fadeIn.duration
+                        rvFriendRequests.startAnimation(fadeOut)
+
+                    } else  {
                         emptyLL.visibility = View.GONE
                         rvFriendRequests.visibility = View.VISIBLE
                     }

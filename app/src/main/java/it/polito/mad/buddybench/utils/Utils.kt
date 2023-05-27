@@ -165,33 +165,26 @@ class Utils {
 
         fun openGeneralProblemDialog(title: String, body: String, context: Context): AlertDialog {
 
-            if (generalProblemDialog == null) {
-                val dialogCard =
-                    LayoutInflater.from(context).inflate(R.layout.general_problem, null)
-                val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-                builder.setView(dialogCard)
-                val dialog: AlertDialog = builder.create()
-                val titleView = dialogCard.findViewById<TextView>(R.id.title)
-                titleView.text = title
-                val bodyView = dialogCard.findViewById<TextView>(R.id.text_problem)
-                bodyView.text = body
-                dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-                dialog.setCancelable(true)
-                dialogCard.findViewById<View>(R.id.ok).setOnClickListener {
-                    closeGeneralDialog()
-                }
-                generalProblemDialog = dialog
+            val dialogCard =
+                LayoutInflater.from(context).inflate(R.layout.general_problem, null)
+            val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+            builder.setView(dialogCard)
+            val dialog: AlertDialog = builder.create()
+            val titleView = dialogCard.findViewById<TextView>(R.id.title)
+            titleView.text = title
+            val bodyView = dialogCard.findViewById<TextView>(R.id.text_problem)
+            bodyView.text = body
+            dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+            dialog.setCancelable(true)
+            dialogCard.findViewById<View>(R.id.ok).setOnClickListener {
+                dialog.dismiss()
             }
-            generalProblemDialog!!.show()
-            return generalProblemDialog!!
+            dialog.show()
+
+
+            return dialog
         }
 
-        fun closeGeneralDialog() {
-            if (generalProblemDialog == null) return
-            generalProblemDialog!!.dismiss()
-            generalProblemDialog = null
-            return
-        }
 
         fun openNetworkProblemDialog(context: Context): AlertDialog {
 
@@ -247,7 +240,7 @@ class Utils {
             i.putExtras(bundle)
             if (context is HomeActivity)
                 context.launcherActivityFriendProfile.launch(i)
-            else{
+            else {
                 context.startActivity(i)
             }
         }

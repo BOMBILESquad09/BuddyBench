@@ -88,7 +88,6 @@ class HomeActivity : AppCompatActivity() {
             if (it != null){
                 friendsViewModel.subscribeFriendsList()
                 invitationsViewModel.subscribeInvitations() { s ->
-                    println("subscribingg")
                     if (s > 0) {
                         bottomBar.counter[Tabs.INVITATIONS.getId()] = s
                         if (bottomBar.currentTab != Tabs.INVITATIONS)
@@ -117,7 +116,6 @@ class HomeActivity : AppCompatActivity() {
                         } else {
                             bottomBar.counter[Tabs.FRIENDS.getId()] = 0
                             bottomBar.bottomBar.clearBadgeAtTabIndex(Tabs.FRIENDS.getId())
-
                         }
                     }
                 }
