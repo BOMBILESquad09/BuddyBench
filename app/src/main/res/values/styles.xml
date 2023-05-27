@@ -17,6 +17,10 @@
     <style name="Buttons" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="cornerRadius">30dp</item>
         <item name="textAllCaps">false</item>
+        <item name="android:textSize">14sp</item>
+        <item name="fontFamily">@font/montserrat_medium_500</item>
+        <item name="android:textColor">@color/md_theme_light_background</item>
+        <item name="backgroundTint">@color/md_theme_light_primary</item>
     </style>
 
     <style name="TabName" parent="Theme.AppCompat.Light.NoActionBar">
