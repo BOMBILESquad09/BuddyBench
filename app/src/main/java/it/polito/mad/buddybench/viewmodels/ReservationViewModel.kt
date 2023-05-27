@@ -61,6 +61,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
             reservationRepository.getAllByUser({
                 onFailure()
                 loading.postValue(false)
+                _reservations.postValue(hashMapOf())
             } ){
                 loading.postValue(false)
                 _reservations.postValue(it)
@@ -123,7 +124,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     fun getReservation(
         reservationID: String,
     ): MutableLiveData<ReservationDTO?> {
-        runBlocking {
+        viewModelScope.launch {
             val res = reservationRepository.getReservation(reservationID, onFailure = onFailure)
             if(res != null){
                 _currentReservation.postValue(res)

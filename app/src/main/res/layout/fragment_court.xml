@@ -49,6 +49,8 @@
                     android:backgroundTint="@color/md_theme_light_background"
                     android:contentDescription="@string/close"
                     android:padding="16dp"
+                    android:focusable="true"
+                    android:clickable="true"
                     android:src="@drawable/round_arrow_back_24_primary"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -153,6 +155,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="8dp"
+                            android:progressTint="@color/gold"
                             android:indeterminate="false"
                             android:isIndicator="true"
                             android:numStars="5"

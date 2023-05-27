@@ -26,7 +26,7 @@ class InvitationsFragment(context: HomeActivity) : Fragment(R.layout.my_invitati
     private lateinit var recyclerViewInvitations: RecyclerView
     private lateinit var emptyLL: LinearLayout
     private lateinit var swipeRefresh : SwipeRefreshLayout
-
+    private lateinit var progress: LinearLayout
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,6 +41,17 @@ class InvitationsFragment(context: HomeActivity) : Fragment(R.layout.my_invitati
 
         emptyLL = view.findViewById(R.id.empty)
 
+        progress = view.findViewById(R.id.progress_layout)
+        viewModel.loading.observe(viewLifecycleOwner) {
+            println(it ?: null)
+
+            if (it == null || it) {
+                progress.visibility = View.VISIBLE
+
+            } else {
+                progress.visibility = View.GONE
+            }
+        }
         val onAccept: (ReservationDTO) -> Unit = {
             viewModel.acceptInvitation(it)
             reservationViewModel.getAllByUser()

@@ -28,7 +28,7 @@ class FriendListFragment(val context: HomeActivity) : Fragment(R.layout.fragment
 
     private var columnCount = 1
     private lateinit var rvFriendList: RecyclerView
-    private lateinit var pbFriendList: ProgressBar
+    private lateinit var pbFriendList: LinearLayout
     private lateinit var emptyLL: LinearLayout
     private lateinit var emptyTv: TextView
     private val friendsViewModel by activityViewModels<FriendsViewModel>()

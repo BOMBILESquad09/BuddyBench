@@ -30,11 +30,12 @@ import kotlinx.coroutines.runBlocking
 class FriendRequestRecyclerViewAdapter(
     var values: List<Profile>,
     private val viewModel: FriendsViewModel,
-    val callback: (profile: Profile) -> Unit
-) : RecyclerView.Adapter<FriendRequestRecyclerViewAdapter.ViewHolder>() {
+    val callback: (profile: Profile) -> Unit,
+    val onLast: () -> Unit
+) : RecyclerView.Adapter<FriendRequestRecyclerViewAdapter.RequestViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RequestViewHolder {
+        return RequestViewHolder(
             FragmentFriendRequestItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
@@ -43,9 +44,11 @@ class FriendRequestRecyclerViewAdapter(
         )
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RequestViewHolder, position: Int) {
         val item = values[position]
         holder.bind(item)
+
+
 
     }
 
@@ -54,15 +57,15 @@ class FriendRequestRecyclerViewAdapter(
 
     private fun confirmRequest(email: String, context: Context, onSuccess: () -> Unit) {
         viewModel.confirmRequest(email, onSuccess)
-        Toast.makeText(context, "Friend request accepted", Toast.LENGTH_LONG).show()
+        //Toast.makeText(context, "Friend request accepted", Toast.LENGTH_LONG).show()
     }
 
     private fun rejectRequest(email: String, context: Context, onSuccess: () -> Unit) {
         viewModel.rejectRequest(email, onSuccess)
-        Toast.makeText(context, "Friend request declined", Toast.LENGTH_LONG).show()
+        //Toast.makeText(context, "Friend request declined", Toast.LENGTH_LONG).show()
     }
 
-    inner class ViewHolder(val binding: FragmentFriendRequestItemBinding) :
+    inner class RequestViewHolder(val binding: FragmentFriendRequestItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val tvName: TextView = binding.tvFriendRequestName
         val ivImage: ImageView = binding.ivFriendRequestImage
@@ -91,14 +94,24 @@ class FriendRequestRecyclerViewAdapter(
             }
             btnConfirm.setOnClickListener {
                 accepted = true
+                binding.root.postOnAnimation {
+                    if(values.size != 1) return@postOnAnimation
+                    println("rimosssoooooooooooooooooooo")
+                    onLast()
+                }
                 confirmRequest(profile.email, btnReject.context) {
                 }
             }
+
             btnReject.setOnClickListener {
                 accepted = false
+
                 rejectRequest(profile.email, btnReject.context) {
+
                 }
+
             }
+
         }
     }
 

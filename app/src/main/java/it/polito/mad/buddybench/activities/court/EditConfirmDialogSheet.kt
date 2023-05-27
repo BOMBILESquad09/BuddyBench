@@ -28,6 +28,7 @@ import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.persistence.dto.UserDTO
+import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.CourtViewModel
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import java.time.LocalDate
@@ -83,11 +84,7 @@ class EditConfirmDialogSheet(
         confirmButton?.setOnClickListener {
             if (!checkboxAccept!!.isChecked) {
                 val textError = String.format(getString(R.string.error_info), courtToReserve.name)
-                buildAlertDialog(
-                    "Additional Information",
-                    textError,
-                    view.context
-                ).show()
+                Utils.openGeneralProblemDialog("Additional Information", textError, view.context)
             } else {
                 val reservation = ReservationDTO(
                     id = reservationID ?: "",
@@ -112,11 +109,7 @@ class EditConfirmDialogSheet(
                     oldDate,
                     {
                         confirmButton.stopAnimation()
-                        buildAlertDialog(
-                            "Ops",
-                            "Seems that the time slots selected are not available",
-                            requireActivity()
-                        ).show()
+                        Utils.openGeneralProblemDialog("Ops", "Seems that the time slots selected are not available", requireActivity())
                         courtViewModel.getTimeSlotsAvailable(courtToReserve, selectedDate, null)
                         this.dismiss()
 
@@ -231,18 +224,6 @@ class EditConfirmDialogSheet(
                 totalCostField?.text = String.format(getString(R.string.cost_example, totalCost))
             }
         }
-    }
-
-
-    private fun buildAlertDialog(title: String, text: String, context: Context): AlertDialog {
-
-        return AlertDialog.Builder(context)
-            .setTitle(title)
-            .setMessage(text)
-            .setPositiveButton("Ok") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .create()
     }
 
     override fun isSheetAlwaysExpanded(): Boolean {

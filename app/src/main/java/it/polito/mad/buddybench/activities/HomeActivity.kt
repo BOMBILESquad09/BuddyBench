@@ -88,6 +88,7 @@ class HomeActivity : AppCompatActivity() {
             if (it != null){
                 friendsViewModel.subscribeFriendsList()
                 invitationsViewModel.subscribeInvitations() { s ->
+                    println("subscribingg")
                     if (s > 0) {
                         bottomBar.counter[Tabs.INVITATIONS.getId()] = s
                         if (bottomBar.currentTab != Tabs.INVITATIONS)
@@ -99,6 +100,8 @@ class HomeActivity : AppCompatActivity() {
                             )
                     } else {
                         bottomBar.counter[Tabs.INVITATIONS.getId()] = 0
+                        bottomBar.bottomBar.clearBadgeAtTabIndex(Tabs.INVITATIONS.getId())
+
                     }
                     friendsViewModel.friendRequests.observe(this) {
                         if (it.isNotEmpty()) {
@@ -222,21 +225,27 @@ class HomeActivity : AppCompatActivity() {
 
 
         imageViewModel.onFailure = {
+            println("immagine")
             Utils.openNetworkProblemDialog(this)
         }
 
         reservationViewModel.onFailure = {
+            println("reservations")
             Utils.openNetworkProblemDialog(this)
         }
 
         userViewModel.onFailure = {
+            println("users")
             Utils.openNetworkProblemDialog(this)
         }
 
         findCourtViewModel.onFailure = {
+            println("findcourt")
             Utils.openNetworkProblemDialog(this)
         }
         friendsViewModel.onFailure = {
+            println("friends")
+
             Utils.openNetworkProblemDialog(this)
         }
 

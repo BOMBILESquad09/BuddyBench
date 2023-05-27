@@ -29,7 +29,7 @@ class FindFriendFragment : Fragment() {
 
     // ** UI
     private lateinit var rvFindFriends: RecyclerView
-    private lateinit var pbFindFriends: ProgressBar
+    private lateinit var pbFindFriends: LinearLayout
     private lateinit var emptyLL: LinearLayout
     private lateinit var emptyTv: TextView
     private lateinit var swipeRefresh : SwipeRefreshLayout
