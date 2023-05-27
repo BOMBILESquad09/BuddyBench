@@ -86,6 +86,7 @@ class EditConfirmDialogSheet(
 
         // CheckBox inside the Additional Information Card
         val checkboxAccept = view.findViewById<CheckBox>(R.id.accept_checkbox)
+        checkboxAccept.isChecked = true
         // Take the reference of the confirm button
         val confirmButton = view.findViewById<CircularProgressButton>(R.id.confirmPrenotation)
         confirmButton?.setOnClickListener {
