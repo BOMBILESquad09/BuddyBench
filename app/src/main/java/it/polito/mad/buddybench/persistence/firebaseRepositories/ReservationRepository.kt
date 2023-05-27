@@ -285,6 +285,7 @@ class ReservationRepository {
         reservationMap["requests"] = listOf<DocumentReference>()
         reservationMap["visibilty"] = Visibilities.PRIVATE
         reservationMap["id"] = reservationID
+
         return  reservationMap
     }
 
