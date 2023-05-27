@@ -7,6 +7,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.buddybench.classes.TimeSlotsNotAvailableException
+import it.polito.mad.buddybench.enums.Visibilities
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 
@@ -68,6 +69,7 @@ class ReservationRepository {
                     reservationDTO.userOrganizer = UserRepository.serializeUser((res.data["user"] as DocumentReference).get().await().data!! as Map<String, Object>)
                     reservations.add(reservationDTO)
                 }
+
                 onSuccess(ReservationDTO.toHashmap(reservations))
             } catch (e: Exception){
                 onFailure()
@@ -252,6 +254,10 @@ class ReservationRepository {
                     reservationDTO.userOrganizer = UserRepository.serializeUser((res.data!!["user"] as DocumentReference).get().await().data!! as Map<String, Object>)
                 val acceptedUsers = (res.data!!["accepted"] as List<DocumentReference>).map { it.get() }.map { it.await() }.map { UserRepository.serializeUser(it.data as Map<String, Object>) }
                 val pendingUsers = (res.data!!["pendings"] as List<DocumentReference>).map { it.get() }.map { it.await() }.map { UserRepository.serializeUser(it.data as Map<String, Object>) }
+
+                //qui prendo chi mi richiede di joinare
+                //val requestingUsers =
+
                 reservationDTO.accepted = acceptedUsers
                 reservationDTO.pendings = pendingUsers
                 val court = (res.data!!["court"] as DocumentReference).get().await()
@@ -280,4 +286,21 @@ class ReservationRepository {
         reservationMap["id"] = reservationID
         return  reservationMap
     }
+
+    /*prendi tutte le reservation pubbliche o su richiesta per un certo giorno e per un certo sport*/
+    suspend fun getPublicGames(date: LocalDate, sport: String, onFailure: () -> Unit, onSuccess: (List<ReservationDTO>) -> Unit){
+       TODO()
+    }
+
+    //fallo con le transazioni
+    suspend fun setVisibility(reservationDTO: ReservationDTO, visibilities: Visibilities, onFailure: () -> Unit, onSuccess: () -> Unit){
+
+    }
+
+    //fallo con le transazioni
+    suspend fun sendRequestToJoin(reservationDTO: ReservationDTO){
+        //sto inviando la richiesta io quindi questo è il mio identificativo
+        val email = Firebase.auth.currentUser!!.email!!
+    }
+
 }
