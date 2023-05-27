@@ -13,6 +13,7 @@ import dagger.hilt.android.internal.managers.FragmentComponentManager
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.classes.Profile
+import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 
 class FriendsViewHolder(val v: View):  RecyclerView.ViewHolder(v) {
@@ -38,5 +39,14 @@ class FriendsViewHolder(val v: View):  RecyclerView.ViewHolder(v) {
         profileCv.setOnClickListener{
             onChange(profile.first)
         }
+
+        profileCv.setOnLongClickListener {
+            Utils.goToProfileFriend(
+                FragmentComponentManager.findActivity(v.context) as HomeActivity,
+                profile.first
+            )
+            true
+        }
+
     }
 }

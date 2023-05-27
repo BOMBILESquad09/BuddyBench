@@ -35,14 +35,18 @@ class ReservationRepository {
 
                 val reservations = mutableListOf<ReservationDTO>()
                 for (res in result.await()){
+
                     val reservationDTO = ReservationDTO()
                     reservationDTO.date = LocalDate.parse(res.data["date"] as String, DateTimeFormatter.ISO_LOCAL_DATE)
                     reservationDTO.startTime = LocalTime.of((res.data["startTime"] as Long).toInt(),0)
                     reservationDTO.endTime = LocalTime.of((res.data["endTime"] as Long).toInt(),0)
                     reservationDTO.equipment = res.data["equipment"] as Boolean
                     reservationDTO.id = res.data["id"] as String
+
                     val court = (res.data["court"] as DocumentReference).get().await()
+
                     val acceptedUsers = (res.data["accepted"] as List<DocumentReference>).map { it.get() }.map { it.await() }.map { UserRepository.serializeUser(it.data as Map<String, Object>) }
+
                     val pendingUsers = (res.data["pendings"] as List<DocumentReference>).map { it.get() }.map { it.await() }.map { UserRepository.serializeUser(it.data as Map<String, Object>) }
                     reservationDTO.court = court.toObject(CourtDTO::class.java)!!
                     reservationDTO.accepted = acceptedUsers
@@ -57,7 +61,9 @@ class ReservationRepository {
                     reservationDTO.endTime = LocalTime.of((res.data["endTime"] as Long).toInt(),0)
                     reservationDTO.equipment = res.data["equipment"] as Boolean
                     reservationDTO.id = res.data["id"] as String
+                    println("ok")
                     val court = (res.data["court"] as DocumentReference).get().await()
+                    println("not okk")
                     val acceptedUsers = (res.data["accepted"] as List<DocumentReference>).map { it.get() }.map { it.await() }.map { UserRepository.serializeUser(it.data as Map<String, Object>) }
                     reservationDTO.court = court.toObject(CourtDTO::class.java)!!
                     reservationDTO.accepted = acceptedUsers
@@ -65,8 +71,7 @@ class ReservationRepository {
                     reservations.add(reservationDTO)
                 }
                 onSuccess(ReservationDTO.toHashmap(reservations))
-            } catch (_: Exception){
-                println("reservation not foundddddddddddddddddddddddddddddddddddddddddd")
+            } catch (e: Exception){
                 onFailure()
             }
 

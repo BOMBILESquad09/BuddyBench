@@ -57,7 +57,9 @@ class CourtSearchViewHolder(val v: View, val callback: (String, Sports) -> Unit,
 
         }
 
-        courtRating.setOnClickListener { reviewsCallback(court.name, Sports.valueOf(court.sport)) }
+        courtRating.setOnClickListener {
+            Utils.openProgressDialog(v.context)
+            reviewsCallback(court.name, Sports.valueOf(court.sport)) }
 
         /*val bitmap = try {
             BitmapFactory.decodeStream(courtImage.context?.assets?.open("courtImages/" + court.path + ".jpg"))

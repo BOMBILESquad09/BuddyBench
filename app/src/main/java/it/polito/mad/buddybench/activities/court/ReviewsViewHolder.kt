@@ -4,12 +4,14 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import dagger.hilt.android.internal.managers.FragmentComponentManager
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.persistence.dto.ReviewDTO
+import it.polito.mad.buddybench.utils.Utils
 import java.time.format.DateTimeFormatter
 
 class ReviewsViewHolder(private val v: View): RecyclerView.ViewHolder(v) {
@@ -41,6 +43,12 @@ class ReviewsViewHolder(private val v: View): RecyclerView.ViewHolder(v) {
             Glide.with(v.context)
                 .load(it)
                 .into(ivUserPicture)
+        }
+        ivUserPicture.setOnClickListener {
+            Utils.goToProfileFriend(
+                FragmentComponentManager.findActivity(v.context) as AppCompatActivity,
+                review.user
+            )
         }
         // ** Rating
         tvRatingValue = v.findViewById(R.id.tv_rating_value)

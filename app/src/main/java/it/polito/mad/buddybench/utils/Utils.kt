@@ -15,7 +15,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.animation.doOnEnd
 import androidx.core.graphics.drawable.DrawableCompat
@@ -238,12 +240,16 @@ class Utils {
             return
         }
 
-        fun goToProfileFriend(context: HomeActivity, profile: Profile) {
+        fun goToProfileFriend(context: AppCompatActivity, profile: Profile) {
             val i = Intent(context, FriendProfileActivity::class.java)
-
+            openProgressDialog(context)
             val bundle = bundleOf("profile" to profile.toJSON().toString())
             i.putExtras(bundle)
-            context.launcherActivityFriendProfile.launch(i)
+            if (context is HomeActivity)
+                context.launcherActivityFriendProfile.launch(i)
+            else{
+                context.startActivity(i)
+            }
         }
 
         fun generateNickname(): String {

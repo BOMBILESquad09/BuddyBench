@@ -21,12 +21,10 @@ class FriendRepository {
     lateinit var userRepository: UserRepository
     fun subscribeFriends(onFailure: () -> Unit, onSuccess: () -> Unit) {
         val currentEmail = Firebase.auth.currentUser!!.email!!
-        println("dioiodbbestia mannadggi djakfnsojf")
 
         db.collection("users").document(currentEmail).addSnapshotListener { value, error ->
-
+            println("okkkkkkkkkkkkkkkkkkkkk")
             if (value != null && value.exists() && error == null) {
-                println("diocaneeeeeeeeeeeaòo<ojksvops<fjopeWFKPOEwkrfp")
                 onSuccess()
             } else {
                 onFailure()
@@ -112,6 +110,7 @@ class FriendRepository {
         onFailure: () -> Unit,
         onSuccess: () -> Unit
     ) {
+
         db.runTransaction { t ->
 
             val currentEmail = Firebase.auth.currentUser!!.email!!

@@ -16,8 +16,9 @@ import javax.inject.Inject
 @HiltViewModel
 class InvitationsViewModel @Inject constructor() : ViewModel() {
 
-    val invitationsRepository = InvitationsRepository()
-
+    private val invitationsRepository = InvitationsRepository()
+    private val _loading: MutableLiveData<Boolean> = MutableLiveData(null)
+    val loading: LiveData<Boolean> = _loading
     private val _invitations: MutableLiveData<List<ReservationDTO>> = MutableLiveData(listOf())
     val invitations: LiveData<List<ReservationDTO>> = _invitations
 
@@ -26,6 +27,7 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
     var onFailure = {}
     fun subscribeInvitations(onSuccess: (Int) -> Unit): LiveData<List<ReservationDTO>>{
         invitationsRepository.subscribeInvitations( onFailure = onFailure, onSuccess = {
+            _loading.postValue(true)
             onSuccess(it)
             invitationSize.postValue(it)
         })
@@ -33,6 +35,7 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
             if(it != null && it != 0)
                 getAll()
             else{
+                _loading.postValue(false)
                 _invitations.postValue(listOf())
             }
         }
@@ -42,6 +45,9 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
     fun getAll(){
         mainScope.launch {
             _invitations.postValue(invitationsRepository.getInvitations(onFailure))
+            println("ddddddd")
+            if(_loading.value == true)
+                _loading.postValue(false)
         }
     }
 

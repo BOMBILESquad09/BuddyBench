@@ -34,10 +34,10 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
 
     // ** UI
     private lateinit var rvFriendRequests: RecyclerView
-    private lateinit var pbFriendRequests: ProgressBar
+    private lateinit var pbFriendRequests: LinearLayout
     private lateinit var emptyLL: LinearLayout
     private lateinit var emptyTv: TextView
-    private lateinit var swipeRefresh : SwipeRefreshLayout
+    private lateinit var swipeRefresh: SwipeRefreshLayout
 
     // ** View Model
     private val friendsViewModel by activityViewModels<FriendsViewModel>()
@@ -61,23 +61,25 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
         emptyTv.text = getString(R.string.no_friend_requests)
         swipeRefresh = view.findViewById(R.id.swiperefresh)
         swipeRefresh.setOnRefreshListener {
-            (activity as HomeActivity).friendsViewModel.refreshAll{swipeRefresh.isRefreshing = false}
+            (activity as HomeActivity).friendsViewModel.refreshAll {
+                swipeRefresh.isRefreshing = false
+            }
         }
         // ** Loading state
         friendsViewModel.lRequests.observe(viewLifecycleOwner) {
             if (it == null || it) {
                 pbFriendRequests.visibility = View.VISIBLE
-                rvFriendRequests.visibility = View.GONE
+                //rvFriendRequests.visibility = View.GONE
             } else {
 
                 pbFriendRequests.visibility = View.GONE
-                if (friendsViewModel.friendRequests.value!!.isEmpty()) {
+                /*if (friendsViewModel.friendRequests.value!!.isEmpty()) {
                     emptyLL.visibility = View.VISIBLE
                     rvFriendRequests.visibility = View.GONE
                 } else {
                     emptyLL.visibility = View.GONE
                     rvFriendRequests.visibility = View.VISIBLE
-                }
+                }*/
             }
         }
 
@@ -86,29 +88,34 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
         }
 
 
+
+
         with(rvFriendRequests) {
             layoutManager = when {
                 columnCount <= 1 -> LinearLayoutManager(context)
                 else -> GridLayoutManager(context, columnCount)
             }
 
-            adapter = FriendRequestRecyclerViewAdapter(listOf(), friendsViewModel, callback)
+            adapter = FriendRequestRecyclerViewAdapter(listOf(), friendsViewModel, callback
+            ) { }
             itemAnimator = object : DefaultItemAnimator() {
                 override fun animateRemove(holder: RecyclerView.ViewHolder?): Boolean {
                     if (holder != null) {
-                        holder as FriendRequestRecyclerViewAdapter.ViewHolder
+                        holder as FriendRequestRecyclerViewAdapter.RequestViewHolder
                         val animation = if (holder.accepted) {
                             AnimationUtils.loadAnimation(
                                 holder.itemView.context,
                                 R.anim.slide_out_left
                             )
+
                         } else {
                             AnimationUtils.loadAnimation(
                                 holder.itemView.context,
                                 android.R.anim.slide_out_right
                             )
                         }
-                        holder.itemView.startAnimation(animation)
+                        holder.binding.root.startAnimation(animation)
+
 
                     }
                     return super.animateRemove(holder)
@@ -129,8 +136,18 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
                     diffs.dispatchUpdatesTo(adapter!!)
 
                     if ((rvFriendRequests.adapter as FriendRequestRecyclerViewAdapter).values.isEmpty()) {
-                        emptyLL.visibility = View.VISIBLE
-                        rvFriendRequests.visibility = View.GONE
+                        println("sto qui dsdsdsn")
+                        rvFriendRequests.postOnAnimation {
+                            println("recu")
+                            rvFriendRequests.visibility = View.GONE
+                            emptyLL.postOnAnimation {
+                                println("empty")
+                                emptyLL.visibility = View.VISIBLE
+                            }
+                            emptyLL.startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.fade_out))
+
+                        }
+                        rvFriendRequests.startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.fade_out))
                     } else {
                         emptyLL.visibility = View.GONE
                         rvFriendRequests.visibility = View.VISIBLE

@@ -60,7 +60,8 @@ class UserRepository {
                 } else {
                     fetchUser(email, onFailure, onSuccess)
                 }
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                println(e)
                 withContext(Dispatchers.Main){
                     onFailure()
 
@@ -179,7 +180,9 @@ class UserRepository {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main){
-                    println(e)
+                    println(e.stackTrace.forEach {
+                        println(it)
+                    })
                     println("-------------------------------")
                     println("fetch user connessione down")
                     onFailure()
@@ -281,6 +284,7 @@ class UserRepository {
                     )
                 )
             }
+            println(map["email"] as String)
 
             return Profile(
                 name = map["name"] as String,
