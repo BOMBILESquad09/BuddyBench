@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.classes.TimeSlotsNotAvailableException
+import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.enums.Visibilities
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 
 import it.polito.mad.buddybench.persistence.firebaseRepositories.ReservationRepository
@@ -54,6 +56,21 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
 
     private val mainScope = viewModelScope
 
+    fun setVisibility(
+        reservationDTO: ReservationDTO,
+        visibilities: Visibilities,
+        onFailure: () -> Unit,
+        onSuccess: () -> Unit
+    ) {
+        mainScope.launch {
+            reservationRepository.setVisibility(
+                reservationDTO,
+                visibilities,
+                onFailure,
+                onSuccess
+            )
+        }
+    }
 
     fun getAllByUser(): LiveData<HashMap<LocalDate, List<ReservationDTO>>> {
         loading.value = true
@@ -116,7 +133,6 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     }
 
     fun getSelectedReservations(): List<ReservationDTO>? {
-
         return reservations.value?.get(selectedDate.value ?: LocalDate.now())
     }
 
@@ -131,12 +147,29 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
                 initPendingFriends(res)
                 initNotInvitedFriends()
             }
-
-
         }
         return _currentReservation
     }
 
+
+    fun sendRequestToJoin(
+        reservation: ReservationDTO
+    ) {
+        mainScope.launch {
+            reservationRepository.sendRequestToJoin(reservation)
+        }
+    }
+
+    fun getPublicGames(
+        date: LocalDate,
+        sports: String,
+        onSuccess: (List<ReservationDTO>) -> Unit,
+        onFailure: () -> Unit
+    ) {
+        mainScope.launch {
+            reservationRepository.getPublicGames(date, sports, onFailure, onSuccess)
+        }
+    }
     private fun initPendingFriends(reservation: ReservationDTO) {
         oldPendingFriends = _pendingFriends.value!!
         _pendingFriends.value = reservation.pendings.map { Pair(it, false) }

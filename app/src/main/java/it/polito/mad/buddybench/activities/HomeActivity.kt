@@ -27,6 +27,7 @@ import it.polito.mad.buddybench.activities.profile.ShowProfileFragment
 import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.enums.Tabs
+import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.utils.BottomBar
 import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.FindCourtViewModel
@@ -82,7 +83,6 @@ class HomeActivity : AppCompatActivity() {
             getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         reservationViewModel.email = Firebase.auth.currentUser!!.email!!
         bottomBar.setup()
-
 
         userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this) {
             if (it != null){

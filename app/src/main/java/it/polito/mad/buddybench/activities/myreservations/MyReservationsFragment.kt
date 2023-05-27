@@ -38,6 +38,7 @@ import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.activities.invitations.InvitationsDiffsUtils
 import it.polito.mad.buddybench.classes.Profile
+import it.polito.mad.buddybench.enums.Visibilities
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.persistence.entities.Invitation
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
@@ -90,8 +91,6 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         recyclerViewReservations.isNestedScrollingEnabled = false
 
 
-
-
         val dayTitle = view.findViewById<TextView>(R.id.dayTitle)
         dayTitle.text = LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, d MMMM y", Locale.ENGLISH))
 
@@ -112,7 +111,6 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
                 progressLayout.visibility = View.GONE
             }
         }
-
 
         val monthName = view.findViewById<TextView>(R.id.monthName)
 
