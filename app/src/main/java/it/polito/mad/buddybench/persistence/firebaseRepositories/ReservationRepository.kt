@@ -282,7 +282,8 @@ class ReservationRepository {
         reservationMap["equipment"] = reservationDTO.equipment
         reservationMap["accepted"] = listOf<DocumentReference>()
         reservationMap["pendings"] = listOf<DocumentReference>()
-
+        reservationMap["requests"] = listOf<DocumentReference>()
+        reservationMap["visibilty"] = Visibilities.PRIVATE
         reservationMap["id"] = reservationID
         return  reservationMap
     }
