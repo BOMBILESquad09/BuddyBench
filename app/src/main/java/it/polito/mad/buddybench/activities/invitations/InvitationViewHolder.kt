@@ -76,7 +76,7 @@ class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Uni
         courtName.text = invitation.court.name
 
         //set address
-        address.text = invitation.court.address
+        address.text = "${invitation.court.location}, ${invitation.court.address}"
 
         //set date
         date.text = "${invitation.date.format(DateTimeFormatter.ofPattern("EEEE, d MMMM y", Locale.ENGLISH))}"
