@@ -21,6 +21,8 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.NestedScrollView
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
 import com.apachat.loadingbutton.core.customViews.CircularProgressButton
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.radiobutton.MaterialRadioButton
 import it.polito.mad.buddybench.R
@@ -47,7 +49,7 @@ class EditConfirmDialogSheet(
     private var oldDate: LocalDate?,
     private val oldStartTime: LocalTime?,
     private val callback: () -> Unit
-) : SuperBottomSheetFragment() {
+) : BottomSheetDialogFragment() {
 
     private lateinit var switch: MaterialCheckBox
     private lateinit var sheet: NestedScrollView
@@ -59,14 +61,19 @@ class EditConfirmDialogSheet(
         savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        return inflater.inflate(R.layout.bottom_sheet_dialog_court_confirm, container, false)
+        val view  = inflater.inflate(R.layout.bottom_sheet_dialog_court_confirm, container, false)
+        val behaviour = BottomSheetBehavior.from(view.findViewById(R.id.standard_bottom_sheet))
+        behaviour.state = BottomSheetBehavior.STATE_EXPANDED
+
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // Take the reference for the switch of equipment
         switch = view.findViewById(R.id.switch_equipment)
-        sheet = view.findViewById(R.id.bottom_sheet_scroll_view)
+        //sheet = view.findViewById(R.id.bottom_sheet_scroll_view)
 
         // Setting up the three card
         // Setting the values for the first Card in dialog
@@ -79,6 +86,7 @@ class EditConfirmDialogSheet(
 
         // CheckBox inside the Additional Information Card
         val checkboxAccept = view.findViewById<CheckBox>(R.id.accept_checkbox)
+        checkboxAccept.isChecked = true
         // Take the reference of the confirm button
         val confirmButton = view.findViewById<CircularProgressButton>(R.id.confirmPrenotation)
         confirmButton?.setOnClickListener {
@@ -168,7 +176,8 @@ class EditConfirmDialogSheet(
     }
 
     private fun setAdditionalInformationCard(bottomSheetDialog: View) {
-        // ADDITIONAL INFORMATION CARD
+
+        bottomSheetDialog.findViewById<View>(R.id.info).visibility = View.GONE
         val additionalInfo = bottomSheetDialog.findViewById<TextView>(R.id.additional_body)
         if (!editMode)
             additionalInfo?.text = String.format(
@@ -226,13 +235,9 @@ class EditConfirmDialogSheet(
         }
     }
 
-    override fun isSheetAlwaysExpanded(): Boolean {
-        return true
-    }
 
-    override fun animateCornerRadius(): Boolean {
-        return false
-    }
+
+
 
 
 }

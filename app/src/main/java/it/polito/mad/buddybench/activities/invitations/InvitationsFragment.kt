@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -53,8 +54,9 @@ class InvitationsFragment(context: HomeActivity) : Fragment(R.layout.my_invitati
             }
         }
         val onAccept: (ReservationDTO) -> Unit = {
-            viewModel.acceptInvitation(it)
-            reservationViewModel.getAllByUser()
+            viewModel.acceptInvitation(it){
+                reservationViewModel.getAllByUser()
+            }
         }
 
         val onDecline: (ReservationDTO) -> Unit = {
@@ -68,18 +70,28 @@ class InvitationsFragment(context: HomeActivity) : Fragment(R.layout.my_invitati
             val diffs = DiffUtil.calculateDiff(diffsUtils)
             (recyclerViewInvitations.adapter as InvitationAdapter).invitations = it
             diffs.dispatchUpdatesTo(recyclerViewInvitations.adapter!!)
-            val handler = Handler(Looper.getMainLooper())
 
+            if(it.isEmpty()){
+                val fadeOut = AnimationUtils.loadAnimation(context, android.R.anim.fade_out)
+                val fadeIn = AnimationUtils.loadAnimation(context, android.R.anim.fade_in)
 
+                recyclerViewInvitations.postOnAnimation {
+                    recyclerViewInvitations.visibility = View.GONE
+                    emptyLL.postOnAnimation {
+                        emptyLL.visibility = View.VISIBLE
+                    }
+                    emptyLL.startAnimation(fadeIn)
 
-
-            if(it.isNotEmpty()){
+                }
+                fadeIn.duration = 400
+                fadeOut.duration = fadeIn.duration
+                recyclerViewInvitations.startAnimation(fadeOut)
                 emptyLL.visibility = View.GONE
                 recyclerViewInvitations.visibility = View.VISIBLE
 
             } else{
-                emptyLL.visibility = View.VISIBLE
-                recyclerViewInvitations.visibility = View.GONE
+                emptyLL.visibility = View.GONE
+                recyclerViewInvitations.visibility = View.VISIBLE
             }
 
         }

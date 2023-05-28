@@ -92,7 +92,6 @@ class ReviewRepository {
                 )
 
 
-                println(reviewDTO.description)
                 t.update(courtDoc, updates)
                 val reviewUpdate:Map<String, Any> = mapOf(
                         "date" to reviewDTO.date.toString(),

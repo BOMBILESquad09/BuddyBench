@@ -135,7 +135,6 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             val sportsSelectionFragment = SportsSelectionFragment(parent)
             fragmentTransaction.setCustomAnimations(R.animator.slide_in_right, R.animator.slide_out_left)
             fragmentTransaction.replace(R.id.find_court, sportsSelectionFragment)
-            fragmentTransaction.addToBackStack(null)
             fragmentTransaction.commit()
 
         }
@@ -216,6 +215,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
     override  fun onStart() {
         super.onStart()
+        println("onStart")
         parent.viewModel.getCourtsBySport(){
 
         }

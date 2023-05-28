@@ -19,17 +19,22 @@ class FriendRepository {
 
     @Inject
     lateinit var userRepository: UserRepository
+
+    var subscribed: Boolean = false
     fun subscribeFriends(onFailure: () -> Unit, onSuccess: () -> Unit) {
+        if (subscribed) return
         val currentEmail = Firebase.auth.currentUser!!.email!!
 
         db.collection("users").document(currentEmail).addSnapshotListener { value, error ->
-            println("okkkkkkkkkkkkkkkkkkkkk")
+
             if (value != null && value.exists() && error == null) {
+                println(value.data.toString())
                 onSuccess()
-            } else {
+            } else if(error != null){
                 onFailure()
             }
         }
+        subscribed = true
     }
 
 
@@ -105,7 +110,7 @@ class FriendRepository {
     }
 
     /*accetto una richiesta amico*/
-    suspend fun acceptFriendRequest(
+    fun acceptFriendRequest(
         friendEmail: String,
         onFailure: () -> Unit,
         onSuccess: () -> Unit

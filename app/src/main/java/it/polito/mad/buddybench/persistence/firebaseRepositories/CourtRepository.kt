@@ -72,7 +72,6 @@ class CourtRepository {
         db.collection("courts").document(courtName).get()
             .addOnSuccessListener {
                 try {
-
                     val courtDTO = it.toObject(CourtDTO::class.java)!!
                     val timetable: HashMap<DayOfWeek, Pair<LocalTime, LocalTime>> = HashMap()
                     for (s in it.data!!["timetable"] as HashMap<String, HashMap<String, Long>>) {
@@ -106,6 +105,7 @@ class CourtRepository {
     ) {
         fun filterByMaxReservation(courts: List<CourtDTO>, onSuccess: (List<CourtDTO>) -> Unit) {
             var finalCourts = courts
+            println("ijjjjjjjjjjjjjj")
             if (dayOfWeek == LocalDate.now() && courts.isNotEmpty()) {
                 try {
                     db
@@ -147,9 +147,12 @@ class CourtRepository {
                         }
                 } catch (e: Exception) {
                     onFailure()
+                    return
                 }
+            } else{
+                onSuccess(courts)
+
             }
-            onSuccess(finalCourts)
         }
 
 
@@ -162,6 +165,7 @@ class CourtRepository {
                     .get()
                     .addOnSuccessListener { it ->
                         try {
+                            println("dsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                             var courts = courtsDoc.toObjects(CourtDTO::class.java)
                             if (dayOfWeek == LocalDate.now()) {
                                 courts = courts.filter {
