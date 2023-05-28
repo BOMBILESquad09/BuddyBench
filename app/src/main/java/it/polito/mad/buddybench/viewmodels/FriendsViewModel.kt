@@ -45,6 +45,7 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
 
 
     // ** Friends data
+
     private val _possibleFriends: MutableLiveData<List<Profile>> = MutableLiveData(emptyList())
     private val _friends: MutableLiveData<List<Profile>> = MutableLiveData(emptyList())
     private val _friendRequests: MutableLiveData<List<Profile>> = MutableLiveData(emptyList())
@@ -57,7 +58,6 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     val friendRequests: LiveData<List<Profile>> get() = _friendRequests
 
     var searchText = ""
-    var _showedPossibleFriends = _possibleFriends
 
     val mainScope = MainScope()
     var onFailure: () -> Unit = {}
@@ -126,7 +126,7 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     private fun getPossibleFriends() {
         runBlocking {
             oldPossibleFriends = possibleFriends.value!!
-            _showedPossibleFriends.postValue(friendRepository.getNotFriends(onFailure = {
+            _possibleFriends.postValue(friendRepository.getNotFriends(onFailure = {
                 _lPossible.postValue(false)
                 onFailure() }){
                 _lPossible.postValue(false)
@@ -245,7 +245,7 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     }
 
     fun applyFilter() {
-        _showedPossibleFriends.value = _possibleFriends.value!!.filter{
+        _possibleFriends.value = oldPossibleFriends.filter{
             (
                     it.location!!.contains(searchText, ignoreCase = true)
                             || it.nickname!!.contains(searchText, ignoreCase = true)
