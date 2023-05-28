@@ -1,6 +1,8 @@
 package it.polito.mad.buddybench.activities.friends
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -8,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -33,6 +36,7 @@ class FindFriendFragment : Fragment() {
     private lateinit var emptyLL: LinearLayout
     private lateinit var emptyTv: TextView
     private lateinit var swipeRefresh : SwipeRefreshLayout
+    private lateinit var searchEditText: EditText
 
     // ** View Model
     private val friendsViewModel by activityViewModels<FriendsViewModel>()
@@ -54,6 +58,7 @@ class FindFriendFragment : Fragment() {
         pbFindFriends = view.findViewById(R.id.pb_find_friends)
         emptyLL = view.findViewById(R.id.empty)
         emptyTv = view.findViewById(R.id.tv_empty)
+        searchEditText = view.findViewById(R.id.search_edit_text)
         emptyTv.text = getString(R.string.no_friends_to_find)
         swipeRefresh = view.findViewById(R.id.swiperefresh)
         swipeRefresh
@@ -98,6 +103,16 @@ class FindFriendFragment : Fragment() {
                     }
                 }
             }
+
+            searchEditText.addTextChangedListener(object: TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    friendsViewModel.searchText = s.toString().trim().replace("\\s+".toRegex(), " ")
+                    friendsViewModel.applyFilter()
+                }
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            })
         }
 
 

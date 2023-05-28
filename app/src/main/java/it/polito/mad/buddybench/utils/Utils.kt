@@ -1,36 +1,24 @@
 package it.polito.mad.buddybench.utils
 
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.icu.text.DecimalFormat
-import android.view.Gravity
+import android.icu.text.DecimalFormatSymbols
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
-import androidx.core.animation.doOnEnd
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.os.bundleOf
-import com.google.android.material.progressindicator.CircularProgressIndicator
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
-import it.polito.mad.buddybench.activities.court.CourtActivity
 import it.polito.mad.buddybench.activities.friends.FriendProfileActivity
 import it.polito.mad.buddybench.activities.myreservations.displayText
 import it.polito.mad.buddybench.classes.Profile
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.math.RoundingMode
 import java.time.DayOfWeek
 import java.time.Duration
@@ -38,9 +26,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 import java.time.temporal.WeekFields
-import java.util.Locale
-import java.util.Random
-import java.util.UUID
+import java.util.*
 
 
 class Utils {
@@ -158,7 +144,8 @@ class Utils {
 
 
         fun roundOffDecimal(number: Double): Double {
-            val df = DecimalFormat("#.##")
+            val symbols = DecimalFormatSymbols(Locale.US)
+            val df = DecimalFormat("#.##", symbols)
             df.roundingMode = RoundingMode.CEILING.ordinal
             return df.format(number).toDouble()
         }

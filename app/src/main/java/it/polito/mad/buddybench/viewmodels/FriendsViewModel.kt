@@ -7,6 +7,7 @@ import com.google.android.play.core.integrity.p
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.classes.Profile
+import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.persistence.firebaseRepositories.FriendRepository
 import it.polito.mad.buddybench.persistence.firebaseRepositories.UserRepository
@@ -54,6 +55,9 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     val friends: LiveData<List<Profile>> get() = _friends
     var oldFriendsRequests = friendRequests.value!!
     val friendRequests: LiveData<List<Profile>> get() = _friendRequests
+
+    var searchText = ""
+    var _showedPossibleFriends = _possibleFriends
 
     val mainScope = MainScope()
     var onFailure: () -> Unit = {}
@@ -122,7 +126,7 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     private fun getPossibleFriends() {
         runBlocking {
             oldPossibleFriends = possibleFriends.value!!
-            _possibleFriends.postValue(friendRepository.getNotFriends(onFailure = {
+            _showedPossibleFriends.postValue(friendRepository.getNotFriends(onFailure = {
                 _lPossible.postValue(false)
                 onFailure() }){
                 _lPossible.postValue(false)
@@ -237,6 +241,19 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
             }
 
             onSuccess()
+        }
+    }
+
+    fun applyFilter() {
+        _showedPossibleFriends.value = _possibleFriends.value!!.filter{
+            (
+                    it.location!!.contains(searchText, ignoreCase = true)
+                            || it.nickname!!.contains(searchText, ignoreCase = true)
+                            || it.name!!.contains(searchText, ignoreCase = true)
+                            || it.surname!!.contains(searchText, ignoreCase = true)
+                            || it.sports.any{sport -> sport.name.toString().equals(searchText,ignoreCase = true)}
+                    )
+
         }
     }
 }
