@@ -13,10 +13,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         app:checkedIconMargin="12.5dp"
-        app:checkedIconTint="@color/colorPrimary"
+        app:checkedIconTint="@color/md_theme_light_primary"
         android:checkable="true"
         app:cardCornerRadius="300dp"
-        app:strokeColor="@color/card_border_selector"
+        app:strokeColor="@color/md_theme_light_primary"
         app:strokeWidth="1dp">
 
         <ImageView

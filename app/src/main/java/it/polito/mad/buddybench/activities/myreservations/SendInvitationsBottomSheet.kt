@@ -97,16 +97,16 @@ class SendInvitationsBottomSheet(
         recyclerViewPending.layoutManager = LinearLayoutManager(context).let { it.orientation = HORIZONTAL; it }
         recyclerViewAccepted.layoutManager = LinearLayoutManager(context).let { it.orientation = HORIZONTAL; it }
 
-        recyclerViewNotInvited.adapter = FriendsAdapter(reservationViewModel.notInvitedFriends.value ?: listOf()){
+        recyclerViewNotInvited.adapter = FriendsAdapter(reservationViewModel.notInvitedFriends.value ?: listOf(),true){
             if(!invited)
                 reservationViewModel.updateNotInvitedFriends(it)
         }
-        recyclerViewPending.adapter = FriendsAdapter(reservationViewModel.pendingFriends.value ?: listOf()){
+        recyclerViewPending.adapter = FriendsAdapter(reservationViewModel.pendingFriends.value ?: listOf(),false){
             if(!invited)
                 reservationViewModel.updatePendingFriends(it)
 
         }
-        recyclerViewAccepted.adapter = FriendsAdapter(reservationViewModel.acceptedFriends.value ?: listOf()){
+        recyclerViewAccepted.adapter = FriendsAdapter(reservationViewModel.acceptedFriends.value ?: listOf(), false){
             if(!invited)
                 reservationViewModel.updateAcceptedFriends(it)
         }

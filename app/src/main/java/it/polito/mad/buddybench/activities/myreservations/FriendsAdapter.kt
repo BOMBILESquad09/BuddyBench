@@ -8,13 +8,14 @@ import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Profile
 
 class FriendsAdapter(var friends : List<Pair<Profile, Boolean>>,
+                     private val inNotInvitedList: Boolean,
                      private val onChange: (Profile) -> Unit
 ): RecyclerView.Adapter<FriendsViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendsViewHolder {
         val v = LayoutInflater.from(parent.context)
             .inflate(R.layout.friend_simple_item, parent, false)
-        return FriendsViewHolder(v)
+        return FriendsViewHolder(v,inNotInvitedList)
     }
 
 
