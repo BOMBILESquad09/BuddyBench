@@ -83,7 +83,6 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     }
 
     fun applyFilter(clear: Boolean = false){
-        println("filteringgggg")
         filtersEnabled = true
         if(clear)
             clearFilters()
