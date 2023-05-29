@@ -68,10 +68,10 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     var init = true
 
     fun subscribeFriendsList() {
-
         _lFriends.value = true
         _lPossible.value = true
         _lRequests.value = true
+
         friendRepository.subscribeFriends({
             _lFriends.postValue(false)
             _lPossible.postValue(false)
@@ -79,7 +79,9 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
         }) {
 
             mainScope.launch {
+
                 if (init) {
+
                     getFriendsList()
                     getFriendRequests()
                     getPossibleFriends()

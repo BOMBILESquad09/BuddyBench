@@ -55,17 +55,28 @@ class UserViewModel @Inject constructor() : ViewModel() {
     lateinit var sharedPref: SharedPreferences
     var onFailure = {}
 
-    fun getUser(email: String = Firebase.auth.currentUser!!.email!!, ): LiveData<Profile> {
+    fun getUser(email: String = Firebase.auth.currentUser!!.email!! ): LiveData<Profile> {
         mainScope.launch {
-            userRepositoryFirebase.getUser(email, onFailure) {
+            userRepositoryFirebase.getUser(email, {
+                fromSharedPreferences()
+                onFailure()
+            }) {
                 _user.postValue(it)
             }
         }
         return user
     }
 
-    fun fromSharedPreferences(profile: Profile){
-        _user.value = profile
+    private fun fromSharedPreferences(){
+
+        _user.postValue(  Profile.fromJSON(
+            JSONObject(
+                sharedPref.getString(
+                    "profile",
+                    Profile.mockJSON()
+                )!!
+            )
+        ))
     }
 
 //    fun updateUserInfo(profile: Profile) {
