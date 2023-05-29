@@ -37,7 +37,7 @@
     <string name="amateur">Amateur</string>
     <string name="skilled">Skilled</string>
     <string name="professional">Pro</string>
-    <string name="world_class">World Class</string>
+    <string name="champion">Champion</string>
     <string name="email">Email</string>
     <string name="errorBirthdate">You live in the future?</string>
     <string name="nameLabel">First Name</string>

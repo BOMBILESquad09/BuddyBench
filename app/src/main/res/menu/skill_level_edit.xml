@@ -9,5 +9,5 @@
     <item android:id="@+id/option_professional"
         android:title="@string/professional" />
     <item android:id="@+id/option_world_class"
-        android:title="@string/world_class" />
+        android:title="@string/champion" />
 </menu>
