@@ -105,7 +105,6 @@ class CourtRepository {
     ) {
         fun filterByMaxReservation(courts: List<CourtDTO>, onSuccess: (List<CourtDTO>) -> Unit) {
             var finalCourts = courts
-            println("ijjjjjjjjjjjjjj")
             if (dayOfWeek == LocalDate.now() && courts.isNotEmpty()) {
                 try {
                     db
@@ -165,7 +164,6 @@ class CourtRepository {
                     .get()
                     .addOnSuccessListener { it ->
                         try {
-                            println("dsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                             var courts = courtsDoc.toObjects(CourtDTO::class.java)
                             if (dayOfWeek == LocalDate.now()) {
                                 courts = courts.filter {

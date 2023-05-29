@@ -230,7 +230,6 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        println("disadjaiofjojfojfos")
         Utils.closeProgressDialog()
     }
 
@@ -240,26 +239,21 @@ class HomeActivity : AppCompatActivity() {
 
 
         imageViewModel.onFailure = {
-            println("immagine")
             Utils.openNetworkProblemDialog(this)
         }
 
         reservationViewModel.onFailure = {
-            println("reservations")
             Utils.openNetworkProblemDialog(this)
         }
 
         userViewModel.onFailure = {
-            println("users")
             Utils.openNetworkProblemDialog(this)
         }
 
         findCourtViewModel.onFailure = {
-            println("findcourt")
             Utils.openNetworkProblemDialog(this)
         }
         friendsViewModel.onFailure = {
-            println("friends")
 
             Utils.openNetworkProblemDialog(this)
         }
@@ -313,7 +307,6 @@ class HomeActivity : AppCompatActivity() {
 
 
     private fun createInvitationNotification(reservationDTO: ReservationDTO){
-        println("invitationssss")
 
         val intent = Intent(this, HomeActivity::class.java).apply {
         }
@@ -350,7 +343,6 @@ class HomeActivity : AppCompatActivity() {
             }
 
         }catch (_: SecurityException){
-            println("diociofpsf")
         }
     }
 
@@ -358,7 +350,6 @@ class HomeActivity : AppCompatActivity() {
         val intent = Intent(this, HomeActivity::class.java).apply {
         }
         intent.putExtra("tab", Tabs.FRIENDS.name)
-        println("friendssss")
         val text = "%s sent you a friend request!".format(profile.fullName)
 
         val pendingIntent: PendingIntent = PendingIntent.getActivity(
@@ -385,17 +376,14 @@ class HomeActivity : AppCompatActivity() {
             }
 
         }catch (_: SecurityException){
-            println("diociofpsf")
         }
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        println("dsdsdsdsdsdsd")
         if(intent?.getStringExtra("tab") == null) return
 
         val tab = intent.getStringExtra("tab")!!
-        println(Tabs.valueOf(tab))
         bottomBar.replaceFragment(bottomBar.currentTab, Tabs.valueOf(tab), true)
         bottomBar.bottomBar.selectTabAt(Tabs.valueOf(tab).getId())
 

@@ -177,7 +177,7 @@ class ShowProfileFragment(
                 } else if (it.isRequesting) {
                     friendButton.text = "Accept Request"
                     friendButton.backgroundTintList =
-                        ColorStateList.valueOf(requireContext().getColor(R.color.confirm))
+                        ColorStateList.valueOf(requireContext().getColor(R.color.md_theme_light_primary))
                     var drawable = requireContext().getDrawable(R.drawable.accept_friend_request)
                     friendButton.setCompoundDrawablesWithIntrinsicBounds(
                         drawable,

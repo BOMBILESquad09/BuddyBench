@@ -153,7 +153,6 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
                         freshRequestsEmail.filter { !oldRequestsEmail.contains(it) }.map { fEmail ->
                             it.pendings.find { f ->  fEmail == f.email }
                         }.forEach{ p ->
-                            println(p!!.email)
                             popNotification(p!!)
                         }
 

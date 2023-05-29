@@ -61,7 +61,6 @@ class FriendListFragment(val context: HomeActivity) : Fragment(R.layout.fragment
         }
 
         val callback: (profile: Profile) -> Unit = {
-            println(it.isFriend)
             Utils.goToProfileFriend(context, it)
         }
 
