@@ -46,7 +46,7 @@
                 card_view:layout_constraintBottom_toTopOf="@+id/address_layout"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toTopOf="parent"
-                card_view:layout_constraintVertical_chainStyle="spread"></TextView>
+                card_view:layout_constraintVertical_chainStyle="spread"/>
 
             <LinearLayout
                 android:id="@+id/address_layout"
