@@ -44,7 +44,6 @@ class InvitationsFragment(context: HomeActivity) : Fragment(R.layout.my_invitati
 
         progress = view.findViewById(R.id.progress_layout)
         viewModel.loading.observe(viewLifecycleOwner) {
-            println(it ?: null)
 
             if (it == null || it) {
                 progress.visibility = View.VISIBLE

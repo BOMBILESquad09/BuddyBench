@@ -219,7 +219,6 @@ class EditConfirmDialogSheet(
         switch.setOnCheckedChangeListener { button, isChecked ->
             // If the equipment is not selected the linear layout will go out
             // Else it's visible
-            println(isChecked)
             if (isChecked) {
                 val feeEquipment = courtToReserve.feeEquipment
                 equipmentField?.text =
