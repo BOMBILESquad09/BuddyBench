@@ -81,6 +81,7 @@ class ReviewViewModel @Inject constructor() : ViewModel() {
     fun insertReview(
         description: String,
         rating: Int,
+        onSuccess: (Boolean) -> Unit
     ): LiveData<ReviewDTO> {
 
         val profile = Profile.mockProfile()
@@ -102,7 +103,10 @@ class ReviewViewModel @Inject constructor() : ViewModel() {
             updatedCourt.nReviews = pair.second
             updatedCourt.rating = pair.first
             _court.postValue(updatedCourt)
+            onSuccess(it)
         }
+
+
         return _userReview
     }
 
