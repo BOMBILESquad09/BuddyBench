@@ -28,7 +28,6 @@ class FriendRepository {
         db.collection("users").document(currentEmail).addSnapshotListener { value, error ->
 
             if (value != null && value.exists() && error == null) {
-                println(value.data.toString())
                 onSuccess()
             } else if(error != null){
                 onFailure()

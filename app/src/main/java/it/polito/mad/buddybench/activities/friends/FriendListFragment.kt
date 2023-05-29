@@ -38,7 +38,6 @@ class FriendListFragment(val context: HomeActivity) : Fragment(R.layout.fragment
         super.onViewCreated(view, savedInstanceState)
         swipeRefresh = view.findViewById(R.id.swiperefresh)
         swipeRefresh.setOnRefreshListener {
-            println("refreshinfff")
             context.friendsViewModel.refreshAll{swipeRefresh.isRefreshing = false}
         }
 
@@ -52,8 +51,6 @@ class FriendListFragment(val context: HomeActivity) : Fragment(R.layout.fragment
 
         // ** Loading state
         friendsViewModel.lFriends.observe(viewLifecycleOwner) {
-            println("diocaneeeeeeeeeeeee")
-            println(it ?: null)
             if ( it == null  || it) {
                 pbFriendList.visibility = View.VISIBLE
 
@@ -64,7 +61,6 @@ class FriendListFragment(val context: HomeActivity) : Fragment(R.layout.fragment
         }
 
         val callback: (profile: Profile) -> Unit = {
-            println(it.isFriend)
             Utils.goToProfileFriend(context, it)
         }
 

@@ -62,8 +62,6 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
                     list ->
                     _loading.postValue(false)
                     _courts = list
-                    println(selectedDate)
-                    println( selectedSport.value)
                     val courts = applyFiltersOnCourts(_courts)
                     _currentCourts.postValue(courts)
                     onSuccess()

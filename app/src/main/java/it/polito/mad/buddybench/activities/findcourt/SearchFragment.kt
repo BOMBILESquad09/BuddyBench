@@ -215,7 +215,6 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
     override  fun onStart() {
         super.onStart()
-        println("onStart")
         parent.viewModel.getCourtsBySport(){
 
         }

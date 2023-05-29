@@ -141,9 +141,6 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
                 userRepository.getUser(currentUser.email!!,onFailure = {
                     _lRequests.postValue(false)
                     onFailure() }) { it ->
-                    println("dsalkdlafksdlkflskflskflskdflsdklfkdslfkdlfkslfkdlkfldskfslklsflsd")
-                    println(oldFriendsRequests.size)
-                    println((it.pendings.size))
                     if(oldFriendsRequests.size < (it.pendings.size)){
                         //I need to send notifications only to very new one that I received
                         val freshRequestsEmail = it.pendings.map { it.email }
@@ -151,7 +148,6 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
                         freshRequestsEmail.filter { !oldRequestsEmail.contains(it) }.map { fEmail ->
                             it.pendings.find { f ->  fEmail == f.email }
                         }.forEach{ p ->
-                            println(p!!.email)
                             popNotification(p!!)
                         }
 

@@ -96,7 +96,6 @@ class FriendRequestRecyclerViewAdapter(
                 accepted = true
                 binding.root.postOnAnimation {
                     if(values.size != 1) return@postOnAnimation
-                    println("rimosssoooooooooooooooooooo")
                     onLast()
                 }
                 confirmRequest(profile.email, btnReject.context) {
