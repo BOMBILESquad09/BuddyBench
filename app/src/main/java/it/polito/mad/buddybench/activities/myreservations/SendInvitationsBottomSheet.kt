@@ -174,12 +174,14 @@ class SendInvitationsBottomSheet(
                 acceptedButton.visibility = View.GONE
                 pendingButton.visibility = View.GONE
                 val removeButton = view.findViewById<MaterialButton>(R.id.remove_invite)
+                val textSection = view.findViewById<TextView>(R.id.textView10)
+                textSection.text = "Confirmed participants"
                 removeButton.visibility = View.VISIBLE
                 var confirm = 0
                 removeButton.setOnClickListener {
                     if(confirm == 0){
                         confirm = 1
-                        removeButton.text = "Confirm to remove?"
+                        removeButton.text = "Confirm cancellation"
                     } else{
                         invitationViewModel.removeAcceptedInvitations(reservationDTO, listOf(Firebase.auth.currentUser!!.email!!)){
                             reservationViewModel.getReservation(reservationDTO.id)
