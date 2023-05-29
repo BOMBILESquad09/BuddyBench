@@ -160,12 +160,18 @@ class ReviewsActivity : AppCompatActivity() {
             return
         }
 
+        val onSuccess: (Boolean) -> Unit = {
+            val text = if(it) "edited" else "added"
+            Utils.openGeneralProblemDialog(
+                "Success",
+                "Your review has been $text",
+                this
+            )
+        }
+
         binding.tvErrorReview.visibility = View.GONE
 
-        reviewViewModel.insertReview(
-            binding.etNewReview.text.toString(),
-            binding.rbNewReview.rating.toInt()
-        )
+        reviewViewModel.insertReview(binding.etNewReview.text.toString(), binding.rbNewReview.rating.toInt(), onSuccess)
 
     }
 
