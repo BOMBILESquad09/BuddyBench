@@ -60,6 +60,7 @@ class ReviewsActivity : AppCompatActivity() {
         binding.tvCourtNameReviews.text = courtName
         binding.backButtonReviews.setOnClickListener { finish() }
 
+
         // ** Edit button
         binding.btnEditReview.text = "Review"
         binding.btnEditReview.setOnClickListener { addReview() }
@@ -157,16 +158,15 @@ class ReviewsActivity : AppCompatActivity() {
         }
 
         binding.tvErrorReview.visibility = View.GONE
-        userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this){
-            reviewViewModel.insertReview(it, binding.etNewReview.text.toString(), binding.rbNewReview.rating.toInt(), this)
-        }
+
+        reviewViewModel.insertReview(binding.etNewReview.text.toString(), binding.rbNewReview.rating.toInt())
+
     }
 
 
     private fun editReviewUI() {
         val userReviewData = reviewViewModel.userReview.value!!
         binding.btnNewReview.text = "Confirm"
-
         binding.etNewReview.text = SpannableStringBuilder(userReviewData.description)
         binding.rbNewReview.rating = userReviewData.rating.toFloat()
         binding.cardYourReview.visibility = View.GONE

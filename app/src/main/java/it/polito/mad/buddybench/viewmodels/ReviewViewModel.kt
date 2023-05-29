@@ -79,13 +79,12 @@ class ReviewViewModel @Inject constructor() : ViewModel() {
 
 
     fun insertReview(
-        profile: Profile,
         description: String,
         rating: Int,
-        context: Context
     ): LiveData<ReviewDTO> {
 
-
+        val profile = Profile.mockProfile()
+        profile.email = Firebase.auth.currentUser!!.email!!
         val review = ReviewDTO(profile, LocalDate.now(), rating, description, court.value!!)
         reviewRepository.saveReview(review, onFailure) {
             val pair: Pair<Double, Int> = if (userReview.value == null) {
@@ -104,12 +103,6 @@ class ReviewViewModel @Inject constructor() : ViewModel() {
             updatedCourt.rating = pair.first
             _court.postValue(updatedCourt)
         }
-
-
-
-
-
-
         return _userReview
     }
 

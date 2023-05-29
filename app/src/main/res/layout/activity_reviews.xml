@@ -184,6 +184,7 @@
 
 
                     <EditText
+                        android:enabled="false"
                         android:inputType="none"
                         android:id="@+id/tv_your_review"
                         android:layout_width="match_parent"
