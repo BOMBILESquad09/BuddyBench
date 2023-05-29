@@ -150,10 +150,6 @@ class HomeActivity : AppCompatActivity() {
                 )
             )
         }
-
-
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -401,6 +397,8 @@ class HomeActivity : AppCompatActivity() {
         val tab = intent.getStringExtra("tab")!!
         println(Tabs.valueOf(tab))
         bottomBar.replaceFragment(bottomBar.currentTab, Tabs.valueOf(tab), true)
+        bottomBar.bottomBar.selectTabAt(Tabs.valueOf(tab).getId())
+
     }
 
 }

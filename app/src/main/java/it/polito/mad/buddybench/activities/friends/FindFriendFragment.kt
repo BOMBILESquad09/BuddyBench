@@ -62,7 +62,6 @@ class FindFriendFragment : Fragment() {
         }
         // ** Loading state
         friendsViewModel.lPossible.observe(viewLifecycleOwner) {
-            println(it ?: null)
             if (it == null || it) {
                 pbFindFriends.visibility = View.VISIBLE
 

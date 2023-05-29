@@ -12,9 +12,11 @@ import it.polito.mad.buddybench.enums.Visibilities
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 
 import it.polito.mad.buddybench.persistence.firebaseRepositories.ReservationRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -76,9 +78,12 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         loading.value = true
         mainScope.launch {
             reservationRepository.getAllByUser({
-                onFailure()
+
                 loading.postValue(false)
                 _reservations.postValue(hashMapOf())
+                onFailure()
+
+
             } ){
                 loading.postValue(false)
                 _reservations.postValue(it)

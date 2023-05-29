@@ -268,10 +268,13 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
             }
         }
         imageViewModel.getCourtImage(court.path  + ".jpg", {
+            println("ecccooooooooooooooooooooooooooooooooooooooooooo")
             binding.backgroundImage.setImageBitmap(BitmapFactory.decodeStream(view?.context?.assets?.open("drawable/default_image.jpg")))
         }) {
+            println(",,,,,,,,,,,,,,,,,,,,,,,,,,,,")
             Glide.with(this)
                 .load(it)
+                .placeholder(R.drawable.loading)
                 .into(binding.backgroundImage)
         }
 

@@ -49,6 +49,8 @@ class ReservationRepository {
 
                 val reservations = mutableListOf<ReservationDTO>()
                 for (res in result.await()) {
+                    println("------------------------------------")
+                    println(result.result.size())
 
                     val reservationDTO = ReservationDTO()
                     reservationDTO.date = LocalDate.parse(
@@ -102,10 +104,16 @@ class ReservationRepository {
                     )
                     reservations.add(reservationDTO)
                 }
-
+                println("...eccoleeeeeeeeeeeeeeeeeeeeeeeeee")
+                println(currentEmail)
+                println(reservations.size)
                 onSuccess(ReservationDTO.toHashmap(reservations))
             } catch (e: Exception) {
-                onFailure()
+                println(e)
+                println("----------------------------------------------------------------")
+                withContext(Dispatchers.Main){
+                    onFailure()
+                }
             }
 
         }
