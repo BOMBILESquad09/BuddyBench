@@ -11,6 +11,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.activities.profile.ShowProfileFragment
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.databinding.FriendProfileBinding
+import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.UserViewModel
 import org.json.JSONObject
 
@@ -36,10 +37,14 @@ class FriendProfileActivity : AppCompatActivity() {
             .add(binding.friendFragmentContainer.id, showProfileFragment)
             .commit()
         setContentView(binding.root)
-        
+        Utils.closeProgressDialog()
+        Utils.openProgressDialog(this)
+
         userViewModel.getUser(profile.email).observe(this) {
             if(it == null)
                 return@observe
+            Utils.closeProgressDialog()
+
             showProfileFragment.profile = it
             showProfileFragment.setGUI()
         }

@@ -198,6 +198,7 @@ class ShowProfileFragment(
                     );
                 }
 
+
             }
             friendButton.setOnClickListener {
                  val profileFriend = try {
@@ -218,6 +219,7 @@ class ShowProfileFragment(
                     showBottomSheetDialog()
                 }
             }
+
         }
 
         // ** Populate sport cards

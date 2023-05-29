@@ -200,6 +200,7 @@ class Utils {
 
         fun openProgressDialog(context: Context): AlertDialog {
             if (progressDialog == null) {
+                println("creatinffffffffffffff")
                 val dialogCard = LayoutInflater.from(context).inflate(R.layout.loading, null)
                 val builder: AlertDialog.Builder = AlertDialog.Builder(context)
                 builder.setView(dialogCard)
@@ -222,7 +223,6 @@ class Utils {
 
         fun goToProfileFriend(context: AppCompatActivity, profile: Profile) {
             val i = Intent(context, FriendProfileActivity::class.java)
-            openProgressDialog(context)
             val bundle = bundleOf("profile" to profile.toJSON().toString())
             i.putExtras(bundle)
             if (context is HomeActivity)

@@ -26,6 +26,7 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
     private val mainScope = viewModelScope
     var onFailure = {}
 
+
     lateinit var popNotification: (ReservationDTO) -> Unit
     fun subscribeInvitations( onSuccess: (Int) -> Unit): LiveData<List<ReservationDTO>>{
         invitationsRepository.subscribeInvitations( onFailure = onFailure, onSuccess = {

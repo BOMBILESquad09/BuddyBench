@@ -18,10 +18,11 @@ import java.time.format.DateTimeFormatter
 
 class InvitationsRepository {
     val db = FirebaseFirestore.getInstance()
-    val reservationRepository = ReservationRepository()
-
+    private val reservationRepository = ReservationRepository()
+    var subscribed: Boolean = false
 
     fun subscribeInvitations(onFailure: () -> Unit, onSuccess: (Int) -> Unit) {
+        if(subscribed) return
         val currentEmail = Firebase.auth.currentUser!!.email!!
         db.collection("users").document(currentEmail).addSnapshotListener { value, error ->
             if (error == null && value != null && value.exists()) {
@@ -30,6 +31,7 @@ class InvitationsRepository {
                 onFailure()
             }
         }
+        subscribed = true
     }
 
 

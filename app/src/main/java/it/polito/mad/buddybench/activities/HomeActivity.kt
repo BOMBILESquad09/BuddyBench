@@ -91,18 +91,17 @@ class HomeActivity : AppCompatActivity() {
         createNotificationChannels()
 
         setContentView(R.layout.home)
-        sharedPref =
-            getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+
         reservationViewModel.email = Firebase.auth.currentUser!!.email!!
         bottomBar.setup()
+
+
 
         invitationsViewModel.popNotification  = { it -> createInvitationNotification(it)}
         friendsViewModel.popNotification = {it -> createFriendRequestNotification(it)}
         userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this) {
             if (it != null){
-
                 friendsViewModel.subscribeFriendsList()
-
                 invitationsViewModel.subscribeInvitations() { s ->
                     if (s > 0) {
                         bottomBar.counter[Tabs.INVITATIONS.getId()] = s
@@ -139,16 +138,7 @@ class HomeActivity : AppCompatActivity() {
                 }
                 return@observe
             }
-            userViewModel.fromSharedPreferences(
-                Profile.fromJSON(
-                    JSONObject(
-                        sharedPref.getString(
-                            "profile",
-                            Profile.mockJSON()
-                        )!!
-                    )
-                )
-            )
+
         }
     }
 
