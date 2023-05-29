@@ -171,6 +171,8 @@ class SendInvitationsBottomSheet(
         fun setForInvited(){
             if(invited){
                 view.findViewById<LinearLayout>(R.id.invite_friends_ll).visibility = View.GONE
+                view.findViewById<LinearLayout>(R.id.pending_friends_ll).visibility = View.GONE
+
                 acceptedButton.visibility = View.GONE
                 pendingButton.visibility = View.GONE
                 val removeButton = view.findViewById<MaterialButton>(R.id.remove_invite)

@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -41,7 +42,8 @@ class InvitationsRepository {
                     reservationRepository.getReservation(it.id, userOrganizer = true, onFailure)
                 }.filterNotNull()
 
-                return@withContext invitations
+
+                return@withContext invitations.filter { LocalDateTime.of(it.date, it.startTime) > LocalDateTime.now() }
             } catch (_: Exception) {
                 onFailure()
             }

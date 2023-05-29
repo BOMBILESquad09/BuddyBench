@@ -52,6 +52,8 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
 
     var oldPossibleFriends = _possibleFriends.value!!
     val possibleFriends: LiveData<List<Profile>> get() = _possibleFriends
+    private var allPossibleFriends: List<Profile> = listOf()
+
     var oldFriends = _friends.value!!
     val friends: LiveData<List<Profile>> get() = _friends
     var oldFriendsRequests = friendRequests.value!!
@@ -126,12 +128,14 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     private fun getPossibleFriends() {
         runBlocking {
             oldPossibleFriends = possibleFriends.value!!
-            _possibleFriends.postValue(friendRepository.getNotFriends(onFailure = {
+            val freshPossibleFriends = friendRepository.getNotFriends(onFailure = {
                 _lPossible.postValue(false)
                 onFailure() }){
                 _lPossible.postValue(false)
             }
-            )
+            allPossibleFriends = freshPossibleFriends
+
+            _possibleFriends.postValue(applyFilterOnPossibleFriends(allPossibleFriends))
         }
     }
 
@@ -141,9 +145,7 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
                 userRepository.getUser(currentUser.email!!,onFailure = {
                     _lRequests.postValue(false)
                     onFailure() }) { it ->
-                    println("dsalkdlafksdlkflskflskflskdflsdklfkdslfkdlfkslfkdlkfldskfslklsflsd")
-                    println(oldFriendsRequests.size)
-                    println((it.pendings.size))
+
                     if(oldFriendsRequests.size < (it.pendings.size)){
                         //I need to send notifications only to very new one that I received
                         val freshRequestsEmail = it.pendings.map { it.email }
@@ -244,8 +246,8 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun applyFilter() {
-        _possibleFriends.value = oldPossibleFriends.filter{
+    private fun applyFilterOnPossibleFriends(profiles: List<Profile>): List<Profile>{
+        return profiles.filter{
             (
                     it.location!!.contains(searchText, ignoreCase = true)
                             || it.nickname!!.contains(searchText, ignoreCase = true)
@@ -253,7 +255,18 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
                             || it.surname!!.contains(searchText, ignoreCase = true)
                             || it.sports.any{sport -> sport.name.toString().equals(searchText,ignoreCase = true)}
                     )
-
         }
     }
+    fun applyFilter() {
+        _possibleFriends.value = allPossibleFriends.filter{
+            (
+                    it.location!!.contains(searchText, ignoreCase = true)
+                            || it.nickname!!.contains(searchText, ignoreCase = true)
+                            || it.name!!.contains(searchText, ignoreCase = true)
+                            || it.surname!!.contains(searchText, ignoreCase = true)
+                            || it.sports.any{sport -> sport.name.toString().contains(searchText,ignoreCase = true)}
+                    )
+        }
+    }
+
 }

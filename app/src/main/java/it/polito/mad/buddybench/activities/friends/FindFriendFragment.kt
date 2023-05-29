@@ -87,6 +87,7 @@ class FindFriendFragment : Fragment() {
         // ** Data
         friendsViewModel.possibleFriends.observe(viewLifecycleOwner) {
             if (it != null) {
+                println("ooo")
                 with(rvFindFriends) {
                     val oldList = (adapter as FindFriendRecyclerViewAdapter).values
                     val friendDiff = FriendListDiffUtils(oldList, it)
@@ -103,16 +104,18 @@ class FindFriendFragment : Fragment() {
                 }
             }
 
-            searchEditText.addTextChangedListener(object: TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    friendsViewModel.searchText = s.toString().trim().replace("\\s+".toRegex(), " ")
-                    friendsViewModel.applyFilter()
-                }
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            })
         }
+
+        searchEditText.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+
+                friendsViewModel.searchText = s.toString().trim().replace("\\s+".toRegex(), " ")
+                friendsViewModel.applyFilter()
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
 
 
 

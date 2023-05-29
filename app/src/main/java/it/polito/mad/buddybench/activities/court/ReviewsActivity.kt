@@ -16,6 +16,7 @@ import it.polito.mad.buddybench.persistence.dto.ReviewDTO
 import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import it.polito.mad.buddybench.viewmodels.ReviewViewModel
+import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
 class ReviewsActivity : AppCompatActivity() {
@@ -56,10 +57,14 @@ class ReviewsActivity : AppCompatActivity() {
 
         // ** Edit button
         binding.btnEditReview.setOnClickListener { editReviewUI() }
-
         // ** New review card
         binding.rbNewReview.isClickable = true
-        binding.btnNewReview.setOnClickListener { addReview() }
+
+        // ** Cancel edit
+        binding.btnCancelReview.setOnClickListener {
+            binding.cardYourReview.visibility = View.VISIBLE
+            binding.cardNewReview.visibility = View.GONE
+        }
 
         // ** Recycler View
         binding.rvReviews.layoutManager = LinearLayoutManager(this)
@@ -115,12 +120,12 @@ class ReviewsActivity : AppCompatActivity() {
         // ** User review
         reviewViewModel.userReview.observe(this) {
             if (it != null) {
-                binding.tvYourReview.text = it.description
+                binding.tvYourReview.setText( it.description)
                 binding.rbYourReview.invalidate()
                 binding.rbYourReview.setIsIndicator(false)
                 binding.rbYourReview.rating = it.rating.toFloat()
                 binding.rbYourReview.setIsIndicator(true)
-
+                binding.tvMyReviewDate.text = it.date.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
                 binding.cardNewReview.visibility = View.GONE
                 binding.cardYourReview.visibility = View.VISIBLE
                 binding.tvCannotReview.visibility = View.GONE
@@ -148,9 +153,10 @@ class ReviewsActivity : AppCompatActivity() {
 
     private fun editReviewUI() {
         val userReviewData = reviewViewModel.userReview.value!!
+        binding.btnNewReview.text = "Confirm"
+
         binding.etNewReview.text = SpannableStringBuilder(userReviewData.description)
         binding.rbNewReview.rating = userReviewData.rating.toFloat()
-
         binding.cardYourReview.visibility = View.GONE
         binding.cardNewReview.visibility = View.VISIBLE
 
