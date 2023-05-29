@@ -8,6 +8,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.findcourt.ReviewsDiffUtils
@@ -16,6 +18,7 @@ import it.polito.mad.buddybench.persistence.dto.ReviewDTO
 import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import it.polito.mad.buddybench.viewmodels.ReviewViewModel
+import it.polito.mad.buddybench.viewmodels.UserViewModel
 import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
@@ -31,6 +34,8 @@ class ReviewsActivity : AppCompatActivity() {
 
     // ** View Models
     private val reviewViewModel by viewModels<ReviewViewModel>()
+    private val userViewModel by viewModels<UserViewModel>()
+
     val imageViewModel by viewModels<ImageViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +61,8 @@ class ReviewsActivity : AppCompatActivity() {
         binding.backButtonReviews.setOnClickListener { finish() }
 
         // ** Edit button
-        binding.btnEditReview.setOnClickListener { editReviewUI() }
+        binding.btnEditReview.text = "Review"
+        binding.btnEditReview.setOnClickListener { addReview() }
         // ** New review card
         binding.rbNewReview.isClickable = true
         binding.btnNewReview.setOnClickListener {
@@ -122,6 +128,8 @@ class ReviewsActivity : AppCompatActivity() {
         // ** User review
         reviewViewModel.userReview.observe(this) {
             if (it != null) {
+                binding.btnEditReview.text = "Update Review"
+                binding.btnEditReview.setOnClickListener { editReviewUI() }
                 binding.tvYourReview.setText( it.description)
                 binding.rbYourReview.invalidate()
                 binding.rbYourReview.setIsIndicator(false)
@@ -149,7 +157,9 @@ class ReviewsActivity : AppCompatActivity() {
         }
 
         binding.tvErrorReview.visibility = View.GONE
-        reviewViewModel.insertReview(binding.etNewReview.text.toString(), binding.rbNewReview.rating.toInt(), this)
+        userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this){
+            reviewViewModel.insertReview(it, binding.etNewReview.text.toString(), binding.rbNewReview.rating.toInt(), this)
+        }
     }
 
 

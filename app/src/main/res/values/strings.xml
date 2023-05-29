@@ -257,6 +257,6 @@
     <string name="friend_channel_description">New Friend Request</string>
     <string name="invitation_channel_description">New Invitation</string>
     <string name="join_channel_description">New Join Request</string>
-    <string name="edit_sports_error">Please, first delete one or more sports. All available sports are already chosen</string>
+    <string name="edit_sports_error">You already selected all the sports!</string>
     <string name="edit_sports_error_title">Edit Sports</string>
 </resources>

@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
 import androidx.compose.ui.unit.dp
+import androidx.core.view.marginLeft
 import androidx.core.view.setPadding
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.checkbox.MaterialCheckBox
@@ -61,10 +62,10 @@ class EditSportsDialog(private val profile: Profile,var selectedItems: ArrayList
                 radioGroup.removeAllViews()
                 sportValues.forEachIndexed { idx, sport ->
                     val checkbox = MaterialCheckBox(it)
+
                     checkbox.id = idx
-                    checkbox.setPadding(10)
+                    checkbox.setPadding(10,0,10,0)
                     checkbox.text = sport
-                    checkbox.textSize = 20f
                     radioGroup.addView(
                         checkbox
                     )

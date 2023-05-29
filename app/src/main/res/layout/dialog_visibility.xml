@@ -50,7 +50,11 @@
                     android:text="Public" />
 
             </RadioGroup>
-
+            <View
+                style="@style/Divider"
+                android:layout_width="300dp"
+                android:layout_height="1dp"
+                />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -73,7 +77,7 @@
                 <View
                     style="@style/Divider"
                     android:layout_width="1dp"
-                    android:layout_height="10dp"
+                    android:layout_height="48dp"
                     android:layout_gravity="center_vertical"
                     />
 

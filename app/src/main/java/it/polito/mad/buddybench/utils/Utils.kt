@@ -200,7 +200,6 @@ class Utils {
 
         fun openProgressDialog(context: Context): AlertDialog {
             if (progressDialog == null) {
-                println("creatinffffffffffffff")
                 val dialogCard = LayoutInflater.from(context).inflate(R.layout.loading, null)
                 val builder: AlertDialog.Builder = AlertDialog.Builder(context)
                 builder.setView(dialogCard)

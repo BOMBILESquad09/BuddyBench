@@ -74,7 +74,7 @@ class HomeActivity : AppCompatActivity() {
             onFriendsProfileReturn(it)
         }
 
-    val invitationsViewModel by viewModels<InvitationsViewModel>()
+    private val invitationsViewModel by viewModels<InvitationsViewModel>()
 
     private lateinit var sharedPref: SharedPreferences
     val imageViewModel by viewModels<ImageViewModel>()
@@ -94,7 +94,8 @@ class HomeActivity : AppCompatActivity() {
 
         reservationViewModel.email = Firebase.auth.currentUser!!.email!!
         bottomBar.setup()
-
+        sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        userViewModel.sharedPref = sharedPref
 
 
         invitationsViewModel.popNotification  = { it -> createInvitationNotification(it)}

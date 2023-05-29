@@ -78,34 +78,38 @@ class ReviewViewModel @Inject constructor() : ViewModel() {
     }
 
 
-    fun insertReview(description: String, rating: Int, context: Context): LiveData<ReviewDTO> {
-        viewModelScope.launch {
-            lateinit var currentUser: Profile
-            userRepository.getUser(onFailure = onFailure) {
-                currentUser = it
+    fun insertReview(
+        profile: Profile,
+        description: String,
+        rating: Int,
+        context: Context
+    ): LiveData<ReviewDTO> {
+
+
+        val review = ReviewDTO(profile, LocalDate.now(), rating, description, court.value!!)
+        reviewRepository.saveReview(review, onFailure) {
+            val pair: Pair<Double, Int> = if (userReview.value == null) {
+                val newNReviews = court.value!!.nReviews + 1
+                val newRating =
+                    (court.value!!.rating * court.value!!.nReviews + rating) / newNReviews
+                Pair(newRating, newNReviews)
+            } else {
+                val newRating =
+                    (court.value!!.rating * court.value!!.nReviews - userReview.value!!.rating + rating) / court.value!!.nReviews
+                Pair(newRating, court.value!!.nReviews)
             }
-            val review = ReviewDTO(currentUser, LocalDate.now(), rating, description, court.value!!)
-            reviewRepository.saveReview(review, onFailure) {
-                val pair: Pair<Double, Int> = if (userReview.value == null) {
-                    val newNReviews = court.value!!.nReviews + 1
-                    val newRating = (court.value!!.rating * court.value!!.nReviews + rating) / newNReviews
-                    Pair(newRating, newNReviews)
-                } else {
-                    val newRating = (court.value!!.rating * court.value!!.nReviews - userReview.value!!.rating + rating) / court.value!!.nReviews
-                    Pair(newRating, court.value!!.nReviews)
-                }
-                _userReview.postValue(review)
-                val updatedCourt = _court.value!!.copy()
-                updatedCourt.nReviews = pair.second
-                updatedCourt.rating = pair.first
-                _court.postValue(updatedCourt)
-            }
-
-
-
-
-
+            _userReview.postValue(review)
+            val updatedCourt = _court.value!!.copy()
+            updatedCourt.nReviews = pair.second
+            updatedCourt.rating = pair.first
+            _court.postValue(updatedCourt)
         }
+
+
+
+
+
+
         return _userReview
     }
 
