@@ -59,7 +59,7 @@ class ReviewsActivity : AppCompatActivity() {
         Utils.openProgressDialog(binding.root.context)
         binding.tvCourtNameReviews.text = courtName
         binding.backButtonReviews.setOnClickListener { finish() }
-
+        binding.cardNewReview.visibility = View.GONE
 
         // ** Edit button
         binding.btnEditReview.text = "Review"
@@ -98,13 +98,13 @@ class ReviewsActivity : AppCompatActivity() {
         }
 
         // ** Update recycler view
-        reviewViewModel.reviews.observe(this){
+        reviewViewModel.reviews.observe(this) {
             val diff = ReviewsDiffUtils(lastReviews, it)
             val diffResult = DiffUtil.calculateDiff(diff)
             lastReviews = it
             diffResult.dispatchUpdatesTo(binding.rvReviews.adapter!!)
             binding.rvReviews.scrollToPosition(0)
-            if(it.isEmpty()) {
+            if (it.isEmpty()) {
                 binding.rvReviews.visibility = View.GONE
                 binding.tvNoReviews.visibility = View.VISIBLE
             } else {
@@ -131,12 +131,13 @@ class ReviewsActivity : AppCompatActivity() {
             if (it != null) {
                 binding.btnEditReview.text = "Update Review"
                 binding.btnEditReview.setOnClickListener { editReviewUI() }
-                binding.tvYourReview.setText( it.description)
+                binding.tvYourReview.setText(it.description)
                 binding.rbYourReview.invalidate()
                 binding.rbYourReview.setIsIndicator(false)
                 binding.rbYourReview.rating = it.rating.toFloat()
                 binding.rbYourReview.setIsIndicator(true)
-                binding.tvMyReviewDate.text = it.date.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+                binding.tvMyReviewDate.text =
+                    it.date.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
                 binding.cardNewReview.visibility = View.GONE
                 binding.cardYourReview.visibility = View.VISIBLE
                 binding.tvCannotReview.visibility = View.GONE
@@ -146,9 +147,11 @@ class ReviewsActivity : AppCompatActivity() {
         // ** Update court data
         reviewViewModel.court.observe(this) {
             binding.tvReviewTotal.text = Utils.roundOffDecimal(it.rating).toString()
-            binding.tvNumReviews.text = String.format(getString(R.string.num_ratings), it.nReviews)
+            binding.tvNumReviews.text =
+                String.format(getString(R.string.num_ratings), it.nReviews)
             binding.rbReviewTotal.rating = it.rating.toFloat()
         }
+
     }
 
     private fun addReview() {
@@ -159,7 +162,10 @@ class ReviewsActivity : AppCompatActivity() {
 
         binding.tvErrorReview.visibility = View.GONE
 
-        reviewViewModel.insertReview(binding.etNewReview.text.toString(), binding.rbNewReview.rating.toInt())
+        reviewViewModel.insertReview(
+            binding.etNewReview.text.toString(),
+            binding.rbNewReview.rating.toInt()
+        )
 
     }
 
@@ -171,11 +177,11 @@ class ReviewsActivity : AppCompatActivity() {
         binding.rbNewReview.rating = userReviewData.rating.toFloat()
         binding.cardYourReview.visibility = View.GONE
         binding.cardNewReview.visibility = View.VISIBLE
-
     }
 
     override fun onStart() {
         super.onStart()
         Utils.closeProgressDialog()
     }
+
 }

@@ -71,7 +71,6 @@ class ReviewViewModel @Inject constructor() : ViewModel() {
                 val reviews = reviewsDocs.filter { r -> r.user.email != currentUser }
                 _reviews.postValue(reviews)
                 _l.postValue(false)
-
             }
         }
         return reviews
