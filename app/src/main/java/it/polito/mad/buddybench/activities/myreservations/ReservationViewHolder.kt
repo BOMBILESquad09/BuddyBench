@@ -57,7 +57,7 @@ class ReservationViewHolder(v: View, private val launcher: ActivityResultLaunche
         )
 
         courtName.text = reservation.court.name
-        courtAddress.text = reservation.court.address
+        courtAddress.text = "${reservation.court.location}, ${reservation.court.address}"
         courtPhone.text = reservation.court.phoneNumber
         val iconDrawable = ContextCompat.getDrawable(
             view.context,

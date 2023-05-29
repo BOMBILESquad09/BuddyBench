@@ -51,7 +51,6 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     }
     fun getCourtsBySport(onSuccess: () -> Unit): LiveData<List<CourtDTO>> {
         _loading.value = true
-        println("okokokokokok")
 
         mainScope.launch {
 
@@ -83,7 +82,6 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     }
 
     fun applyFilter(clear: Boolean = false){
-        println("filteringgggg")
         filtersEnabled = true
         if(clear)
             clearFilters()

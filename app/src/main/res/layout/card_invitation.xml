@@ -50,12 +50,12 @@
             android:layout_height="48dp"
             android:fontFamily="@font/montserrat_semibold_600"
             android:lines="2"
-            android:text="Gerry invited you to play a game!"
+            android:text="@string/invitation_text_example"
             android:textColor="@color/md_theme_light_background"
             android:autoSizeTextType="uniform"
             android:autoSizeMaxTextSize="20sp"
             android:autoSizeMinTextSize="16sp"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
             card_view:layout_constraintBottom_toBottomOf="@+id/card_picture"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0.5"
@@ -122,10 +122,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|center"
+                        android:maxLines="1"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMaxTextSize="17sp"
+                        android:autoSizeMinTextSize="14sp"
                         android:fontFamily="@font/montserrat_medium_500"
                         android:text="@string/court_address"
-                        android:textColor="@color/md_theme_light_background"
-                        android:textSize="17sp">
+                        android:textColor="@color/md_theme_light_background">
 
                     </TextView>
 

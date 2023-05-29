@@ -7,6 +7,7 @@ import com.google.android.play.core.integrity.p
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.classes.Profile
+import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.persistence.firebaseRepositories.FriendRepository
 import it.polito.mad.buddybench.persistence.firebaseRepositories.UserRepository
@@ -44,6 +45,7 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
 
 
     // ** Friends data
+
     private val _possibleFriends: MutableLiveData<List<Profile>> = MutableLiveData(emptyList())
     private val _friends: MutableLiveData<List<Profile>> = MutableLiveData(emptyList())
     private val _friendRequests: MutableLiveData<List<Profile>> = MutableLiveData(emptyList())
@@ -54,6 +56,8 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     val friends: LiveData<List<Profile>> get() = _friends
     var oldFriendsRequests = friendRequests.value!!
     val friendRequests: LiveData<List<Profile>> get() = _friendRequests
+
+    var searchText = ""
 
     val mainScope = MainScope()
     var onFailure: () -> Unit = {}
@@ -237,6 +241,19 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
             }
 
             onSuccess()
+        }
+    }
+
+    fun applyFilter() {
+        _possibleFriends.value = oldPossibleFriends.filter{
+            (
+                    it.location!!.contains(searchText, ignoreCase = true)
+                            || it.nickname!!.contains(searchText, ignoreCase = true)
+                            || it.name!!.contains(searchText, ignoreCase = true)
+                            || it.surname!!.contains(searchText, ignoreCase = true)
+                            || it.sports.any{sport -> sport.name.toString().equals(searchText,ignoreCase = true)}
+                    )
+
         }
     }
 }
