@@ -59,7 +59,9 @@ class ReviewsActivity : AppCompatActivity() {
         binding.btnEditReview.setOnClickListener { editReviewUI() }
         // ** New review card
         binding.rbNewReview.isClickable = true
-
+        binding.btnNewReview.setOnClickListener {
+            addReview()
+        }
         // ** Cancel edit
         binding.btnCancelReview.setOnClickListener {
             binding.cardYourReview.visibility = View.VISIBLE
