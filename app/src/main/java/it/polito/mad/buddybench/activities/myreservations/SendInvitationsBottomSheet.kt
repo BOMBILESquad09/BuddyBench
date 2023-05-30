@@ -46,7 +46,7 @@ class SendInvitationsBottomSheet(
 
 
     private val userViewModel by activityViewModels<UserViewModel>()
-    private val invitationViewModel by viewModels<InvitationsViewModel>()
+    private val invitationViewModel by activityViewModels<InvitationsViewModel>()
     private val reservationViewModel by activityViewModels<ReservationViewModel>()
     private val expired =
         (LocalDateTime.of(reservationDTO.date, reservationDTO.endTime) < LocalDateTime.now())
@@ -122,15 +122,16 @@ class SendInvitationsBottomSheet(
                     reservationViewModel.updatePendingFriends(it)
 
             }
+        val res: ReservationDTO? = if(invited)  reservationDTO else null
         recyclerViewAccepted.adapter =
-            FriendsAdapter(reservationViewModel.acceptedFriends.value ?: listOf(), false) {
+            FriendsAdapter(reservationViewModel.acceptedFriends.value ?: listOf(), false, res) {
                 if (!invited)
                     reservationViewModel.updateAcceptedFriends(it)
             }
 
         userViewModel.getUser().observe(this) {
             reservationViewModel.profile = it
-            reservationViewModel.getReservation(reservationDTO.id)
+            reservationViewModel.getReservation(reservationDTO.id, !invited)
         }
 
 

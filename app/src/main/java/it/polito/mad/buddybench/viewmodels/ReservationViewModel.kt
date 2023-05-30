@@ -77,8 +77,8 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun getAllByUser(): LiveData<HashMap<LocalDate, List<ReservationDTO>>> {
-        loading.value = true
+    fun getAllByUser(refresh:Boolean = false): LiveData<HashMap<LocalDate, List<ReservationDTO>>> {
+        loading.value = !refresh
         mainScope.launch {
             reservationRepository.getAllByUser({
 
@@ -149,6 +149,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
 
     fun getReservation(
         reservationID: String,
+        isOrganizer: Boolean = true,
     ): MutableLiveData<ReservationDTO?> {
         viewModelScope.launch {
             val res = reservationRepository.getReservation(reservationID, onFailure = onFailure)

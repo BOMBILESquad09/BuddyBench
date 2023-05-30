@@ -26,12 +26,12 @@ class InvitationsRepository {
         val currentEmail = Firebase.auth.currentUser!!.email!!
         db.collection("users").document(currentEmail).addSnapshotListener { value, error ->
             if (error == null && value != null && value.exists()) {
+
                 onSuccess((value!!.data!!["play_request_pendings"] as List<DocumentReference>).size)
             } else {
                 onFailure()
             }
         }
-        subscribed = true
     }
 
 
@@ -41,8 +41,10 @@ class InvitationsRepository {
                 val currentEmail = Firebase.auth.currentUser!!.email!!
                 val invitations = (db.collection("users").document(currentEmail)
                     .get().await().data!!["play_request_pendings"] as List<DocumentReference>).map {
-                    reservationRepository.getReservation(it.id, userOrganizer = true, onFailure)
+                    reservationRepository.getReservation(it.id, onFailure)
                 }.filterNotNull()
+
+
 
 
                 return@withContext invitations.filter {

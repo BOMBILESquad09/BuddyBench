@@ -11,6 +11,8 @@ import it.polito.mad.buddybench.persistence.firebaseRepositories.InvitationsRepo
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.time.LocalDateTime
+import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,28 +31,23 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
 
     lateinit var popNotification: (ReservationDTO) -> Unit
     fun subscribeInvitations( onSuccess: (Int) -> Unit): LiveData<List<ReservationDTO>>{
-
         invitationsRepository.subscribeInvitations( onFailure = onFailure, onSuccess = {
-            _loading.postValue(true)
-            onSuccess(it)
+            _loading.postValue(!invitationsRepository.subscribed)
+            invitationsRepository.subscribed = true
+            getAll(onSuccess)
             invitationSize.postValue(it)
         })
-        invitationSize.observeForever{
-            if(it != null && it != 0)
-                getAll(true)
-            else{
-                _loading.postValue(false)
-                _invitations.postValue(listOf())
-            }
-        }
+
         return invitations
     }
 
-    fun getAll(init: Boolean = false){
+    fun getAll(onSuccess : (Int) -> Unit = {}){
         mainScope.launch {
 
-            val freshInvitations = invitationsRepository.getInvitations(onFailure)
+            var freshInvitations = invitationsRepository.getInvitations(onFailure)
+            freshInvitations = freshInvitations.filter { LocalDateTime.now() < LocalDateTime.of(it.date, it.startTime) }
             if(_invitations.value!!.size < freshInvitations.size){
+
                 val freshInvitationsId = freshInvitations.map {it.id}
                 val oldInvitationsId = _invitations.value!!.map { it.id }
                 val newInvitations = freshInvitationsId.filter {
@@ -60,6 +57,7 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
                     popNotification(freshInvitations.find { fi -> it == fi.id }!!)
                 }
             }
+            onSuccess(freshInvitations.size)
             _invitations.postValue(freshInvitations)
             if(_loading.value == true)
                 _loading.postValue(false)

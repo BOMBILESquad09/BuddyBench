@@ -197,7 +197,7 @@
                             android:layout_height="wrap_content"
                             android:visibility="gone"
                             android:layout_marginTop="12dp"
-                            android:background="@drawable/rounded_shape"
+                            style="@style/Buttons"
                             android:text="Add Friend"
                             android:drawableLeft="@drawable/add_friend"
                             app:layout_constraintBottom_toBottomOf="parent"

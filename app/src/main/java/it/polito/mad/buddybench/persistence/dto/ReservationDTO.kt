@@ -68,7 +68,6 @@ class ReservationDTO(
         )
     }
 
-    fun isUserOrganizerInitialized() = ::userOrganizer.isInitialized
 }
 
 

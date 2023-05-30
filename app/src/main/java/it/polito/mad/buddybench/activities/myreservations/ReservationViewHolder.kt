@@ -94,7 +94,7 @@ class ReservationViewHolder(v: View, private val launcher: ActivityResultLaunche
                 view.context
             ))
         manageBtn.text = "Manage"
-        if (reservation.isUserOrganizerInitialized() && reservation.userOrganizer.email != Firebase.auth.currentUser!!.email!!) {
+        if (reservation.userOrganizer.email != Firebase.auth.currentUser!!.email!!) {
 
             manageBtn.text = "Invited"
             manageBtn.setOnClickListener {
