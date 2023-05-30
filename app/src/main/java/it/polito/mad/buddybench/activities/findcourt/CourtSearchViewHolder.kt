@@ -59,7 +59,6 @@ class CourtSearchViewHolder(val v: View, val callback: (String, Sports) -> Unit,
         }
 
         courtRating.setOnClickListener {
-            Utils.openProgressDialog(v.context)
             reviewsCallback(court.name, Sports.valueOf(court.sport)) }
 
         /*val bitmap = try {

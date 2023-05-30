@@ -61,6 +61,8 @@ class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Uni
         }){
             Glide.with(view.context)
                 .load(it)
+                .placeholder(R.drawable.loading)
+                .error(R.drawable.person)
                 .into(inviterPicture)
         }
 

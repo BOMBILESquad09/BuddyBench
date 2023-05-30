@@ -198,14 +198,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/confirmFilter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:paddingVertical="12dp"
-
-                android:backgroundTint="@color/md_theme_light_onPrimaryContainer"
+                android:elevation="2dp"
                 style="@style/Buttons"
 
                 android:fontFamily="@font/montserrat_semibold_600"
@@ -217,6 +217,7 @@
                 android:id="@+id/clearFilter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:elevation="2dp"
                 android:layout_marginTop="4dp"
                 android:paddingVertical="12dp"
                 android:backgroundTint="@color/error"

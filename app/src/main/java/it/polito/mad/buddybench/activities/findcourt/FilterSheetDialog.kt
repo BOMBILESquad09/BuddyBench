@@ -11,6 +11,7 @@ import androidx.cardview.widget.CardView
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
@@ -56,7 +57,8 @@ class FilterSheetDialog(
 
         rangeSliderPrice.addOnChangeListener(Slider.OnChangeListener { _, value, _ -> showMaxPrice?.text = value.toInt().toString() + "€" })
 
-        val confirmButton = view.findViewById<Button>(R.id.confirmFilter)
+        val confirmButton = view.findViewById<MaterialButton>(R.id.confirmFilter)
+        println(confirmButton.rippleColor)
         confirmButton?.setOnClickListener{
             findCourtViewModel.minRating = rangeSliderRating.value
             findCourtViewModel.maxFee = rangeSliderPrice.value
@@ -67,7 +69,7 @@ class FilterSheetDialog(
             dismiss()
         }
 
-        val clearButton = view.findViewById<Button>(R.id.clearFilter)
+        val clearButton = view.findViewById<MaterialButton>(R.id.clearFilter)
         clearButton?.setOnClickListener{
             findCourtViewModel.applyFilter(clear = true)
             refClearButton.setBackgroundResource(R.drawable.circle_light_bg)

@@ -407,8 +407,6 @@ class HomeActivity : AppCompatActivity() {
                 supportFragmentManager.findFragmentByTag(Tabs.FRIENDS.name) as FriendsFragment
             fragment.binding.tabFriends.selectTab(fragment.binding.tabFriends.getTabAt(1))
             fragment.binding.tabFriendsViewpager.setCurrentItem(1, true)
-
-
         }
 
     }

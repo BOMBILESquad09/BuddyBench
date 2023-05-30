@@ -175,7 +175,6 @@ class ReservationRepository {
                             t.set(reservationDoc, reservationMap)
                             if ((count + (reservationDTO.endTime.hour - reservationDTO.startTime.hour)) == slots) {
 
-
                                 t.set(
                                     uc,
                                     mapOf("courts" to FieldValue.arrayUnion(db.document("courts/$courtName"))),

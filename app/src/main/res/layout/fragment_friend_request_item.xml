@@ -29,12 +29,30 @@
             android:scaleType="centerCrop"/>
     </com.google.android.material.card.MaterialCardView>
 
-    <TextView
-        android:id="@+id/tv_friend_request_name"
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/buddy_bench"
-        android:fontFamily="@font/montserrat_medium_500" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_friend_request_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/buddy_bench"
+            android:fontFamily="@font/montserrat_medium_500" />
+
+        <TextView
+            android:id="@+id/tv_friend_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/username"
+            android:textColor="@color/md_theme_light_outline"
+            android:fontFamily="@font/montserrat_regular_400" />
+
+    </LinearLayout>
+
+
 
     <View
         android:layout_width="0dp"

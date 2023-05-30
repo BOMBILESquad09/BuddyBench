@@ -68,7 +68,6 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     var init = true
 
     fun subscribeFriendsList() {
-        println("DIOCANEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
         _lFriends.value = true
         _lPossible.value = true
         _lRequests.value = true
@@ -168,7 +167,6 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
                     _lRequests.postValue(false)
                     _friendRequests.postValue(it.pendings)
                     println(it.pendings)
-                    println("doneeeeeeeeeeeeeee")
                 }
             }
 

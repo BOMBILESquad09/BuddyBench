@@ -17,7 +17,9 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import javax.security.auth.callback.Callback
+import kotlin.math.max
 
 class CourtRepository {
     val db = FirebaseFirestore.getInstance()
@@ -112,35 +114,47 @@ class CourtRepository {
                         .whereIn("court", courts.map { db.document("courts/${it.getId()}") })
                         .whereEqualTo("date", LocalDate.now().toString()).get()
                         .addOnSuccessListener {
-                            val hm: HashMap<String, Pair<Long, Long>> = HashMap()
+                            val timeSlotsOccupied = HashMap<String, MutableList<LocalTime>>()
                             for (r in it) {
-                                val endTime = r.data["endTime"] as Long
-                                val startTime = r.data["startTime"] as Long
-                                val courtId = (r.data["court"] as DocumentReference).id
-                                if (hm[courtId] == null) {
-                                    hm[courtId] = Pair(startTime, endTime)
-                                } else {
-                                    if (endTime == maxOf(hm[courtId]!!.second, endTime)) {
-                                        hm[courtId] = Pair(startTime, endTime)
-                                    }
-                                }
-                            }
-                            for (r in it) {
-                                val courtId = (r.data["court"] as DocumentReference).id
-                                val closingTime =
-                                    courts.find { c -> c.getId() == courtId }!!.timetable.get(
-                                        dayOfWeek.dayOfWeek.name
-                                    )?.closingTime ?: 24
+                                val endTime = LocalTime.of((r.data["endTime"] as Long).toInt(), 0)
+                                val startTime =
+                                    LocalTime.of((r.data["startTime"] as Long).toInt(), 0)
 
-                                finalCourts = finalCourts.filter { c ->
-                                    if (c.getId() == courtId) {
-                                        LocalTime.now().hour < (closingTime - 1) &&
-                                                (hm[courtId]!!.second < LocalTime.now().hour || hm[courtId]!!.first >= LocalTime.now().hour)
-                                    } else {
-                                        true
-                                    }
+
+                                val courtId = (r.data["court"] as DocumentReference).id
+
+                                if (timeSlotsOccupied[courtId] != null) {
+                                    timeSlotsOccupied[courtId]!!.addAll(
+                                        Utils.getTimeSlots(
+                                            startTime,
+                                            endTime
+                                        )
+                                    )
+                                } else {
+                                    timeSlotsOccupied[courtId] =
+                                        Utils.getTimeSlots(startTime, endTime).toMutableList()
+                                    timeSlotsOccupied[courtId]!!.add(LocalTime.now().truncatedTo(ChronoUnit.HOURS))
                                 }
                             }
+
+
+
+                            finalCourts = finalCourts.filter { c ->
+                                if (timeSlotsOccupied[c.getId()] != null) {
+                                    println(c.getId())
+                                    println(timeSlotsOccupied[c.getId()])
+                                    println(!timeSlotsOccupied[c.getId()]!!.contains(
+                                        LocalTime.now().truncatedTo(ChronoUnit.HOURS)
+                                    ))
+                                    !timeSlotsOccupied[c.getId()]!!.contains(
+                                        LocalTime.now().truncatedTo(ChronoUnit.HOURS)
+                                    )
+                                } else {
+                                    true
+                                }
+                            }
+
+
                             onSuccess(finalCourts)
                             return@addOnSuccessListener
                         }
@@ -148,7 +162,7 @@ class CourtRepository {
                     onFailure()
                     return
                 }
-            } else{
+            } else {
                 onSuccess(courts)
 
             }

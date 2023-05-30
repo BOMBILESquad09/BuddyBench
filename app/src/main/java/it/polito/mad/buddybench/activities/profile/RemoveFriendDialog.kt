@@ -43,7 +43,9 @@ class RemoveFriendDialog(
 
         val confirmButton = view.findViewById<Button>(R.id.btn_confirm)
         confirmButton?.setOnClickListener{
-            userViewModel.removeFriend {
+            userViewModel.removeFriend({
+                dismiss()
+            }) {
                 dismiss()
             }
         }

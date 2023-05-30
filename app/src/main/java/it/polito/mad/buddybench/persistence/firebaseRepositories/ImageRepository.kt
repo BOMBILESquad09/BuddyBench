@@ -68,14 +68,9 @@ class ImageRepository {
     suspend fun postUserImage(path:String,image: Uri, onFailure: () -> Unit, onSuccess: () -> Unit){
         withContext(Dispatchers.IO){
             try {
-                println("diocanneeeeeeeeeeeeeee")
                 storage.child("profile_images/$path").putFile(image).await()
-                println("success")
-
                 onSuccess()
             } catch (e: Exception){
-                println("------------errorrrrrr----")
-                println(e)
                 onFailure()
             }
 
