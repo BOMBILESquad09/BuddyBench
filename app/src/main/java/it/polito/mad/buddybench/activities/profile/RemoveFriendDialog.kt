@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.fragment.app.activityViewModels
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.slider.LabelFormatter
@@ -20,8 +21,8 @@ import it.polito.mad.buddybench.viewmodels.UserViewModel
 
 @AndroidEntryPoint
 class RemoveFriendDialog(
-    private val userViewModel: UserViewModel,
 ): BottomSheetDialogFragment() {
+    private val userViewModel by activityViewModels<UserViewModel> ()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +39,7 @@ class RemoveFriendDialog(
         val confirmText = view.findViewById<TextView>(R.id.confirm_text)
 
         confirmText.text = "Do you want to remove " + userViewModel.user.value?.name + " from your friend list?"
+
 
         val confirmButton = view.findViewById<Button>(R.id.btn_confirm)
         confirmButton?.setOnClickListener{

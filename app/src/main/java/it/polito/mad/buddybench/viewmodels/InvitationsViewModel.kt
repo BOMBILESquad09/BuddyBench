@@ -26,8 +26,10 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
     private val mainScope = viewModelScope
     var onFailure = {}
 
+
     lateinit var popNotification: (ReservationDTO) -> Unit
     fun subscribeInvitations( onSuccess: (Int) -> Unit): LiveData<List<ReservationDTO>>{
+
         invitationsRepository.subscribeInvitations( onFailure = onFailure, onSuccess = {
             _loading.postValue(true)
             onSuccess(it)
@@ -70,29 +72,24 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun refuseInvitation(reservationDTO: ReservationDTO){
-        mainScope.launch{
-            invitationsRepository.refuseInvitation(reservationDTO, onFailure)
-        }
+    fun refuseInvitation(reservationDTO: ReservationDTO, onSuccess: () -> Unit){
+        invitationsRepository.refuseInvitation(reservationDTO, onFailure, onSuccess)
     }
 
     fun sendInvitations(reservationDTO: ReservationDTO, invitedUsers: List<String>, onSuccess: () -> Unit){
-        mainScope.launch {
             invitationsRepository.sendInvitations(reservationDTO, invitedUsers, onFailure, onSuccess)
-        }
+
     }
 
     fun removeInvitations(reservationDTO: ReservationDTO, invitedUsers: List<String>, onSuccess: () -> Unit){
-        mainScope.launch {
             invitationsRepository.removeInvitations(reservationDTO, invitedUsers, onFailure,onSuccess)
 
-        }
+
     }
 
     fun removeAcceptedInvitations(reservationDTO: ReservationDTO, invitedUsers: List<String>, onSuccess: () -> Unit){
-        mainScope.launch {
             invitationsRepository.removeAcceptedInvitations(reservationDTO, invitedUsers, onFailure, onSuccess)
-        }
+
     }
 
 

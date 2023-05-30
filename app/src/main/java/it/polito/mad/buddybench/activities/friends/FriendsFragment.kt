@@ -29,7 +29,7 @@ class FriendsFragment(val context: HomeActivity) : Fragment() {
 
     // ** This property is only valid between onCreateView and
     // onDestroyView.
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     // ** View Model
     private val friendsViewModel by activityViewModels<FriendsViewModel>()

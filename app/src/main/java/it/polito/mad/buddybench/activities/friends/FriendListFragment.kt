@@ -53,8 +53,6 @@ class FriendListFragment(val context: HomeActivity) : Fragment(R.layout.fragment
         friendsViewModel.lFriends.observe(viewLifecycleOwner) {
             if ( it == null  || it) {
                 pbFriendList.visibility = View.VISIBLE
-
-
             } else {
                 pbFriendList.visibility = View.GONE
             }
@@ -83,19 +81,16 @@ class FriendListFragment(val context: HomeActivity) : Fragment(R.layout.fragment
                     diffs.dispatchUpdatesTo(adapter!!)
 
 
-                    if (friendsViewModel.l.value != true) {
-                        if (it.isEmpty()) {
-                            emptyLL.visibility = View.VISIBLE
-                            rvFriendList.visibility = View.GONE
-                        }
-
-                        if(it.isNotEmpty()){
-                            emptyLL.visibility = View.GONE
-                            rvFriendList.visibility = View.VISIBLE
-
-                        }
-
+                    if ((adapter as FriendListRecyclerViewAdapter).values.isEmpty()) {
+                        emptyLL.visibility = View.VISIBLE
+                        rvFriendList.visibility = View.GONE
                     }
+                    else{
+                        emptyLL.visibility = View.GONE
+                        rvFriendList.visibility = View.VISIBLE
+                    }
+
+
                 }
             }
         }

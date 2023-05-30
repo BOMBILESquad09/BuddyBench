@@ -1,17 +1,20 @@
 package it.polito.mad.buddybench.utils
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.icu.text.DecimalFormat
 import android.icu.text.DecimalFormatSymbols
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.DialogCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.os.bundleOf
 import it.polito.mad.buddybench.R
@@ -200,11 +203,15 @@ class Utils {
 
         fun openProgressDialog(context: Context): AlertDialog {
             if (progressDialog == null) {
-                val dialogCard = LayoutInflater.from(context).inflate(R.layout.loading, null)
+                val dialogCard = LayoutInflater.from(context).inflate(R.layout.loading, null, true)
+
                 val builder: AlertDialog.Builder = AlertDialog.Builder(context)
                 builder.setView(dialogCard)
                 val dialog: AlertDialog = builder.create()
+
+
                 dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+                dialog.window!!.setGravity(Gravity.CENTER)
                 dialog.setCancelable(false)
                 progressDialog = dialog
             }
@@ -222,7 +229,6 @@ class Utils {
 
         fun goToProfileFriend(context: AppCompatActivity, profile: Profile) {
             val i = Intent(context, FriendProfileActivity::class.java)
-            openProgressDialog(context)
             val bundle = bundleOf("profile" to profile.toJSON().toString())
             i.putExtras(bundle)
             if (context is HomeActivity)

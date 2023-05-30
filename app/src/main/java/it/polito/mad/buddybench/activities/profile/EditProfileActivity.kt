@@ -179,11 +179,15 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             imageViewModel.getUserImage(profile.email,{
                 imageEdit.setImageResource(R.drawable.person)
             }){
+                println(it)
                 Glide.with(this)
                     .load(it)
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.person)
                     .into(imageEdit)
             }
-        } catch (_: Exception){
+        } catch (w: Exception){
+            println(w)
             imageEdit.setImageResource(R.drawable.person)
         }
         //resizeImageView()

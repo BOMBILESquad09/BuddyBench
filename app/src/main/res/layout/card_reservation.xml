@@ -107,10 +107,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMaxTextSize="17sp"
+                    android:autoSizeMinTextSize="14sp"
                     android:fontFamily="@font/montserrat_medium_500"
                     android:text="@string/phone_number"
                     android:textColor="@color/md_theme_light_background"
-                    android:textSize="17sp">
+                    >
 
                 </TextView>
 

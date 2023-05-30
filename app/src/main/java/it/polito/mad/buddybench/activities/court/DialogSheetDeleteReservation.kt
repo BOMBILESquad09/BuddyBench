@@ -8,14 +8,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmap
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
 import com.apachat.loadingbutton.core.customViews.CircularProgressButton
 import com.apachat.loadingbutton.core.presentation.State
+import com.bumptech.glide.util.Util
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
+import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import java.time.LocalDate
 import java.time.LocalTime
@@ -28,7 +31,7 @@ class DialogSheetDeleteReservation(
     private val callback: () -> Unit
 ) : SuperBottomSheetFragment() {
 
-    private val reservationViewModel by viewModels<ReservationViewModel>()
+    private val reservationViewModel by activityViewModels<ReservationViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,7 +50,11 @@ class DialogSheetDeleteReservation(
 
             button.startAnimation()
 
-            reservationViewModel.deleteReservation(reservationDTO, oldDate, {}) {
+            reservationViewModel.deleteReservation(reservationDTO, oldDate, {
+                button.stopAnimation()
+                Utils.openNetworkProblemDialog(this.requireContext())
+                this.dismiss()
+            }) {
                 button.postOnAnimation {
                     Thread {
                         Thread.sleep(1000)

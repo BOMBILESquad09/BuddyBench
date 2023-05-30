@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.util.Util
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,6 +24,7 @@ import it.polito.mad.buddybench.persistence.entities.UserWithSportsDTO
 import it.polito.mad.buddybench.persistence.firebaseRepositories.FriendRepository
 import it.polito.mad.buddybench.persistence.firebaseRepositories.InvitationsRepository
 import it.polito.mad.buddybench.persistence.firebaseRepositories.UserRepository
+import it.polito.mad.buddybench.utils.Utils
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
@@ -36,7 +39,6 @@ class UserViewModel @Inject constructor() : ViewModel() {
     @Inject
     lateinit var userRepositoryFirebase: UserRepository
     private val invitationsRepository = InvitationsRepository()
-    val mainScope = MainScope()
 
     private val friendRepository = FriendRepository()
 
@@ -55,17 +57,30 @@ class UserViewModel @Inject constructor() : ViewModel() {
     lateinit var sharedPref: SharedPreferences
     var onFailure = {}
 
-    fun getUser(email: String = Firebase.auth.currentUser!!.email!!, ): LiveData<Profile> {
-        mainScope.launch {
-            userRepositoryFirebase.getUser(email, onFailure) {
-                _user.postValue(it)
+    fun getUser(email: String = Firebase.auth.currentUser!!.email!!): LiveData<Profile> {
+        viewModelScope.launch {
+            userRepositoryFirebase.getUser(email, {
+                if (email == Firebase.auth.currentUser!!.email!!)
+                    fromSharedPreferences()
+                onFailure()
+            }
+            ) {
+                _user.postValue(it.copy())
             }
         }
         return user
     }
 
-    fun fromSharedPreferences(profile: Profile){
-        _user.value = profile
+    private fun fromSharedPreferences() {
+
+        _user.value = (Profile.fromJSON(
+            JSONObject(
+                sharedPref.getString(
+                    "profile",
+                    Profile.mockJSON()
+                )!!
+            )
+        ))
     }
 
 //    fun updateUserInfo(profile: Profile) {
@@ -79,18 +94,12 @@ class UserViewModel @Inject constructor() : ViewModel() {
 //    }
 
     fun updateUserInfo(profile: Profile, onFailure: () -> Unit, onSuccess: () -> Unit) {
-        mainScope.launch {
-            try {
-                userRepositoryFirebase.update(profile,onFailure) {
-                    _user.postValue(it)
-                }
-                onSuccess()
-            } catch (_: Exception) {
-                onFailure()
-            }
+
+        userRepositoryFirebase.update(profile, onFailure) {
+            _user.postValue(it)
+            onSuccess()
+
         }
-
-
 
 
     }
@@ -183,8 +192,8 @@ class UserViewModel @Inject constructor() : ViewModel() {
     }
 
     fun sendFriendRequest(onSuccess: (Profile) -> Unit) {
-        mainScope.launch {
-            friendRepository.postFriendRequest(user.value!!.email,onFailure){
+        viewModelScope.launch {
+            friendRepository.postFriendRequest(user.value!!.email, onFailure) {
                 val p = user.value!!.copy()
                 p.isPending = true
                 _user.postValue(p)
@@ -195,7 +204,7 @@ class UserViewModel @Inject constructor() : ViewModel() {
 
     fun removeFriendRequest(onSuccess: (Profile) -> Unit) {
         runBlocking {
-            friendRepository.removeFriendRequest(user.value!!.email, onFailure){
+            friendRepository.removeFriendRequest(user.value!!.email, onFailure) {
                 val p = user.value!!.copy()
                 p.isPending = false
                 _user.postValue(p)
@@ -207,8 +216,8 @@ class UserViewModel @Inject constructor() : ViewModel() {
     }
 
     fun acceptFriendRequest(onSuccess: (Profile) -> Unit) {
-        mainScope.launch {
-            friendRepository.acceptFriendRequest(user.value!!.email, onFailure){
+        viewModelScope.launch {
+            friendRepository.acceptFriendRequest(user.value!!.email, onFailure) {
                 val p = user.value!!.copy()
                 p.isRequesting = false
                 p.isFriend = true
@@ -221,8 +230,8 @@ class UserViewModel @Inject constructor() : ViewModel() {
     }
 
     fun removeFriend(onSuccess: (Profile) -> Unit) {
-        mainScope.launch {
-            friendRepository.removeFriend(user.value!!.email, onFailure){
+            friendRepository.removeFriend(user.value!!.email, {
+            }) {
                 val p = user.value!!.copy()
                 p.isFriend = false
                 p.isPending = false
@@ -230,7 +239,7 @@ class UserViewModel @Inject constructor() : ViewModel() {
                 onSuccess(p)
             }
 
-        }
+
 
     }
 

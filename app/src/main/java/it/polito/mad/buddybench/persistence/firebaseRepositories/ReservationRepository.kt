@@ -18,11 +18,14 @@ import it.polito.mad.buddybench.persistence.dto.UserDTO
 
 import it.polito.mad.buddybench.utils.Utils
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -105,7 +108,9 @@ class ReservationRepository {
 
                 onSuccess(ReservationDTO.toHashmap(reservations))
             } catch (e: Exception) {
-                onFailure()
+                withContext(Dispatchers.Main) {
+                    onFailure()
+                }
             }
 
         }
@@ -117,61 +122,91 @@ class ReservationRepository {
         onError: () -> Unit,
         onSuccess: () -> Unit
     ) {
+
+
         withContext(Dispatchers.IO) {
             try {
-                val reservationMap: HashMap<String, Any> = createReservationMap(reservationDTO)
-                val reservationID = reservationMap["id"] as String
-                val courtName =
-                    reservationDTO.court.name.replace(" ", "_") + "_" + reservationDTO.court.sport
-                val court = db.collection("courts")
-                    .document(courtName)
-                    .get().await()
-                val openingTime =
-                    (court.data!!["timetable"] as HashMap<String, HashMap<String, Long>>).get(
-                        reservationDTO.date.dayOfWeek.name
-                    )!!.get("openingTime") as Long
-                val closingTime =
-                    (court.data!!["timetable"] as HashMap<String, HashMap<String, Long>>).get(
-                        reservationDTO.date.dayOfWeek.name
-                    )!!.get("closingTime") as Long
-                val slots = (closingTime - openingTime).toInt()
-                val reservations = db.collection("reservations")
-                    .whereEqualTo("court", db.document("courts/$courtName"))
-                    .whereEqualTo("date", reservationDTO.date.toString())
-                    .get().await()
-                var count = 0
-                for (r in reservations) {
-                    val endTime = r.data["endTime"] as Long
-                    val startTime = r.data["startTime"] as Long
-                    if ((reservationDTO.startTime.hour in startTime until endTime)
-                        || (reservationDTO.endTime.hour in (startTime + 1)..endTime)
-                    ) {
-                        throw TimeSlotsNotAvailableException()
+                withTimeout(10000) {
+                    try {
+                        val reservationMap: HashMap<String, Any> =
+                            createReservationMap(reservationDTO)
+                        val reservationID = reservationMap["id"] as String
+                        val courtName =
+                            reservationDTO.court.name.replace(
+                                " ",
+                                "_"
+                            ) + "_" + reservationDTO.court.sport
+                        val court = db.collection("courts")
+                            .document(courtName)
+                            .get().await()
+
+                        val openingTime =
+                            (court.data!!["timetable"] as HashMap<String, HashMap<String, Long>>).get(
+                                reservationDTO.date.dayOfWeek.name
+                            )!!.get("openingTime") as Long
+                        val closingTime =
+                            (court.data!!["timetable"] as HashMap<String, HashMap<String, Long>>).get(
+                                reservationDTO.date.dayOfWeek.name
+                            )!!.get("closingTime") as Long
+                        val slots = (closingTime - openingTime).toInt()
+                        val reservations = db.collection("reservations")
+                            .whereEqualTo("court", db.document("courts/$courtName"))
+                            .whereEqualTo("date", reservationDTO.date.toString())
+                            .get().await()
+                        var count = 0
+                        for (r in reservations) {
+                            val endTime = r.data["endTime"] as Long
+                            val startTime = r.data["startTime"] as Long
+                            if ((reservationDTO.startTime.hour in startTime until endTime)
+                                || (reservationDTO.endTime.hour in (startTime + 1)..endTime)
+                            ) {
+                                throw TimeSlotsNotAvailableException()
+                            }
+                            count = (count + (endTime - startTime)).toInt()
+
+                        }
+
+                        db.runTransaction { t ->
+                            val reservationDoc = db.collection("reservations")
+                                .document(reservationID)
+                            val uc = db.collection("unavailable_courts")
+                                .document(reservationDTO.date.toString())
+
+                            t.set(reservationDoc, reservationMap)
+                            if ((count + (reservationDTO.endTime.hour - reservationDTO.startTime.hour)) == slots) {
+
+
+                                t.set(
+                                    uc,
+                                    mapOf("courts" to FieldValue.arrayUnion(db.document("courts/$courtName"))),
+                                    SetOptions.merge()
+                                )
+                            }
+
+                        }.addOnSuccessListener {
+                            onSuccess()
+                        }.addOnFailureListener {
+                            onFailure()
+                        }
+                    } catch (_: TimeSlotsNotAvailableException) {
+                        withContext(Dispatchers.Main) {
+                            onError()
+                        }
+                    } catch (_: Exception) {
+                        withContext(Dispatchers.Main) {
+                            onFailure()
+                        }
                     }
-                    count = (count + (endTime - startTime)).toInt()
+                }
 
+            } catch (t: TimeoutCancellationException) {
+                withContext(Dispatchers.Main) {
+                    onFailure()
                 }
-                val postResponse = db.collection("reservations")
-                    .document(reservationID)
-                    .set(reservationMap)
-                if ((count + (reservationDTO.endTime.hour - reservationDTO.startTime.hour)) == slots) {
-                    val r =
-                        db.collection("unavailable_courts").document(reservationDTO.date.toString())
-                            .set(
-                                mapOf("courts" to FieldValue.arrayUnion(db.document("courts/$courtName"))),
-                                SetOptions.merge()
-                            ).await()
-                }
-                postResponse.await()
-                onSuccess()
-                return@withContext
-            } catch (_: TimeSlotsNotAvailableException) {
-                onError()
-            } catch (_: Exception) {
-                onFailure()
             }
-
         }
+
+
     }
 
 
@@ -184,102 +219,111 @@ class ReservationRepository {
     ) {
         withContext(Dispatchers.IO) {
             try {
-                try {
-                    val docCourtName = reservationDTO.court.name.replace(
-                        " ",
-                        "_"
-                    ) + "_" + reservationDTO.court.sport
-                    db.collection("unavailable_courts").document(oldDate.toString()).update(
-                        "courts",
-                        FieldValue.arrayRemove(db.document("courts/$docCourtName"))
-                    ).await()
+                withTimeout(10000) {
+                    try {
 
-                } catch (_: Exception) {
-                }
-                val reservationMap = createReservationMap(reservationDTO)
-                reservationMap.remove("pendings")
-                reservationMap.remove("accepted")
-                val courtName =
-                    reservationDTO.court.name.replace(" ", "_") + "_" + reservationDTO.court.sport
-                val court = db.collection("courts").document(courtName).get().await()
-                val openingTime =
-                    (court.data!!["timetable"] as HashMap<String, HashMap<String, Long>>).get(
-                        reservationDTO.date.dayOfWeek.name
-                    )!!.get("openingTime") as Long
-                val closingTime =
-                    (court.data!!["timetable"] as HashMap<String, HashMap<String, Long>>).get(
-                        reservationDTO.date.dayOfWeek.name
-                    )!!.get("closingTime") as Long
-                val slots = (closingTime - openingTime).toInt()
-                val allReservation = db.collection("reservations")
-                    .whereEqualTo("court", db.document("courts/$courtName"))
-                    .whereEqualTo("date", reservationDTO.date.toString())
-                    .get().await()
-                var count = 0
-                for (r in allReservation) {
-                    val endTime = r.data["endTime"] as Long
-                    val startTime = r.data["startTime"] as Long
-                    if (reservationDTO.id == r.id) continue
-                    if (
-                        (reservationDTO.startTime.hour in startTime until endTime)
-                        || (reservationDTO.endTime.hour in (startTime + 1)..endTime)
-                    ) {
-                        throw TimeSlotsNotAvailableException()
+                        val reservationMap = createReservationMap(reservationDTO)
+                        reservationMap.remove("pendings")
+                        reservationMap.remove("accepted")
+                        val courtName =
+                            reservationDTO.court.name.replace(
+                                " ",
+                                "_"
+                            ) + "_" + reservationDTO.court.sport
+                        val court = db.collection("courts").document(courtName).get().await()
+                        val openingTime =
+                            (court.data!!["timetable"] as HashMap<String, HashMap<String, Long>>).get(
+                                reservationDTO.date.dayOfWeek.name
+                            )!!.get("openingTime") as Long
+                        val closingTime =
+                            (court.data!!["timetable"] as HashMap<String, HashMap<String, Long>>).get(
+                                reservationDTO.date.dayOfWeek.name
+                            )!!.get("closingTime") as Long
+                        val slots = (closingTime - openingTime).toInt()
+                        val allReservation = db.collection("reservations")
+                            .whereEqualTo("court", db.document("courts/$courtName"))
+                            .whereEqualTo("date", reservationDTO.date.toString())
+                            .get().await()
+                        var count = 0
+                        for (r in allReservation) {
+                            val endTime = r.data["endTime"] as Long
+                            val startTime = r.data["startTime"] as Long
+                            if (reservationDTO.id == r.id) continue
+                            if (
+                                (reservationDTO.startTime.hour in startTime until endTime)
+                                || (reservationDTO.endTime.hour in (startTime + 1)..endTime)
+                            ) {
+                                throw TimeSlotsNotAvailableException()
+                            }
+                            count = (count + (endTime - startTime)).toInt()
+                        }
+
+                        db.runTransaction { t ->
+                            val reservationDoc = db.collection("reservations")
+                                .document(reservationDTO.id)
+                            t.update(reservationDoc, reservationMap)
+
+                            val uc = db.collection("unavailable_courts")
+                                .document(reservationDTO.date.toString())
+                            if ((count + (reservationDTO.endTime.hour - reservationDTO.startTime.hour)) == slots) {
+                                t.set(
+                                    uc,
+                                    mapOf("courts" to FieldValue.arrayUnion(db.document("courts/$courtName"))),
+                                    SetOptions.merge()
+                                )
+                            } else {
+                                t.set(
+                                    uc,
+                                    mapOf("courts" to FieldValue.arrayRemove(db.document("courts/$courtName")))
+                                )
+                            }
+
+                        }.addOnSuccessListener {
+                            onSuccess()
+
+                        }.addOnFailureListener {
+
+                            onFailure()
+                        }
+
+                    } catch (_: TimeSlotsNotAvailableException) {
+                        withContext(Dispatchers.Main) {
+                            onError()
+                        }                    } catch (_: Exception) {
+                        withContext(Dispatchers.Main) {
+                            onFailure()
+                        }
                     }
-                    count = (count + (endTime - startTime)).toInt()
-                }
-                val postResponse = db.collection("reservations")
-                    .document(reservationDTO.id)
-                    .update(reservationMap)
 
-                if ((count + (reservationDTO.endTime.hour - reservationDTO.startTime.hour)) == slots) {
-                    val r =
-                        db.collection("unavailable_courts").document(reservationDTO.date.toString())
-                            .set(
-                                mapOf("courts" to FieldValue.arrayUnion(db.document("courts/$courtName"))),
-                                SetOptions.merge()
-                            ).await()
                 }
-                postResponse.await()
-                onSuccess()
-            } catch (_: TimeSlotsNotAvailableException) {
-                onFailure()
-            } catch (_: Exception) {
-                onError()
+            } catch (t: TimeoutCancellationException) {
+                withContext(Dispatchers.Main) {
+                    onFailure()
+                }
             }
-
         }
     }
 
 
-    suspend fun delete(
+    fun delete(
         reservationDTO: ReservationDTO,
         oldDate: LocalDate,
         onFailure: () -> Unit,
         onSuccess: () -> Unit
     ) {
 
-        withContext(Dispatchers.IO) {
-            try {
-                val docName = reservationDTO.id
-                val docCourtName =
-                    reservationDTO.court.name.replace(" ", "_") + "_" + reservationDTO.court.sport
-                val responseOne = db.collection("reservations").document(docName).delete()
-                val responseTwo = db.collection("unavailable_courts").document(oldDate.toString())
-                    .update("courts", FieldValue.arrayRemove(db.document("courts/$docCourtName")))
-                responseOne.await()
-                try {
-                    responseTwo.await()
 
-                } catch (_: Exception) {
-
-                }
-                onSuccess()
-            } catch (_: java.lang.Exception) {
-                onFailure()
-            }
-
-
+        val docCourtName =
+            reservationDTO.court.name.replace(" ", "_") + "_" + reservationDTO.court.sport
+        val reservationDoc = db.collection("reservations").document(reservationDTO.id)
+        val ucDoc = db.collection("unavailable_courts").document(oldDate.toString())
+        db.runTransaction {t ->
+            t.delete(reservationDoc)
+            t.update(ucDoc, "courts", FieldValue.arrayRemove(db.document("courts/$docCourtName")))
+        }.addOnSuccessListener {
+            onSuccess()
+        }.addOnFailureListener {
+            onFailure()
         }
     }
 
@@ -291,9 +335,9 @@ class ReservationRepository {
         return withContext(Dispatchers.IO) {
             try {
                 val res = db.collection("reservations").document(reservationID).get().await()
-                async {
+                withContext(Dispatchers.Default) {
                     mappingReservationFromDocument(res, userOrganizer)
-                }.await()
+                }
             } catch (_: Exception) {
                 onFailure()
                 null
@@ -325,7 +369,10 @@ class ReservationRepository {
         return reservationMap
     }
 
-    private suspend fun mappingReservationFromDocument(document: DocumentSnapshot, userOrganizer: Boolean = true): ReservationDTO {
+    private suspend fun mappingReservationFromDocument(
+        document: DocumentSnapshot,
+        userOrganizer: Boolean = true
+    ): ReservationDTO {
         return withContext(Dispatchers.IO) {
             val reservationDTO = ReservationDTO()
 
@@ -336,7 +383,7 @@ class ReservationRepository {
             reservationDTO.endTime = LocalTime.of((document.data!!["endTime"] as Long).toInt(), 0)
             reservationDTO.equipment = document.data!!["equipment"] as Boolean
             reservationDTO.id = document.data!!["id"] as String
-            if(userOrganizer)
+            if (userOrganizer)
                 reservationDTO.userOrganizer = UserRepository.serializeUser(
                     (document.data!!["user"] as DocumentReference).get()
                         .await().data!! as Map<String, Object>

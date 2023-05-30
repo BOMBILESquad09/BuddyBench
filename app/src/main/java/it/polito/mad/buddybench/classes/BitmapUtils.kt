@@ -99,7 +99,6 @@ class BitmapUtils(){
 
 
             } catch (e: IOException){
-                print("erroreeee")
                 e.printStackTrace()
             }
         }

@@ -31,7 +31,6 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="10dp"
                     android:paddingHorizontal="10dp"
-
                     android:text="Private" />
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
@@ -91,7 +90,7 @@
                     android:background="?attr/selectableItemBackground"
                     android:gravity="center"
                     android:paddingVertical="10dp"
-                    android:text="Change " />
+                    android:text="Add sports " />
 
             </LinearLayout>
         </LinearLayout>

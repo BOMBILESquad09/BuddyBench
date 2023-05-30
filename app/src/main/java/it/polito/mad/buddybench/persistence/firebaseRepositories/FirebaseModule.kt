@@ -9,17 +9,11 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class FirebaseModule {
-    @Provides
-    @Singleton
-    fun createImageRepository(): ImageRepository{
-        return ImageRepository()
-    }
 
     @Provides
     @Singleton
     fun createUserRepository(): UserRepository{
         return UserRepository()
     }
-
 
 }

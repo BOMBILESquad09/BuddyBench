@@ -8,6 +8,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.findcourt.ReviewsDiffUtils
@@ -16,6 +18,8 @@ import it.polito.mad.buddybench.persistence.dto.ReviewDTO
 import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import it.polito.mad.buddybench.viewmodels.ReviewViewModel
+import it.polito.mad.buddybench.viewmodels.UserViewModel
+import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
 class ReviewsActivity : AppCompatActivity() {
@@ -30,6 +34,8 @@ class ReviewsActivity : AppCompatActivity() {
 
     // ** View Models
     private val reviewViewModel by viewModels<ReviewViewModel>()
+    private val userViewModel by viewModels<UserViewModel>()
+
     val imageViewModel by viewModels<ImageViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,13 +59,21 @@ class ReviewsActivity : AppCompatActivity() {
         Utils.openProgressDialog(binding.root.context)
         binding.tvCourtNameReviews.text = courtName
         binding.backButtonReviews.setOnClickListener { finish() }
+        binding.cardNewReview.visibility = View.GONE
 
         // ** Edit button
+        binding.btnEditReview.text = "Review"
         binding.btnEditReview.setOnClickListener { editReviewUI() }
-
         // ** New review card
         binding.rbNewReview.isClickable = true
-        binding.btnNewReview.setOnClickListener { addReview() }
+        binding.btnNewReview.setOnClickListener {
+            addReview()
+        }
+        // ** Cancel edit
+        binding.btnCancelReview.setOnClickListener {
+            binding.cardYourReview.visibility = View.VISIBLE
+            binding.cardNewReview.visibility = View.GONE
+        }
 
         // ** Recycler View
         binding.rvReviews.layoutManager = LinearLayoutManager(this)
@@ -84,13 +98,13 @@ class ReviewsActivity : AppCompatActivity() {
         }
 
         // ** Update recycler view
-        reviewViewModel.reviews.observe(this){
+        reviewViewModel.reviews.observe(this) {
             val diff = ReviewsDiffUtils(lastReviews, it)
             val diffResult = DiffUtil.calculateDiff(diff)
             lastReviews = it
             diffResult.dispatchUpdatesTo(binding.rvReviews.adapter!!)
             binding.rvReviews.scrollToPosition(0)
-            if(it.isEmpty()) {
+            if (it.isEmpty()) {
                 binding.rvReviews.visibility = View.GONE
                 binding.tvNoReviews.visibility = View.VISIBLE
             } else {
@@ -102,8 +116,8 @@ class ReviewsActivity : AppCompatActivity() {
         // ** User can review
         reviewViewModel.canReview.observe(this) { can ->
             if (can) {
-                binding.cardNewReview.visibility = View.VISIBLE
-                binding.cardYourReview.visibility = View.GONE
+                binding.cardNewReview.visibility = View.GONE
+                binding.cardYourReview.visibility = View.VISIBLE
                 binding.tvCannotReview.visibility = View.GONE
             } else {
                 binding.cardNewReview.visibility = View.GONE
@@ -115,12 +129,14 @@ class ReviewsActivity : AppCompatActivity() {
         // ** User review
         reviewViewModel.userReview.observe(this) {
             if (it != null) {
-                binding.tvYourReview.text = it.description
+                binding.btnEditReview.text = "Update Review"
+                binding.tvYourReview.setText(it.description)
                 binding.rbYourReview.invalidate()
                 binding.rbYourReview.setIsIndicator(false)
                 binding.rbYourReview.rating = it.rating.toFloat()
                 binding.rbYourReview.setIsIndicator(true)
-
+                binding.tvMyReviewDate.text =
+                    it.date.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
                 binding.cardNewReview.visibility = View.GONE
                 binding.cardYourReview.visibility = View.VISIBLE
                 binding.tvCannotReview.visibility = View.GONE
@@ -130,9 +146,11 @@ class ReviewsActivity : AppCompatActivity() {
         // ** Update court data
         reviewViewModel.court.observe(this) {
             binding.tvReviewTotal.text = Utils.roundOffDecimal(it.rating).toString()
-            binding.tvNumReviews.text = String.format(getString(R.string.num_ratings), it.nReviews)
+            binding.tvNumReviews.text =
+                String.format(getString(R.string.num_ratings), it.nReviews)
             binding.rbReviewTotal.rating = it.rating.toFloat()
         }
+
     }
 
     private fun addReview() {
@@ -141,23 +159,33 @@ class ReviewsActivity : AppCompatActivity() {
             return
         }
 
+        val onSuccess: (Boolean) -> Unit = {
+            val text = if(it) "sent" else "sent"
+            Utils.openGeneralProblemDialog(
+                "Success",
+                "Your review has been $text",
+                this
+            )
+        }
+
         binding.tvErrorReview.visibility = View.GONE
-        reviewViewModel.insertReview(binding.etNewReview.text.toString(), binding.rbNewReview.rating.toInt(), this)
+
+        reviewViewModel.insertReview(binding.etNewReview.text.toString(), binding.rbNewReview.rating.toInt(), onSuccess)
+
     }
 
 
     private fun editReviewUI() {
-        val userReviewData = reviewViewModel.userReview.value!!
-        binding.etNewReview.text = SpannableStringBuilder(userReviewData.description)
-        binding.rbNewReview.rating = userReviewData.rating.toFloat()
-
+        binding.btnNewReview.text = "Send"
+        binding.etNewReview.text = SpannableStringBuilder(reviewViewModel.userReview.value?.description ?: "")
+        binding.rbNewReview.rating = reviewViewModel.userReview.value?.rating?.toFloat() ?: (0f)
         binding.cardYourReview.visibility = View.GONE
         binding.cardNewReview.visibility = View.VISIBLE
-
     }
 
     override fun onStart() {
         super.onStart()
         Utils.closeProgressDialog()
     }
+
 }

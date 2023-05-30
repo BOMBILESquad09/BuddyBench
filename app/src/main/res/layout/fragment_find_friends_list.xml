@@ -33,7 +33,7 @@
                     android:backgroundTint="@color/cardview_light_background"
                     android:drawableStart="@drawable/search"
                     android:drawablePadding="8dp"
-                    android:hint="Full name, nickname, sport or locality"
+                    android:hint="Search by user, their sports or locality"
                     android:inputType="text"
                     android:textSize="13sp" />
             </com.google.android.material.card.MaterialCardView>

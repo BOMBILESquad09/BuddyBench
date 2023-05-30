@@ -215,6 +215,7 @@
     <string name="date">23/03/2023</string>
     <string name="leave_a_review">Leave a review</string>
     <string name="review">Review</string>
+    <string name="cancel">Cancel</string>
     <string name="num_ratings">based on %1$s reviews</string>
     <string name="_5">5</string>
     <string name="_2">2</string>
@@ -256,5 +257,6 @@
     <string name="friend_channel_description">New Friend Request</string>
     <string name="invitation_channel_description">New Invitation</string>
     <string name="join_channel_description">New Join Request</string>
-
+    <string name="edit_sports_error">You already selected all the sports!</string>
+    <string name="edit_sports_error_title">Edit Sports</string>
 </resources>

@@ -25,13 +25,16 @@ import androidx.compose.ui.text.capitalize
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
+import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.activities.friends.FriendsFragment
 import it.polito.mad.buddybench.activities.profile.EditProfileActivity
 import it.polito.mad.buddybench.activities.profile.ShowProfileFragment
 import it.polito.mad.buddybench.classes.BitmapUtils
@@ -74,7 +77,7 @@ class HomeActivity : AppCompatActivity() {
             onFriendsProfileReturn(it)
         }
 
-    val invitationsViewModel by viewModels<InvitationsViewModel>()
+    private val invitationsViewModel by viewModels<InvitationsViewModel>()
 
     private lateinit var sharedPref: SharedPreferences
     val imageViewModel by viewModels<ImageViewModel>()
@@ -91,18 +94,17 @@ class HomeActivity : AppCompatActivity() {
         createNotificationChannels()
 
         setContentView(R.layout.home)
-        sharedPref =
-            getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+
         reservationViewModel.email = Firebase.auth.currentUser!!.email!!
         bottomBar.setup()
-
-        invitationsViewModel.popNotification  = { it -> createInvitationNotification(it)}
-        friendsViewModel.popNotification = {it -> createFriendRequestNotification(it)}
+        sharedPref =
+            getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        userViewModel.sharedPref = sharedPref
+        invitationsViewModel.popNotification = { it -> createInvitationNotification(it) }
+        friendsViewModel.popNotification = { it -> createFriendRequestNotification(it) }
         userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this) {
-            if (it != null){
-
+            if (it != null && it.email != "") {
                 friendsViewModel.subscribeFriendsList()
-
                 invitationsViewModel.subscribeInvitations() { s ->
                     if (s > 0) {
                         bottomBar.counter[Tabs.INVITATIONS.getId()] = s
@@ -139,20 +141,8 @@ class HomeActivity : AppCompatActivity() {
                 }
                 return@observe
             }
-            userViewModel.fromSharedPreferences(
-                Profile.fromJSON(
-                    JSONObject(
-                        sharedPref.getString(
-                            "profile",
-                            Profile.mockJSON()
-                        )!!
-                    )
-                )
-            )
+
         }
-
-
-
 
     }
 
@@ -188,19 +178,39 @@ class HomeActivity : AppCompatActivity() {
                 putString("profile", newProfile.toJSON().toString())
                 apply()
                 userViewModel.setSports(newProfile.sports)
-                if (newProfile.imageUri != null && response.data?.getBooleanExtra(
-                        "newImage",
-                        false
-                    ) == true
-                ) {
 
-                    imageViewModel.postUserImage(newProfile.email, newProfile.imageUri!!, {
-                        userViewModel.getUser()
-                    }) {}
+                Utils.openProgressDialog(this@HomeActivity)
+
+                userViewModel.updateUserInfo(newProfile, onFailure = {
+                    Utils.closeProgressDialog()
+                    Utils.openGeneralProblemDialog(
+                        "Error",
+                        "An error occurred while updating your profile, try later",
+                        this@HomeActivity
+                    )
+                }) {
+                    if (newProfile.imageUri != null && response.data?.getBooleanExtra(
+                            "newImage",
+                            false
+                        ) == true
+                    ) {
+                        imageViewModel.postUserImage(newProfile.email, newProfile.imageUri!!, {
+                            Utils.closeProgressDialog()
+
+                            Utils.openGeneralProblemDialog(
+                                "Error",
+                                "An error occurred while updating the image, try later",
+                                this@HomeActivity
+                            )
+                        }) {
+                            Utils.closeProgressDialog()
+                            userViewModel.getUser()
+                        }
+                    } else{
+                        Utils.closeProgressDialog()
+                    }
+
                 }
-                userViewModel.updateUserInfo(newProfile, {}) {}
-
-
             }
         }
     }
@@ -223,7 +233,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun onFriendsProfileReturn(response: ActivityResult?) {
-        friendsViewModel.refreshAll {  }
+        friendsViewModel.refreshAll { }
     }
 
     private fun onReviewsReturn(response: ActivityResult) {
@@ -234,9 +244,10 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        onNewIntent(intent)
+
         Utils.closeProgressDialog()
     }
-
 
 
     private fun onNetworkProblemHandler() {
@@ -264,7 +275,7 @@ class HomeActivity : AppCompatActivity() {
 
     }
 
-    private fun createNotificationChannels(){
+    private fun createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = getString(R.string.channel_name)
             val descriptionText = getString(R.string.friend_channel_description)
@@ -309,8 +320,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
 
-
-    private fun createInvitationNotification(reservationDTO: ReservationDTO){
+    private fun createInvitationNotification(reservationDTO: ReservationDTO) {
 
         val intent = Intent(this, HomeActivity::class.java).apply {
         }
@@ -327,11 +337,11 @@ class HomeActivity : AppCompatActivity() {
             this,
             Tabs.INVITATIONS.getId(),
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_IMMUTABLE
         )
 
         val builder = NotificationCompat.Builder(this, "invitationRequests")
-            .setSmallIcon(R.drawable.tennis)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle(getString(R.string.invitation_channel_description))
             .setContentText(text)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
@@ -346,11 +356,11 @@ class HomeActivity : AppCompatActivity() {
                 notify(reservationDTO.id.hashCode(), builder.build())
             }
 
-        }catch (_: SecurityException){
+        } catch (_: SecurityException) {
         }
     }
 
-    private fun createFriendRequestNotification(profile: Profile){
+    private fun createFriendRequestNotification(profile: Profile) {
         val intent = Intent(this, HomeActivity::class.java).apply {
         }
         intent.putExtra("tab", Tabs.FRIENDS.name)
@@ -360,11 +370,12 @@ class HomeActivity : AppCompatActivity() {
             this,
             Tabs.FRIENDS.getId(),
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_IMMUTABLE
         )
 
         val builder = NotificationCompat.Builder(this, "friendRequests")
-            .setSmallIcon(R.drawable.add_friend)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+
             .setContentTitle(getString(R.string.friend_channel_description))
             .setContentText(text)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
@@ -379,16 +390,27 @@ class HomeActivity : AppCompatActivity() {
                 notify(profile.email.hashCode(), builder.build())
             }
 
-        }catch (_: SecurityException){
+        } catch (_: SecurityException) {
         }
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        if(intent?.getStringExtra("tab") == null) return
+        if (intent?.getStringExtra("tab") == null) return
 
         val tab = intent.getStringExtra("tab")!!
         bottomBar.replaceFragment(bottomBar.currentTab, Tabs.valueOf(tab), true)
+        bottomBar.bottomBar.selectTabAt(Tabs.valueOf(tab).getId())
+        supportFragmentManager.executePendingTransactions()
+        if (tab == Tabs.FRIENDS.name) {
+            val fragment: FriendsFragment =
+                supportFragmentManager.findFragmentByTag(Tabs.FRIENDS.name) as FriendsFragment
+            fragment.binding.tabFriends.selectTab(fragment.binding.tabFriends.getTabAt(1))
+            fragment.binding.tabFriendsViewpager.setCurrentItem(1, true)
+
+
+        }
+
     }
 
 }

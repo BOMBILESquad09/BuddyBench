@@ -11,6 +11,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.activities.profile.ShowProfileFragment
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.databinding.FriendProfileBinding
+import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.UserViewModel
 import org.json.JSONObject
 
@@ -24,6 +25,9 @@ class FriendProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        userViewModel.onFailure = {
+            Utils.openNetworkProblemDialog(this)
+        }
         binding = FriendProfileBinding.inflate(layoutInflater)
         val profile = Profile.fromJSON(JSONObject(intent.getStringExtra("profile")))
         bundle.putString("oldProfile", profile.toJSON().toString())
@@ -36,10 +40,14 @@ class FriendProfileActivity : AppCompatActivity() {
             .add(binding.friendFragmentContainer.id, showProfileFragment)
             .commit()
         setContentView(binding.root)
-        
+        Utils.closeProgressDialog()
+        Utils.openProgressDialog(this)
+
         userViewModel.getUser(profile.email).observe(this) {
             if(it == null)
                 return@observe
+            Utils.closeProgressDialog()
+
             showProfileFragment.profile = it
             showProfileFragment.setGUI()
         }

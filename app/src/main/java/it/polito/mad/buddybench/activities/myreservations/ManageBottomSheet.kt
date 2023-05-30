@@ -42,7 +42,7 @@ class ManageBottomSheet(
         }
         val editReservationBtn = view.findViewById<LinearLayout>(R.id.edit_reservation)
         editReservationBtn?.setOnClickListener {
-            Utils.openProgressDialog(view.context)
+            //Utils.openProgressDialog(view.context)
             onEditSelected()
             this.dismiss()
         }
