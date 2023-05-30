@@ -60,6 +60,8 @@ class ReviewViewModel @Inject constructor() : ViewModel() {
             }
 
             reviewRepository.getAllByCourt(courtFetched, onFailure) { reviewsDocs ->
+                val reviews = reviewsDocs.filter { r -> r.user.email != currentUser }
+                _reviews.postValue(reviews)
                 if (reviewsDocs.any { r -> r.user.email == currentUser }) {
                     val userReview = reviewsDocs.first { r -> r.user.email == currentUser }
                     _canReview.postValue(true)
@@ -68,9 +70,6 @@ class ReviewViewModel @Inject constructor() : ViewModel() {
                 } else {
                     userCanReview(name, sport)
                 }
-                val reviews = reviewsDocs.filter { r -> r.user.email != currentUser }
-                _reviews.postValue(reviews)
-                _l.postValue(false)
             }
         }
         return reviews

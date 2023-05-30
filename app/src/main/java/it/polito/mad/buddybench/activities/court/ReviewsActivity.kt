@@ -63,7 +63,7 @@ class ReviewsActivity : AppCompatActivity() {
 
         // ** Edit button
         binding.btnEditReview.text = "Review"
-        binding.btnEditReview.setOnClickListener { addReview() }
+        binding.btnEditReview.setOnClickListener { editReviewUI() }
         // ** New review card
         binding.rbNewReview.isClickable = true
         binding.btnNewReview.setOnClickListener {
@@ -116,8 +116,8 @@ class ReviewsActivity : AppCompatActivity() {
         // ** User can review
         reviewViewModel.canReview.observe(this) { can ->
             if (can) {
-                binding.cardNewReview.visibility = View.VISIBLE
-                binding.cardYourReview.visibility = View.GONE
+                binding.cardNewReview.visibility = View.GONE
+                binding.cardYourReview.visibility = View.VISIBLE
                 binding.tvCannotReview.visibility = View.GONE
             } else {
                 binding.cardNewReview.visibility = View.GONE
@@ -130,7 +130,6 @@ class ReviewsActivity : AppCompatActivity() {
         reviewViewModel.userReview.observe(this) {
             if (it != null) {
                 binding.btnEditReview.text = "Update Review"
-                binding.btnEditReview.setOnClickListener { editReviewUI() }
                 binding.tvYourReview.setText(it.description)
                 binding.rbYourReview.invalidate()
                 binding.rbYourReview.setIsIndicator(false)
@@ -161,7 +160,7 @@ class ReviewsActivity : AppCompatActivity() {
         }
 
         val onSuccess: (Boolean) -> Unit = {
-            val text = if(it) "edited" else "added"
+            val text = if(it) "sent" else "sent"
             Utils.openGeneralProblemDialog(
                 "Success",
                 "Your review has been $text",
@@ -177,10 +176,9 @@ class ReviewsActivity : AppCompatActivity() {
 
 
     private fun editReviewUI() {
-        val userReviewData = reviewViewModel.userReview.value!!
-        binding.btnNewReview.text = "Confirm"
-        binding.etNewReview.text = SpannableStringBuilder(userReviewData.description)
-        binding.rbNewReview.rating = userReviewData.rating.toFloat()
+        binding.btnNewReview.text = "Send"
+        binding.etNewReview.text = SpannableStringBuilder(reviewViewModel.userReview.value?.description ?: "")
+        binding.rbNewReview.rating = reviewViewModel.userReview.value?.rating?.toFloat() ?: (0f)
         binding.cardYourReview.visibility = View.GONE
         binding.cardNewReview.visibility = View.VISIBLE
     }

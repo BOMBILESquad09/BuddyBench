@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.persistence.firebaseRepositories.ImageRepository
@@ -18,10 +19,8 @@ import kotlin.concurrent.thread
 @HiltViewModel
 class ImageViewModel @Inject constructor() : ViewModel() {
 
-    val mainScope = MainScope()
 
-    @Inject
-    lateinit var imageRepository: ImageRepository
+    private val imageRepository: ImageRepository = ImageRepository()
 
     private val _loading: MutableLiveData<Boolean> = MutableLiveData(true)
     val loading: LiveData<Boolean> = _loading
@@ -33,11 +32,12 @@ class ImageViewModel @Inject constructor() : ViewModel() {
 //    }
 
     fun postUserImage(path: String, uri: Uri, onFailure: () -> Unit, onSuccess: () -> Unit) {
-        mainScope.launch {
+
+        viewModelScope.launch {
             try {
                 imageRepository.postUserImage(path, uri, onFailure, onSuccess)
                 _loading.postValue(false)
-            } catch (_: Exception) {
+            } catch (e: Exception) {
                 onFailure()
             }
         }
@@ -50,7 +50,7 @@ class ImageViewModel @Inject constructor() : ViewModel() {
     }
 
     fun getUserImage(path: String, onFailure: () -> Unit, onSuccess: (Uri) -> Unit) {
-        mainScope.launch {
+        viewModelScope.launch {
 
                 imageRepository.getUserImage(path,onFailure, onSuccess)
 
@@ -60,7 +60,7 @@ class ImageViewModel @Inject constructor() : ViewModel() {
 
     fun getCourtImage(path: String, onFailure: () -> Unit, onSuccess: (Uri) -> Unit) {
 
-        mainScope.launch {
+        viewModelScope.launch {
                 imageRepository.getCourtImage(path, onFailure ,onSuccess)
 
         }

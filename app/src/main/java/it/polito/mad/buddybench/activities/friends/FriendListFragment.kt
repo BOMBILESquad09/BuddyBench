@@ -52,17 +52,8 @@ class FriendListFragment(val context: HomeActivity) : Fragment(R.layout.fragment
         // ** Loading state
         friendsViewModel.lFriends.observe(viewLifecycleOwner) {
             if ( it == null  || it) {
-                println("--------------")
-                println("caricaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                 pbFriendList.visibility = View.VISIBLE
-                println("------------------------------------------------")
-
-
             } else {
-                println("..................................")
-                println("levariiiiiiiiiiiiiiiiiiiiiiiii")
-                println("..................................")
-
                 pbFriendList.visibility = View.GONE
             }
         }
@@ -94,7 +85,6 @@ class FriendListFragment(val context: HomeActivity) : Fragment(R.layout.fragment
                         emptyLL.visibility = View.VISIBLE
                         rvFriendList.visibility = View.GONE
                     }
-
                     else{
                         emptyLL.visibility = View.GONE
                         rvFriendList.visibility = View.VISIBLE

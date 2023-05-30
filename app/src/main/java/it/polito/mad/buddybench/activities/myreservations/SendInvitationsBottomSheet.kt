@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.activities.myreservations
 
+import android.content.Context
 import android.icu.util.LocaleData
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -28,6 +30,7 @@ import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.enums.Tabs
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
+import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.InvitationsViewModel
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
@@ -38,13 +41,15 @@ import java.util.Locale
 
 class SendInvitationsBottomSheet(
     private val reservationDTO: ReservationDTO,
-    private val invited: Boolean = false): BottomSheetDialogFragment() {
+    private val invited: Boolean = false
+) : BottomSheetDialogFragment() {
 
 
     private val userViewModel by activityViewModels<UserViewModel>()
     private val invitationViewModel by viewModels<InvitationsViewModel>()
     private val reservationViewModel by activityViewModels<ReservationViewModel>()
-    private val expired = (LocalDateTime.of(reservationDTO.date, reservationDTO.endTime)  < LocalDateTime.now())
+    private val expired =
+        (LocalDateTime.of(reservationDTO.date, reservationDTO.endTime) < LocalDateTime.now())
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,9 +60,6 @@ class SendInvitationsBottomSheet(
 
         return inflater.inflate(R.layout.reservation_friend, container, false)
     }
-
-
-
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -73,77 +75,94 @@ class SendInvitationsBottomSheet(
 
         val notInvitedButton = view.findViewById<Button>(R.id.invite_button)
         notInvitedButton.setOnClickListener {
-            invitationViewModel.sendInvitations(reservationDTO, reservationViewModel.notInvitedFriends.value!!.filter { it.second }.map { it.first.email }){
+            invitationViewModel.sendInvitations(
+                reservationDTO,
+                reservationViewModel.notInvitedFriends.value!!.filter { it.second }
+                    .map { it.first.email }) {
                 reservationViewModel.getReservation(reservationDTO.id)
             }
         }
 
         val pendingButton = view.findViewById<Button>(R.id.remove_pending_button)
         pendingButton.setOnClickListener {
-            invitationViewModel.removeInvitations(reservationDTO, reservationViewModel.pendingFriends.value!!.filter { it.second }.map { it.first.email }){
+            invitationViewModel.removeInvitations(
+                reservationDTO,
+                reservationViewModel.pendingFriends.value!!.filter { it.second }
+                    .map { it.first.email }) {
                 reservationViewModel.getReservation(reservationDTO.id)
             }
         }
 
         val acceptedButton = view.findViewById<Button>(R.id.remove_accepted_button)
         acceptedButton.setOnClickListener {
-            invitationViewModel.removeAcceptedInvitations(reservationDTO, reservationViewModel.acceptedFriends.value!!.filter { it.second }.map { it.first.email }){
+            invitationViewModel.removeAcceptedInvitations(
+                reservationDTO,
+                reservationViewModel.acceptedFriends.value!!.filter { it.second }
+                    .map { it.first.email }) {
                 reservationViewModel.getReservation(reservationDTO.id)
             }
         }
 
 
-        recyclerViewNotInvited.layoutManager = LinearLayoutManager(context).let { it.orientation = HORIZONTAL; it }
-        recyclerViewPending.layoutManager = LinearLayoutManager(context).let { it.orientation = HORIZONTAL; it }
-        recyclerViewAccepted.layoutManager = LinearLayoutManager(context).let { it.orientation = HORIZONTAL; it }
+        recyclerViewNotInvited.layoutManager =
+            LinearLayoutManager(context).let { it.orientation = HORIZONTAL; it }
+        recyclerViewPending.layoutManager =
+            LinearLayoutManager(context).let { it.orientation = HORIZONTAL; it }
+        recyclerViewAccepted.layoutManager =
+            LinearLayoutManager(context).let { it.orientation = HORIZONTAL; it }
 
-        recyclerViewNotInvited.adapter = FriendsAdapter(reservationViewModel.notInvitedFriends.value ?: listOf(),true){
-            if(!invited)
-                reservationViewModel.updateNotInvitedFriends(it)
-        }
-        recyclerViewPending.adapter = FriendsAdapter(reservationViewModel.pendingFriends.value ?: listOf(),false){
-            if(!invited)
-                reservationViewModel.updatePendingFriends(it)
+        recyclerViewNotInvited.adapter =
+            FriendsAdapter(reservationViewModel.notInvitedFriends.value ?: listOf(), true) {
+                if (!invited)
+                    reservationViewModel.updateNotInvitedFriends(it)
+            }
+        recyclerViewPending.adapter =
+            FriendsAdapter(reservationViewModel.pendingFriends.value ?: listOf(), false) {
+                if (!invited)
+                    reservationViewModel.updatePendingFriends(it)
 
-        }
-        recyclerViewAccepted.adapter = FriendsAdapter(reservationViewModel.acceptedFriends.value ?: listOf(), false){
-            if(!invited)
-                reservationViewModel.updateAcceptedFriends(it)
-        }
+            }
+        recyclerViewAccepted.adapter =
+            FriendsAdapter(reservationViewModel.acceptedFriends.value ?: listOf(), false) {
+                if (!invited)
+                    reservationViewModel.updateAcceptedFriends(it)
+            }
 
-        userViewModel.getUser().observe(this){
+        userViewModel.getUser().observe(this) {
             reservationViewModel.profile = it
             reservationViewModel.getReservation(reservationDTO.id)
         }
 
 
 
-        reservationViewModel.acceptedFriends.observe(this){
+        reservationViewModel.acceptedFriends.observe(this) {
             if (it != null) {
-                val diffUtilsAccepted = FriendsDiffUtils(reservationViewModel.oldAcceptedFriends, it)
+                val diffUtilsAccepted =
+                    FriendsDiffUtils(reservationViewModel.oldAcceptedFriends, it)
                 val diffsAccepted = DiffUtil.calculateDiff(diffUtilsAccepted)
 
-                (recyclerViewAccepted.adapter as FriendsAdapter).friends = reservationViewModel.acceptedFriends.value!!
+                (recyclerViewAccepted.adapter as FriendsAdapter).friends =
+                    reservationViewModel.acceptedFriends.value!!
 
                 diffsAccepted.dispatchUpdatesTo(recyclerViewAccepted.adapter!!)
-                if(it.isEmpty()){
+                if (it.isEmpty()) {
                     emptyAccepted.visibility = View.VISIBLE
-                } else{
+                } else {
                     emptyAccepted.visibility = View.GONE
                 }
 
             }
         }
 
-        reservationViewModel.pendingFriends.observe(this){
+        reservationViewModel.pendingFriends.observe(this) {
             if (it != null) {
                 val diffUtilsPending = FriendsDiffUtils(reservationViewModel.oldPendingFriends, it)
                 val diffsPending = DiffUtil.calculateDiff(diffUtilsPending)
                 (recyclerViewPending.adapter as FriendsAdapter).friends = it
                 diffsPending.dispatchUpdatesTo(recyclerViewPending.adapter!!)
-                if(it.isEmpty()){
+                if (it.isEmpty()) {
                     emptyPending.visibility = View.VISIBLE
-                } else{
+                } else {
                     emptyPending.visibility = View.GONE
                 }
             }
@@ -151,15 +170,15 @@ class SendInvitationsBottomSheet(
 
 
 
-        if(!invited){
-            reservationViewModel.notInvitedFriends.observe(this){
+        if (!invited) {
+            reservationViewModel.notInvitedFriends.observe(this) {
                 val diffUtils = FriendsDiffUtils(reservationViewModel.oldNotInvitedFriends, it)
                 val diffs = DiffUtil.calculateDiff(diffUtils)
                 (recyclerViewNotInvited.adapter as FriendsAdapter).friends = it
                 diffs.dispatchUpdatesTo(recyclerViewNotInvited.adapter!!)
-                if(it.isEmpty()){
+                if (it.isEmpty()) {
                     emptyNotInvited.visibility = View.VISIBLE
-                } else{
+                } else {
                     emptyNotInvited.visibility = View.GONE
                 }
             }
@@ -168,8 +187,8 @@ class SendInvitationsBottomSheet(
 
 
 
-        fun setForInvited(){
-            if(invited){
+        fun setForInvited() {
+            if (invited) {
                 view.findViewById<LinearLayout>(R.id.invite_friends_ll).visibility = View.GONE
                 view.findViewById<LinearLayout>(R.id.pending_friends_ll).visibility = View.GONE
 
@@ -177,25 +196,44 @@ class SendInvitationsBottomSheet(
                 pendingButton.visibility = View.GONE
                 val removeButton = view.findViewById<MaterialButton>(R.id.remove_invite)
                 val textSection = view.findViewById<TextView>(R.id.textView10)
-                textSection.text = "Confirmed participants"
-                removeButton.visibility = View.VISIBLE
-                var confirm = 0
-                removeButton.setOnClickListener {
-                    if(confirm == 0){
-                        confirm = 1
-                        removeButton.text = "Confirm cancellation"
-                    } else{
-                        invitationViewModel.removeAcceptedInvitations(reservationDTO, listOf(Firebase.auth.currentUser!!.email!!)){
-                            reservationViewModel.getReservation(reservationDTO.id)
-                            reservationViewModel.getAllByUser()
-                            this.dismiss()
+                textSection.text = "Participants"
+                if(LocalDateTime.of(reservationDTO.date, reservationDTO.startTime) < LocalDateTime.now()){
+                    removeButton.visibility = View.VISIBLE
+                    removeButton.setOnClickListener {
+
+                        val dialogCard =
+                            LayoutInflater.from(context).inflate(R.layout.general_problem, null)
+                        val builder: AlertDialog.Builder = AlertDialog.Builder(this.requireContext())
+                        builder.setView(dialogCard)
+                        val dialog: AlertDialog = builder.create()
+                        val titleView = dialogCard.findViewById<TextView>(R.id.title)
+                        titleView.text = "Cancel participation"
+                        val bodyView = dialogCard.findViewById<TextView>(R.id.text_problem)
+                        bodyView.text = "Are you sure to cancel your participation?"
+                        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+                        dialog.setCancelable(true)
+                        dialogCard.findViewById<View>(R.id.ok).setOnClickListener {
+                            invitationViewModel.removeAcceptedInvitations(
+                                reservationDTO,
+                                listOf(Firebase.auth.currentUser!!.email!!)
+                            ) {
+                                reservationViewModel.getReservation(reservationDTO.id)
+                                reservationViewModel.getAllByUser()
+                                dialog.dismiss()
+                                this.dismiss()
+                            }
                         }
+                        dialog.show()
+
                     }
+
                 }
+
             }
         }
 
-        fun setExpired(){
+
+        fun setExpired() {
             acceptedButton.visibility = View.GONE
             pendingButton.visibility = View.GONE
             view.findViewById<LinearLayout>(R.id.invite_friends_ll).visibility = View.GONE
@@ -206,13 +244,9 @@ class SendInvitationsBottomSheet(
 
 
         setForInvited()
-        if(expired) setExpired()
+        if (expired) setExpired()
 
     }
-
-
-
-
 
 
 }

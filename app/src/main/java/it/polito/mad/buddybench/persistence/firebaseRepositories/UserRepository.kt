@@ -41,8 +41,7 @@ import java.util.Objects
 
 class UserRepository {
     val db = FirebaseFirestore.getInstance()
-    var profile: Profile? = null
-    var otherProfile: Profile? = null
+
 
     suspend fun getUser(
         email: String = Firebase.auth.currentUser!!.email!!,
@@ -51,22 +50,17 @@ class UserRepository {
     ) {
         withContext(Dispatchers.IO) {
             try {
-                if (email == Firebase.auth.currentUser!!.email!!) {
-                    if (profile == null) {
-                        fetchUser(email, onFailure,onSuccess)
-                    } else {
-                        onSuccess(profile!!)
-                    }
-                } else {
-                    fetchUser(email, onFailure, onSuccess)
-                }
+
+                fetchUser(email, onFailure, onSuccess)
+
             } catch (e: Exception) {
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     onFailure()
 
-                }
-            }
 
+                }
+
+            }
         }
     }
 
@@ -95,8 +89,7 @@ class UserRepository {
                             }
                     } else {
                         serializedProfile.isRequesting =
-                            this@UserRepository.profile?.pendings?.any { it.email == serializedProfile.email }
-                                ?: false
+                            serializedProfile.pendings.any { it.email == serializedProfile.email }
                     }
 
 
@@ -121,7 +114,10 @@ class UserRepository {
                                 counters[sport] = Pair(1, 1)
                             } else {
                                 counters[sport] =
-                                    Pair(counters[sport]!!.first + 1, counters[sport]!!.second + 1)
+                                    Pair(
+                                        counters[sport]!!.first + 1,
+                                        counters[sport]!!.second + 1
+                                    )
                             }
                         }
                         for (i in invited.result) {
@@ -146,10 +142,7 @@ class UserRepository {
 
                         return@withContext
                     }
-                    if (email == Firebase.auth.currentUser!!.email)
-                        this@UserRepository.profile = serializedProfile
-                    else
-                        this@UserRepository.otherProfile = serializedProfile
+
                     onSuccess(serializedProfile)
                 } else {
                     val newProfile = createProfile()
@@ -157,7 +150,7 @@ class UserRepository {
                         newProfile
                     ).await()
 
-                    this@UserRepository.profile = Profile(
+                    val nProfile = Profile(
                         newProfile.name,
                         newProfile.surname,
                         newProfile.nickname,
@@ -174,19 +167,20 @@ class UserRepository {
                         mutableListOf()
                     )
                     onSuccess(
-                        this@UserRepository.profile!!
+                        nProfile
                     )
                 }
             } catch (e: Exception) {
-                withContext(Dispatchers.Main){
-                    
+                println(e)
+                withContext(Dispatchers.Main) {
+
                     onFailure()
                 }
             }
         }
     }
 
-    private fun createProfile(): ProfileData {
+    fun createProfile(): ProfileData {
         val user = Firebase.auth.currentUser!!
         val name = user.displayName!!.substringBefore(" ")
         val surname = user.displayName!!.substringAfter(" ")
@@ -200,39 +194,35 @@ class UserRepository {
     }
 
 
-    suspend fun update(user: Profile, onFailure: () -> Unit,onSuccess: (Profile) -> Unit) {
-        withContext(Dispatchers.IO) {
-            try {
-                db.collection("users")
-                    .document(user.email).update(
-                        mapOf(
-                            "name" to user.name,
-                            "surname" to user.surname,
-                            "nickname" to user.nickname,
-                            "location" to user.location,
-                            "birthdate" to user.birthdate.toString(),
-                            "sports" to user.sports,
-                            "imageUri" to user.imageUri.toString(),
-                            "last_update" to LocalDate.now().toString()
-                        )
-                    ).await()
-                if (user.email == Firebase.auth.currentUser!!.email)
-                    this@UserRepository.profile = user
-                else {
-                    this@UserRepository.otherProfile = user
-                }
-                onSuccess(user)
-            } catch (_: Exception){
-                onFailure()
-            }
-
+    fun update(user: Profile, onFailure: () -> Unit, onSuccess: (Profile) -> Unit) {
+        db.runTransaction { t ->
+            val userDoc = db.collection("users")
+                .document(user.email)
+            t.update(
+                userDoc, mapOf(
+                    "name" to user.name,
+                    "surname" to user.surname,
+                    "nickname" to user.nickname,
+                    "location" to user.location,
+                    "birthdate" to user.birthdate.toString(),
+                    "sports" to user.sports,
+                    "imageUri" to user.imageUri.toString(),
+                    "last_update" to LocalDate.now().toString()
+                )
+            )
+        }.addOnSuccessListener {
+            onSuccess(user)
+        }.addOnFailureListener {
+            onFailure()
         }
 
 
     }
 
+
     private fun checkReservationIsPassed(reservation: Map<String, Any>): Boolean {
-        val date = LocalDate.parse(reservation["date"] as String, DateTimeFormatter.ISO_LOCAL_DATE)
+        val date =
+            LocalDate.parse(reservation["date"] as String, DateTimeFormatter.ISO_LOCAL_DATE)
         if (date < LocalDate.now()) return true
         if (date == LocalDate.now()) return (reservation["endTime"] as Long).toInt() < LocalTime.now().hour
         return false
@@ -259,7 +249,16 @@ class UserRepository {
         val reliability = profile.reliability
         val imagePath = profile.imageUri.toString()
         val birthdate = profile.birthdate
-        return UserDTO(name, surname, nickname, birthdate, location, email, reliability, imagePath)
+        return UserDTO(
+            name,
+            surname,
+            nickname,
+            birthdate,
+            location,
+            email,
+            reliability,
+            imagePath
+        )
     }
 
     companion object {

@@ -15,6 +15,7 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -62,7 +63,7 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
 
     // ** Court LiveData by ViewModel
     private val courtViewModel by viewModels<CourtViewModel>()
-    private val reservationViewModel by viewModels<ReservationViewModel>()
+    private val reservationViewModel by activityViewModels<ReservationViewModel>()
 
     private lateinit var profile: Profile
     private lateinit var sharedPref: SharedPreferences
@@ -98,7 +99,10 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
 
         // ** Get arguments from activity intent
         getArgs()
-
+        reservationViewModel.onFailure = {
+            println("okkkkkkk")
+            Utils.openNetworkProblemDialog(this.requireContext())
+        }
         selectedDate = reservationDate ?: LocalDate.now()
         _binding = FragmentCourtBinding.inflate(inflater, container, false)
         return binding.root
@@ -268,10 +272,8 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
             }
         }
         imageViewModel.getCourtImage(court.path  + ".jpg", {
-            println("ecccooooooooooooooooooooooooooooooooooooooooooo")
             binding.backgroundImage.setImageBitmap(BitmapFactory.decodeStream(view?.context?.assets?.open("drawable/default_image.jpg")))
         }) {
-            println(",,,,,,,,,,,,,,,,,,,,,,,,,,,,")
             Glide.with(this)
                 .load(it)
                 .placeholder(R.drawable.loading)
@@ -330,7 +332,7 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
             reservationID,
             courtToReserve,
             equipment,
-            reservationViewModel,
+
             user,
             selectedDate,
             oldDate,

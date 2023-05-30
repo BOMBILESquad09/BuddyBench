@@ -204,11 +204,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:paddingVertical="12dp"
+
                 android:backgroundTint="@color/md_theme_light_onPrimaryContainer"
                 style="@style/Buttons"
+
                 android:fontFamily="@font/montserrat_semibold_600"
                 android:text="@string/show_filter_results"
                 android:textColor="@color/md_theme_light_background" />
+
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/clearFilter"

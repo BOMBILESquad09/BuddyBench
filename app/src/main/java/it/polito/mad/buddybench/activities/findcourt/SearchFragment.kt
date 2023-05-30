@@ -8,6 +8,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -18,10 +19,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.bumptech.glide.util.Util
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.WeekDayPosition
 import com.kizitonwose.calendar.view.WeekCalendarView
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.internal.managers.FragmentComponentManager
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.court.CourtActivity
 import it.polito.mad.buddybench.activities.court.ReviewsActivity
@@ -82,10 +85,12 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
         val callbackCourt: (String, Sports) -> Unit  = {
                 name, sport ->
+
             val intent = Intent(context, CourtActivity::class.java)
             intent.putExtra("courtName", name)
             intent.putExtra("sport", sport.name.uppercase())
             intent.putExtra("date", parent.viewModel.getSelectedDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
+
             parent.context.launcherReservation.launch(intent)
         }
 
@@ -212,6 +217,10 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
     }
 
+    override fun onStop() {
+        super.onStop()
+        Utils.closeProgressDialog()
+    }
 
     override  fun onStart() {
         super.onStart()

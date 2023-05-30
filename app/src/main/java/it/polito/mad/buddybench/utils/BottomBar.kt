@@ -46,6 +46,8 @@ class BottomBar(val context: HomeActivity) {
         replaceFragment(Tabs.PROFILE, Tabs.FRIENDS)
         context.supportFragmentManager.executePendingTransactions()
         replaceFragment(Tabs.FRIENDS, currentTab)
+        context.supportFragmentManager.executePendingTransactions()
+
     }
 
     private fun addInitialFragment() {
@@ -68,7 +70,6 @@ class BottomBar(val context: HomeActivity) {
     fun replaceFragment(lastTag: Tabs, newTag: Tabs, update: Boolean = false) {
         val transaction = context.supportFragmentManager.beginTransaction()
         context.supportFragmentManager.findFragmentByTag(lastTag.name).let {
-
             if (it != null) {
                 transaction.hide(it)
             }
@@ -88,8 +89,8 @@ class BottomBar(val context: HomeActivity) {
                 transaction.show(it)
             }
         }
-        transaction.commit()
-        if(update == true)
+        transaction.commitNow()
+        if(update)
             currentTab = newTag
         adjustExternalComponents()
 

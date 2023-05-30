@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.activities.findcourt
 
+import android.app.Application
 import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
 import android.view.View
@@ -11,6 +12,7 @@ import com.bumptech.glide.Priority
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import dagger.hilt.android.internal.managers.FragmentComponentManager
+import dagger.hilt.android.qualifiers.ApplicationContext
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.enums.Sports
@@ -30,7 +32,6 @@ class CourtSearchViewHolder(val v: View, val callback: (String, Sports) -> Unit,
     fun bind(court: CourtDTO){
 
         v.setOnClickListener {
-            Utils.openProgressDialog(v.context)
             callback(court.name, Sports.valueOf(court.sport))
         }
         name.text = court.name

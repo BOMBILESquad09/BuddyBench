@@ -60,7 +60,10 @@ class ShowProfileFragment(
         super.onResume()
         if (!seeProfile && friendProfile == null) {
             userViewModel.user.observe(this) {
+                println("after success")
+
                 if (it != null) {
+                    println("after success")
                     profile = it
                     setGUI()
                     loadImage()
@@ -259,8 +262,10 @@ class ShowProfileFragment(
     }
 
     private fun loadImage() {
+
         val iv = requireView().findViewById<ImageView>(R.id.profile_image)
         imageViewModel.getUserImage(profile.email, { iv.setImageResource(R.drawable.person) }) {
+            println(it)
             val options: RequestOptions = RequestOptions()
             Glide.with(this)
                 .load(it)
@@ -284,7 +289,6 @@ class ShowProfileFragment(
 
 
         val bottomSheet = RemoveFriendDialog(
-            userViewModel,
         )
 
         bottomSheet.show(parentFragmentManager, "filterSheet")

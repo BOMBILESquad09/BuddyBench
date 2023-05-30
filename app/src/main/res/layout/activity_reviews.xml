@@ -254,7 +254,6 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_medium_500"
                         android:gravity="top|start"
-                        android:hint="@string/write_your_review"
                         android:importantForAutofill="no"
                         android:inputType="textMultiLine"
                         android:lines="3"

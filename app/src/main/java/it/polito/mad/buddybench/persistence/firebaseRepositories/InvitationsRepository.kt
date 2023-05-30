@@ -22,7 +22,7 @@ class InvitationsRepository {
     var subscribed: Boolean = false
 
     fun subscribeInvitations(onFailure: () -> Unit, onSuccess: (Int) -> Unit) {
-        if(subscribed) return
+        if (subscribed) return
         val currentEmail = Firebase.auth.currentUser!!.email!!
         db.collection("users").document(currentEmail).addSnapshotListener { value, error ->
             if (error == null && value != null && value.exists()) {
@@ -45,7 +45,12 @@ class InvitationsRepository {
                 }.filterNotNull()
 
 
-                return@withContext invitations.filter { LocalDateTime.of(it.date, it.startTime) > LocalDateTime.now() }
+                return@withContext invitations.filter {
+                    LocalDateTime.of(
+                        it.date,
+                        it.startTime
+                    ) > LocalDateTime.now()
+                }
             } catch (_: Exception) {
                 onFailure()
             }
@@ -53,157 +58,160 @@ class InvitationsRepository {
         }
     }
 
-    suspend fun sendInvitations(
+    fun sendInvitations(
         reservationDTO: ReservationDTO,
         usersToInvite: List<String>,
         onFailure: () -> Unit,
         onSuccess: () -> Unit
     ) {
-        withContext(Dispatchers.IO) {
-            try {
-                val currentEmail = Firebase.auth.currentUser!!.email!!
-                val reservationDocName = reservationDTO.id
-                val invitationsResponse = db
-                    .collection("reservations")
-                    .document(reservationDocName)
-                    .update(
-                        "pendings",
-                        FieldValue.arrayUnion(*usersToInvite.map { u -> db.document("users/$u") }
-                            .toTypedArray())
-                    )
-                usersToInvite.map {
-                    db.collection("users").document(it)
-                        .update(
-                            "play_request_pendings",
-                            FieldValue.arrayUnion(db.document("reservations/${reservationDTO.id}"))
-                        )
-                }.forEach { it.await() }
-                invitationsResponse.await()
-                onSuccess()
-            } catch (_: Exception) {
-                onFailure()
+        db.runTransaction { t ->
+            val currentEmail = Firebase.auth.currentUser!!.email!!
+            val reservationDocName = reservationDTO.id
+            val reservationDoc = db
+                .collection("reservations")
+                .document(reservationDocName)
+            t.update(reservationDoc,
+                "pendings",
+                FieldValue.arrayUnion(*usersToInvite.map { u -> db.document("users/$u") }
+                    .toTypedArray())
+            )
+            usersToInvite.map {
+                t.update(
+                    db.collection("users").document(it),
+                    "play_request_pendings",
+                    FieldValue.arrayUnion(db.document("reservations/${reservationDTO.id}"))
+                )
             }
+        }.addOnSuccessListener {
+            onSuccess()
+        }.addOnFailureListener {
+            onFailure()
         }
     }
 
-    suspend fun removeInvitations(
+    fun removeInvitations(
         reservationDTO: ReservationDTO,
         usersToInvite: List<String>,
         onFailure: () -> Unit,
         onSuccess: () -> Unit
     ) {
-        withContext(Dispatchers.IO) {
-            try {
-                val currentEmail = Firebase.auth.currentUser!!.email!!
-                val reservationDocName = reservationDTO.id
-                val invitationsResponse = db
-                    .collection("reservations")
-                    .document(reservationDocName)
-                    .update(
-                        mapOf(
-                            "pendings" to FieldValue.arrayRemove(*usersToInvite.map { u ->
-                                db.document(
-                                    "users/$u"
-                                )
-                            }.toTypedArray()),
-                            "accepted" to FieldValue.arrayRemove(*usersToInvite.map { u ->
-                                db.document(
-                                    "users/$u"
-                                )
-                            }.toTypedArray())
+        db.runTransaction { t ->
+
+            val currentEmail = Firebase.auth.currentUser!!.email!!
+            val reservationDocName = reservationDTO.id
+            val invitationDoc = db
+                .collection("reservations")
+                .document(reservationDocName)
+            t.update(
+                invitationDoc,
+                mapOf(
+                    "pendings" to FieldValue.arrayRemove(*usersToInvite.map { u ->
+                        db.document(
+                            "users/$u"
                         )
-                    )
-                usersToInvite.map {
-                    db.collection("users").document(it)
-                        .update(
-                            "play_request_pendings",
-                            FieldValue.arrayRemove(db.document("reservations/${reservationDTO.id}"))
+                    }.toTypedArray()),
+                    "accepted" to FieldValue.arrayRemove(*usersToInvite.map { u ->
+                        db.document(
+                            "users/$u"
                         )
-                }.forEach { it.await() }
-                invitationsResponse.await()
-                onSuccess()
-            } catch (_: Exception) {
-                onFailure()
+                    }.toTypedArray())
+                )
+            )
+            usersToInvite.map {
+                t.update(
+                    db.collection("users").document(it),
+                    "play_request_pendings",
+                    FieldValue.arrayRemove(db.document("reservations/${reservationDTO.id}"))
+                )
             }
-
-
+        }.addOnSuccessListener {
+            onSuccess()
+        }.addOnFailureListener {
+            onFailure()
         }
     }
 
-    suspend fun removeAcceptedInvitations(
+
+    fun removeAcceptedInvitations(
         reservationDTO: ReservationDTO,
         usersToInvite: List<String>,
         onFailure: () -> Unit,
         onSuccess: () -> Unit
     ) {
-        withContext(Dispatchers.IO) {
-            try {
-                val currentEmail = Firebase.auth.currentUser!!.email!!
-                val reservationDocName = reservationDTO.id
-                val invitationsResponse = db
-                    .collection("reservations")
-                    .document(reservationDocName)
-                    .update(
-                        "accepted",
-                        FieldValue.arrayRemove(*usersToInvite.map { u -> db.document("users/$u") }
-                            .toTypedArray())
-                    )
-                invitationsResponse.await()
-                onSuccess()
-            } catch (_: Exception) {
-                onFailure()
-            }
-
-
+        db.runTransaction { t ->
+            val currentEmail = Firebase.auth.currentUser!!.email!!
+            val reservationDocName = reservationDTO.id
+            val invitationsDoc = db
+                .collection("reservations")
+                .document(reservationDocName)
+            t.update(invitationsDoc,
+                "accepted",
+                FieldValue.arrayRemove(*usersToInvite.map { u -> db.document("users/$u") }
+                    .toTypedArray())
+            )
+        }.addOnSuccessListener {
+            onSuccess()
+        }.addOnFailureListener {
+            onFailure()
         }
     }
 
-    suspend fun acceptInvitation(reservationDTO: ReservationDTO, onFailure: () -> Unit, onSuccess: () -> Unit) {
-        withContext(Dispatchers.IO) {
-            try {
-                val currentEmailDoc =
-                    db.collection("users").document(Firebase.auth.currentUser!!.email!!)
-                val reservationDoc = db.collection("reservations").document(reservationDTO.id)
-                val firstResponse = reservationDoc
-                    .update(
-                        mapOf(
-                            "pendings" to FieldValue.arrayRemove(currentEmailDoc),
-                            "accepted" to FieldValue.arrayUnion(currentEmailDoc)
-                        )
-                    )
-                val secondResponse = currentEmailDoc
-                    .update("play_request_pendings", FieldValue.arrayRemove(reservationDoc))
-                firstResponse.await()
-                secondResponse.await()
-                onSuccess()
-            } catch (_: Exception) {
-                onFailure()
-            }
+    fun acceptInvitation(
+        reservationDTO: ReservationDTO,
+        onFailure: () -> Unit,
+        onSuccess: () -> Unit
+    ) {
 
+        db.runTransaction { t ->
+            val currentEmailDoc =
+                db.collection("users").document(Firebase.auth.currentUser!!.email!!)
+            val reservationDoc = db.collection("reservations").document(reservationDTO.id)
+            t
+                .update(
+                    reservationDoc,
+                    mapOf(
+                        "pendings" to FieldValue.arrayRemove(currentEmailDoc),
+                        "accepted" to FieldValue.arrayUnion(currentEmailDoc)
+                    )
+                )
+            t.update(
+                currentEmailDoc,
+                "play_request_pendings",
+                FieldValue.arrayRemove(reservationDoc)
+            )
+        }.addOnSuccessListener {
+            onSuccess()
+        }.addOnFailureListener {
+            onFailure()
         }
     }
 
-    suspend fun refuseInvitation(reservationDTO: ReservationDTO, onFailure: () -> Unit) {
-        withContext(Dispatchers.IO) {
-            try {
-                val currentEmailDoc =
-                    db.collection("users").document(Firebase.auth.currentUser!!.email!!)
-                val reservationDoc = db.collection("reservations").document(reservationDTO.id)
-                val firstResponse = reservationDoc
-                    .update(
-                        mapOf(
-                            "pendings" to FieldValue.arrayRemove(currentEmailDoc)
-                        )
-                    )
-                val secondResponse = currentEmailDoc
-                    .update("play_request_pendings", FieldValue.arrayRemove(reservationDoc))
-                firstResponse.await()
-                secondResponse.await()
-            } catch (_: Exception) {
-                onFailure()
-            }
+    fun refuseInvitation(reservationDTO: ReservationDTO, onFailure: () -> Unit, onSuccess: () -> Unit) {
+        db.runTransaction { t ->
 
+            val currentEmailDoc =
+                db.collection("users").document(Firebase.auth.currentUser!!.email!!)
+            val reservationDoc = db.collection("reservations").document(reservationDTO.id)
+            t
+                .update(
+                    reservationDoc,
+                    mapOf(
+                        "pendings" to FieldValue.arrayRemove(currentEmailDoc)
+                    )
+                )
+
+            t.update(
+                currentEmailDoc,
+                "play_request_pendings",
+                FieldValue.arrayRemove(reservationDoc)
+            )
+
+        }.addOnSuccessListener {
+            onSuccess
+        }.addOnFailureListener {
+            onFailure()
         }
+
     }
 
 

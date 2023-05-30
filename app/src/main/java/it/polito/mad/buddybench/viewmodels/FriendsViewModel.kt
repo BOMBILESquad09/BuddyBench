@@ -3,6 +3,7 @@ package it.polito.mad.buddybench.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.play.core.integrity.p
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -61,13 +62,13 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
 
     var searchText = ""
 
-    val mainScope = MainScope()
     var onFailure: () -> Unit = {}
     lateinit var popNotification: (Profile) -> Unit
 
     var init = true
 
     fun subscribeFriendsList() {
+        println("DIOCANEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
         _lFriends.value = true
         _lPossible.value = true
         _lRequests.value = true
@@ -75,10 +76,10 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
         friendRepository.subscribeFriends({
             _lFriends.postValue(false)
             _lPossible.postValue(false)
-            _lRequests.postValue( false)
+            _lRequests.postValue(false)
         }) {
 
-            mainScope.launch {
+            viewModelScope.launch {
 
                 if (init) {
 
@@ -95,7 +96,7 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     }
 
     fun refreshAll(onSuccess: () -> Unit) {
-        mainScope.launch {
+        viewModelScope.launch {
             userRepository.fetchUser(onFailure =
             {
                 onFailure()
@@ -132,7 +133,8 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
             oldPossibleFriends = possibleFriends.value!!
             val freshPossibleFriends = friendRepository.getNotFriends(onFailure = {
                 _lPossible.postValue(false)
-                onFailure() }){
+                onFailure()
+            }) {
                 _lPossible.postValue(false)
             }
             allPossibleFriends = freshPossibleFriends
@@ -144,27 +146,29 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     private fun getFriendRequests() {
         if (currentUser != null) {
             runBlocking {
-                userRepository.getUser(currentUser.email!!,onFailure = {
+                userRepository.getUser(currentUser.email!!, onFailure = {
                     _lRequests.postValue(false)
-                    onFailure() }) { it ->
+                    onFailure()
+                }) { it ->
 
-                    if(oldFriendsRequests.size < (it.pendings.size)){
+
+                    if (oldFriendsRequests.size < (it.pendings.size)) {
                         //I need to send notifications only to very new one that I received
                         val freshRequestsEmail = it.pendings.map { it.email }
                         val oldRequestsEmail = oldFriendsRequests.map { it.email }
                         freshRequestsEmail.filter { !oldRequestsEmail.contains(it) }.map { fEmail ->
-                            it.pendings.find { f ->  fEmail == f.email }
-                        }.forEach{ p ->
+                            it.pendings.find { f -> fEmail == f.email }
+                        }.forEach { p ->
                             popNotification(p!!)
                         }
-
                     }
 
                     oldFriendsRequests = _friendRequests.value!!
 
-
                     _lRequests.postValue(false)
                     _friendRequests.postValue(it.pendings)
+                    println(it.pendings)
+                    println("doneeeeeeeeeeeeeee")
                 }
             }
 
@@ -184,57 +188,46 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     }
 
 
-
     fun confirmRequest(email: String, onSuccess: () -> Unit) {
-        mainScope.launch {
-            friendRepository.acceptFriendRequest(email,onFailure = onFailure){
-                onSuccess()
-            }
+        friendRepository.acceptFriendRequest(email, onFailure = onFailure) {
+            onSuccess()
+
 
         }
     }
 
     fun rejectRequest(email: String, onSuccess: () -> Unit) {
-        runBlocking {
-            friendRepository.refuseFriendRequest(email,onFailure = onFailure){
-                onSuccess()
-            }
-
-
+        friendRepository.refuseFriendRequest(email, onFailure = onFailure) {
+            onSuccess()
         }
+
+
     }
 
     fun removeFriend(email: String) {
-        mainScope.launch {
-            friendRepository.removeFriend(email,onFailure = onFailure){
+        friendRepository.removeFriend(email, onFailure = onFailure) {
 
-            }
         }
+
     }
 
     fun sendRequest(email: String, onSuccess: () -> Unit) {
-        mainScope.launch {
-            friendRepository.postFriendRequest(email,onFailure = onFailure){
-                _possibleFriends.postValue( _possibleFriends.value!!.map {
-                    val p = it.copy()
-                    if (p.email == email) {
-                        p.isPending = true
-                    }
-                    p
-                })
-                onSuccess()
-            }
+        friendRepository.postFriendRequest(email, onFailure = onFailure) {
+            _possibleFriends.postValue(_possibleFriends.value!!.map {
+                val p = it.copy()
+                if (p.email == email) {
+                    p.isPending = true
+                }
+                p
+            })
+            onSuccess()
         }
     }
 
+
     fun removeFriendRequest(email: String, onSuccess: () -> Unit) {
-        mainScope.launch {
 
-            friendRepository.removeFriendRequest(email,onFailure = onFailure){
-
-            }
-
-
+        friendRepository.removeFriendRequest(email, onFailure = onFailure) {
             _possibleFriends.value = _possibleFriends.value!!.map {
                 val p = it.copy()
                 if (p.email == email) {
@@ -242,30 +235,36 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
                 }
                 p
             }
-
             onSuccess()
         }
+
+
     }
 
-    private fun applyFilterOnPossibleFriends(profiles: List<Profile>): List<Profile>{
-        return profiles.filter{
+    private fun applyFilterOnPossibleFriends(profiles: List<Profile>): List<Profile> {
+        return profiles.filter {
             (
                     it.location!!.contains(searchText, ignoreCase = true)
                             || it.nickname!!.contains(searchText, ignoreCase = true)
                             || it.name!!.contains(searchText, ignoreCase = true)
                             || it.surname!!.contains(searchText, ignoreCase = true)
-                            || it.sports.any{sport -> sport.name.toString().equals(searchText,ignoreCase = true)}
+                            || it.sports.any { sport ->
+                        sport.name.toString().equals(searchText, ignoreCase = true)
+                    }
                     )
         }
     }
+
     fun applyFilter() {
-        _possibleFriends.value = allPossibleFriends.filter{
+        _possibleFriends.value = allPossibleFriends.filter {
             (
                     it.location!!.contains(searchText, ignoreCase = true)
                             || it.nickname!!.contains(searchText, ignoreCase = true)
                             || it.name!!.contains(searchText, ignoreCase = true)
                             || it.surname!!.contains(searchText, ignoreCase = true)
-                            || it.sports.any{sport -> sport.name.toString().contains(searchText,ignoreCase = true)}
+                            || it.sports.any { sport ->
+                        sport.name.toString().contains(searchText, ignoreCase = true)
+                    }
                     )
         }
     }

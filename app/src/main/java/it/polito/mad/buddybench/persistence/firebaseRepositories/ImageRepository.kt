@@ -15,12 +15,20 @@ class ImageRepository {
     suspend fun getUserImage(path: String, onFailure: () -> Unit,onSuccess:(Uri) -> Unit = {}){
         return withContext(Dispatchers.IO) {
             try{
+                println("------getUSERIMAGE-----------")
+                println("profile_images/$path")
+
                 val uri = storage.child("profile_images/$path").downloadUrl.await()
+
                 withContext(Dispatchers.Main){
+                    println("------SUCCESS------------")
                     onSuccess(uri)
                 }
             } catch (e: Exception){
                 withContext(Dispatchers.Main){
+                    println("------ECXP------------")
+
+                    println(e)
                     onFailure()
 
                 }
@@ -60,9 +68,14 @@ class ImageRepository {
     suspend fun postUserImage(path:String,image: Uri, onFailure: () -> Unit, onSuccess: () -> Unit){
         withContext(Dispatchers.IO){
             try {
+                println("diocanneeeeeeeeeeeeeee")
                 storage.child("profile_images/$path").putFile(image).await()
+                println("success")
+
                 onSuccess()
-            } catch (_: Exception){
+            } catch (e: Exception){
+                println("------------errorrrrrr----")
+                println(e)
                 onFailure()
             }
 

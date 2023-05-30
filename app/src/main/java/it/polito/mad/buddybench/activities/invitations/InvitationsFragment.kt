@@ -59,8 +59,8 @@ class InvitationsFragment(context: HomeActivity) : Fragment(R.layout.my_invitati
         }
 
         val onDecline: (ReservationDTO) -> Unit = {
-            viewModel.refuseInvitation(it)
-
+            viewModel.refuseInvitation(it){
+            }
         }
 
         recyclerViewInvitations.adapter = InvitationAdapter(viewModel.invitations.value?: listOf(), onAccept, onDecline )

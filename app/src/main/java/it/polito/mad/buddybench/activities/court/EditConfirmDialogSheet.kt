@@ -19,6 +19,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.activityViewModels
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
 import com.apachat.loadingbutton.core.customViews.CircularProgressButton
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -43,7 +44,6 @@ class EditConfirmDialogSheet(
     private val reservationID: String?,
     private val courtToReserve: CourtDTO,
     private val equipment: Boolean?,
-    private val reservationViewModel: ReservationViewModel,
     private val user: UserDTO,
     private val selectedDate: LocalDate,
     private var oldDate: LocalDate?,
@@ -53,6 +53,7 @@ class EditConfirmDialogSheet(
 
     private lateinit var switch: MaterialCheckBox
     private lateinit var sheet: NestedScrollView
+    private val reservationViewModel: ReservationViewModel  by activityViewModels<ReservationViewModel>()
 
 
     override fun onCreateView(
@@ -115,6 +116,11 @@ class EditConfirmDialogSheet(
                     reservation,
                     editMode,
                     oldDate,
+                    onFailure = {
+                        confirmButton.stopAnimation()
+                        Utils.openNetworkProblemDialog( requireActivity())
+                        this.dismiss()
+                    },
                     {
                         confirmButton.stopAnimation()
                         Utils.openGeneralProblemDialog("Ops", "Seems that the time slots selected are not available", requireActivity())

@@ -29,7 +29,7 @@ class FriendRepository {
 
             if (value != null && value.exists() && error == null) {
                 onSuccess()
-            } else if(error != null){
+            } else if (error != null) {
                 onFailure()
             }
         }
@@ -73,10 +73,11 @@ class FriendRepository {
                 "friend_requests_pending",
                 FieldValue.arrayUnion(db.document("users/$currentEmail"))
             )
-            onSuccess()
 
         }.addOnFailureListener {
             onFailure()
+        }.addOnSuccessListener {
+            onSuccess()
         }
 
 
@@ -99,11 +100,13 @@ class FriendRepository {
                 friendDoc,
                 "friends", FieldValue.arrayRemove(db.document("users/$currentEmail"))
             )
-            onSuccess()
         }
 
             .addOnFailureListener {
                 onFailure()
+            }.addOnSuccessListener {
+                onSuccess()
+
             }
 
     }
@@ -131,62 +134,57 @@ class FriendRepository {
                 friendDoc,
                 "friends", FieldValue.arrayUnion(db.document("users/$currentEmail"))
             )
+
+
+        }.addOnFailureListener {
+            onFailure()
+        }.addOnSuccessListener {
             onSuccess()
 
+        }
 
+    }
+
+    /*rifiuto una richiesta amico*/
+    fun refuseFriendRequest(
+        friendEmail: String,
+        onFailure: () -> Unit,
+        onSuccess: () -> Unit
+    ) {
+
+        db.runTransaction { t ->
+            val currentEmail = Firebase.auth.currentUser!!.email!!
+            t.update(
+                db.collection("users").document(currentEmail), "friend_requests_pending",
+                FieldValue.arrayRemove(db.document("users/$friendEmail"))
+            )
+        }.addOnSuccessListener {
+            onSuccess()
         }.addOnFailureListener {
             onFailure()
         }
 
     }
 
-    /*rifiuto una richiesta amico*/
-    suspend fun refuseFriendRequest(
+
+    fun removeFriendRequest(
         friendEmail: String,
         onFailure: () -> Unit,
         onSuccess: () -> Unit
     ) {
-        withContext(Dispatchers.IO) {
-            try {
-                val currentEmail = Firebase.auth.currentUser!!.email!!
-                db.collection("users").document(currentEmail).update(
-                    "friend_requests_pending",
-                    FieldValue.arrayRemove(db.document("users/$friendEmail"))
-                )
-                    .await()
-                onSuccess()
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    onFailure()
-                }
-            }
 
+        db.runTransaction { t ->
+            val currentEmail = Firebase.auth.currentUser!!.email!!
+            t.update(
+                db.collection("users").document(friendEmail), "friend_requests_pending",
+                FieldValue.arrayRemove(db.document("users/$currentEmail"))
+            )
+        }.addOnSuccessListener {
+            onSuccess()
+        }.addOnFailureListener {
+            onFailure()
         }
     }
 
-
-    suspend fun removeFriendRequest(
-        friendEmail: String,
-        onFailure: () -> Unit,
-        onSuccess: () -> Unit
-    ) {
-        withContext(Dispatchers.IO) {
-            try {
-                val currentEmail = Firebase.auth.currentUser!!.email!!
-                db.collection("users").document(friendEmail).update(
-                    "friend_requests_pending",
-                    FieldValue.arrayRemove(db.document("users/$currentEmail"))
-                )
-                    .await()
-                onSuccess()
-            } catch (_: Exception) {
-                withContext(Dispatchers.Main) {
-                    onFailure()
-                }
-            }
-
-
-        }
-    }
 }
 

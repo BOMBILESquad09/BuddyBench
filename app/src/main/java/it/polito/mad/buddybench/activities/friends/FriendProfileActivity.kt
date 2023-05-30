@@ -25,6 +25,9 @@ class FriendProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        userViewModel.onFailure = {
+            Utils.openNetworkProblemDialog(this)
+        }
         binding = FriendProfileBinding.inflate(layoutInflater)
         val profile = Profile.fromJSON(JSONObject(intent.getStringExtra("profile")))
         bundle.putString("oldProfile", profile.toJSON().toString())

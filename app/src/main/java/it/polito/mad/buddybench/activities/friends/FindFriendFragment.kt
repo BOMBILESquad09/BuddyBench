@@ -87,7 +87,6 @@ class FindFriendFragment : Fragment() {
         // ** Data
         friendsViewModel.possibleFriends.observe(viewLifecycleOwner) {
             if (it != null) {
-                println("ooo")
                 with(rvFindFriends) {
                     val oldList = (adapter as FindFriendRecyclerViewAdapter).values
                     val friendDiff = FriendListDiffUtils(oldList, it)
