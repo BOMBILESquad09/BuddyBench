@@ -171,7 +171,6 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
 
                     _lRequests.postValue(false)
                     _friendRequests.postValue(it.pendings)
-                    println(it.pendings)
                 }
             }
 

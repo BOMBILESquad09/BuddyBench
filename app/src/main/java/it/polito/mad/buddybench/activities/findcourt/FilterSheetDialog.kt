@@ -58,7 +58,6 @@ class FilterSheetDialog(
         rangeSliderPrice.addOnChangeListener(Slider.OnChangeListener { _, value, _ -> showMaxPrice?.text = value.toInt().toString() + "€" })
 
         val confirmButton = view.findViewById<MaterialButton>(R.id.confirmFilter)
-        println(confirmButton.rippleColor)
         confirmButton?.setOnClickListener{
             findCourtViewModel.minRating = rangeSliderRating.value
             findCourtViewModel.maxFee = rangeSliderPrice.value

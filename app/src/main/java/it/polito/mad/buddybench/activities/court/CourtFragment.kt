@@ -100,7 +100,6 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
         // ** Get arguments from activity intent
         getArgs()
         reservationViewModel.onFailure = {
-            println("okkkkkkk")
             Utils.openNetworkProblemDialog(this.requireContext())
         }
         selectedDate = reservationDate ?: LocalDate.now()

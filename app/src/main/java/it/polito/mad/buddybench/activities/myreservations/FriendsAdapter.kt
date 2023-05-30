@@ -16,18 +16,12 @@ class FriendsAdapter(
 ) : RecyclerView.Adapter<FriendsViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendsViewHolder {
-        println("----------------------------")
-        println("----------------ddd------------")
-        println("-----------------sssss-----------")
-        println("---------------ssssaaaa-------------")
+
 
 
 
         print(reservationDTO)
-        println("----------------------------")
-        println("----------------ddd------------")
-        println("-----------------sssss-----------")
-        println("---------------ssssaaaa-------------")
+
         val v = LayoutInflater.from(parent.context)
             .inflate(R.layout.friend_simple_item, parent, false)
         return FriendsViewHolder(v, inNotInvitedList)

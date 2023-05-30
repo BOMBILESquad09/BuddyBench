@@ -15,20 +15,16 @@ class ImageRepository {
     suspend fun getUserImage(path: String, onFailure: () -> Unit,onSuccess:(Uri) -> Unit = {}){
         return withContext(Dispatchers.IO) {
             try{
-                println("------getUSERIMAGE-----------")
-                println("profile_images/$path")
+
 
                 val uri = storage.child("profile_images/$path").downloadUrl.await()
 
                 withContext(Dispatchers.Main){
-                    println("------SUCCESS------------")
                     onSuccess(uri)
                 }
             } catch (e: Exception){
                 withContext(Dispatchers.Main){
-                    println("------ECXP------------")
 
-                    println(e)
                     onFailure()
 
                 }

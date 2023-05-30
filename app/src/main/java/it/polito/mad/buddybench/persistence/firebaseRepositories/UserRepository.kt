@@ -171,7 +171,6 @@ class UserRepository {
                     )
                 }
             } catch (e: Exception) {
-                println(e)
                 withContext(Dispatchers.Main) {
 
                     onFailure()

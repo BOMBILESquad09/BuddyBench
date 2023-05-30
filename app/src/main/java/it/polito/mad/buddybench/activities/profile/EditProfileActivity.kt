@@ -179,7 +179,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
             imageViewModel.getUserImage(profile.email,{
                 imageEdit.setImageResource(R.drawable.person)
             }){
-                println(it)
                 Glide.with(this)
                     .load(it)
                     .placeholder(R.drawable.loading)
@@ -187,7 +186,6 @@ class EditProfileActivity : AppCompatActivity(), EditSportsDialog.NoticeDialogLi
                     .into(imageEdit)
             }
         } catch (w: Exception){
-            println(w)
             imageEdit.setImageResource(R.drawable.person)
         }
         //resizeImageView()
