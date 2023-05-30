@@ -1,106 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/swiperefresh"
+<LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
-        android:name="it.polito.mad.buddybench.activities.friends.FindFriendFragment"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefresh"
+        android:paddingVertical="1dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="1dp"/>
 
         <LinearLayout
+            android:name="it.polito.mad.buddybench.activities.friends.FindFriendFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="16dp"
-            android:orientation="vertical">
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="2dp"
-                android:layout_marginHorizontal="16dp"
-                app:cardCornerRadius="24dp"
-                app:cardElevation="4dp">
-
-                <EditText
-                    android:id="@+id/search_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:backgroundTint="@color/cardview_light_background"
-                    android:drawableStart="@drawable/search"
-                    android:drawablePadding="8dp"
-                    android:hint="Search by user, their sports or locality"
-                    android:inputType="text"
-                    android:textSize="13sp" />
-            </com.google.android.material.card.MaterialCardView>
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:id="@+id/pb_find_friends"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
 
-                <ProgressBar
-                    android:id="@+id/progress_circular"
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
+                    android:layout_marginVertical="2dp"
+                    android:layout_marginHorizontal="16dp"
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="4dp">
 
-                <TextView
+                    <EditText
+                        android:id="@+id/search_edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:backgroundTint="@color/cardview_light_background"
+                        android:drawableStart="@drawable/search"
+                        android:drawablePadding="8dp"
+                        android:hint="Search by user, their sports or locality"
+                        android:inputType="text"
+                        android:textSize="13sp" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <LinearLayout
+                    android:id="@+id/pb_find_friends"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/loading"
-                    android:textSize="17sp"
-                    />
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/empty"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <View
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-
-                <TextView
-                    android:id="@+id/tv_empty"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:text="@string/you_have_no_friends"
-                    android:textColor="@color/disabled"
-                    android:textSize="20sp" />
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-                <View
-                    android:layout_width="wrap_content"
+                    <ProgressBar
+                        android:id="@+id/progress_circular"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/loading"
+                        android:textSize="17sp"
+                        />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/tv_empty"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/you_have_no_friends"
+                        android:textColor="@color/disabled"
+                        android:textSize="20sp" />
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:visibility="gone"
+                    android:id="@+id/rv_find_friends"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1" />
+                    android:layout_marginHorizontal="16dp"/>
             </LinearLayout>
 
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:visibility="gone"
-                android:id="@+id/rv_find_friends"
-                android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginHorizontal="16dp"/>
         </LinearLayout>
-
-
-    </LinearLayout>
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</LinearLayout>

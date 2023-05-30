@@ -141,11 +141,7 @@ class CourtRepository {
 
                             finalCourts = finalCourts.filter { c ->
                                 if (timeSlotsOccupied[c.getId()] != null) {
-                                    println(c.getId())
-                                    println(timeSlotsOccupied[c.getId()])
-                                    println(!timeSlotsOccupied[c.getId()]!!.contains(
-                                        LocalTime.now().truncatedTo(ChronoUnit.HOURS)
-                                    ))
+
                                     !timeSlotsOccupied[c.getId()]!!.contains(
                                         LocalTime.now().truncatedTo(ChronoUnit.HOURS)
                                     )
