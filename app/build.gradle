@@ -109,7 +109,7 @@ dependencies {
 
 }
 android{
-    /*signingConfigs {
+   /* signingConfigs {
 
         release {
             storeFile file(RELEASE_STORE_FILE)

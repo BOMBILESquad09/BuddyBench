@@ -7,8 +7,8 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.*
-import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -198,7 +198,13 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             })
         }
+        filterButton.postOnAnimation{
+            filterButton.visibility = View.GONE
+            //
+            //espansione search bar
+        }
 
+        filterButton.startAnimation(AnimationUtils.loadAnimation(this.activity,R.anim.fade_out))
         super.onViewCreated(view, savedInstanceState)
     }
 

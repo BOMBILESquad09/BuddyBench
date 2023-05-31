@@ -43,6 +43,7 @@
                     android:text="On Request" />
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:visibility="gone"
                     android:id="@+id/public_visibility"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
