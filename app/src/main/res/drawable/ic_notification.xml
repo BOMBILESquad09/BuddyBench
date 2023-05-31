@@ -6,15 +6,13 @@
     android:viewportHeight="128">
 
   <path
-      android:fillColor="#ffffff"
-      android:strokeColor="@color/md_theme_light_primary"
+      android:strokeColor="@color/md_theme_light_text"
       android:strokeWidth="5"
       android:strokeLineJoin="round"
       android:strokeLineCap="round"
       android:pathData="M63.9092 34.4286V94.4286M24.9773 43C24.9773 40.7267 25.8888 38.5466 27.5113 36.9391C29.1338 35.3316 31.3343 34.4286 33.6288 34.4286H94.1896C96.4841 34.4286 98.6847 35.3316 100.307 36.9391C101.93 38.5466 102.841 40.7267 102.841 43V85.8572C102.841 88.1304 101.93 90.3106 100.307 91.9181C98.6847 93.5255 96.4841 94.4286 94.1896 94.4286H33.6288C31.3343 94.4286 29.1338 93.5255 27.5113 91.9181C25.8888 90.3106 24.9773 88.1304 24.9773 85.8572V43Z" />
   <path
-      android:fillColor="#ffffff"
-      android:strokeColor="@color/md_theme_light_primary"
+      android:strokeColor="@color/md_theme_light_text"
       android:strokeWidth="5"
       android:strokeLineJoin="round"
       android:strokeLineCap="round"

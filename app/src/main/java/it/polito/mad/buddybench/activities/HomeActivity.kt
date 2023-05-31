@@ -341,7 +341,7 @@ class HomeActivity : AppCompatActivity() {
         )
 
         val builder = NotificationCompat.Builder(this, "invitationRequests")
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_notification_large)
             .setContentTitle(getString(R.string.invitation_channel_description))
             .setContentText(text)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
@@ -374,7 +374,7 @@ class HomeActivity : AppCompatActivity() {
         )
 
         val builder = NotificationCompat.Builder(this, "friendRequests")
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_notification_large)
 
             .setContentTitle(getString(R.string.friend_channel_description))
             .setContentText(text)
