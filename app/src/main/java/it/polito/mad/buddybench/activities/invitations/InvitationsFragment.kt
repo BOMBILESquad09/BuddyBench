@@ -54,7 +54,6 @@ class InvitationsFragment(context: HomeActivity) : Fragment(R.layout.my_invitati
         }
         val onAccept: (ReservationDTO) -> Unit = {
             viewModel.acceptInvitation(it){
-                reservationViewModel.getAllByUser()
             }
         }
 

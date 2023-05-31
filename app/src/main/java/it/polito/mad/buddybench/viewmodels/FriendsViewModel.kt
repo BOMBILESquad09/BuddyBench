@@ -68,17 +68,16 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     var init = true
 
     fun subscribeFriendsList() {
-        println("DIOCANEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
-        _lFriends.value = true
-        _lPossible.value = true
-        _lRequests.value = true
+
 
         friendRepository.subscribeFriends({
             _lFriends.postValue(false)
             _lPossible.postValue(false)
             _lRequests.postValue(false)
         }) {
-
+            _lFriends.value = true
+            _lPossible.value = true
+            _lRequests.value = true
             viewModelScope.launch {
 
                 if (init) {
@@ -99,6 +98,10 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launch {
             userRepository.fetchUser(onFailure =
             {
+
+                _lFriends.postValue(false)
+                _lPossible.postValue(false)
+                _lRequests.postValue(false)
                 onFailure()
                 onSuccess()
             }
@@ -144,6 +147,7 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun getFriendRequests() {
+
         if (currentUser != null) {
             runBlocking {
                 userRepository.getUser(currentUser.email!!, onFailure = {
@@ -167,8 +171,6 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
 
                     _lRequests.postValue(false)
                     _friendRequests.postValue(it.pendings)
-                    println(it.pendings)
-                    println("doneeeeeeeeeeeeeee")
                 }
             }
 

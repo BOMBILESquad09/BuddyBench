@@ -100,7 +100,6 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
         // ** Get arguments from activity intent
         getArgs()
         reservationViewModel.onFailure = {
-            println("okkkkkkk")
             Utils.openNetworkProblemDialog(this.requireContext())
         }
         selectedDate = reservationDate ?: LocalDate.now()
@@ -272,7 +271,7 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
             }
         }
         imageViewModel.getCourtImage(court.path  + ".jpg", {
-            binding.backgroundImage.setImageBitmap(BitmapFactory.decodeStream(view?.context?.assets?.open("drawable/default_image.jpg")))
+            binding.backgroundImage.setImageResource(R.drawable.default_image)
         }) {
             Glide.with(this)
                 .load(it)

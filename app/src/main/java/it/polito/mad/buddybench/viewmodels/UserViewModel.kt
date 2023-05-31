@@ -229,9 +229,12 @@ class UserViewModel @Inject constructor() : ViewModel() {
 
     }
 
-    fun removeFriend(onSuccess: (Profile) -> Unit) {
-            friendRepository.removeFriend(user.value!!.email, {
-            }) {
+    fun removeFriend(onFailure: () -> Unit,onSuccess: (Profile) -> Unit) {
+            friendRepository.removeFriend(user.value!!.email,{
+               onFailure()
+               this.onFailure()
+            }
+            ) {
                 val p = user.value!!.copy()
                 p.isFriend = false
                 p.isPending = false

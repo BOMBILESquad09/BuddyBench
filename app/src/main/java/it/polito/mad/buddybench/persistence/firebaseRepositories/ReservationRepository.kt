@@ -45,6 +45,7 @@ class ReservationRepository {
         return withContext(Dispatchers.IO) {
             try {
                 val currentEmail = Firebase.auth.currentUser!!.email!!
+                val myProfile = UserRepository.serializeUser(db.collection("users").document(currentEmail).get().await().data  as Map<String, Object>)
                 val result = db.collection("reservations")
                     .whereEqualTo("user", db.document("users/$currentEmail")).get()
                 val resultInvitedReservations = db.collection("reservations")
@@ -71,6 +72,7 @@ class ReservationRepository {
                             .map { it.await() }
                             .map { UserRepository.serializeUser(it.data as Map<String, Object>) }
 
+
                     val pendingUsers =
                         (res.data["pendings"] as List<DocumentReference>).map { it.get() }
                             .map { it.await() }
@@ -78,7 +80,7 @@ class ReservationRepository {
                     reservationDTO.court = court.toObject(CourtDTO::class.java)!!
                     reservationDTO.accepted = acceptedUsers
                     reservationDTO.pendings = pendingUsers
-
+                    reservationDTO.userOrganizer = myProfile
                     reservations.add(reservationDTO)
                 }
                 for (res in resultInvitedReservations.await()) {
@@ -97,12 +99,14 @@ class ReservationRepository {
                         (res.data["accepted"] as List<DocumentReference>).map { it.get() }
                             .map { it.await() }
                             .map { UserRepository.serializeUser(it.data as Map<String, Object>) }
+                            .filter { it.email == Firebase.auth.currentUser!!.email }
                     reservationDTO.court = court.toObject(CourtDTO::class.java)!!
-                    reservationDTO.accepted = acceptedUsers
                     reservationDTO.userOrganizer = UserRepository.serializeUser(
                         (res.data["user"] as DocumentReference).get()
                             .await().data!! as Map<String, Object>
                     )
+                    reservationDTO.accepted = acceptedUsers.plusElement(reservationDTO.userOrganizer)
+
                     reservations.add(reservationDTO)
                 }
 
@@ -174,7 +178,6 @@ class ReservationRepository {
 
                             t.set(reservationDoc, reservationMap)
                             if ((count + (reservationDTO.endTime.hour - reservationDTO.startTime.hour)) == slots) {
-
 
                                 t.set(
                                     uc,
@@ -329,14 +332,13 @@ class ReservationRepository {
 
     suspend fun getReservation(
         reservationID: String,
-        userOrganizer: Boolean = false,
         onFailure: () -> Unit
     ): ReservationDTO? {
         return withContext(Dispatchers.IO) {
             try {
                 val res = db.collection("reservations").document(reservationID).get().await()
                 withContext(Dispatchers.Default) {
-                    mappingReservationFromDocument(res, userOrganizer)
+                    mappingReservationFromDocument(res)
                 }
             } catch (_: Exception) {
                 onFailure()
@@ -371,7 +373,6 @@ class ReservationRepository {
 
     private suspend fun mappingReservationFromDocument(
         document: DocumentSnapshot,
-        userOrganizer: Boolean = true
     ): ReservationDTO {
         return withContext(Dispatchers.IO) {
             val reservationDTO = ReservationDTO()
@@ -383,11 +384,10 @@ class ReservationRepository {
             reservationDTO.endTime = LocalTime.of((document.data!!["endTime"] as Long).toInt(), 0)
             reservationDTO.equipment = document.data!!["equipment"] as Boolean
             reservationDTO.id = document.data!!["id"] as String
-            if (userOrganizer)
-                reservationDTO.userOrganizer = UserRepository.serializeUser(
+            reservationDTO.userOrganizer = UserRepository.serializeUser(
                     (document.data!!["user"] as DocumentReference).get()
                         .await().data!! as Map<String, Object>
-                )
+            )
             val acceptedUsers =
                 (document.data!!["accepted"] as List<DocumentReference>).map { it.get() }
                     .map { it.await() }
@@ -405,6 +405,7 @@ class ReservationRepository {
 
             reservationDTO.requests = requestingUsers
             reservationDTO.accepted = acceptedUsers
+            reservationDTO.accepted = acceptedUsers.plusElement(reservationDTO.userOrganizer).reversed()
             reservationDTO.pendings = pendingUsers
             val court = (document.data!!["court"] as DocumentReference).get().await()
             reservationDTO.court = court.toObject(CourtDTO::class.java)!!

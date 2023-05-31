@@ -10,6 +10,8 @@
     <color name="seed">#1b1b6c</color>
     <color name="gold">#FFD700</color>
     <color name="md_theme_light_primary">#1b1b6c</color>
+    <color name="md_theme_light_primary_">#1b1b60</color>
+
     <color name="md_theme_light_onPrimary">#FFFBFF</color>
     <color name="md_theme_light_primaryContainer">#E1E0FF</color>
     <color name="md_theme_light_onPrimaryContainer">#1b1b6c</color>

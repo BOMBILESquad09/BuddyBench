@@ -11,6 +11,8 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.card.MaterialCardView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.internal.managers.FragmentComponentManager
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
@@ -24,9 +26,8 @@ class FriendsViewHolder(val v: View, private val inNotInvitedList: Boolean):  Re
     private val profileCv: MaterialCardView = v.findViewById(R.id.profile_cv)
 
 
-    fun bind(profile: Pair<Profile, Boolean>, onChange: (Profile) -> Unit){
+    fun bind(profile: Pair<Profile, Boolean>, isOrganizer: Boolean = false,onChange: (Profile) -> Unit){
         ((FragmentComponentManager.findActivity(v.context) as HomeActivity)).imageViewModel.getUserImage(profile.first.email,{
-
             profileIv.setImageResource(R.drawable.person)
 
         }){
@@ -46,12 +47,23 @@ class FriendsViewHolder(val v: View, private val inNotInvitedList: Boolean):  Re
             onChange(profile.first)
         }
 
-        profileCv.setOnLongClickListener {
-            Utils.goToProfileFriend(
-                FragmentComponentManager.findActivity(v.context) as HomeActivity,
-                profile.first
-            )
-            true
+
+
+        if(isOrganizer) {
+            v.findViewById<View>(R.id.organizer).visibility = View.VISIBLE
+        }
+
+        if(profile.first.email == Firebase.auth.currentUser!!.email!!){
+            v.findViewById<TextView>(R.id.organizer).text = "You"
+            v.findViewById<View>(R.id.organizer).visibility = View.VISIBLE
+        } else{
+            profileCv.setOnLongClickListener {
+                Utils.goToProfileFriend(
+                    FragmentComponentManager.findActivity(v.context) as HomeActivity,
+                    profile.first
+                )
+                true
+            }
         }
 
     }

@@ -177,9 +177,10 @@
                         style="@style/Widget.AppCompat.RatingBar.Indicator"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:isIndicator="false"
+                        android:isIndicator="true"
                         android:paddingVertical="8dp"
                         android:progressTint="@color/gold"
+                        android:clickable="false"
                         android:stepSize="1" />
 
 

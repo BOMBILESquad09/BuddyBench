@@ -72,7 +72,6 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
                 pbFriendRequests.visibility = View.VISIBLE
                 //rvFriendRequests.visibility = View.GONE
             } else {
-                println("ddddddd")
                 pbFriendRequests.visibility = View.GONE
 
             }

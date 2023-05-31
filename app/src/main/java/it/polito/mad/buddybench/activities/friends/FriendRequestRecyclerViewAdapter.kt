@@ -68,6 +68,7 @@ class FriendRequestRecyclerViewAdapter(
     inner class RequestViewHolder(val binding: FragmentFriendRequestItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val tvName: TextView = binding.tvFriendRequestName
+        val tvNickname: TextView = binding.tvFriendUsername
         val ivImage: ImageView = binding.ivFriendRequestImage
         val btnConfirm = binding.btnConfirmRequest
         val btnReject = binding.btnRejectRequest
@@ -80,6 +81,7 @@ class FriendRequestRecyclerViewAdapter(
 
         fun bind(profile: Profile) {
             tvName.text = profile.fullName
+            tvNickname.text = profile.nickname
             ((FragmentComponentManager.findActivity(binding.root.context) as HomeActivity)).imageViewModel.getUserImage(
                 profile.email,
                 {

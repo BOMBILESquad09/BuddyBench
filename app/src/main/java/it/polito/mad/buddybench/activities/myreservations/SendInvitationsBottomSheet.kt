@@ -46,7 +46,7 @@ class SendInvitationsBottomSheet(
 
 
     private val userViewModel by activityViewModels<UserViewModel>()
-    private val invitationViewModel by viewModels<InvitationsViewModel>()
+    private val invitationViewModel by activityViewModels<InvitationsViewModel>()
     private val reservationViewModel by activityViewModels<ReservationViewModel>()
     private val expired =
         (LocalDateTime.of(reservationDTO.date, reservationDTO.endTime) < LocalDateTime.now())
@@ -122,15 +122,16 @@ class SendInvitationsBottomSheet(
                     reservationViewModel.updatePendingFriends(it)
 
             }
+        val res: ReservationDTO? = if(invited)  reservationDTO else null
         recyclerViewAccepted.adapter =
-            FriendsAdapter(reservationViewModel.acceptedFriends.value ?: listOf(), false) {
+            FriendsAdapter(reservationViewModel.acceptedFriends.value ?: listOf(), false, res) {
                 if (!invited)
                     reservationViewModel.updateAcceptedFriends(it)
             }
 
         userViewModel.getUser().observe(this) {
             reservationViewModel.profile = it
-            reservationViewModel.getReservation(reservationDTO.id)
+            reservationViewModel.getReservation(reservationDTO.id, !invited)
         }
 
 
@@ -202,7 +203,7 @@ class SendInvitationsBottomSheet(
                     removeButton.setOnClickListener {
 
                         val dialogCard =
-                            LayoutInflater.from(context).inflate(R.layout.general_problem, null)
+                            LayoutInflater.from(context).inflate(R.layout.confirm_cancel, null)
                         val builder: AlertDialog.Builder = AlertDialog.Builder(this.requireContext())
                         builder.setView(dialogCard)
                         val dialog: AlertDialog = builder.create()
@@ -212,7 +213,7 @@ class SendInvitationsBottomSheet(
                         bodyView.text = "Are you sure to cancel your participation?"
                         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
                         dialog.setCancelable(true)
-                        dialogCard.findViewById<View>(R.id.ok).setOnClickListener {
+                        dialogCard.findViewById<View>(R.id.confirm).setOnClickListener {
                             invitationViewModel.removeAcceptedInvitations(
                                 reservationDTO,
                                 listOf(Firebase.auth.currentUser!!.email!!)
@@ -223,6 +224,11 @@ class SendInvitationsBottomSheet(
                                 this.dismiss()
                             }
                         }
+
+                        dialogCard.findViewById<View>(R.id.cancel).setOnClickListener {
+                            this.dismiss()
+                        }
+
                         dialog.show()
 
                     }

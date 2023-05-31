@@ -320,7 +320,11 @@
                     android:backgroundTint="@color/md_theme_light_primary"
                     android:text="@string/confirm"
                     android:textAllCaps="false"
-                    android:textColor="@color/md_theme_light_background" />
+                    android:textColor="@color/md_theme_light_background"
+                    app:initialCornerAngle="200dp"
+                    app:spinning_bar_width="1dp"
+                    app:spinning_bar_color="#FFF"
+                    app:spinning_bar_padding="4dp" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/info"

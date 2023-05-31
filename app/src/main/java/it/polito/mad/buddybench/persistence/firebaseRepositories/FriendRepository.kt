@@ -42,11 +42,14 @@ class FriendRepository {
         return withContext(Dispatchers.IO) {
             try {
                 val currentEmail = Firebase.auth.currentUser!!.email!!
+                val currUserRequests = db.collection("users").document(currentEmail).get().await().data!!["friend_requests_pending"] as List<DocumentReference>
                 val usersDocuments = db.collection("users").get().await()
                 val userFriends =
                     (usersDocuments.documents.find { it.id == currentEmail }!!.data!!["friends"] as List<DocumentReference>)
                 val otherUsers =
-                    usersDocuments.filter { !userFriends.map { f -> f.id }.contains(it.id) }.map {
+                    usersDocuments.filter { !userFriends.map { f -> f.id }.contains(it.id) }
+                        .filter { !currUserRequests.map { fr -> fr.id }.contains(it.id) }
+                        .map {
                         UserRepository.serializeUser(it.data as Map<String, Object>)
                     }
                 onSuccess()

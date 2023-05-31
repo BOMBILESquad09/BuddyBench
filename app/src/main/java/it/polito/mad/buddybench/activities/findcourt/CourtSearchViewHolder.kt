@@ -42,7 +42,7 @@ class CourtSearchViewHolder(val v: View, val callback: (String, Sports) -> Unit,
         // ** Reviews
         ((FragmentComponentManager.findActivity(v.context) as HomeActivity)).imageViewModel.getCourtImage(court.path + ".jpg",
             {
-                courtImage.setImageBitmap(BitmapFactory.decodeStream(courtImage.context?.assets?.open("drawable/default_image.jpg")))
+                courtImage.setImageResource(R.drawable.default_image)
             }){
             val options = RequestOptions()
             Glide.with(v.context)
@@ -59,7 +59,6 @@ class CourtSearchViewHolder(val v: View, val callback: (String, Sports) -> Unit,
         }
 
         courtRating.setOnClickListener {
-            Utils.openProgressDialog(v.context)
             reviewsCallback(court.name, Sports.valueOf(court.sport)) }
 
         /*val bitmap = try {
