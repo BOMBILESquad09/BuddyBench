@@ -58,6 +58,7 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
                 _loading.postValue(false)
                 _currentCourts.postValue(listOf())
                 onFailure()
+
             }){
                     list ->
                     _loading.postValue(false)
