@@ -9,7 +9,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:orientation="horizontal">
 
         <com.google.android.material.card.MaterialCardView
@@ -135,15 +134,13 @@
             android:id="@+id/filterButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="1dp"
-            android:layout_marginEnd="1dp"
             app:cardCornerRadius="99dp">
 
             <ImageView
                 android:id="@+id/filterIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="12dp"
+                android:padding="8dp"
                 android:src="@drawable/filter" />
 
         </com.google.android.material.card.MaterialCardView>
