@@ -259,4 +259,6 @@
     <string name="join_channel_description">New Join Request</string>
     <string name="edit_sports_error">You already selected all the sports!</string>
     <string name="edit_sports_error_title">Edit Sports</string>
+    <string name="courts">Courts</string>
+    <string name="games">Games</string>
 </resources>

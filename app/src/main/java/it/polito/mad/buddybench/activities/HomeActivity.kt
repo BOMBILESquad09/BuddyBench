@@ -1,6 +1,5 @@
 package it.polito.mad.buddybench.activities
 
-import android.Manifest
 import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -8,54 +7,36 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.ui.text.capitalize
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import com.bumptech.glide.Glide
-import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.friends.FriendsFragment
 import it.polito.mad.buddybench.activities.profile.EditProfileActivity
-import it.polito.mad.buddybench.activities.profile.ShowProfileFragment
-import it.polito.mad.buddybench.classes.BitmapUtils
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.enums.Tabs
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.utils.BottomBar
 import it.polito.mad.buddybench.utils.Utils
-import it.polito.mad.buddybench.viewmodels.FindCourtViewModel
-import it.polito.mad.buddybench.viewmodels.FriendsViewModel
-import it.polito.mad.buddybench.viewmodels.ImageViewModel
-import it.polito.mad.buddybench.viewmodels.InvitationsViewModel
-import it.polito.mad.buddybench.viewmodels.ReservationViewModel
-import it.polito.mad.buddybench.viewmodels.UserViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import it.polito.mad.buddybench.viewmodels.*
 import nl.joery.animatedbottombar.AnimatedBottomBar
 import org.json.JSONObject
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Locale
+import java.util.*
 
 @AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
