@@ -65,7 +65,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         reservationDTO: ReservationDTO,
         visibilities: Visibilities,
         onFailure: () -> Unit,
-        onSuccess: () -> Unit
+        onSuccess: (Visibilities) -> Unit
     ) {
         mainScope.launch {
             reservationRepository.setVisibility(
@@ -174,13 +174,14 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
 
     fun getPublicGames(
         date: LocalDate,
-        sports: String,
+        sports: Sports,
         onSuccess: (List<ReservationDTO>) -> Unit,
         onFailure: () -> Unit
     ) {
         mainScope.launch {
-            reservationRepository.getPublicGames(date, sports, onFailure, onSuccess)
+            reservationRepository.getPublicGames(date, sports.toString().uppercase(), onFailure, onSuccess)
         }
+
     }
 
     private fun initPendingFriends(reservation: ReservationDTO) {

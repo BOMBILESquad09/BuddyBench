@@ -81,6 +81,8 @@ class ReservationRepository {
                     reservationDTO.accepted = acceptedUsers
                     reservationDTO.pendings = pendingUsers
                     reservationDTO.userOrganizer = myProfile
+                    reservationDTO.visibility = Visibilities.fromStringToVisibility(res.data["visibilty"].toString())!!
+
                     reservations.add(reservationDTO)
                 }
                 for (res in resultInvitedReservations.await()) {
@@ -106,6 +108,8 @@ class ReservationRepository {
                             .await().data!! as Map<String, Object>
                     )
                     reservationDTO.accepted = acceptedUsers.plusElement(reservationDTO.userOrganizer)
+
+                    reservationDTO.visibility = Visibilities.fromStringToVisibility(res.data["visibilty"].toString())!!
 
                     reservations.add(reservationDTO)
                 }
@@ -365,7 +369,7 @@ class ReservationRepository {
         reservationMap["accepted"] = listOf<DocumentReference>()
         reservationMap["pendings"] = listOf<DocumentReference>()
         reservationMap["requests"] = listOf<DocumentReference>()
-        reservationMap["visibilty"] = Visibilities.PRIVATE
+        reservationMap["visibilty"] = reservationDTO.visibility
         reservationMap["id"] = reservationID
 
         return reservationMap
@@ -403,6 +407,7 @@ class ReservationRepository {
                 .map { it.await() }
                 .map { UserRepository.serializeUser(it.data as Map<String, Object>) }
 
+            reservationDTO.visibility = Visibilities.fromStringToVisibility(document.data!!["visibilty"].toString())!!
             reservationDTO.requests = requestingUsers
             reservationDTO.accepted = acceptedUsers
             reservationDTO.accepted = acceptedUsers.plusElement(reservationDTO.userOrganizer).reversed()
@@ -422,12 +427,14 @@ class ReservationRepository {
     ) {
         withContext(Dispatchers.IO) {
             try {
+
                 val list = db.collection("reservations")
                     .whereIn(
                         "visibilty",
                         mutableListOf(Visibilities.ON_REQUEST.name, Visibilities.PUBLIC.name)
                     )
                     .whereEqualTo("date", date.toString())
+                    .whereGreaterThan("endTime", LocalTime.now().hour)
                     .get().await().documents
                     .filter { doc ->
                         val ref = doc.data!!.get("court") as DocumentReference
@@ -439,7 +446,8 @@ class ReservationRepository {
                         }
                     }.map { it.await() }
                 onSuccess(list)
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                println(e)
                 onFailure()
             }
         }
@@ -450,7 +458,7 @@ class ReservationRepository {
         reservationDTO: ReservationDTO,
         visibilities: Visibilities,
         onFailure: () -> Unit,
-        onSuccess: () -> Unit
+        onSuccess: (Visibilities) -> Unit
     ) {
         db.runTransaction {
             val reservationPath = db.collection("reservations").document(reservationDTO.id)
@@ -460,7 +468,8 @@ class ReservationRepository {
                     "visibilty" to visibilities
                 )
             )
-            onSuccess()
+        }.addOnSuccessListener {
+            onSuccess(visibilities)
         }.addOnFailureListener {
             onFailure()
         }

@@ -27,6 +27,7 @@ import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.friends.FriendsFragment
 import it.polito.mad.buddybench.activities.profile.EditProfileActivity
 import it.polito.mad.buddybench.classes.Profile
+import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.enums.Tabs
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.utils.BottomBar

@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.forEach
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.ktx.auth
@@ -23,14 +24,16 @@ import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.court.CourtActivity
 import it.polito.mad.buddybench.activities.court.ReviewsActivity
 import it.polito.mad.buddybench.enums.Sports
+import it.polito.mad.buddybench.enums.Visibilities
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.utils.Utils
+import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 
-class ReservationViewHolder(v: View, private val launcher: ActivityResultLauncher<Intent>) :
+class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, private val launcher: ActivityResultLauncher<Intent>) :
     RecyclerView.ViewHolder(v) {
 
     private val courtName: TextView = v.findViewById(R.id.card_invitation_court)
@@ -134,22 +137,37 @@ class ReservationViewHolder(v: View, private val launcher: ActivityResultLaunche
                             confirm.isFocusable = false
                             confirm.isClickable = false
                             val radioGroup = dialogCard.findViewById<RadioGroup>(R.id.visibility_group)
-                            radioGroup.setOnCheckedChangeListener { radioGroup, i ->
-                                confirm.isFocusable = true
-                                confirm.isClickable = true
-                                confirm.setOnClickListener{
 
-                                }
-                            }
                             val builder: AlertDialog.Builder = AlertDialog.Builder(view.context)
                             builder.setView(dialogCard)
                             val dialog: AlertDialog = builder.create()
                             dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
                             dialog.show()
                             dialogCard.findViewById<View>(R.id.cancel).setOnClickListener {
-
                                 dialog.dismiss()
                             }
+                            val private = radioGroup.findViewById<RadioButton>(R.id.private_visibility)
+                            val onRequest = radioGroup.findViewById<RadioButton>(R.id.on_request_visibility)
+                            if(reservation.visibility == Visibilities.PRIVATE) private.isChecked = true
+                            else onRequest.isChecked = true
+                            radioGroup.setOnCheckedChangeListener { radioGroup, i ->
+                                confirm.isFocusable = true
+                                confirm.isClickable = true
+                                reservation.visibility
+                                confirm.setOnClickListener{
+                                    if(private.isChecked) {
+                                        viewModel.setVisibility(reservation, Visibilities.PRIVATE, {}, {
+                                            reservation.visibility = it
+                                        })
+                                    } else {
+                                        viewModel.setVisibility(reservation, Visibilities.ON_REQUEST, {}, {
+                                            reservation.visibility = it
+                                        })
+                                    }
+                                    dialog.dismiss()
+                                }
+                            }
+
 
                         })
                     mbs.show(

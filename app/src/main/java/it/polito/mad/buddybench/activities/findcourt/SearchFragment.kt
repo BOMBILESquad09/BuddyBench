@@ -216,7 +216,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             searchEditText.addTextChangedListener(object: TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     parent.viewModel.name = s.toString().trim().replace("\\s+".toRegex(), " ")
-                    parent.viewModel.applyFilter()
+                    parent.viewModel.applyFilterOnCourts()
                 }
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
