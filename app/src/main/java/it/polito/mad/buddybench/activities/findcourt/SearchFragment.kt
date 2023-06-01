@@ -82,8 +82,8 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         findTabLayout = view.findViewById(R.id.tab_layout_find);
         findViewPager = view.findViewById(R.id.find_view_pager);
 
-        findTabLayout.addOnTabSelectedListener(FindTabListener(findViewPager){
-            if (it == GAMES_TAB) {
+        findTabLayout.addOnTabSelectedListener(FindTabListener{
+            if (it == FindStates.GAMES.value) {
                 filterButton.startAnimation(AnimationUtils.loadAnimation(this.activity,R.anim.fade_out))
                 filterButton.postOnAnimation {
                     filterButton.visibility = View.GONE
