@@ -25,7 +25,7 @@ android:orientation="vertical">
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.056"
-        app:tint="@color/disabled" />
+        app:tint="@color/md_theme_light_text" />
 
     <TextView
         android:id="@+id/confirm_text"
@@ -68,6 +68,7 @@ android:orientation="vertical">
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cancel"
+            android:backgroundTint="@color/disabled"
             android:paddingHorizontal="24dp"
             style="@style/Buttons"
 
