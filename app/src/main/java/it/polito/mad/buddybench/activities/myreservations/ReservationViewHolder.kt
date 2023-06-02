@@ -191,7 +191,9 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
         }
 
 
-
+        iconReservationVisibility.setOnClickListener {
+            visibilityInfoDialog()
+        }
         setVisibilityIcon()
     }
 
@@ -227,28 +229,33 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
 
     }
 
-    private fun visibilityInfoDialog(v: View, type: String){
-        val builder = AlertDialog.Builder(v.context)
-        val dialogLayout = LayoutInflater.from(v.context).inflate(R.layout.dialog_visibility_info, null)
+    private fun visibilityInfoDialog(){
+        val builder = AlertDialog.Builder(view.context)
+        val dialogLayout = LayoutInflater.from(view.context).inflate(R.layout.dialog_visibility_info, null)
         builder.setView(dialogLayout)
         val dialog: AlertDialog = builder.create()
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
 
         val dialogTypeText : TextView = dialogLayout.findViewById(R.id.dialog_visibility_type)
-        dialogTypeText.text = type.replace("_"," ")
+        dialogTypeText.text = reservation.visibility.name.replace("_"," ")
 
         val dialogIcon : ImageView = dialogLayout.findViewById(R.id.dialog_icon)
         val dialogText: TextView = dialogLayout.findViewById(R.id.dialog_text)
 
-        if (type == "PRIVATE"){
-            dialogIcon.setImageDrawable(v.context.getDrawable(R.drawable.private_visibility))
-            dialogText.text = "Players can only participate by invitation from the organizer"
+
+        when(reservation.visibility){
+            Visibilities.PRIVATE -> {
+                dialogIcon.setImageDrawable(view.context.getDrawable(R.drawable.private_visibility))
+                dialogText.text = "Players can only participate by invitation from the organizer"
+            }
+            Visibilities.ON_REQUEST -> {
+                dialogIcon.setImageDrawable(view.context.getDrawable(R.drawable.global_visibility))
+                dialogText.text = "Any user can send a request to the organizer to participate the game"
+
+            }
+            else -> {}
         }
 
-        else{
-            dialogIcon.setImageDrawable(v.context.getDrawable(R.drawable.global_visibility))
-            dialogText.text = "Any user can send a request to the organizer to participate the game"
-        }
         dialog.show()
     }
 
