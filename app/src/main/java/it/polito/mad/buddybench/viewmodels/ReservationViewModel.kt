@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -59,7 +60,29 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     var oldNotInvitedFriends: List<Pair<Profile, Boolean>> = _notInvitedFriends.value!!
     val notInvitedFriends: LiveData<List<Pair<Profile, Boolean>>> = _notInvitedFriends
 
-    private val mainScope = viewModelScope
+    lateinit var popNotification: (ReservationDTO, Profile) -> Unit
+    private var init: Boolean = false
+    private val reservationCounts: HashMap<String, List<Profile>> = HashMap()
+
+    fun subscribeReservations(onSuccess: (Int) -> Unit): LiveData<HashMap<LocalDate, List<ReservationDTO>>> {
+        reservationRepository.subscribeReservations(onFailure = onFailure, onSuccess = {
+            getAllByUser(refresh = init) { reservations ->
+                var allReservations = reservations
+                allReservations =
+                    allReservations.filter { r ->
+                        LocalDateTime.now() < LocalDateTime.of(
+                            r.date,
+                            r.startTime
+                        )
+                    }.toMutableList()
+                onSuccess(allReservations.sumOf { it.requests.size })
+            }
+
+        })
+        reservationRepository.subscribed = true
+        return reservations
+    }
+
 
     fun setVisibility(
         reservationDTO: ReservationDTO,
@@ -67,7 +90,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         onFailure: () -> Unit,
         onSuccess: (Visibilities) -> Unit
     ) {
-        mainScope.launch {
+        viewModelScope.launch {
             reservationRepository.setVisibility(
                 reservationDTO,
                 visibilities,
@@ -77,24 +100,68 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun getAllByUser(refresh:Boolean = false): LiveData<HashMap<LocalDate, List<ReservationDTO>>> {
+    fun getAllByUser(
+        refresh: Boolean = false,
+        post: (List<ReservationDTO>) -> Unit = {}
+    ): LiveData<HashMap<LocalDate, List<ReservationDTO>>> {
         loading.value = !refresh
-        mainScope.launch {
+
+        viewModelScope.launch {
             reservationRepository.getAllByUser({
 
                 loading.postValue(false)
                 _reservations.postValue(hashMapOf())
                 onFailure()
+                post(listOf())
 
 
             }) {
+                val reservations = it
+
+                if (init) {
+                    sendNotifications(reservations)
+                }
+
+                reservations.values.forEach { rl ->
+                    rl.forEach { r ->
+                        reservationCounts[r.id] = r.requests
+                    }
+                }
+
                 loading.postValue(false)
-                _reservations.postValue(it)
+                _reservations.postValue(reservations)
+                init = true
+
+                val allReservations = reservations.values.flatten()
+
+                post(allReservations)
+
             }
         }
 
 
         return _reservations
+    }
+
+
+    private fun sendNotifications(reservations: HashMap<LocalDate, List<ReservationDTO>>) {
+        reservations.values.flatten().forEach { r ->
+            val entry = reservationCounts[r.id]
+            if (entry == null) {
+                r.requests.forEach { p ->
+                    popNotification(r, p)
+                }
+            } else {
+                val oldProfiles = entry.map { it.email }
+                val newRequests = r.requests.filter {
+                    !oldProfiles.contains(it.email)
+                }
+                newRequests.forEach { p ->
+                    popNotification(r, p)
+                }
+            }
+        }
+
     }
 
     fun saveReservation(
@@ -108,7 +175,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         loading.value = true
 
 
-        mainScope.launch {
+        viewModelScope.launch {
             try {
                 if (!edit) {
                     try {
@@ -167,22 +234,11 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     fun sendRequestToJoin(
         reservation: ReservationDTO
     ) {
-        mainScope.launch {
+        viewModelScope.launch {
             reservationRepository.sendRequestToJoin(reservation)
         }
     }
 
-    fun getPublicGames(
-        date: LocalDate,
-        sports: Sports,
-        onSuccess: (List<ReservationDTO>) -> Unit,
-        onFailure: () -> Unit
-    ) {
-        mainScope.launch {
-            reservationRepository.getPublicGames(date, sports.toString().uppercase(), onFailure, onSuccess)
-        }
-
-    }
 
     private fun initPendingFriends(reservation: ReservationDTO) {
         oldPendingFriends = _pendingFriends.value!!

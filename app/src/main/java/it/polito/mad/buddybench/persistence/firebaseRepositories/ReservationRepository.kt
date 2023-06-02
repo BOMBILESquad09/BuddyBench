@@ -32,6 +32,28 @@ import java.time.format.DateTimeFormatter
 
 class ReservationRepository {
     val db = FirebaseFirestore.getInstance()
+    var subscribed = false
+
+    fun subscribeReservations(onFailure: () -> Unit, onSuccess: () -> Unit){
+        if (subscribed) return
+
+        val currentEmail = Firebase.auth.currentUser!!.email!!
+        db.collection("reservations")
+            .whereEqualTo("user", db.document("users/$currentEmail"))
+            .addSnapshotListener {
+                    value, error ->
+                if (error == null && value != null) {
+                    onSuccess()
+                } else {
+                    onFailure()
+                }
+
+            }
+
+
+    }
+
+
 
     fun getAll(): HashMap<LocalDate, List<ReservationDTO>> {
         TODO()
@@ -114,6 +136,8 @@ class ReservationRepository {
                         (res.data["user"] as DocumentReference).get()
                             .await().data!! as Map<String, Object>
                     )
+                    reservationDTO.requests = listOf()
+
                     reservationDTO.accepted = acceptedUsers.plusElement(reservationDTO.userOrganizer)
 
                     reservationDTO.visibility = Visibilities.fromStringToVisibility(res.data["visibilty"].toString())!!

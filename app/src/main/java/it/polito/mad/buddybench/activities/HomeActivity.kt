@@ -84,10 +84,11 @@ class HomeActivity : AppCompatActivity() {
         userViewModel.sharedPref = sharedPref
         invitationsViewModel.popNotification = { it -> createInvitationNotification(it) }
         friendsViewModel.popNotification = { it -> createFriendRequestNotification(it) }
+        reservationViewModel.popNotification = {r,p -> createJoinRequestNotification(r,p)}
         userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this) {
             if (it != null && it.email != "") {
                 friendsViewModel.subscribeFriendsList()
-                invitationsViewModel.subscribeInvitations() { s ->
+                invitationsViewModel.subscribeInvitations { s ->
                     if (s > 0) {
                         bottomBar.counter[Tabs.INVITATIONS.getId()] = s
                         if (bottomBar.currentTab != Tabs.INVITATIONS)
@@ -104,21 +105,40 @@ class HomeActivity : AppCompatActivity() {
                         bottomBar.bottomBar.clearBadgeAtTabIndex(Tabs.INVITATIONS.getId())
 
                     }
-                    friendsViewModel.friendRequests.observe(this) {
-                        if (it.isNotEmpty()) {
-                            bottomBar.counter[Tabs.FRIENDS.getId()] = it.size
-                            if (bottomBar.currentTab != Tabs.FRIENDS)
-                                bottomBar.bottomBar.setBadgeAtTabIndex(
-                                    Tabs.FRIENDS.getId(),
-                                    AnimatedBottomBar.Badge(
-                                        text = it.size.toString(),
-                                        textColor = Color.WHITE
-                                    )
+
+                }
+                friendsViewModel.friendRequests.observe(this) { p->
+                    if (p.isNotEmpty()) {
+                        bottomBar.counter[Tabs.FRIENDS.getId()] = p.size
+                        if (bottomBar.currentTab != Tabs.FRIENDS)
+                            bottomBar.bottomBar.setBadgeAtTabIndex(
+                                Tabs.FRIENDS.getId(),
+                                AnimatedBottomBar.Badge(
+                                    text = p.size.toString(),
+                                    textColor = Color.WHITE
                                 )
-                        } else {
-                            bottomBar.counter[Tabs.FRIENDS.getId()] = 0
-                            bottomBar.bottomBar.clearBadgeAtTabIndex(Tabs.FRIENDS.getId())
-                        }
+                            )
+                    } else {
+                        bottomBar.counter[Tabs.FRIENDS.getId()] = 0
+                        bottomBar.bottomBar.clearBadgeAtTabIndex(Tabs.FRIENDS.getId())
+                    }
+                }
+
+                reservationViewModel.subscribeReservations { s ->
+                    if (s > 0) {
+                        bottomBar.counter[Tabs.RESERVATIONS.getId()] = s
+                        if (bottomBar.currentTab != Tabs.RESERVATIONS)
+                            bottomBar.bottomBar.setBadgeAtTabIndex(
+                                Tabs.RESERVATIONS.getId(), AnimatedBottomBar.Badge(
+                                    text = s.toString(),
+                                    textColor = Color.WHITE
+                                )
+                            )
+
+                    } else {
+                        bottomBar.counter[Tabs.RESERVATIONS.getId()] = 0
+                        bottomBar.bottomBar.clearBadgeAtTabIndex(Tabs.RESERVATIONS.getId())
+
                     }
                 }
                 return@observe
@@ -259,9 +279,9 @@ class HomeActivity : AppCompatActivity() {
 
     private fun createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = getString(R.string.channel_name)
+            val name = getString(R.string.friend_requests_channel_name)
             val descriptionText = getString(R.string.friend_channel_description)
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel("friendRequests", name, importance).apply {
                 description = descriptionText
             }
@@ -271,10 +291,12 @@ class HomeActivity : AppCompatActivity() {
             notificationManager.createNotificationChannel(channel)
         }
 
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = getString(R.string.channel_name)
+            val name = getString(R.string.invitation_channel_description)
             val descriptionText = getString(R.string.invitation_channel_description)
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel("invitationRequests", name, importance).apply {
                 description = descriptionText
             }
@@ -287,8 +309,8 @@ class HomeActivity : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-            val name = getString(R.string.channel_name)
-            val descriptionText = getString(R.string.invitation_channel_description)
+            val name = getString(R.string.join_requests_channel_name)
+            val descriptionText = getString(R.string.join_channel_description)
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel("joinRequests", name, importance).apply {
                 description = descriptionText
@@ -299,6 +321,8 @@ class HomeActivity : AppCompatActivity() {
 
             notificationManager.createNotificationChannel(channel)
         }
+
+
     }
 
 
@@ -307,6 +331,7 @@ class HomeActivity : AppCompatActivity() {
         val intent = Intent(this, HomeActivity::class.java).apply {
         }
         intent.putExtra("tab", Tabs.INVITATIONS.name)
+
 
         val text = "%s invited you to play %s!".format(reservationDTO.userOrganizer.nickname,
             reservationDTO.court.sport.lowercase().replaceFirstChar {
@@ -376,6 +401,43 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+
+    private fun createJoinRequestNotification(reservationDTO: ReservationDTO, profile: Profile) {
+        val intent = Intent(this, HomeActivity::class.java)
+        intent.putExtra("date", reservationDTO.date.toString())
+        intent.putExtra("tab", Tabs.RESERVATIONS.name)
+
+
+        val text = "%s wants to join in your match at %s!".format(profile.fullName, reservationDTO.court.name)
+
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(
+            this,
+            reservationDTO.date.toEpochDay().toInt(),
+            intent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val builder = NotificationCompat.Builder(this, "joinRequests")
+            .setSmallIcon(R.drawable.ic_notification_large)
+
+            .setContentTitle(getString(R.string.join_channel_description))
+            .setContentText(text)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+
+            // Set the intent that will fire when the user taps the notification
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+
+        try {
+            with(NotificationManagerCompat.from(this)) {
+                notify(reservationDTO.hashCode(), builder.build())
+            }
+
+        } catch (_: SecurityException) {
+        }
+    }
+
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         if (intent?.getStringExtra("tab") == null) return
@@ -389,6 +451,12 @@ class HomeActivity : AppCompatActivity() {
                 supportFragmentManager.findFragmentByTag(Tabs.FRIENDS.name) as FriendsFragment
             fragment.binding.tabFriends.selectTab(fragment.binding.tabFriends.getTabAt(1))
             fragment.binding.tabFriendsViewpager.setCurrentItem(1, true)
+        }
+        if(tab == Tabs.RESERVATIONS.name){
+            val date = LocalDate.parse(intent.getStringExtra("date"), DateTimeFormatter.ISO_LOCAL_DATE)
+            reservationViewModel.updateSelectedDay(
+                date
+            )
         }
 
     }

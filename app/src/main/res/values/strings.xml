@@ -253,9 +253,12 @@
         check your connection.</string>
     <string name="rent_equipment">Rent equipment</string>
     <string name="invitation_text_example">Gerry invited you to play a game!</string>
-    <string name="channel_name">notifications</string>
+    <string name="notifications_channel_name">Notifications</string>
+    <string name="friend_requests_channel_name">Friend Requests</string>
+    <string name="join_requests_channel_name">Join Requests</string>
     <string name="friend_channel_description">New Friend Request</string>
     <string name="invitation_channel_description">New Invitation</string>
+
     <string name="join_channel_description">New Join Request</string>
     <string name="edit_sports_error">You already selected all the sports!</string>
     <string name="edit_sports_error_title">Edit Sports</string>
