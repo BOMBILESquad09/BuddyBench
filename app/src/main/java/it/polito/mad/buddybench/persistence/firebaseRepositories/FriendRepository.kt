@@ -33,7 +33,6 @@ class FriendRepository {
                 onFailure()
             }
         }
-        subscribed = true
     }
 
 

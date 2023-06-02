@@ -68,7 +68,7 @@ class SendInvitationsBottomSheet(
         val recyclerViewNotInvited = view.findViewById<RecyclerView>(R.id.not_invited_friends_rv)
         val recyclerViewPending = view.findViewById<RecyclerView>(R.id.pending_friends_rv)
         val recyclerViewAccepted = view.findViewById<RecyclerView>(R.id.accepted_friends_rv)
-        val recyclerViewJoinRequests = view.findViewById<RecyclerView>(R.id.join_requests_ll)
+        val recyclerViewJoinRequests = view.findViewById<RecyclerView>(R.id.join_requests_rv)
         val emptyNotInvited = view.findViewById<TextView>(R.id.not_invited_friends_empty_tv)
         val emptyPending = view.findViewById<TextView>(R.id.pending_friends_empty_tv)
         val emptyAccepted = view.findViewById<TextView>(R.id.accepted_friends_empty_tv)

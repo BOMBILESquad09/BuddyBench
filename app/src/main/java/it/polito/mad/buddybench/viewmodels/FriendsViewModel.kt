@@ -65,7 +65,6 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     var onFailure: () -> Unit = {}
     lateinit var popNotification: (Profile) -> Unit
 
-    var init = true
 
     fun subscribeFriendsList() {
 
@@ -74,22 +73,22 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
             _lFriends.postValue(false)
             _lPossible.postValue(false)
             _lRequests.postValue(false)
-        }) {
-            _lFriends.value = true
-            _lPossible.value = true
-            _lRequests.value = true
+        }) { val subscribed = friendRepository.subscribed
+            _lFriends.value = !subscribed
+            _lPossible.value = !subscribed
+            _lRequests.value = !subscribed
             viewModelScope.launch {
-
-                if (init) {
-
+                if (!subscribed) {
                     getFriendsList()
                     getFriendRequests()
                     getPossibleFriends()
-                    init = false
                 } else {
                     refreshAll {}
                 }
+
             }
+            friendRepository.subscribed = true
+
         }
 
     }

@@ -77,9 +77,16 @@ class ReservationRepository {
                         (res.data["pendings"] as List<DocumentReference>).map { it.get() }
                             .map { it.await() }
                             .map { UserRepository.serializeUser(it.data as Map<String, Object>) }
+
+                    val requests =
+                        (res.data["requests"] as List<DocumentReference>).map { it.get() }
+                            .map { it.await() }
+                            .map { UserRepository.serializeUser(it.data as Map<String, Object>) }
+
                     reservationDTO.court = court.toObject(CourtDTO::class.java)!!
                     reservationDTO.accepted = acceptedUsers
                     reservationDTO.pendings = pendingUsers
+                    reservationDTO.requests = requests
                     reservationDTO.userOrganizer = myProfile
                     reservationDTO.visibility = Visibilities.fromStringToVisibility(res.data["visibilty"].toString())!!
 

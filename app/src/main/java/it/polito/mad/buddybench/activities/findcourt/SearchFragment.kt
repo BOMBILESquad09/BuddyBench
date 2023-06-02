@@ -66,8 +66,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         swipeRefresh = view.findViewById(R.id.swiperefresh)
         swipeRefresh.setOnRefreshListener {
-            parent.viewModel.getCourtsBySport(){
-            }
+            parent.viewModel.getCourtsOrPublicGames()
             swipeRefresh.isRefreshing = false
         }
 
