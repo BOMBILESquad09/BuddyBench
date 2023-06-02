@@ -68,7 +68,7 @@ class SendInvitationsBottomSheet(
         val recyclerViewNotInvited = view.findViewById<RecyclerView>(R.id.not_invited_friends_rv)
         val recyclerViewPending = view.findViewById<RecyclerView>(R.id.pending_friends_rv)
         val recyclerViewAccepted = view.findViewById<RecyclerView>(R.id.accepted_friends_rv)
-
+        val recyclerViewJoinRequests = view.findViewById<RecyclerView>(R.id.join_requests_ll)
         val emptyNotInvited = view.findViewById<TextView>(R.id.not_invited_friends_empty_tv)
         val emptyPending = view.findViewById<TextView>(R.id.pending_friends_empty_tv)
         val emptyAccepted = view.findViewById<TextView>(R.id.accepted_friends_empty_tv)
@@ -110,6 +110,9 @@ class SendInvitationsBottomSheet(
             LinearLayoutManager(context).let { it.orientation = HORIZONTAL; it }
         recyclerViewAccepted.layoutManager =
             LinearLayoutManager(context).let { it.orientation = HORIZONTAL; it }
+        recyclerViewJoinRequests.layoutManager = LinearLayoutManager(context).let { it.orientation = HORIZONTAL; it }
+        //aggiungere richieste di partecipazione
+
 
         recyclerViewNotInvited.adapter =
             FriendsAdapter(reservationViewModel.notInvitedFriends.value ?: listOf(), true) {
@@ -129,6 +132,14 @@ class SendInvitationsBottomSheet(
                     reservationViewModel.updateAcceptedFriends(it)
             }
 
+        /*recyclerViewJoinRequests.adapter =
+                FriendsAdapter(reservationViewModel.joinRequests.value!!, true){
+                    if(!invited)
+                        reservationViewModel.update
+                }*/
+        //aggiungere richieste di partecipazione
+
+
         userViewModel.getUser().observe(this) {
             reservationViewModel.profile = it
             reservationViewModel.getReservation(reservationDTO.id, !invited)
@@ -144,14 +155,12 @@ class SendInvitationsBottomSheet(
 
                 (recyclerViewAccepted.adapter as FriendsAdapter).friends =
                     reservationViewModel.acceptedFriends.value!!
-
                 diffsAccepted.dispatchUpdatesTo(recyclerViewAccepted.adapter!!)
                 if (it.isEmpty()) {
                     emptyAccepted.visibility = View.VISIBLE
                 } else {
                     emptyAccepted.visibility = View.GONE
                 }
-
             }
         }
 
@@ -183,6 +192,8 @@ class SendInvitationsBottomSheet(
                     emptyNotInvited.visibility = View.GONE
                 }
             }
+
+            //aggiungere persone che hanno richiesto
         }
 
 
@@ -192,6 +203,7 @@ class SendInvitationsBottomSheet(
             if (invited) {
                 view.findViewById<LinearLayout>(R.id.invite_friends_ll).visibility = View.GONE
                 view.findViewById<LinearLayout>(R.id.pending_friends_ll).visibility = View.GONE
+                view.findViewById<LinearLayout>(R.id.join_requests_ll).visibility = View.GONE
 
                 acceptedButton.visibility = View.GONE
                 pendingButton.visibility = View.GONE
