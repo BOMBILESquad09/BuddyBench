@@ -65,7 +65,6 @@
 
         <net.cachapa.expandablelayout.ExpandableLayout
             android:id="@+id/card_inner"
-            card_view:el_expanded="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             card_view:layout_constraintBottom_toTopOf="@+id/expand_icon"
