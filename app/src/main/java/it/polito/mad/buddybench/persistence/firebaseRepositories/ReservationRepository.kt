@@ -35,6 +35,28 @@ import java.time.format.DateTimeFormatter
 
 class ReservationRepository {
     val db = FirebaseFirestore.getInstance()
+    var subscribed = false
+
+    fun subscribeReservations(onFailure: () -> Unit, onSuccess: () -> Unit){
+        if (subscribed) return
+
+        val currentEmail = Firebase.auth.currentUser!!.email!!
+        db.collection("reservations")
+            .whereEqualTo("user", db.document("users/$currentEmail"))
+            .addSnapshotListener {
+                    value, error ->
+                if (error == null && value != null) {
+                    onSuccess()
+                } else {
+                    onFailure()
+                }
+
+            }
+
+
+    }
+
+
 
     fun getAll(): HashMap<LocalDate, List<ReservationDTO>> {
         TODO()
@@ -48,10 +70,7 @@ class ReservationRepository {
         return withContext(Dispatchers.IO) {
             try {
                 val currentEmail = Firebase.auth.currentUser!!.email!!
-                val myProfile = UserRepository.serializeUser(
-                    db.collection("users").document(currentEmail).get()
-                        .await().data as Map<String, Object>
-                )
+                val myProfile = UserRepository.serializeUser(db.collection("users").document(currentEmail).get().await().data  as Map<String, Object>)
                 val result = db.collection("reservations")
                     .whereEqualTo("user", db.document("users/$currentEmail")).get()
                 val resultInvitedReservations = db.collection("reservations")
@@ -94,8 +113,7 @@ class ReservationRepository {
                     reservationDTO.pendings = pendingUsers
                     reservationDTO.requests = requests
                     reservationDTO.userOrganizer = myProfile
-                    reservationDTO.visibility =
-                        Visibilities.fromStringToVisibility(res.data["visibilty"].toString())!!
+                    reservationDTO.visibility = Visibilities.fromStringToVisibility(res.data["visibilty"].toString())!!
 
                     reservations.add(reservationDTO)
                 }
@@ -121,11 +139,11 @@ class ReservationRepository {
                         (res.data["user"] as DocumentReference).get()
                             .await().data!! as Map<String, Object>
                     )
-                    reservationDTO.accepted =
-                        acceptedUsers.plusElement(reservationDTO.userOrganizer)
+                    reservationDTO.requests = listOf()
 
-                    reservationDTO.visibility =
-                        Visibilities.fromStringToVisibility(res.data["visibilty"].toString())!!
+                    reservationDTO.accepted = acceptedUsers.plusElement(reservationDTO.userOrganizer)
+
+                    reservationDTO.visibility = Visibilities.fromStringToVisibility(res.data["visibilty"].toString())!!
 
                     reservations.add(reservationDTO)
                 }
@@ -312,8 +330,7 @@ class ReservationRepository {
                     } catch (_: TimeSlotsNotAvailableException) {
                         withContext(Dispatchers.Main) {
                             onError()
-                        }
-                    } catch (_: Exception) {
+                        }                    } catch (_: Exception) {
                         withContext(Dispatchers.Main) {
                             onFailure()
                         }
@@ -341,7 +358,7 @@ class ReservationRepository {
             reservationDTO.court.name.replace(" ", "_") + "_" + reservationDTO.court.sport
         val reservationDoc = db.collection("reservations").document(reservationDTO.id)
         val ucDoc = db.collection("unavailable_courts").document(oldDate.toString())
-        db.runTransaction { t ->
+        db.runTransaction {t ->
             t.delete(reservationDoc)
             t.update(ucDoc, "courts", FieldValue.arrayRemove(db.document("courts/$docCourtName")))
         }.addOnSuccessListener {
@@ -359,8 +376,7 @@ class ReservationRepository {
             try {
                 val res = db.collection("reservations").document(reservationID).get().await()
                 withContext(Dispatchers.Default) {
-                    val reservation = mappingReservationFromDocument(res)
-                    reservation
+                    mappingReservationFromDocument(res)
                 }
             } catch (_: Exception) {
                 onFailure()
@@ -407,8 +423,8 @@ class ReservationRepository {
             reservationDTO.equipment = document.data!!["equipment"] as Boolean
             reservationDTO.id = document.data!!["id"] as String
             reservationDTO.userOrganizer = UserRepository.serializeUser(
-                (document.data!!["user"] as DocumentReference).get()
-                    .await().data!! as Map<String, Object>
+                    (document.data!!["user"] as DocumentReference).get()
+                        .await().data!! as Map<String, Object>
             )
             val acceptedUsers =
                 (document.data!!["accepted"] as List<DocumentReference>).map { it.get() }
@@ -425,12 +441,10 @@ class ReservationRepository {
                 .map { it.await() }
                 .map { UserRepository.serializeUser(it.data as Map<String, Object>) }
 
-            reservationDTO.visibility =
-                Visibilities.fromStringToVisibility(document.data!!["visibilty"].toString())!!
+            reservationDTO.visibility = Visibilities.fromStringToVisibility(document.data!!["visibilty"].toString())!!
             reservationDTO.requests = requestingUsers
             reservationDTO.accepted = acceptedUsers
-            reservationDTO.accepted =
-                acceptedUsers.plusElement(reservationDTO.userOrganizer).reversed()
+            reservationDTO.accepted = acceptedUsers.plusElement(reservationDTO.userOrganizer).reversed()
             reservationDTO.pendings = pendingUsers
             val court = (document.data!!["court"] as DocumentReference).get().await()
             reservationDTO.court = court.toObject(CourtDTO::class.java)!!
@@ -447,7 +461,7 @@ class ReservationRepository {
     ) {
         withContext(Dispatchers.IO) {
             try {
-                val hourFilter = if (date == LocalDate.now()) {
+                val hourFilter = if(date == LocalDate.now()){
                     LocalTime.now().hour
                 } else {
                     -1
@@ -466,15 +480,15 @@ class ReservationRepository {
                         val sportRef = ref.id.split("_").last()
                         sportRef == sport.uppercase() && (data["user"] as DocumentReference).id != Firebase.auth.currentUser!!.email!! && (data["startTime"] as Long) > hourFilter
                     }.map {
-                        async {
-                            mappingReservationFromDocument(it)
-                        }
-                    }.map { it.await() }
+                            async {
+                                mappingReservationFromDocument(it)
+                            }
+                        }.map { it.await() }
 
                 onSuccess(list)
             } catch (e: Exception) {
                 println(e)
-                withContext(Dispatchers.Main) {
+                withContext(Dispatchers.Main){
                     onFailure()
                 }
             }

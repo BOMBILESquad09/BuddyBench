@@ -72,8 +72,9 @@ class MyReservationsFragment(val context: HomeActivity) : Fragment(R.layout.my_r
         swipeRefresh = view.findViewById(R.id.swiperefresh)
         swipeRefresh.setOnRefreshListener {
             viewModel.updateSelectedDay(viewModel.selectedDate.value ?: LocalDate.now())
-            viewModel.getAllByUser()
-            swipeRefresh.isRefreshing = false
+            viewModel.getAllByUser(true) {
+                swipeRefresh.isRefreshing = false
+            }
         }
 
         calendarView = view.findViewById(R.id.calendar)
@@ -154,7 +155,7 @@ class MyReservationsFragment(val context: HomeActivity) : Fragment(R.layout.my_r
             }
         }
 
-        viewModel.getAllByUser().observe(viewLifecycleOwner) {
+        viewModel.reservations.observe(viewLifecycleOwner) {
             if (it == null) return@observe
             refreshCalendar()
             refresh()

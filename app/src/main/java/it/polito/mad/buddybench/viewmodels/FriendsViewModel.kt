@@ -57,39 +57,40 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
 
     var oldFriends = _friends.value!!
     val friends: LiveData<List<Profile>> get() = _friends
-    var oldFriendsRequests = friendRequests.value!!
+    var oldFriendsRequests: List<Profile>? = null
     val friendRequests: LiveData<List<Profile>> get() = _friendRequests
 
     var searchText = ""
 
     var onFailure: () -> Unit = {}
     lateinit var popNotification: (Profile) -> Unit
-
+    private var init: Boolean = false
 
     fun subscribeFriendsList() {
-
+        val subscribed = friendRepository.subscribed
+        _lFriends.value = !subscribed
+        _lPossible.value = !subscribed
+        _lRequests.value = !subscribed
 
         friendRepository.subscribeFriends({
             _lFriends.postValue(false)
             _lPossible.postValue(false)
             _lRequests.postValue(false)
-        }) { val subscribed = friendRepository.subscribed
-            _lFriends.value = !subscribed
-            _lPossible.value = !subscribed
-            _lRequests.value = !subscribed
+        }) {
+
             viewModelScope.launch {
                 if (!subscribed) {
                     getFriendsList()
                     getFriendRequests()
                     getPossibleFriends()
+
                 } else {
                     refreshAll {}
                 }
-
             }
-            friendRepository.subscribed = true
-
         }
+        friendRepository.subscribed = true
+
 
     }
 
@@ -155,17 +156,17 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
                 }) { it ->
 
 
-                    if (oldFriendsRequests.size < (it.pendings.size)) {
+                    if (init && oldFriendsRequests != null && oldFriendsRequests!!.size < (it.pendings.size)) {
                         //I need to send notifications only to very new one that I received
-                        val freshRequestsEmail = it.pendings.map { it.email }
-                        val oldRequestsEmail = oldFriendsRequests.map { it.email }
+                        val freshRequestsEmail = it.pendings.map{ it.email }
+                        val oldRequestsEmail = oldFriendsRequests!!.map { it.email }
                         freshRequestsEmail.filter { !oldRequestsEmail.contains(it) }.map { fEmail ->
                             it.pendings.find { f -> fEmail == f.email }
                         }.forEach { p ->
                             popNotification(p!!)
                         }
                     }
-
+                    init = true
                     oldFriendsRequests = _friendRequests.value!!
 
                     _lRequests.postValue(false)

@@ -122,6 +122,18 @@ class BottomBar(val context: HomeActivity) {
                 )
         }
 
+        if (currentTab == Tabs.RESERVATIONS) {
+            bottomBar.clearBadgeAtTabIndex(currentTab.getId())
+        } else {
+            if ((counter[Tabs.RESERVATIONS.getId()] ?: 0) > 0)
+                bottomBar.setBadgeAtTabIndex(
+                    Tabs.RESERVATIONS.getId(), AnimatedBottomBar.Badge(
+                        text = counter[Tabs.RESERVATIONS.getId()]!!.toString(),
+                        textColor = Color.WHITE
+                    )
+                )
+        }
+
 //        when(this.currentTab){
 //            Tabs.PROFILE -> {setToolbar() }
 //            else -> {clearToolbar()}

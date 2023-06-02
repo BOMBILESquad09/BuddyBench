@@ -107,14 +107,13 @@ class DayViewContainer(view: View) : ViewContainer(view) {
                         R.layout.sport_icon,
                         reservationsContainer,
                         true
-
                     )
                     val iv = sportIcon.findViewById<ImageView>(R.id.sport_icon)
                     iv.id = idx
 
                     iv.setImageResource(Sports.sportToIconDrawable(Sports.fromJSON(r.court.sport)!!))
-
-
+                    if(reservations!![idx].requests.isNotEmpty())
+                        iv.setColorFilter(Color.rgb(255, 12, 16))
                 }
             }
         } else {
