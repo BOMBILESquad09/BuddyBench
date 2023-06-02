@@ -495,10 +495,6 @@ class ReservationRepository {
         }
     }
 
-    fun detachListener(reservationDTO: ReservationDTO) {
-
-    }
-
     suspend fun getUpdatedReservation(
         reservationID: String,
         onFailure: () -> Unit,
