@@ -261,4 +261,5 @@
     <string name="edit_sports_error_title">Edit Sports</string>
     <string name="courts">Courts</string>
     <string name="games">Games</string>
+    <string name="edit_review">Edit Review</string>
 </resources>
