@@ -88,9 +88,6 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
         iconSport.setImageDrawable(wrappedDrawable)
         slot.text = "${reservation.startTime.format(formatter)} - ${reservation.endTime.format(formatter)}"
 
-
-
-
         manageBtn.setTextColor(
             Sports.getSportColor(
                 Sports.valueOf(reservation.court.sport),
@@ -185,9 +182,16 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
                                 })
 
                             }
-
-
-                        })
+                        },
+                        {
+                            JointRequestsBottomSheet(it).show(
+                                (FragmentComponentManager.findActivity(
+                                    view.context
+                                ) as AppCompatActivity).supportFragmentManager, "JointRequestBottomSheet"
+                            )
+                        },
+                        reservation
+                    )
                     mbs.show(
                         (FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager,
                         ""

@@ -90,7 +90,7 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
                 else -> GridLayoutManager(context, columnCount)
             }
 
-            adapter = FriendRequestRecyclerViewAdapter(listOf(), friendsViewModel, callback
+            adapter = FriendRequestRecyclerViewAdapter(listOf(), friendsViewModel,null, callback
             ) { }
             itemAnimator = object : DefaultItemAnimator() {
                 override fun animateRemove(holder: RecyclerView.ViewHolder?): Boolean {
@@ -109,7 +109,6 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
                             )
                         }
                         holder.binding.root.startAnimation(animation)
-
 
                     }
                     return super.animateRemove(holder)

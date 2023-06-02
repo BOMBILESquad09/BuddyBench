@@ -192,8 +192,6 @@ class FriendsViewModel @Inject constructor() : ViewModel() {
     fun confirmRequest(email: String, onSuccess: () -> Unit) {
         friendRepository.acceptFriendRequest(email, onFailure = onFailure) {
             onSuccess()
-
-
         }
     }
 

@@ -1,12 +1,15 @@
 package it.polito.mad.buddybench.persistence.firebaseRepositories
 
+import android.view.ScaleGestureDetector.OnScaleGestureListener
 import androidx.compose.runtime.produceState
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.buddybench.classes.Profile
@@ -45,7 +48,10 @@ class ReservationRepository {
         return withContext(Dispatchers.IO) {
             try {
                 val currentEmail = Firebase.auth.currentUser!!.email!!
-                val myProfile = UserRepository.serializeUser(db.collection("users").document(currentEmail).get().await().data  as Map<String, Object>)
+                val myProfile = UserRepository.serializeUser(
+                    db.collection("users").document(currentEmail).get()
+                        .await().data as Map<String, Object>
+                )
                 val result = db.collection("reservations")
                     .whereEqualTo("user", db.document("users/$currentEmail")).get()
                 val resultInvitedReservations = db.collection("reservations")
@@ -88,7 +94,8 @@ class ReservationRepository {
                     reservationDTO.pendings = pendingUsers
                     reservationDTO.requests = requests
                     reservationDTO.userOrganizer = myProfile
-                    reservationDTO.visibility = Visibilities.fromStringToVisibility(res.data["visibilty"].toString())!!
+                    reservationDTO.visibility =
+                        Visibilities.fromStringToVisibility(res.data["visibilty"].toString())!!
 
                     reservations.add(reservationDTO)
                 }
@@ -114,9 +121,11 @@ class ReservationRepository {
                         (res.data["user"] as DocumentReference).get()
                             .await().data!! as Map<String, Object>
                     )
-                    reservationDTO.accepted = acceptedUsers.plusElement(reservationDTO.userOrganizer)
+                    reservationDTO.accepted =
+                        acceptedUsers.plusElement(reservationDTO.userOrganizer)
 
-                    reservationDTO.visibility = Visibilities.fromStringToVisibility(res.data["visibilty"].toString())!!
+                    reservationDTO.visibility =
+                        Visibilities.fromStringToVisibility(res.data["visibilty"].toString())!!
 
                     reservations.add(reservationDTO)
                 }
@@ -303,7 +312,8 @@ class ReservationRepository {
                     } catch (_: TimeSlotsNotAvailableException) {
                         withContext(Dispatchers.Main) {
                             onError()
-                        }                    } catch (_: Exception) {
+                        }
+                    } catch (_: Exception) {
                         withContext(Dispatchers.Main) {
                             onFailure()
                         }
@@ -331,7 +341,7 @@ class ReservationRepository {
             reservationDTO.court.name.replace(" ", "_") + "_" + reservationDTO.court.sport
         val reservationDoc = db.collection("reservations").document(reservationDTO.id)
         val ucDoc = db.collection("unavailable_courts").document(oldDate.toString())
-        db.runTransaction {t ->
+        db.runTransaction { t ->
             t.delete(reservationDoc)
             t.update(ucDoc, "courts", FieldValue.arrayRemove(db.document("courts/$docCourtName")))
         }.addOnSuccessListener {
@@ -349,7 +359,8 @@ class ReservationRepository {
             try {
                 val res = db.collection("reservations").document(reservationID).get().await()
                 withContext(Dispatchers.Default) {
-                    mappingReservationFromDocument(res)
+                    val reservation = mappingReservationFromDocument(res)
+                    reservation
                 }
             } catch (_: Exception) {
                 onFailure()
@@ -396,8 +407,8 @@ class ReservationRepository {
             reservationDTO.equipment = document.data!!["equipment"] as Boolean
             reservationDTO.id = document.data!!["id"] as String
             reservationDTO.userOrganizer = UserRepository.serializeUser(
-                    (document.data!!["user"] as DocumentReference).get()
-                        .await().data!! as Map<String, Object>
+                (document.data!!["user"] as DocumentReference).get()
+                    .await().data!! as Map<String, Object>
             )
             val acceptedUsers =
                 (document.data!!["accepted"] as List<DocumentReference>).map { it.get() }
@@ -414,10 +425,12 @@ class ReservationRepository {
                 .map { it.await() }
                 .map { UserRepository.serializeUser(it.data as Map<String, Object>) }
 
-            reservationDTO.visibility = Visibilities.fromStringToVisibility(document.data!!["visibilty"].toString())!!
+            reservationDTO.visibility =
+                Visibilities.fromStringToVisibility(document.data!!["visibilty"].toString())!!
             reservationDTO.requests = requestingUsers
             reservationDTO.accepted = acceptedUsers
-            reservationDTO.accepted = acceptedUsers.plusElement(reservationDTO.userOrganizer).reversed()
+            reservationDTO.accepted =
+                acceptedUsers.plusElement(reservationDTO.userOrganizer).reversed()
             reservationDTO.pendings = pendingUsers
             val court = (document.data!!["court"] as DocumentReference).get().await()
             reservationDTO.court = court.toObject(CourtDTO::class.java)!!
@@ -434,7 +447,7 @@ class ReservationRepository {
     ) {
         withContext(Dispatchers.IO) {
             try {
-                val hourFilter = if(date == LocalDate.now()){
+                val hourFilter = if (date == LocalDate.now()) {
                     LocalTime.now().hour
                 } else {
                     -1
@@ -453,19 +466,41 @@ class ReservationRepository {
                         val sportRef = ref.id.split("_").last()
                         sportRef == sport.uppercase() && (data["user"] as DocumentReference).id != Firebase.auth.currentUser!!.email!! && (data["startTime"] as Long) > hourFilter
                     }.map {
-                            async {
-                                mappingReservationFromDocument(it)
-                            }
-                        }.map { it.await() }
+                        async {
+                            mappingReservationFromDocument(it)
+                        }
+                    }.map { it.await() }
 
                 onSuccess(list)
             } catch (e: Exception) {
                 println(e)
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     onFailure()
                 }
             }
         }
+    }
+
+    fun detachListener(reservationDTO: ReservationDTO) {
+
+    }
+
+    suspend fun getUpdatedReservation(
+        reservationID: String,
+        onFailure: () -> Unit,
+        onSuccess: (ReservationDTO) -> Unit
+    ): ListenerRegistration {
+        val listener = db.collection("reservations").document(reservationID).addSnapshotListener { value, error ->
+            if (value != null && value.exists() && error == null) {
+                runBlocking {
+                    val reservationDTO = mappingReservationFromDocument(value)
+                    onSuccess(reservationDTO)
+                }
+            } else if (error != null) {
+                onFailure()
+            }
+        }
+        return listener
     }
 
     // fallo con le transazioni
@@ -502,6 +537,55 @@ class ReservationRepository {
                 )
 
             )
+        }
+    }
+
+    fun acceptJointRequest(
+        reservationDTO: ReservationDTO,
+        email: String,
+        onFailure: () -> Unit,
+        onSuccess: () -> Unit
+    ) {
+
+        db.runTransaction { t ->
+            val currentEmailDoc = db.collection("users").document(email)
+            val reservationDoc = db.collection("reservations").document(reservationDTO.id)
+            t
+                .update(
+                    reservationDoc,
+                    mapOf(
+                        "requests" to FieldValue.arrayRemove(currentEmailDoc),
+                        "accepted" to FieldValue.arrayUnion(currentEmailDoc)
+                    )
+                )
+        }.addOnSuccessListener {
+            onSuccess()
+        }.addOnFailureListener {
+            onFailure()
+        }
+    }
+
+    fun rejectJointRequest(
+        reservationDTO: ReservationDTO,
+        email: String,
+        onFailure: () -> Unit,
+        onSuccess: () -> Unit
+    ) {
+
+        db.runTransaction { t ->
+            val currentEmailDoc = db.collection("users").document(email)
+            val reservationDoc = db.collection("reservations").document(reservationDTO.id)
+            t
+                .update(
+                    reservationDoc,
+                    mapOf(
+                        "requests" to FieldValue.arrayRemove(currentEmailDoc)
+                    )
+                )
+        }.addOnSuccessListener {
+            onSuccess()
+        }.addOnFailureListener {
+            onFailure()
         }
     }
 
