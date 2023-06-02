@@ -11,12 +11,13 @@ import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 class InvitationAdapter(var invitations: List<ReservationDTO>,
                         private val onAccept: (ReservationDTO) -> Unit,
                         private val onDecline: (ReservationDTO) -> Unit,
+                        private val isInvitation: Boolean = true
     ) : RecyclerView.Adapter<InvitationViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InvitationViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.card_invitation, parent, false)
-        return InvitationViewHolder(view, onAccept, onDecline )
+        return InvitationViewHolder(view, onAccept, onDecline, isInvitation )
     }
 
     override fun onBindViewHolder(holder: InvitationViewHolder, position: Int) {

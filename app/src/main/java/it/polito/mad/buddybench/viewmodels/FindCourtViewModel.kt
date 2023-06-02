@@ -3,7 +3,9 @@ package it.polito.mad.buddybench.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import it.polito.mad.buddybench.activities.findcourt.FindStates
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
@@ -29,6 +31,9 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     private val _loading:MutableLiveData<Boolean> = MutableLiveData(null)
     val loading: LiveData<Boolean> = _loading
 
+    private val _findState: MutableLiveData<FindStates> = MutableLiveData(FindStates.COURTS)
+    val findStates: LiveData<FindStates> = _findState
+
     //filters
     var minRating: Float = 0f
     var maxFee: Float = 100f
@@ -42,7 +47,6 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
 
     private val courtRepositoryFirebase = CourtRepository()
 
-    private val mainScope = MainScope()
 
     var onFailure: () -> Unit = {}
 
@@ -54,7 +58,7 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     fun getCourtsBySport(onSuccess: () -> Unit): LiveData<List<CourtDTO>> {
         _loading.value = true
 
-        mainScope.launch {
+        viewModelScope.launch {
 
             courtRepositoryFirebase.getCourtsByDay(selectedSport.value!!, selectedDate, {
                 _loading.postValue(false)
@@ -79,8 +83,9 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
         filtersEnabled = false
         minRating= 0f
         maxFee= 100f
-        name= ""
     }
+
+
 
     fun applyFilterOnCourts(clear: Boolean = false){
         filtersEnabled = true
@@ -94,8 +99,7 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
 
     fun setSelectedDate(date: LocalDate){
         selectedDate = date
-        getCourtsBySport(){
-        }
+        getCourtsOrPublicGames()
 
     }
 
@@ -123,10 +127,10 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     private val reservationRepositoryFirebase = ReservationRepository()
 
 
-    fun getPublicGamesBySport(onSuccess: () -> Unit): LiveData<List<ReservationDTO>> {
+    private fun getPublicGamesBySport(onSuccess: () -> Unit): LiveData<List<ReservationDTO>> {
         _loading.value = true
 
-        mainScope.launch {
+        viewModelScope.launch {
 
             reservationRepositoryFirebase.getPublicGames(selectedDate, selectedSport.value!!.toString(), {
                 _loading.postValue(false)
@@ -156,11 +160,37 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
     }
 
 
+
+
+    fun setFindState(id: Int){
+        _findState.value = when(id){
+            0 -> FindStates.COURTS
+            1 -> FindStates.GAMES
+            else -> FindStates.COURTS
+        }
+    }
+
+
     private fun applyFiltersOnPublicGames(publicGames: List<ReservationDTO>): List<ReservationDTO> {
         return publicGames.filter{
             (it.court.location.contains(name, ignoreCase = true) || it.court.name.contains(name, ignoreCase = true))
                     && it.court.rating >= minRating &&  it.court.feeHour <= maxFee
         }.sortedBy { it.court.name }
+    }
+
+    fun getCourtsOrPublicGames(){
+        when(findStates.value!!){
+            FindStates.COURTS -> getCourtsBySport {  }
+            FindStates.GAMES -> getPublicGamesBySport {  }
+        }
+    }
+
+    fun applyFilterOnCourtsOrPublicGames(clear: Boolean = false){
+        when(findStates.value!!){
+            FindStates.COURTS -> applyFilterOnCourts()
+            FindStates.GAMES -> applyFilterOnPublicGames()
+        }
+
     }
 
 
