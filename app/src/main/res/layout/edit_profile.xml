@@ -336,6 +336,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Favourite Sports"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/md_theme_light_text"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -346,13 +347,14 @@
                     app:layout_constraintTop_toTopOf="parent" />
                 <ImageButton
                     android:id="@+id/add_sport_button"
-                    style="@style/TabButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/rounded_shape"
-                    android:layout_gravity="center_vertical"
                     android:backgroundTint="@color/md_theme_light_primary"
                     android:contentDescription="@string/add"
+                    android:padding="1dp"
                     android:src="@drawable/round_add_24_white"
-                    android:layout_marginStart="5dp"/>
+                    android:layout_marginStart="6dp"/>
             </LinearLayout>
 
 
