@@ -41,6 +41,7 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
     private val courtPhone: TextView = v.findViewById(R.id.card_reservation_phone_number)
     private val slot: TextView = v.findViewById(R.id.textView5)
     private val iconSport: ImageView = v.findViewById(R.id.imageView)
+    private val iconReservationVisibility: ImageView = v.findViewById(R.id.visibility_icon)
     var formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("H:mm")
     private var manageBtn: TextView = v.findViewById(R.id.manage_btn)
     private var telephoneIcon: ImageView = v.findViewById(R.id.telephone)
@@ -70,6 +71,11 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
                 )!!
             )
         )
+
+        if (reservation.visibility.toString() == "PRIVATE")
+            iconReservationVisibility.setImageDrawable(view.context.getDrawable(R.drawable.private_visibility))
+        else
+            iconReservationVisibility.setImageDrawable(view.context.getDrawable(R.drawable.global_visibility))
 
         telephoneIcon.setOnClickListener {
             val number = Uri.parse("tel:" + reservation.court.phoneNumber);

@@ -106,7 +106,7 @@
                     android:id="@+id/card_reservation_phone_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start"
+                    android:layout_gravity="start|center"
                     android:autoSizeTextType="uniform"
                     android:autoSizeMaxTextSize="17sp"
                     android:autoSizeMinTextSize="14sp"
@@ -131,7 +131,7 @@
                 android:textColor="@color/md_theme_light_background"
                 android:textSize="17sp"
                 card_view:layout_constraintBottom_toBottomOf="parent"
-                card_view:layout_constraintEnd_toStartOf="@+id/show_reservation_friend_button"
+                card_view:layout_constraintEnd_toStartOf="@+id/visibility_icon"
                 card_view:layout_constraintHorizontal_bias="0.5"
                 card_view:layout_constraintHorizontal_chainStyle="spread_inside"
                 card_view:layout_constraintStart_toStartOf="parent"
@@ -168,21 +168,17 @@
             </TextView>
 
             <ImageView
-                android:id="@+id/show_reservation_friend_button"
-                android:layout_width="wrap_content"
-                android:visibility="invisible"
-                android:layout_height="wrap_content"
+                android:id="@+id/visibility_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_marginEnd="10dp"
-                android:background="@drawable/rounded_shape"
-                android:backgroundTint="@color/md_theme_light_background"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="5dp"
-                android:src="@drawable/invite"
+                android:src="@drawable/global_visibility"
                 card_view:layout_constraintBottom_toBottomOf="@+id/manage_btn"
                 card_view:layout_constraintEnd_toStartOf="@+id/manage_btn"
                 card_view:layout_constraintHorizontal_bias="0.5"
                 card_view:layout_constraintStart_toEndOf="@+id/textView5"
-                card_view:layout_constraintTop_toTopOf="@+id/manage_btn" />
+                card_view:layout_constraintTop_toTopOf="@+id/manage_btn"
+                android:contentDescription="visibility" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
