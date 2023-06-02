@@ -109,8 +109,15 @@ class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Uni
             }
         }
 
-        if(!isInvitation)
-           inviteText.text = "Cazzo guardi"
+        if(!isInvitation){
+            inviteText.text = "${invitation.userOrganizer.nickname} is organizing a ${invitation.court.sport.lowercase().capitalize(Locale.ENGLISH)} game!"
+            inviteText.maxLines = 3
+
+            declineButton.visibility = View.GONE
+            acceptButton.text = "Join"
+            acceptButton.setPadding(120,10,120,10)
+        }
+
     }
 
     private fun setInvitationCard(){
