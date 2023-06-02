@@ -30,7 +30,7 @@ class ReviewsActivity : AppCompatActivity() {
     private var courtName: String? = null
     private var courtSport: String? = null
     private var lastReviews: List<ReviewDTO> = listOf()
-    lateinit var progressDialog: Dialog
+    private lateinit var progressDialog: Dialog
 
     // ** View Models
     private val reviewViewModel by viewModels<ReviewViewModel>()
@@ -64,6 +64,7 @@ class ReviewsActivity : AppCompatActivity() {
         // ** Edit button
         binding.btnEditReview.text = "Review"
         binding.btnEditReview.setOnClickListener { editReviewUI() }
+
         // ** New review card
         binding.rbNewReview.isClickable = true
         binding.btnNewReview.setOnClickListener {
@@ -83,17 +84,13 @@ class ReviewsActivity : AppCompatActivity() {
         binding.rbYourReview.stepSize = 1F
         binding.rbNewReview.stepSize = 1F
 
-
-
+        // ** Progress bar (Loading)
         reviewViewModel.l.observe(this) {
-
             if (it == null || it) {
                 binding.pbReviews.visibility = View.VISIBLE
-
             } else {
                 binding.pbReviews.visibility = View.GONE
                 Utils.closeProgressDialog()
-
             }
         }
 
@@ -116,8 +113,8 @@ class ReviewsActivity : AppCompatActivity() {
         // ** User can review
         reviewViewModel.canReview.observe(this) { can ->
             if (can) {
-                binding.cardNewReview.visibility = View.GONE
-                binding.cardYourReview.visibility = View.VISIBLE
+                binding.cardNewReview.visibility = View.VISIBLE
+                binding.cardYourReview.visibility = View.GONE
                 binding.tvCannotReview.visibility = View.GONE
             } else {
                 binding.cardNewReview.visibility = View.GONE
@@ -169,9 +166,7 @@ class ReviewsActivity : AppCompatActivity() {
         }
 
         binding.tvErrorReview.visibility = View.GONE
-
         reviewViewModel.insertReview(binding.etNewReview.text.toString(), binding.rbNewReview.rating.toInt(), onSuccess)
-
     }
 
 
@@ -187,5 +182,4 @@ class ReviewsActivity : AppCompatActivity() {
         super.onStart()
         Utils.closeProgressDialog()
     }
-
 }
