@@ -62,7 +62,8 @@ class FilterSheetDialog(
             findCourtViewModel.minRating = rangeSliderRating.value
             findCourtViewModel.maxFee = rangeSliderPrice.value
 
-            findCourtViewModel.applyFilter()
+            // TODO: Insert an if to set filter for them
+            findCourtViewModel.applyFilterOnCourts()
             refClearButton.setBackgroundResource(R.drawable.circle_dark_bg)
             refFilterIcon.setImageResource(R.drawable.filter_white)
             dismiss()
@@ -70,7 +71,8 @@ class FilterSheetDialog(
 
         val clearButton = view.findViewById<MaterialButton>(R.id.clearFilter)
         clearButton?.setOnClickListener{
-            findCourtViewModel.applyFilter(clear = true)
+            // TODO: Insert an if to set filter for them
+            findCourtViewModel.applyFilterOnCourts(clear = true)
             refClearButton.setBackgroundResource(R.drawable.circle_light_bg)
             refFilterIcon.setImageResource(R.drawable.filter)
             dismiss()

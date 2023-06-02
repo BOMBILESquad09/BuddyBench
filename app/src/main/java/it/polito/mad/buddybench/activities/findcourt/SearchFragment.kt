@@ -7,8 +7,8 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.*
-import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -19,7 +19,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.util.Util
+import com.google.android.material.tabs.TabLayout
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.WeekDayPosition
 import com.kizitonwose.calendar.view.WeekCalendarView
@@ -49,10 +51,14 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
     private lateinit var progressBar: ProgressBar
     private lateinit var noCourts: TextView
     val imageViewModel by activityViewModels<ImageViewModel> ()
-    val userViewModel by activityViewModels<UserViewModel> ()
-    val findCourtViewModel by activityViewModels<FindCourtViewModel>()
+    private val userViewModel by activityViewModels<UserViewModel> ()
+    private val findCourtViewModel by activityViewModels<FindCourtViewModel>()
 
     private lateinit var swipeRefresh : SwipeRefreshLayout
+
+    // ** Tabs
+    private lateinit var findTabLayout: TabLayout
+    private lateinit var findViewPager: ViewPager2
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,7 +67,6 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             parent.viewModel.getCourtsBySport(){
             }
             swipeRefresh.isRefreshing = false
-
         }
 
 
@@ -72,6 +77,26 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         val searchEditText = view.findViewById<EditText>(R.id.searchEditText)
         val filterButton = view.findViewById<CardView>(R.id.filterButton)
         val filterIcon = view.findViewById<ImageView>(R.id.filterIcon)
+
+        // ** Tabs
+        findTabLayout = view.findViewById(R.id.tab_layout_find);
+        findViewPager = view.findViewById(R.id.find_view_pager);
+
+        findTabLayout.addOnTabSelectedListener(FindTabListener{
+            if (it == FindStates.GAMES.value) {
+                filterButton.startAnimation(AnimationUtils.loadAnimation(this.activity,R.anim.fade_out))
+                filterButton.postOnAnimation {
+                    filterButton.visibility = View.GONE
+                    searchEditText.startAnimation(AnimationUtils.loadAnimation(this.activity, R.anim.fade_in))
+                }
+            } else {
+                filterButton.visibility = View.VISIBLE
+                filterButton.startAnimation(AnimationUtils.loadAnimation(this.activity,R.anim.fade_in))
+                filterButton.postOnAnimation {
+                    // searchEditText.startAnimation(AnimationUtils.loadAnimation(this.activity, R.anim.expand))
+                }
+            }
+        });
 
         parent.context.userViewModel.user.observe(viewLifecycleOwner) {
             textUser.text = parent.context.getString(R.string.user_hello, it.name)
@@ -191,12 +216,17 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             searchEditText.addTextChangedListener(object: TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     parent.viewModel.name = s.toString().trim().replace("\\s+".toRegex(), " ")
-                    parent.viewModel.applyFilter()
+                    parent.viewModel.applyFilterOnCourts()
                 }
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             })
+        }
+        filterButton.postOnAnimation{
+            // filterButton.visibility = View.GONE
+            //
+            // espansione search bar
         }
 
         super.onViewCreated(view, savedInstanceState)

@@ -38,6 +38,7 @@ import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.activities.invitations.InvitationsDiffsUtils
 import it.polito.mad.buddybench.classes.Profile
+import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.enums.Visibilities
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.persistence.entities.Invitation
@@ -52,7 +53,7 @@ import java.util.Locale
 
 
 @AndroidEntryPoint
-class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_reservations) {
+class MyReservationsFragment(val context: HomeActivity) : Fragment(R.layout.my_reservations) {
     private lateinit var recyclerViewReservations: RecyclerView
     val viewModel by activityViewModels<ReservationViewModel>()
 
@@ -64,7 +65,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
     private lateinit var startMonth: YearMonth
     private lateinit var previousButton: ImageView
     private lateinit var nextButton: ImageView
-    private lateinit var swipeRefresh : SwipeRefreshLayout
+    private lateinit var swipeRefresh: SwipeRefreshLayout
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -85,15 +86,21 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         calendarView.scrollToMonth(currentMonth)
         recyclerViewReservations = view.findViewById(R.id.reservations)
         recyclerViewReservations.layoutManager = LinearLayoutManager(context)
-        recyclerViewReservations.adapter = ReservationAdapter(  listOf(), context.launcherReservation)
-        calendarView.dayBinder = MyMonthDayBinder(this, calendarView, recyclerViewReservations, context.launcherReservation)
+        recyclerViewReservations.adapter =
+            ReservationAdapter(viewModel, listOf(), context.launcherReservation)
+        calendarView.dayBinder = MyMonthDayBinder(
+            this,
+            calendarView,
+            recyclerViewReservations,
+            context.launcherReservation
+        )
         calendarView.monthHeaderBinder = MyMonthHeaderFooterBinder()
         recyclerViewReservations.isNestedScrollingEnabled = false
 
 
         val dayTitle = view.findViewById<TextView>(R.id.dayTitle)
-        dayTitle.text = LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, d MMMM y", Locale.ENGLISH))
-
+        dayTitle.text =
+            LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, d MMMM y", Locale.ENGLISH))
 
         progressLayout = view.findViewById(R.id.progress_layout)
         progressBar = progressLayout.findViewById(R.id.progress_circular)
@@ -103,7 +110,7 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
         progressLayout.visibility = View.VISIBLE
         context.reservationViewModel.loading.observe(viewLifecycleOwner) {
 
-            if(it == null || it) {
+            if (it == null || it) {
                 view.findViewById<View>(R.id.emptyReservations).visibility = View.GONE
                 recyclerViewReservations.visibility = View.GONE
                 progressLayout.visibility = View.VISIBLE
@@ -147,36 +154,51 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
             }
         }
 
-        viewModel.getAllByUser().observe(viewLifecycleOwner){
-            if(it == null)return@observe
+        viewModel.getAllByUser().observe(viewLifecycleOwner) {
+            if (it == null) return@observe
             refreshCalendar()
             refresh()
         }
     }
 
-    private fun refresh(){
+    private fun refresh() {
         if (viewModel.loading.value != false) return
-        val selectedReservations = viewModel.getSelectedReservations()?.sortedBy { it.endTime } ?: listOf()
-        if (viewModel.oldDate != null){
-            val firstDay = calendarView.findFirstVisibleMonth()?.yearMonth?.atDay(1) ?: YearMonth.now().atDay(1)
-            val lastDay = calendarView.findFirstVisibleMonth()?.yearMonth?.atEndOfMonth() ?: YearMonth.now().atEndOfMonth()
+        val selectedReservations =
+            viewModel.getSelectedReservations()?.sortedBy { it.endTime } ?: listOf()
+        if (viewModel.oldDate != null) {
+            val firstDay =
+                calendarView.findFirstVisibleMonth()?.yearMonth?.atDay(1) ?: YearMonth.now()
+                    .atDay(1)
+            val lastDay =
+                calendarView.findFirstVisibleMonth()?.yearMonth?.atEndOfMonth() ?: YearMonth.now()
+                    .atEndOfMonth()
             if (firstDay <= viewModel.oldDate && viewModel.oldDate!! <= lastDay)
-                calendarView.notifyDayChanged(CalendarDay(viewModel.oldDate!!, DayPosition.MonthDate))
-            else if (firstDay > viewModel.oldDate){
+                calendarView.notifyDayChanged(
+                    CalendarDay(
+                        viewModel.oldDate!!,
+                        DayPosition.MonthDate
+                    )
+                )
+            else if (firstDay > viewModel.oldDate) {
                 calendarView.notifyDayChanged(CalendarDay(viewModel.oldDate!!, DayPosition.InDate))
-            }
-            else {
+            } else {
                 calendarView.notifyDayChanged(CalendarDay(viewModel.oldDate!!, DayPosition.OutDate))
             }
         }
-        if (viewModel.selectedDate.value != null){
-            calendarView.notifyDayChanged(CalendarDay(viewModel.selectedDate.value!!, DayPosition.MonthDate))
+        if (viewModel.selectedDate.value != null) {
+            calendarView.notifyDayChanged(
+                CalendarDay(
+                    viewModel.selectedDate.value!!,
+                    DayPosition.MonthDate
+                )
+            )
         }
 
-        if(selectedReservations.isEmpty()){
+        if (selectedReservations.isEmpty()) {
             context.findViewById<View>(R.id.emptyReservations).visibility = View.VISIBLE
             recyclerViewReservations.visibility = View.GONE
-            (recyclerViewReservations.adapter as ReservationAdapter).reservations = selectedReservations
+            (recyclerViewReservations.adapter as ReservationAdapter).reservations =
+                selectedReservations
             recyclerViewReservations.adapter!!.notifyDataSetChanged()
 
         } else {
@@ -184,46 +206,56 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
             recyclerViewReservations.visibility = View.VISIBLE
             context.findViewById<View>(R.id.emptyReservations).visibility = View.GONE
 
-            val diffUtils = InvitationsDiffsUtils((recyclerViewReservations.adapter as ReservationAdapter).reservations, selectedReservations)
+            val diffUtils = InvitationsDiffsUtils(
+                (recyclerViewReservations.adapter as ReservationAdapter).reservations,
+                selectedReservations
+            )
             val diff = DiffUtil.calculateDiff(diffUtils)
-            (recyclerViewReservations.adapter as ReservationAdapter).reservations = selectedReservations
+            (recyclerViewReservations.adapter as ReservationAdapter).reservations =
+                selectedReservations
             diff.dispatchUpdatesTo(recyclerViewReservations.adapter!!)
         }
-
-
-
 
 
     }
 
 
-    private fun refreshCalendar(){
+    private fun refreshCalendar() {
         val reservations = viewModel.reservations.value ?: return
 
-        for(entries in reservations.entries){
-            val firstDay = calendarView.findFirstVisibleMonth()?.yearMonth?.atDay(1) ?: YearMonth.now().atDay(1)
-            val lastDay = calendarView.findFirstVisibleMonth()?.yearMonth?.atEndOfMonth() ?: YearMonth.now().atEndOfMonth()
+        for (entries in reservations.entries) {
+            val firstDay =
+                calendarView.findFirstVisibleMonth()?.yearMonth?.atDay(1) ?: YearMonth.now()
+                    .atDay(1)
+            val lastDay =
+                calendarView.findFirstVisibleMonth()?.yearMonth?.atEndOfMonth() ?: YearMonth.now()
+                    .atEndOfMonth()
 
-            val calendarDay = if (firstDay <= entries.key && entries.key <= lastDay ){
+            val calendarDay = if (firstDay <= entries.key && entries.key <= lastDay) {
                 CalendarDay(entries.key, DayPosition.MonthDate)
-            } else if(entries.key < firstDay) {
+            } else if (entries.key < firstDay) {
 
                 CalendarDay(entries.key, DayPosition.InDate)
-            } else{
+            } else {
 
                 CalendarDay(entries.key, DayPosition.OutDate)
             }
             calendarView.notifyDayChanged(calendarDay)
         }
-        calendarView.notifyDayChanged(CalendarDay(viewModel.selectedDate.value ?: LocalDate.now(), DayPosition.MonthDate))
+        calendarView.notifyDayChanged(
+            CalendarDay(
+                viewModel.selectedDate.value ?: LocalDate.now(),
+                DayPosition.MonthDate
+            )
+        )
 
     }
 
     override fun onStart() {
         super.onStart()
 
-        viewModel.selectedDate.observe(viewLifecycleOwner){
-            if (it != null){
+        viewModel.selectedDate.observe(viewLifecycleOwner) {
+            if (it != null) {
                 calendarView.scrollToDate(it)
                 calendarView.scrollToMonth(YearMonth.from(it))
                 refreshPreviousCalendarButton(YearMonth.from(it))
@@ -237,31 +269,41 @@ class MyReservationsFragment(val context: HomeActivity): Fragment(R.layout.my_re
 
     }
 
-    private fun refreshNextCalendarButton(date: YearMonth){
-        if (date == endMonth){
-            nextButton.setColorFilter(ContextCompat.getColor(context,R.color.md_theme_dark_primary))
+    private fun refreshNextCalendarButton(date: YearMonth) {
+        if (date == endMonth) {
+            nextButton.setColorFilter(
+                ContextCompat.getColor(
+                    context,
+                    R.color.md_theme_dark_primary
+                )
+            )
             nextButton.isEnabled = false
         } else {
             nextButton.isEnabled = true
 
             nextButton.setColorFilter(Color.WHITE)
         }
-        if(date != startMonth) {
+        if (date != startMonth) {
             previousButton.setColorFilter(Color.WHITE)
             previousButton.isEnabled = true
         }
     }
 
-    private fun refreshPreviousCalendarButton(date: YearMonth){
-        if (date == startMonth){
-            previousButton.setColorFilter(ContextCompat.getColor(context,R.color.md_theme_dark_primary))
+    private fun refreshPreviousCalendarButton(date: YearMonth) {
+        if (date == startMonth) {
+            previousButton.setColorFilter(
+                ContextCompat.getColor(
+                    context,
+                    R.color.md_theme_dark_primary
+                )
+            )
             previousButton.isEnabled = false
         } else {
             previousButton.isEnabled = true
 
             previousButton.setColorFilter(Color.WHITE)
         }
-        if(date != endMonth) {
+        if (date != endMonth) {
             nextButton.setColorFilter(Color.WHITE)
             nextButton.isEnabled = true
         } else {

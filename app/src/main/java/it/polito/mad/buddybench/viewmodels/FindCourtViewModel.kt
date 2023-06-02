@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
+import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.persistence.firebaseRepositories.CourtRepository
+import it.polito.mad.buddybench.persistence.firebaseRepositories.ReservationRepository
 import it.polito.mad.buddybench.persistence.repositories.SportRepository
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -58,6 +60,7 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
                 _loading.postValue(false)
                 _currentCourts.postValue(listOf())
                 onFailure()
+
             }){
                     list ->
                     _loading.postValue(false)
@@ -79,7 +82,7 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
         name= ""
     }
 
-    fun applyFilter(clear: Boolean = false){
+    fun applyFilterOnCourts(clear: Boolean = false){
         filtersEnabled = true
         if(clear)
             clearFilters()
@@ -110,6 +113,54 @@ class FindCourtViewModel @Inject constructor(): ViewModel() {
             (it.location.contains(name, ignoreCase = true) || it.name.contains(name, ignoreCase = true))
                     && it.rating >= minRating &&  it.feeHour <= maxFee
         }.sortedBy { it.name }
+    }
+
+
+    private var _publicGames: List<ReservationDTO> = listOf()
+    private val _currentPublicGames: MutableLiveData<List<ReservationDTO>> = MutableLiveData(listOf())
+    val currentPublicGames: LiveData<List<ReservationDTO>> = _currentPublicGames
+
+    private val reservationRepositoryFirebase = ReservationRepository()
+
+
+    fun getPublicGamesBySport(onSuccess: () -> Unit): LiveData<List<ReservationDTO>> {
+        _loading.value = true
+
+        mainScope.launch {
+
+            reservationRepositoryFirebase.getPublicGames(selectedDate, selectedSport.value!!.toString(), {
+                _loading.postValue(false)
+                _currentPublicGames.postValue(listOf())
+                onFailure()
+            }){
+                    list ->
+                _loading.postValue(false)
+                _publicGames = list
+                val publicGames = applyFiltersOnPublicGames(_publicGames)
+                _currentPublicGames.postValue(publicGames)
+                onSuccess()
+            }
+        }
+
+        return currentPublicGames
+    }
+
+    fun applyFilterOnPublicGames(clear: Boolean = false){
+        filtersEnabled = true
+        if(clear)
+            clearFilters()
+        _currentPublicGames.value = _publicGames.filter{
+            (it.court.location.contains(name, ignoreCase = true) || it.court.name.contains(name, ignoreCase = true))
+                    && it.court.rating >= minRating && it.court.feeHour <= maxFee
+        }.sortedBy { it.court.name }
+    }
+
+
+    private fun applyFiltersOnPublicGames(publicGames: List<ReservationDTO>): List<ReservationDTO> {
+        return publicGames.filter{
+            (it.court.location.contains(name, ignoreCase = true) || it.court.name.contains(name, ignoreCase = true))
+                    && it.court.rating >= minRating &&  it.court.feeHour <= maxFee
+        }.sortedBy { it.court.name }
     }
 
 

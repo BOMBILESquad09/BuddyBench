@@ -99,7 +99,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:visibility="gone"
                 android:clickable="true"
                 android:focusable="true"
                 android:background="?attr/selectableItemBackground"
