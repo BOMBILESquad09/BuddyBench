@@ -77,7 +77,6 @@ class FilterSheetDialog(
             refFilterIcon.setImageResource(R.drawable.filter)
             dismiss()
         }
-
     }
 
 

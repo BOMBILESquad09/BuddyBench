@@ -427,28 +427,36 @@ class ReservationRepository {
     ) {
         withContext(Dispatchers.IO) {
             try {
-
+                val hourFilter = if(date == LocalDate.now()){
+                    LocalTime.now().hour
+                } else {
+                    -1
+                }
                 val list = db.collection("reservations")
                     .whereIn(
                         "visibilty",
                         mutableListOf(Visibilities.ON_REQUEST.name, Visibilities.PUBLIC.name)
                     )
                     .whereEqualTo("date", date.toString())
-                    .whereGreaterThan("endTime", LocalTime.now().hour)
+
                     .get().await().documents
                     .filter { doc ->
-                        val ref = doc.data!!.get("court") as DocumentReference
+                        val data = doc.data!!
+                        val ref = data["court"] as DocumentReference
                         val sportRef = ref.id.split("_").last()
-                        sportRef == sport.uppercase()
+                        sportRef == sport.uppercase() && (data["user"] as DocumentReference).id != Firebase.auth.currentUser!!.email!! && (data["startTime"] as Long) > hourFilter
                     }.map {
-                        async {
-                            mappingReservationFromDocument(it)
-                        }
-                    }.map { it.await() }
+                            async {
+                                mappingReservationFromDocument(it)
+                            }
+                        }.map { it.await() }
+
                 onSuccess(list)
             } catch (e: Exception) {
                 println(e)
-                onFailure()
+                withContext(Dispatchers.Main){
+                    onFailure()
+                }
             }
         }
     }

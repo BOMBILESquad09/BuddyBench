@@ -20,18 +20,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
-import com.bumptech.glide.util.Util
 import com.google.android.material.tabs.TabLayout
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.WeekDayPosition
 import com.kizitonwose.calendar.view.WeekCalendarView
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.internal.managers.FragmentComponentManager
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.court.CourtActivity
 import it.polito.mad.buddybench.activities.court.ReviewsActivity
 import it.polito.mad.buddybench.activities.court.WeeklyCalendarDayBinder
 import it.polito.mad.buddybench.activities.findcourt.sportselection.SportsSelectionFragment
+import it.polito.mad.buddybench.activities.invitations.InvitationAdapter
+import it.polito.mad.buddybench.activities.invitations.InvitationsDiffsUtils
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.CourtDTO
 import it.polito.mad.buddybench.utils.Utils
@@ -45,7 +45,9 @@ import java.time.format.DateTimeFormatter
 @AndroidEntryPoint
 class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_search_court) {
 
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var courtsRecyclerView: RecyclerView
+    private lateinit var publicGamesRecyclerView: RecyclerView
+
     private var lastCourts: List<CourtDTO> = listOf()
     private lateinit var progressLayout: LinearLayout
     private lateinit var progressBar: ProgressBar
@@ -70,7 +72,8 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         }
 
 
-        recyclerView = view.findViewById(R.id.searchRecyclerView)
+        courtsRecyclerView = view.findViewById(R.id.searchRecyclerView)
+        publicGamesRecyclerView = view.findViewById(R.id.gamesRecyclerView)
         val b = view.findViewById<ImageView>(R.id.change_sport_button)
         val textNearButton = view.findViewById<TextView>(R.id.textView12)
         val textUser = view.findViewById<TextView>(R.id.textView11)
@@ -83,20 +86,31 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         findViewPager = view.findViewById(R.id.find_view_pager);
 
         findTabLayout.addOnTabSelectedListener(FindTabListener{
-            if (it == FindStates.GAMES.value) {
-                filterButton.startAnimation(AnimationUtils.loadAnimation(this.activity,R.anim.fade_out))
+            findCourtViewModel.setFindState(it)
+        })
+
+        findCourtViewModel.findStates.observe(viewLifecycleOwner){
+            findCourtViewModel.getCourtsOrPublicGames()
+            if (it == FindStates.GAMES) {
+                courtsRecyclerView.visibility = View.GONE
+                publicGamesRecyclerView.visibility = View.VISIBLE
                 filterButton.postOnAnimation {
                     filterButton.visibility = View.GONE
                     searchEditText.startAnimation(AnimationUtils.loadAnimation(this.activity, R.anim.fade_in))
                 }
+                filterButton.startAnimation(AnimationUtils.loadAnimation(this.activity,R.anim.fade_out))
             } else {
+                courtsRecyclerView.visibility = View.VISIBLE
+                publicGamesRecyclerView.visibility = View.GONE
                 filterButton.visibility = View.VISIBLE
-                filterButton.startAnimation(AnimationUtils.loadAnimation(this.activity,R.anim.fade_in))
                 filterButton.postOnAnimation {
                     // searchEditText.startAnimation(AnimationUtils.loadAnimation(this.activity, R.anim.expand))
                 }
+
+                filterButton.startAnimation(AnimationUtils.loadAnimation(this.activity,R.anim.fade_in))
+
             }
-        });
+        }
 
         parent.context.userViewModel.user.observe(viewLifecycleOwner) {
             textUser.text = parent.context.getString(R.string.user_hello, it.name)
@@ -129,8 +143,12 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             }
         }
 
-        recyclerView.adapter = CourtSearchAdapter(parent.viewModel.currentCourts, callbackCourt, reviewsCallback)
-        recyclerView.layoutManager = LinearLayoutManager(view.context)
+
+        courtsRecyclerView.adapter = CourtSearchAdapter(findCourtViewModel.currentCourts, callbackCourt, reviewsCallback)
+        courtsRecyclerView.layoutManager = LinearLayoutManager(view.context)
+
+        publicGamesRecyclerView.adapter = InvitationAdapter(findCourtViewModel.currentPublicGames.value!!, {}, {}, isInvitation = false)
+        publicGamesRecyclerView.layoutManager = LinearLayoutManager(view.context)
 
         val calendarView = view.findViewById<WeekCalendarView>(R.id.calendar)
 
@@ -171,7 +189,8 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
         findCourtViewModel.loading.observe(viewLifecycleOwner) {
             if(it) {
-                recyclerView.visibility = View.GONE
+                courtsRecyclerView.visibility = View.GONE
+                publicGamesRecyclerView.visibility = View.GONE
                 noCourts.visibility = View.GONE
                 progressLayout.visibility = View.VISIBLE
             } else {
@@ -183,14 +202,30 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             val diff = CourtsDiffUtils(lastCourts, it)
             val diffResult = DiffUtil.calculateDiff(diff)
             lastCourts = it
-            diffResult.dispatchUpdatesTo(recyclerView.adapter!!)
-            recyclerView.scrollToPosition(0)
+            diffResult.dispatchUpdatesTo(courtsRecyclerView.adapter!!)
+            courtsRecyclerView.scrollToPosition(0)
             if(it.isEmpty()) {
-                recyclerView.visibility = View.GONE
+                courtsRecyclerView.visibility = View.GONE
                 noCourts.visibility = View.VISIBLE
                 noCourts.text = emptyString()
             } else {
-                recyclerView.visibility = View.VISIBLE
+                courtsRecyclerView.visibility = View.VISIBLE
+                noCourts.visibility = View.GONE
+            }
+        }
+
+        findCourtViewModel.currentPublicGames.observe(viewLifecycleOwner){
+            val diff = InvitationsDiffsUtils( (publicGamesRecyclerView.adapter as InvitationAdapter).invitations, it)
+            (publicGamesRecyclerView.adapter as InvitationAdapter).invitations = it
+            val diffResult = DiffUtil.calculateDiff(diff)
+            diffResult.dispatchUpdatesTo(courtsRecyclerView.adapter!!)
+            publicGamesRecyclerView.scrollToPosition(0)
+            if(it.isEmpty()) {
+                publicGamesRecyclerView.visibility = View.GONE
+                noCourts.visibility = View.VISIBLE
+                noCourts.text = emptyString()
+            } else {
+                publicGamesRecyclerView.visibility = View.VISIBLE
                 noCourts.visibility = View.GONE
             }
         }
@@ -216,7 +251,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
             searchEditText.addTextChangedListener(object: TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     parent.viewModel.name = s.toString().trim().replace("\\s+".toRegex(), " ")
-                    parent.viewModel.applyFilterOnCourts()
+                    parent.viewModel.applyFilterOnCourtsOrPublicGames()
                 }
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -254,16 +289,19 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
     override  fun onStart() {
         super.onStart()
-        parent.viewModel.getCourtsBySport(){
-
-        }
+        parent.viewModel.getCourtsOrPublicGames()
     }
 
      private fun emptyString(): String{
+        val ph = when(findCourtViewModel.findStates.value!!){
+            FindStates.GAMES -> "public games"
+            FindStates.COURTS -> "courts"
+        }
+
         return if(parent.viewModel.filtersEnabled){
-            "No courts found based on the search criteria"
+            "No $ph found based on the search criteria"
         } else{
-            "No courts available"
+            "No $ph available"
         }
     }
 

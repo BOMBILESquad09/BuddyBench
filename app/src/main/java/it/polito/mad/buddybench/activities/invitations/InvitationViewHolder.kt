@@ -30,7 +30,10 @@ import java.util.Locale
 import kotlin.math.exp
 
 class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Unit,
-                           val onDecline: (ReservationDTO) -> Unit,): RecyclerView.ViewHolder(view) {
+                           val onDecline: (ReservationDTO) -> Unit,
+                           val isInvitation: Boolean
+
+                           ): RecyclerView.ViewHolder(view) {
 
     private val cardInvitation: CardView = view.findViewById(R.id.card_invitation)
     private val cardInner: ExpandableLayout = view.findViewById(R.id.card_inner)
@@ -105,6 +108,12 @@ class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Uni
                 expandButton.setImageResource(R.drawable.expand_down)
             }
         }
+
+        if(!isInvitation)
+           inviteText.text = "Cazzo guardi"
+    }
+
+    private fun setInvitationCard(){
 
     }
 }

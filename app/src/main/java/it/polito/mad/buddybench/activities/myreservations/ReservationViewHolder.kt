@@ -44,12 +44,11 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
     private var manageBtn: TextView = v.findViewById(R.id.manage_btn)
     private var telephoneIcon: ImageView = v.findViewById(R.id.telephone)
     private var positionIcon: ImageView = v.findViewById(R.id.position)
-
+    lateinit var reservation: ReservationDTO
     val view: View = v
 
-
-    fun bind(reservation: ReservationDTO) {
-
+    fun bind(reservationDTO: ReservationDTO) {
+        reservation = reservationDTO
         // ** Card color
         val card = view.findViewById<CardView>(R.id.card_inner)
         card.setCardBackgroundColor(
@@ -70,19 +69,6 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
                 )!!
             )
         )
-
-        if (reservation.visibility.toString() == "PRIVATE"){
-            iconReservationVisibility.setImageDrawable(view.context.getDrawable(R.drawable.private_visibility))
-        }
-
-        else{
-            iconReservationVisibility.setImageDrawable(view.context.getDrawable(R.drawable.global_visibility))
-        }
-
-        iconReservationVisibility.setOnClickListener {
-            visibilityInfoDialog(view,reservation.visibility.toString())
-        }
-
 
 
         telephoneIcon.setOnClickListener {
@@ -160,26 +146,38 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
                             dialogCard.findViewById<View>(R.id.cancel).setOnClickListener {
                                 dialog.dismiss()
                             }
-                            val private = radioGroup.findViewById<RadioButton>(R.id.private_visibility)
-                            val onRequest = radioGroup.findViewById<RadioButton>(R.id.on_request_visibility)
-                            if(reservation.visibility == Visibilities.PRIVATE) private.isChecked = true
-                            else onRequest.isChecked = true
+
+                            val checkedButton: RadioButton =  when(reservation.visibility){
+                                Visibilities.PRIVATE -> radioGroup.findViewById(R.id.private_visibility)
+                                Visibilities.ON_REQUEST -> radioGroup.findViewById(R.id.on_request_visibility)
+                                Visibilities.PUBLIC -> radioGroup.findViewById(R.id.public_visibility)
+                            }
+                            checkedButton.isChecked = true
+
+
                             radioGroup.setOnCheckedChangeListener { radioGroup, i ->
                                 confirm.isFocusable = true
                                 confirm.isClickable = true
-                                reservation.visibility
-                                confirm.setOnClickListener{
-                                    if(private.isChecked) {
-                                        viewModel.setVisibility(reservation, Visibilities.PRIVATE, {}, {
-                                            reservation.visibility = it
-                                        })
-                                    } else {
-                                        viewModel.setVisibility(reservation, Visibilities.ON_REQUEST, {}, {
-                                            reservation.visibility = it
-                                        })
-                                    }
-                                    dialog.dismiss()
+
+                            }
+
+                            confirm.setOnClickListener{
+
+                                val newVisibility = when(radioGroup.checkedRadioButtonId){
+                                    R.id.private_visibility -> Visibilities.PRIVATE
+                                    R.id.on_request_visibility -> Visibilities.ON_REQUEST
+                                    else -> Visibilities.PRIVATE
                                 }
+
+                                viewModel.setVisibility(reservation, newVisibility, {
+                                                                                    dialog.dismiss()
+                                }, {
+                                    reservation.visibility = it
+                                    setVisibilityIcon()
+                                    dialog.dismiss()
+
+                                })
+
                             }
 
 
@@ -193,9 +191,20 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
         }
 
 
+        iconReservationVisibility.setOnClickListener {
+            visibilityInfoDialog()
+        }
+        setVisibilityIcon()
+    }
 
+    fun setVisibilityIcon(){
+        if (reservation.visibility.toString() == "PRIVATE")
+            iconReservationVisibility.setImageDrawable(view.context.getDrawable(R.drawable.private_visibility))
+        else
+            iconReservationVisibility.setImageDrawable(view.context.getDrawable(R.drawable.global_visibility))
 
     }
+
 
 
     private fun launchReview(reservation: ReservationDTO) {
@@ -220,28 +229,33 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
 
     }
 
-    private fun visibilityInfoDialog(v: View, type: String){
-        val builder = AlertDialog.Builder(v.context)
-        val dialogLayout = LayoutInflater.from(v.context).inflate(R.layout.dialog_visibility_info, null)
+    private fun visibilityInfoDialog(){
+        val builder = AlertDialog.Builder(view.context)
+        val dialogLayout = LayoutInflater.from(view.context).inflate(R.layout.dialog_visibility_info, null)
         builder.setView(dialogLayout)
         val dialog: AlertDialog = builder.create()
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
 
         val dialogTypeText : TextView = dialogLayout.findViewById(R.id.dialog_visibility_type)
-        dialogTypeText.text = type.replace("_"," ")
+        dialogTypeText.text = reservation.visibility.name.replace("_"," ")
 
         val dialogIcon : ImageView = dialogLayout.findViewById(R.id.dialog_icon)
         val dialogText: TextView = dialogLayout.findViewById(R.id.dialog_text)
 
-        if (type == "PRIVATE"){
-            dialogIcon.setImageDrawable(v.context.getDrawable(R.drawable.private_visibility))
-            dialogText.text = "Players can only participate by invitation from the organizer"
+
+        when(reservation.visibility){
+            Visibilities.PRIVATE -> {
+                dialogIcon.setImageDrawable(view.context.getDrawable(R.drawable.private_visibility))
+                dialogText.text = "Players can only participate by invitation from the organizer"
+            }
+            Visibilities.ON_REQUEST -> {
+                dialogIcon.setImageDrawable(view.context.getDrawable(R.drawable.global_visibility))
+                dialogText.text = "Any user can send a request to the organizer to participate the game"
+
+            }
+            else -> {}
         }
 
-        else{
-            dialogIcon.setImageDrawable(v.context.getDrawable(R.drawable.global_visibility))
-            dialogText.text = "Any user can send a request to the organizer to participate the game"
-        }
         dialog.show()
     }
 

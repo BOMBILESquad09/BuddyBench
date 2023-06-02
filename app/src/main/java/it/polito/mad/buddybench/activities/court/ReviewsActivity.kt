@@ -113,8 +113,8 @@ class ReviewsActivity : AppCompatActivity() {
         // ** User can review
         reviewViewModel.canReview.observe(this) { can ->
             if (can) {
-                binding.cardNewReview.visibility = View.VISIBLE
-                binding.cardYourReview.visibility = View.GONE
+                binding.cardNewReview.visibility = View.GONE
+                binding.cardYourReview.visibility = View.VISIBLE
                 binding.tvCannotReview.visibility = View.GONE
             } else {
                 binding.cardNewReview.visibility = View.GONE
