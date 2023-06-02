@@ -1,13 +1,11 @@
 package it.polito.mad.buddybench.activities.myreservations
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.TextView
+import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -228,6 +226,33 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
         launcher.launch(intent)
 
     }
+
+    private fun visibilityInfoDialog(v: View, type: String){
+        val builder = AlertDialog.Builder(v.context)
+        val dialogLayout = LayoutInflater.from(v.context).inflate(R.layout.dialog_visibility_info, null)
+        builder.setView(dialogLayout)
+        val dialog: AlertDialog = builder.create()
+        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+
+        val dialogTypeText : TextView = dialogLayout.findViewById(R.id.dialog_visibility_type)
+        dialogTypeText.text = type.replace("_"," ")
+
+        val dialogIcon : ImageView = dialogLayout.findViewById(R.id.dialog_icon)
+        val dialogText: TextView = dialogLayout.findViewById(R.id.dialog_text)
+
+        if (type == "PRIVATE"){
+            dialogIcon.setImageDrawable(v.context.getDrawable(R.drawable.private_visibility))
+            dialogText.text = "Players can only participate by invitation from the organizer"
+        }
+
+        else{
+            dialogIcon.setImageDrawable(v.context.getDrawable(R.drawable.global_visibility))
+            dialogText.text = "Any user can send a request to the organizer to participate the game"
+        }
+        dialog.show()
+    }
+
+
 
 
 }

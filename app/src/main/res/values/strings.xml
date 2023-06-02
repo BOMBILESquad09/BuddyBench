@@ -261,5 +261,6 @@
     <string name="edit_sports_error_title">Edit Sports</string>
     <string name="courts">Courts</string>
     <string name="games">Games</string>
+    <string name="dialog_visibility_text">Players can only participate by invitation from the organizer</string>
     <string name="edit_review">Edit Review</string>
 </resources>
