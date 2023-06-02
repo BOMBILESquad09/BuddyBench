@@ -8,7 +8,7 @@
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:gravity="center"
-        android:text="There are no joint request for this reservation"
+        android:text="There are no join request for this reservation"
         android:textColor="@color/light_gray"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"

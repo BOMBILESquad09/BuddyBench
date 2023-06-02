@@ -4,16 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import it.polito.mad.buddybench.R
@@ -24,7 +18,7 @@ import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.utils.Utils
 import it.polito.mad.buddybench.viewmodels.JoinRequestViewModel
 
-class JointRequestsBottomSheet(val reservation: ReservationDTO): BottomSheetDialogFragment() {
+class JoinRequestsBottomSheet(val reservation: ReservationDTO): BottomSheetDialogFragment() {
 
     val viewModel by activityViewModels<JoinRequestViewModel>()
 
@@ -34,7 +28,7 @@ class JointRequestsBottomSheet(val reservation: ReservationDTO): BottomSheetDial
         savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        val view  = inflater.inflate(R.layout.joint_requests, container, false)
+        val view  = inflater.inflate(R.layout.join_requests, container, false)
         val behaviour = BottomSheetBehavior.from(view.findViewById(R.id.standard_bottom_sheet))
         behaviour.state = BottomSheetBehavior.STATE_EXPANDED
         return view
@@ -44,7 +38,7 @@ class JointRequestsBottomSheet(val reservation: ReservationDTO): BottomSheetDial
         super.onViewCreated(view, savedInstanceState)
         viewModel.getUpdatedReservation(reservation)
 
-        val itemAnimator = object : DefaultItemAnimator() {
+        /*val itemAnimator = object : DefaultItemAnimator() {
             override fun animateRemove(holder: RecyclerView.ViewHolder?): Boolean {
                 if (holder != null) {
                     holder as FriendRequestRecyclerViewAdapter.RequestViewHolder
@@ -65,20 +59,20 @@ class JointRequestsBottomSheet(val reservation: ReservationDTO): BottomSheetDial
                 }
                 return super.animateRemove(holder)
             }
-        }
+        }*/
 
         val callback: (profile: Profile) -> Unit = {
             Utils.goToProfileFriend(requireActivity() as HomeActivity, it)
         }
-        val recyclerViewFriend = view.findViewById<RecyclerView>(R.id.recycler_joint_requests)
+        val recyclerViewFriend = view.findViewById<RecyclerView>(R.id.recycler_join_requests)
 
-        val noJointRequest = view.findViewById<ConstraintLayout>(R.id.no_joint_request)
+        val noJoinRequest = view.findViewById<ConstraintLayout>(R.id.no_join_request)
         if (reservation.requests.isEmpty()) {
-            noJointRequest.visibility = View.VISIBLE
+            noJoinRequest.visibility = View.VISIBLE
         } else {
             recyclerViewFriend.visibility = View.VISIBLE
             recyclerViewFriend.layoutManager = LinearLayoutManager(context)
-            recyclerViewFriend.itemAnimator = itemAnimator
+            //recyclerViewFriend.itemAnimator = itemAnimator
             recyclerViewFriend.adapter = FriendRequestRecyclerViewAdapter(
                 reservation.requests,
                 null,
@@ -91,12 +85,11 @@ class JointRequestsBottomSheet(val reservation: ReservationDTO): BottomSheetDial
         viewModel.currentReservation.observe(this) {
             if(it == null) return@observe
             if(it.requests.isEmpty()) {
-                noJointRequest.visibility = View.VISIBLE
+                noJoinRequest.visibility = View.VISIBLE
                 recyclerViewFriend.visibility = View.GONE
             } else {
-                noJointRequest.visibility = View.GONE
+                noJoinRequest.visibility = View.GONE
                 recyclerViewFriend.visibility = View.VISIBLE
-                recyclerViewFriend.itemAnimator = itemAnimator
                 recyclerViewFriend.adapter = FriendRequestRecyclerViewAdapter(
                     it.requests,
                     null,
