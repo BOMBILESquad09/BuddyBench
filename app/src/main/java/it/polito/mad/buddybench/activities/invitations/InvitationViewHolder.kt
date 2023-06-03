@@ -17,6 +17,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.internal.managers.FragmentComponentManager
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
@@ -24,6 +26,7 @@ import it.polito.mad.buddybench.activities.profile.RemoveFriendDialog
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.utils.Utils
+import it.polito.mad.buddybench.viewmodels.FindCourtViewModel
 import it.polito.mad.buddybench.viewmodels.ImageViewModel
 import net.cachapa.expandablelayout.ExpandableLayout
 import java.time.LocalDate
@@ -31,11 +34,12 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 import kotlin.math.exp
 
-class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Unit,
-                           val onDecline: (ReservationDTO) -> Unit,
-                           val isInvitation: Boolean
-
-                           ): RecyclerView.ViewHolder(view) {
+class InvitationViewHolder(
+    val view: View, val onAccept: (ReservationDTO) -> Unit,
+    val onDecline: (ReservationDTO) -> Unit,
+    val isInvitation: Boolean,
+    val findCourtViewModel: FindCourtViewModel?
+) : RecyclerView.ViewHolder(view) {
 
     private val cardInvitation: CardView = view.findViewById(R.id.card_invitation)
     private val cardInner: ExpandableLayout = view.findViewById(R.id.card_inner)
@@ -52,18 +56,26 @@ class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Uni
 
     var slotFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("H:mm")
     var dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    lateinit var invitation: ReservationDTO
 
+    fun bind(invitationDTO: ReservationDTO) {
 
-    fun bind(invitation: ReservationDTO){
-
+        invitation = invitationDTO
         //set color bg
-        cardInvitation.setCardBackgroundColor(Sports.getSportColor(Sports.valueOf(invitation.court.sport), view.context))
+        cardInvitation.setCardBackgroundColor(
+            Sports.getSportColor(
+                Sports.valueOf(invitation.court.sport),
+                view.context
+            )
+        )
         //cardInner.setCardBackgroundColor(Sports.getSportColor(Sports.valueOf(invitation.court.sport),view.context))
 
         //set inviter
-        ((FragmentComponentManager.findActivity(view.context) as HomeActivity)).imageViewModel.getUserImage(invitation.userOrganizer.email,{
-            inviterPicture.setImageResource(R.drawable.person)
-        }){
+        ((FragmentComponentManager.findActivity(view.context) as HomeActivity)).imageViewModel.getUserImage(
+            invitation.userOrganizer.email,
+            {
+                inviterPicture.setImageResource(R.drawable.person)
+            }) {
             Glide.with(view.context)
                 .load(it)
                 .placeholder(R.drawable.loading)
@@ -73,11 +85,15 @@ class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Uni
 
         inviterPicture.setOnClickListener {
 
-            Utils.goToProfileFriend(FragmentComponentManager.findActivity(view.context) as AppCompatActivity,
-            invitation.userOrganizer)
+            Utils.goToProfileFriend(
+                FragmentComponentManager.findActivity(view.context) as AppCompatActivity,
+                invitation.userOrganizer
+            )
         }
         //set invite text
-        inviteText.text = "${invitation.userOrganizer.nickname} invited you to play ${invitation.court.sport.lowercase().capitalize(Locale.ENGLISH)}!"
+        inviteText.text = "${invitation.userOrganizer.nickname} invited you to play ${
+            invitation.court.sport.lowercase().capitalize(Locale.ENGLISH)
+        }!"
 
         //set court
         courtName.text = invitation.court.name
@@ -86,54 +102,93 @@ class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Uni
         address.text = "${invitation.court.location}, ${invitation.court.address}"
 
         //set date
-        date.text = "${invitation.date.format(DateTimeFormatter.ofPattern("EEEE, d MMMM y", Locale.ENGLISH))}"
+        date.text = "${
+            invitation.date.format(
+                DateTimeFormatter.ofPattern(
+                    "EEEE, d MMMM y",
+                    Locale.ENGLISH
+                )
+            )
+        }"
         //set hours
-        slot.text = "${invitation.startTime.format(slotFormatter)} - ${invitation.endTime.format(slotFormatter)}"
+        slot.text = "${invitation.startTime.format(slotFormatter)} - ${
+            invitation.endTime.format(slotFormatter)
+        }"
+        if (isInvitation) {
+            acceptButton.setOnClickListener {
+                onAccept(invitation)
+            }
 
-        acceptButton.setOnClickListener {
-            onAccept(invitation)
-        }
-
-        declineButton.setOnClickListener {
-            onDecline(invitation)
+            declineButton.setOnClickListener {
+                onDecline(invitation)
+            }
         }
 
         cardInner.duration = 400
-        expandButton.setOnClickListener{
+        expandButton.setOnClickListener {
             if (!cardInner.isExpanded) {
                 cardInner.expand()
-                cardInner.startAnimation(AnimationUtils.loadAnimation(view.context, android.R.anim.fade_in))
+                cardInner.startAnimation(
+                    AnimationUtils.loadAnimation(
+                        view.context,
+                        android.R.anim.fade_in
+                    )
+                )
                 expandButton.setImageResource(R.drawable.expand_up)
             } else {
-                cardInner.startAnimation(AnimationUtils.loadAnimation(view.context, android.R.anim.fade_out))
+                cardInner.startAnimation(
+                    AnimationUtils.loadAnimation(
+                        view.context,
+                        android.R.anim.fade_out
+                    )
+                )
                 cardInner.collapse()
                 expandButton.setImageResource(R.drawable.expand_down)
             }
         }
 
-        if(!isInvitation){
-            inviteText.text = "${invitation.userOrganizer.nickname} is organizing a ${invitation.court.sport.lowercase().capitalize(Locale.ENGLISH)} game!"
+        if (!isInvitation) {
+            inviteText.text = "${invitation.userOrganizer.nickname} is organizing a ${
+                invitation.court.sport.lowercase().capitalize(Locale.ENGLISH)
+            } game!"
             inviteText.maxLines = 3
 
             declineButton.visibility = View.GONE
 
             acceptButton.text = "Join"
-            acceptButton.setPadding(120,10,120,10)
+            acceptButton.setPadding(120, 10, 120, 10)
 
-            acceptButton.setOnClickListener{
+            acceptButton.setOnClickListener {
+
                 //if request not sent
-                acceptButton.text = "Cancel request"
-                acceptButton.setTextColor(view.context.getColor(R.color.error))
+                    if (!invitation.requests.map { it.email }.contains(Firebase.auth.currentUser!!.email!!)) {
+                        findCourtViewModel!!.sendJoinRequest(invitation){
+
+                        }
+                    } else {
+                        val bottomSheet = CancelRequestJoinDialog(invitation
+                        ) {  }
+                        bottomSheet.show((FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager, "")
+                    }
 
 
-                val bottomSheet = CancelRequestJoinDialog()
-                bottomSheet.show((FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager, "")
+                    /*acceptButton.text = "Cancel request"
+                    acceptButton.setTextColor(view.context.getColor(R.color.error))
+
+
+                    val bottomSheet = CancelRequestJoinDialog()
+                    bottomSheet.show((FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager, "")*/
+
             }
         }
-
+        setJoinRequestCard()
     }
 
-    private fun setInvitationCard(){
-
+    private fun setJoinRequestCard() {
+        if (invitation.requests.map { it.email }.contains(Firebase.auth.currentUser!!.email!!)) {
+            acceptButton.text = "Request sent"
+        } else {
+            acceptButton.text = "Join"
+        }
     }
 }

@@ -26,10 +26,15 @@ class InvitationsDiffsUtils(
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        
+        println(  oldInvitations[oldItemPosition].date == newInvitations[newItemPosition].date
+                &&  oldInvitations[oldItemPosition].endTime == newInvitations[newItemPosition].endTime
+                && oldInvitations[oldItemPosition].startTime == newInvitations[newItemPosition].startTime
+                && oldInvitations[oldItemPosition].requests.size == newInvitations[newItemPosition].requests.size
+        )
         return oldInvitations[oldItemPosition].date == newInvitations[newItemPosition].date
                 &&  oldInvitations[oldItemPosition].endTime == newInvitations[newItemPosition].endTime
                 && oldInvitations[oldItemPosition].startTime == newInvitations[newItemPosition].startTime
+                && oldInvitations[oldItemPosition].requests.size == newInvitations[newItemPosition].requests.size
 
     }
 

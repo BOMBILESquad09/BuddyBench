@@ -541,7 +541,7 @@ class ReservationRepository {
     }
 
     // fallo con le transazioni
-    suspend fun sendRequestToJoin(reservationDTO: ReservationDTO, onFailure: () -> Unit) {
+    suspend fun sendRequestToJoin(reservationDTO: ReservationDTO, onFailure: () -> Unit, onSuccess: () -> Unit) {
         withContext(Dispatchers.IO){
             val resDoc = db.collection("reservations").document(reservationDTO.id)
             val res = resDoc.get().await()
@@ -556,11 +556,13 @@ class ReservationRepository {
                 it.update(
                     resDoc,
                     mapOf(
-                        "requests" to FieldValue.arrayUnion("/users/$email")
+                        "requests" to FieldValue.arrayUnion(db.document("/users/$email"))
                     )
                 )
             }.addOnFailureListener {
                 onFailure()
+            }.addOnSuccessListener {
+                onSuccess()
             }
         }
 

@@ -231,13 +231,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     }
 
 
-    fun sendRequestToJoin(
-        reservation: ReservationDTO
-    ) {
-        viewModelScope.launch {
-            reservationRepository.sendRequestToJoin(reservation, onFailure)
-        }
-    }
+
 
 
     private fun initPendingFriends(reservation: ReservationDTO) {
