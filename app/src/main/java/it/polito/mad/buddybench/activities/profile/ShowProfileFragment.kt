@@ -285,10 +285,8 @@ class ShowProfileFragment(
     private fun showBottomSheetDialog() {
 
 
-        val bottomSheet = RemoveFriendDialog(
-        )
-
-        bottomSheet.show(parentFragmentManager, "filterSheet")
+        val bottomSheet = RemoveFriendDialog()
+        bottomSheet.show(parentFragmentManager, "removeFriendSheet")
 
     }
 

@@ -167,6 +167,22 @@
 
             </TextView>
 
+            <TextView
+                android:id="@+id/notification_number"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/rounded_shape"
+                android:backgroundTint="@color/error"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="3dp"
+                android:text="1"
+                android:textColor="@color/white"
+                card_view:layout_constraintBottom_toBottomOf="@+id/manage_btn"
+                card_view:layout_constraintEnd_toEndOf="@+id/manage_btn"
+                card_view:layout_constraintTop_toTopOf="@+id/manage_btn" />
+
             <ImageView
                 android:id="@+id/visibility_icon"
                 android:layout_width="32dp"

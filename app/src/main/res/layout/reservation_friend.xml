@@ -164,7 +164,7 @@
                     android:id="@+id/remove_pending_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/error"
+                    android:backgroundTint="@color/disabled"
                     android:paddingHorizontal="20dp"
                     android:text="Cancel"
                     android:textColor="@color/md_theme_light_background"
