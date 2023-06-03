@@ -101,6 +101,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
                 publicGamesRecyclerView.visibility = View.VISIBLE
                 filterButton.postOnAnimation {
                     searchTextContainer.startAnimation(AnimationUtils.loadAnimation(this.activity, R.anim.expand_search_bar))
+                    findCourtViewModel.applyFilterOnCourts(clear = true)
                     filterButton.visibility = View.GONE
                 }
                 filterButton.startAnimation(AnimationUtils.loadAnimation(this.activity,R.anim.fade_out))
