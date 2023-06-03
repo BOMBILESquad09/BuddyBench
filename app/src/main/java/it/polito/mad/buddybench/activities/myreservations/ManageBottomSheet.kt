@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.activities.myreservations
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -34,7 +35,8 @@ class ManageBottomSheet(
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    @androidx.annotation.OptIn(com.google.android.material.badge.ExperimentalBadgeUtils::class)
+    override fun  onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val inviteFriendsBtn = view.findViewById<LinearLayout>(R.id.invite_button)
@@ -67,8 +69,10 @@ class ManageBottomSheet(
                 joinRequestBtn.post {
                     val badgeDrawable = BadgeDrawable.create(view.context)
                     badgeDrawable.number = reservation.requests.size
-                    badgeDrawable.setVerticalOffset(25);
-                    badgeDrawable.setHorizontalOffset(30);
+                    badgeDrawable.verticalOffset = 25;
+                    badgeDrawable.horizontalOffset = 30;
+                    badgeDrawable.backgroundColor = Color.RED
+                    badgeDrawable.isVisible = true
                     BadgeUtils.attachBadgeDrawable(badgeDrawable, view.findViewById(R.id.join_b), view.findViewById(R.id.badge) );
                 }
             }
