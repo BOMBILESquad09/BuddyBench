@@ -360,10 +360,19 @@ class ReservationRepository {
         val ucDoc = db.collection("unavailable_courts").document(oldDate.toString())
         db.runTransaction {t ->
             t.delete(reservationDoc)
-            t.update(ucDoc, "courts", FieldValue.arrayRemove(db.document("courts/$docCourtName")))
+
+            try {
+                t.update(
+                    ucDoc,
+                    "courts",
+                    FieldValue.arrayRemove(db.document("courts/$docCourtName"))
+                )
+            } catch (_: java.lang.Exception) { }
+
         }.addOnSuccessListener {
             onSuccess()
         }.addOnFailureListener {
+            println(it)
             onFailure()
         }
     }
