@@ -62,33 +62,31 @@
 
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/btn_confirm_request"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/round_check_24"
         app:cardCornerRadius="50dp"
         android:backgroundTint="@color/md_theme_light_primary"
         android:padding="8dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:layout_marginEnd="8dp"
 
+        android:layout_marginEnd="8dp"
         android:contentDescription="@string/confirm">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/btn_confirm_request"
             android:padding="8dp"
             android:layout_width="match_parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_height="match_parent"
             android:src="@drawable/round_check_24"
             android:contentDescription="@string/confirm"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
+            />
 
     </androidx.cardview.widget.CardView>
+
     <androidx.cardview.widget.CardView
-        android:id="@+id/btn_reject_request"
         android:layout_width="50dp"
         android:layout_height="50dp"
         app:cardCornerRadius="50dp"
@@ -97,18 +95,20 @@
         android:padding="8dp"
         android:clickable="true"
         android:focusable="true"
-        android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_marginEnd="8dp"
         android:contentDescription="@string/confirm">
-        <ImageView
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/btn_reject_request"
             android:padding="8dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/round_close_white_24"
-            android:contentDescription="@string/confirm"
             android:clickable="true"
             android:focusable="true"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/round_close_white_24"
+            android:contentDescription="@string/confirm" />
+
     </androidx.cardview.widget.CardView>
 
 </LinearLayout>
