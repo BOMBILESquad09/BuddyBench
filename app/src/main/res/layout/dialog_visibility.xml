@@ -27,20 +27,24 @@
                 >
                 <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/private_visibility"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawablePadding="10dp"
                     android:paddingHorizontal="10dp"
+                    android:text="Private"
+                    android:drawableEnd="@drawable/private_visibility"
+                    android:drawableTint="@color/md_theme_light_primary"
+                    android:drawablePadding="6dp"/>
 
-                    android:text="Private" />
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/on_request_visibility"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="10dp"
-
-                    android:text="On Request" />
+                    android:text="On Request"
+                    android:drawableEnd="@drawable/global_visibility"
+                    android:drawableTint="@color/md_theme_light_primary"
+                    android:drawablePadding="6dp"/>
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
                     android:visibility="gone"
