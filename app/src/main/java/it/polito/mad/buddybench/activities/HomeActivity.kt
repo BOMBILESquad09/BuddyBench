@@ -125,6 +125,7 @@ class HomeActivity : AppCompatActivity() {
                 }
 
                 reservationViewModel.subscribeReservations { s ->
+                    println("...............................")
                     if (s > 0) {
                         bottomBar.counter[Tabs.RESERVATIONS.getId()] = s
                         if (bottomBar.currentTab != Tabs.RESERVATIONS)
@@ -141,6 +142,7 @@ class HomeActivity : AppCompatActivity() {
 
                     }
                 }
+                println("-------------------------------------------------")
                 return@observe
             }
 

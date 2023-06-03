@@ -58,10 +58,7 @@ class ReservationRepository {
 
 
 
-    fun getAll(): HashMap<LocalDate, List<ReservationDTO>> {
-        TODO()
-        //return ReservationDTO.toHashmap(reservationDao.getAll().map { it.toReservationDTO() })
-    }
+
 
     suspend fun getAllByUser(
         onFailure: () -> Unit,
@@ -147,9 +144,12 @@ class ReservationRepository {
 
                     reservations.add(reservationDTO)
                 }
+                withContext(Dispatchers.Main){
+                    onSuccess(ReservationDTO.toHashmap(reservations))
 
-                onSuccess(ReservationDTO.toHashmap(reservations))
+                }
             } catch (e: Exception) {
+                println(e)
                 withContext(Dispatchers.Main) {
                     onFailure()
                 }
@@ -459,6 +459,7 @@ class ReservationRepository {
         onFailure: () -> Unit,
         onSuccess: (List<ReservationDTO>) -> Unit
     ) {
+        val currentEmail = Firebase.auth.currentUser!!.email!!
         withContext(Dispatchers.IO) {
             try {
                 val hourFilter = if(date == LocalDate.now()){
@@ -478,7 +479,11 @@ class ReservationRepository {
                         val data = doc.data!!
                         val ref = data["court"] as DocumentReference
                         val sportRef = ref.id.split("_").last()
-                        sportRef == sport.uppercase() && (data["user"] as DocumentReference).id != Firebase.auth.currentUser!!.email!! && (data["startTime"] as Long) > hourFilter
+                        sportRef == sport.uppercase()
+                                && (data["user"] as DocumentReference).id != Firebase.auth.currentUser!!.email!!
+                                && (data["startTime"] as Long) > hourFilter
+                                && !(data["accepted"] as List<DocumentReference>).contains(db.document("users/$currentEmail"))
+                                && !(data["pendings"] as List<DocumentReference>).contains(db.document("users/$currentEmail"))
                     }.map {
                             async {
                                 mappingReservationFromDocument(it)
@@ -514,9 +519,9 @@ class ReservationRepository {
     }
 
     // fallo con le transazioni
-    suspend fun setVisibility(
+    fun setVisibility(
         reservationDTO: ReservationDTO,
-        visibilities: Visibilities,
+        visibility: Visibilities,
         onFailure: () -> Unit,
         onSuccess: (Visibilities) -> Unit
     ) {
@@ -525,29 +530,42 @@ class ReservationRepository {
             it.update(
                 reservationPath,
                 mapOf(
-                    "visibilty" to visibilities
+                    "visibilty" to visibility
                 )
             )
         }.addOnSuccessListener {
-            onSuccess(visibilities)
+            onSuccess(visibility)
         }.addOnFailureListener {
             onFailure()
         }
     }
 
     // fallo con le transazioni
-    suspend fun sendRequestToJoin(reservationDTO: ReservationDTO) {
-        //sto inviando la richiesta io quindi questo è il mio identificativo
-        val email = Firebase.auth.currentUser!!.email!!
-        db.runTransaction {
-            it.update(
-                db.collection("reservations").document(reservationDTO.id),
-                mapOf(
-                    "requests" to FieldValue.arrayUnion("/users/$email")
+    suspend fun sendRequestToJoin(reservationDTO: ReservationDTO, onFailure: () -> Unit) {
+        withContext(Dispatchers.IO){
+            val resDoc = db.collection("reservations").document(reservationDTO.id)
+            val res = resDoc.get().await()
+            if(res["visibilty"] != Visibilities.ON_REQUEST.name){
+                withContext(Dispatchers.Main){
+                    onFailure()
+                }
+                return@withContext
+            }
+            val email = Firebase.auth.currentUser!!.email!!
+            db.runTransaction {
+                it.update(
+                    resDoc,
+                    mapOf(
+                        "requests" to FieldValue.arrayUnion("/users/$email")
+                    )
                 )
-
-            )
+            }.addOnFailureListener {
+                onFailure()
+            }
         }
+
+
+
     }
 
     fun acceptJointRequest(
@@ -560,8 +578,7 @@ class ReservationRepository {
         db.runTransaction { t ->
             val currentEmailDoc = db.collection("users").document(email)
             val reservationDoc = db.collection("reservations").document(reservationDTO.id)
-            t
-                .update(
+            t.update(
                     reservationDoc,
                     mapOf(
                         "requests" to FieldValue.arrayRemove(currentEmailDoc),

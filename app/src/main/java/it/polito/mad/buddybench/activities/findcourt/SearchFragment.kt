@@ -84,9 +84,14 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         findTabLayout = view.findViewById(R.id.tab_layout_find);
         findViewPager = view.findViewById(R.id.find_view_pager);
 
+
+        findTabLayout.selectTab(findTabLayout.getTabAt(findCourtViewModel.findStates.value!!.value))
+
         findTabLayout.addOnTabSelectedListener(FindTabListener{
             findCourtViewModel.setFindState(it)
         })
+
+
 
         findCourtViewModel.findStates.observe(viewLifecycleOwner){
             findCourtViewModel.getCourtsOrPublicGames()

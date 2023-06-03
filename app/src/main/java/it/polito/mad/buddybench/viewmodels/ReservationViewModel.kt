@@ -235,7 +235,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
         reservation: ReservationDTO
     ) {
         viewModelScope.launch {
-            reservationRepository.sendRequestToJoin(reservation)
+            reservationRepository.sendRequestToJoin(reservation, onFailure)
         }
     }
 
