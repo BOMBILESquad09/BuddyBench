@@ -65,8 +65,7 @@
 
 
 
-<!--        <net.cachapa.expandablelayout.ExpandableLayout-->
-        <LinearLayout
+        <net.cachapa.expandablelayout.ExpandableLayout
             android:id="@+id/card_inner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -277,9 +276,8 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
-        </LinearLayout>
 
-<!--        </net.cachapa.expandablelayout.ExpandableLayout>-->
+        </net.cachapa.expandablelayout.ExpandableLayout>
 
         <ImageView
             android:id="@+id/expand_icon"
