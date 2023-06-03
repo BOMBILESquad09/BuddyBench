@@ -124,7 +124,6 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
 
                     val oldList = friendsViewModel.oldFriendsRequests ?: listOf()
 
-
                     val friendDiff = FriendListDiffUtils(oldList, it)
                     val diffs = DiffUtil.calculateDiff(friendDiff)
 

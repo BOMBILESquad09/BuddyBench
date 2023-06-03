@@ -505,17 +505,16 @@ class ReservationRepository {
         onFailure: () -> Unit,
         onSuccess: (ReservationDTO) -> Unit
     ): ListenerRegistration {
-        val listener = db.collection("reservations").document(reservationID).addSnapshotListener { value, error ->
-            if (value != null && value.exists() && error == null) {
-                runBlocking {
-                    val reservationDTO = mappingReservationFromDocument(value)
-                    onSuccess(reservationDTO)
+        return withContext(Dispatchers.IO) {
+            db.collection("reservations").document(reservationID).addSnapshotListener { value, error ->
+                if(value != null && value.exists() && error == null) {
+                    val reservation = runBlocking { mappingReservationFromDocument(value) }
+                    onSuccess(reservation)
+                } else {
+                    onFailure()
                 }
-            } else if (error != null) {
-                onFailure()
             }
         }
-        return listener
     }
 
     // fallo con le transazioni

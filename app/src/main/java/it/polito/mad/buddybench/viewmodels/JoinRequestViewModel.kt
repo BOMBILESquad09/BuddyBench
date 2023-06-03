@@ -9,22 +9,25 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.persistence.firebaseRepositories.ReservationRepository
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
 class JoinRequestViewModel @Inject constructor() : ViewModel() {
 
-    private val _currentReservation: MutableLiveData<ReservationDTO> = MutableLiveData(null)
-    val currentReservation: MutableLiveData<ReservationDTO> = _currentReservation
+    val currentReservation: MutableLiveData<ReservationDTO> = MutableLiveData(null)
+    var oldRequestJointList: List<Profile> = listOf()
 
     var listenerRegistration: ListenerRegistration? = null
+    val mainScope = MainScope()
 
     private val reservationRepository = ReservationRepository()
 
     fun getUpdatedReservation(reservation: ReservationDTO) {
-        viewModelScope.launch {
-            listenerRegistration = reservationRepository.getUpdatedReservation(
+        runBlocking {
+            reservationRepository.getUpdatedReservation(
                 reservation.id,
                 {}
             ) {
@@ -39,29 +42,29 @@ class JoinRequestViewModel @Inject constructor() : ViewModel() {
     }
 
     fun confirmRequest(email: String) {
-        viewModelScope.launch {
-            reservationRepository.acceptJointRequest(
-                _currentReservation.value!!,
-                email,
-                {},
-                {
-                    getUpdatedReservation(_currentReservation.value!!)
-                }
-            )
-        }
+        reservationRepository.acceptJointRequest(
+            currentReservation.value!!,
+            email,
+            {},
+            {
+                oldRequestJointList = currentReservation.value!!.requests
+//                getUpdatedReservation(currentReservation.value!!)
+            }
+        )
+
     }
 
     fun rejectRequest(email: String) {
-        viewModelScope.launch {
-            reservationRepository.rejectJointRequest(
-                _currentReservation.value!!,
-                email,
-                {},
-                {
-                    getUpdatedReservation(_currentReservation.value!!)
-                }
-            )
-        }
+        reservationRepository.rejectJointRequest(
+            currentReservation.value!!,
+            email,
+            {},
+            {
+                oldRequestJointList = currentReservation.value!!.requests
+//                getUpdatedReservation(currentReservation.value!!)
+            }
+        )
+
     }
 
 
