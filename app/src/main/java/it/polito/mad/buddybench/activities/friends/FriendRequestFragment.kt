@@ -90,7 +90,7 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
                 else -> GridLayoutManager(context, columnCount)
             }
 
-            adapter = FriendRequestRecyclerViewAdapter(listOf(), friendsViewModel, callback
+            adapter = FriendRequestRecyclerViewAdapter(listOf(), friendsViewModel,null, callback
             ) { }
             itemAnimator = object : DefaultItemAnimator() {
                 override fun animateRemove(holder: RecyclerView.ViewHolder?): Boolean {
@@ -110,7 +110,6 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
                         }
                         holder.binding.root.startAnimation(animation)
 
-
                     }
                     return super.animateRemove(holder)
                 }
@@ -123,9 +122,8 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
 
                 with(rvFriendRequests) {
 
-                    val oldList = friendsViewModel.oldFriendsRequests
-                    val oldEmail  = oldList.map { o -> o.email }
-                    val newEmail = it.map { n-> n.email }
+                    val oldList = friendsViewModel.oldFriendsRequests ?: listOf()
+
 
                     val friendDiff = FriendListDiffUtils(oldList, it)
                     val diffs = DiffUtil.calculateDiff(friendDiff)

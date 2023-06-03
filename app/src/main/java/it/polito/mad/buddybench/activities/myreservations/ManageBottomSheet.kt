@@ -12,13 +12,16 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDE
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
+import it.polito.mad.buddybench.enums.Visibilities
+import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.utils.Utils
 
 class ManageBottomSheet(
     val onEditSelected: () -> Unit,
     val onInviteFriendsSelected: () -> Unit,
-    val onChangeVisibility: () -> Unit
-
+    val onChangeVisibility: () -> Unit,
+    val onJointRequests: (ReservationDTO) -> Unit,
+    val reservation: ReservationDTO
 ): BottomSheetDialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,13 +51,23 @@ class ManageBottomSheet(
         }
 
 
-
         val changeVisibilityButton = view.findViewById<LinearLayout>(R.id.change_visibility)
         changeVisibilityButton?.setOnClickListener {
             onChangeVisibility()
             this.dismiss()
         }
 
+        val jointRequestBtn = view.findViewById<LinearLayout>(R.id.joint_requests)
+        if(reservation.visibility == Visibilities.PRIVATE) {
+            jointRequestBtn.visibility = View.GONE
+            jointRequestBtn.setOnClickListener(null)
+        } else {
+            jointRequestBtn.visibility = View.VISIBLE
+            jointRequestBtn?.setOnClickListener {
+                onJointRequests(reservation)
+                this.dismiss()
+            }
+        }
 
     }
 

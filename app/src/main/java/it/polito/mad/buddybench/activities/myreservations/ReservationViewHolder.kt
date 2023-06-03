@@ -1,6 +1,5 @@
 package it.polito.mad.buddybench.activities.myreservations
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
@@ -12,9 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.core.view.forEach
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.internal.managers.FragmentComponentManager
@@ -87,9 +84,6 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
         val wrappedDrawable = DrawableCompat.wrap(iconDrawable!!)
         iconSport.setImageDrawable(wrappedDrawable)
         slot.text = "${reservation.startTime.format(formatter)} - ${reservation.endTime.format(formatter)}"
-
-
-
 
         manageBtn.setTextColor(
             Sports.getSportColor(
@@ -169,6 +163,12 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
                                     else -> Visibilities.PRIVATE
                                 }
 
+                                if(newVisibility != Visibilities.PRIVATE && reservation.requests.isNotEmpty() ){
+                                    Utils.openGeneralProblemDialog("Error", "Please, before changing visibility accept or refuse the pending join requests.", view.context)
+                                    dialog.dismiss()
+                                    return@setOnClickListener
+                                }
+
                                 viewModel.setVisibility(reservation, newVisibility, {
                                                                                     dialog.dismiss()
                                 }, {
@@ -179,9 +179,16 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
                                 })
 
                             }
-
-
-                        })
+                        },
+                        {
+                            JoinRequestsBottomSheet(it).show(
+                                (FragmentComponentManager.findActivity(
+                                    view.context
+                                ) as AppCompatActivity).supportFragmentManager, "JointRequestBottomSheet"
+                            )
+                        },
+                        reservation
+                    )
                     mbs.show(
                         (FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager,
                         ""
