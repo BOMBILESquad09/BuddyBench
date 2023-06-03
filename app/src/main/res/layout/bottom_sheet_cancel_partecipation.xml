@@ -14,8 +14,8 @@
 
         <ImageView
             android:id="@+id/imageView2"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_gravity="center"
             android:src="@drawable/cancel_sent_request"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -33,27 +33,53 @@
             android:layout_gravity="center"
             android:paddingTop="5dp"
             android:paddingBottom="20dp"
-            android:text="Are you sure you want to cancel your request to participate in this game?"
+            android:text="Do you want to withdraw your request to participate in this game?"
             android:textAlignment="center"
             android:textColor="@color/md_theme_light_text"
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <com.apachat.loadingbutton.core.customViews.CircularProgressButton
-            android:layout_gravity="center"
-            android:id="@+id/confirm_cancel"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_shape"
-            android:backgroundTint="@color/error"
-            android:fontFamily="@font/montserrat_semibold_600"
-            android:text="Yes, cancel my participation request"
-            android:textAllCaps="false"
-            android:textColor="@color/md_theme_light_background"
-            app:initialCornerAngle="200dp"
-            app:spinning_bar_width="1dp"
-            app:spinning_bar_color="#FFF"
-            app:spinning_bar_padding="4dp" />
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_confirm"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                style="@style/Buttons"
+                app:backgroundTint="@color/error"
+                android:text="Yes, withdraw it"
+                android:fontFamily="@font/montserrat_bold_700"
+                android:textColor="@color/md_theme_light_background"
+                android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_cancel"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </com.google.android.material.button.MaterialButton>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_cancel"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:backgroundTint="@color/disabled"
+                style="@style/Buttons"
+                android:textColor="@color/md_theme_light_background"
+                android:textSize="13sp"
+                android:fontFamily="@font/montserrat_bold_700"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/btn_confirm"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </com.google.android.material.button.MaterialButton>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
     </LinearLayout>
