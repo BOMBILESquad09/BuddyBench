@@ -62,8 +62,8 @@
 
 
     <androidx.cardview.widget.CardView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/round_check_24"
         app:cardCornerRadius="50dp"
         android:backgroundTint="@color/md_theme_light_primary"
@@ -87,8 +87,8 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:cardCornerRadius="50dp"
         android:src="@drawable/round_close_white_24"
         android:backgroundTint="@color/md_theme_light_error"

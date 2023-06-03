@@ -163,7 +163,6 @@ class InvitationViewHolder(
             declineButton.visibility = View.GONE
 
             acceptButton.text = "Join"
-            acceptButton.setPadding(100, 10, 100, 10)
 
             acceptButton.setOnClickListener {
 
@@ -200,10 +199,8 @@ class InvitationViewHolder(
         if (invitation.requests.map { it.email }
                 .contains(Firebase.auth.currentUser!!.email!!)) {
             acceptButton.text = "Request sent"
-            acceptButton.setPadding(40, 10, 40, 10)
         } else {
             acceptButton.text = "Join"
-            acceptButton.setPadding(100, 10, 100, 10)
         }
     }
 
