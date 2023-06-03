@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.opengl.Visibility
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.FrameLayout
@@ -154,7 +155,6 @@ class InvitationViewHolder(
             }
         }
 
-
         if (!isInvitation) {
             cardInner.expand(false)
             dayLayout.visibility = View.GONE
@@ -170,7 +170,7 @@ class InvitationViewHolder(
             val cardDecline = view.findViewById<FrameLayout>(R.id.card_decline)
             cardDecline.visibility = View.GONE
 
-            acceptButton.text = "Join"
+            acceptButton.text = " Request to join "
 
             val layout = view.findViewById<LinearLayout>(R.id.linearLayout)
             layout.gravity = Gravity.CENTER
@@ -193,20 +193,18 @@ class InvitationViewHolder(
                         ""
                     )
                 }
-
-
             }
+            setJoinRequestCard()
         }
-        setJoinRequestCard()
+
     }
 
     private fun setJoinRequestCard() {
         if (invitation.requests.map { it.email }
                 .contains(Firebase.auth.currentUser!!.email!!)) {
             acceptButton.text = "Request sent"
-
         } else {
-            acceptButton.text = "Join"
+            acceptButton.text = " Request to join "
         }
     }
 

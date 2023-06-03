@@ -212,8 +212,7 @@
 
                         <androidx.cardview.widget.CardView
                             android:id="@+id/card_join"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
+                            android:layout_width="wrap_content"
                             android:layout_marginVertical="0dp"
                             android:layout_height="wrap_content"
                             card_view:cardCornerRadius="360dp"
@@ -248,8 +247,7 @@
 
                         <androidx.cardview.widget.CardView
                             android:id="@+id/card_decline"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             card_view:cardCornerRadius="360dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
