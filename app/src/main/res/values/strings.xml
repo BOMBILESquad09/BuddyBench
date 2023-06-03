@@ -106,7 +106,7 @@
     <string name="error_book">Before booking, select at least one time slot</string>
     <string name="time_selected"> %1$s - %2$s</string>
     <string name="delete"> Delete </string>
-    <string name="confirm_delete">Are you sure to delete the reservation?</string>
+    <string name="confirm_delete">Are you sure to delete this reservation?</string>
     <string name="search">Search by locality or court name</string>
     <string name="confirmation_delete">Yes, delete the reservation</string>
 
