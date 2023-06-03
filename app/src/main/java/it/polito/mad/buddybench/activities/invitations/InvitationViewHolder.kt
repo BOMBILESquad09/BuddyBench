@@ -99,7 +99,8 @@ class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Uni
         }
 
         cardInner.duration = 400
-        expandButton.setOnClickListener{
+
+        cardInvitation.setOnClickListener {
             if (!cardInner.isExpanded) {
                 cardInner.expand()
                 cardInner.startAnimation(AnimationUtils.loadAnimation(view.context, android.R.anim.fade_in))

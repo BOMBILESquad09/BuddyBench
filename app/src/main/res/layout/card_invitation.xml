@@ -11,6 +11,9 @@
     android:layout_marginTop="13dp"
     android:layout_marginBottom="5dp"
     card_view:cardBackgroundColor="@color/tennis_sport"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?attr/selectableItemBackgroundBorderless"
     card_view:cardCornerRadius="20dp"
     card_view:cardElevation="4dp">
 
