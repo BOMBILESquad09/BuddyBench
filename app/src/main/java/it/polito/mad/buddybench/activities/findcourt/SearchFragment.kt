@@ -136,6 +136,13 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
 
         findCourtViewModel.findStates.observe(viewLifecycleOwner) {
             findCourtViewModel.getCourtsOrPublicGames()
+
+            textNearButton.text = getString(
+                R.string.court_search_phrase,
+                findCourtViewModel.selectedSport.value!!.toString().lowercase().replaceFirstChar { c -> c.uppercase() },
+                it.name.lowercase()
+            )
+
             if (it == FindStates.GAMES) {
                 courtsRecyclerView.visibility = View.GONE
                 findCourtViewModel.clearFilters()
@@ -314,7 +321,9 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
 
             textNearButton.text = getString(
                 R.string.court_search_phrase,
-                it.toString().lowercase().replaceFirstChar { c -> c.uppercase() })
+                it.toString().lowercase().replaceFirstChar { c -> c.uppercase() },
+                findCourtViewModel.findStates.value!!.name.lowercase()
+            )
 
             textUser.text =
                 parent.context.getString(R.string.user_hello, userViewModel.user.value!!.name)
