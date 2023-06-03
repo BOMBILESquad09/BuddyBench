@@ -45,6 +45,26 @@
                 >
 
                 <TextView
+                    android:id="@+id/confirm"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:paddingVertical="10dp"
+                    android:text="Change " />
+
+
+                <View
+                    style="@style/Divider"
+                    android:layout_width="1dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    />
+
+                <TextView
                     android:id="@+id/cancel"
                     android:layout_width="0dp"
                     android:layout_height="48dp"
@@ -56,26 +76,6 @@
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground"
                     android:text="Cancel " />
-
-
-                <View
-                    style="@style/Divider"
-                    android:layout_width="1dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center_vertical"
-                    />
-
-                <TextView
-                    android:id="@+id/confirm"
-                    android:layout_width="0dp"
-                    android:layout_height="48dp"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackground"
-                    android:gravity="center"
-                    android:paddingVertical="10dp"
-                    android:text="Change " />
 
             </LinearLayout>
         </LinearLayout>
