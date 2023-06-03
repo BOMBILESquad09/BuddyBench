@@ -10,13 +10,17 @@ import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
+import it.polito.mad.buddybench.persistence.dto.ReservationDTO
+import it.polito.mad.buddybench.viewmodels.FindCourtViewModel
 import it.polito.mad.buddybench.viewmodels.ReservationViewModel
 import it.polito.mad.buddybench.viewmodels.UserViewModel
 
 @AndroidEntryPoint
 class CancelRequestJoinDialog(
+    private val reservationDTO: ReservationDTO,
+    private val onWithdraw: () -> Unit
 ): BottomSheetDialogFragment() {
-    private val reservationViewModel by activityViewModels<ReservationViewModel> ()
+    private val findCourtViewModel by activityViewModels<FindCourtViewModel> ()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,8 +36,9 @@ class CancelRequestJoinDialog(
 
         val confirmButton = view.findViewById<Button>(R.id.btn_confirm)
         confirmButton?.setOnClickListener{
-            //TODO
-            dismiss()
+            findCourtViewModel.withdrawJoinRequest(reservationDTO){
+                dismiss()
+            }
         }
 
         val cancelButton = view.findViewById<Button>(R.id.btn_cancel)

@@ -62,7 +62,7 @@ class InvitationsFragment(context: HomeActivity) : Fragment(R.layout.my_invitati
             }
         }
 
-        recyclerViewInvitations.adapter = InvitationAdapter(viewModel.invitations.value?: listOf(), onAccept, onDecline )
+        recyclerViewInvitations.adapter = InvitationAdapter(viewModel.invitations.value?: listOf(), onAccept, onDecline, true, null)
         viewModel.invitations.observe(viewLifecycleOwner){
             val diffsUtils = InvitationsDiffsUtils((recyclerViewInvitations.adapter as InvitationAdapter).invitations, it)
             val diffs = DiffUtil.calculateDiff(diffsUtils)

@@ -68,7 +68,6 @@ class SendInvitationsBottomSheet(
         val recyclerViewNotInvited = view.findViewById<RecyclerView>(R.id.not_invited_friends_rv)
         val recyclerViewPending = view.findViewById<RecyclerView>(R.id.pending_friends_rv)
         val recyclerViewAccepted = view.findViewById<RecyclerView>(R.id.accepted_friends_rv)
-        val recyclerViewJoinRequests = view.findViewById<RecyclerView>(R.id.join_requests_rv)
         val emptyNotInvited = view.findViewById<TextView>(R.id.not_invited_friends_empty_tv)
         val emptyPending = view.findViewById<TextView>(R.id.pending_friends_empty_tv)
         val emptyAccepted = view.findViewById<TextView>(R.id.accepted_friends_empty_tv)
@@ -110,7 +109,6 @@ class SendInvitationsBottomSheet(
             LinearLayoutManager(context).let { it.orientation = HORIZONTAL; it }
         recyclerViewAccepted.layoutManager =
             LinearLayoutManager(context).let { it.orientation = HORIZONTAL; it }
-        recyclerViewJoinRequests.layoutManager = LinearLayoutManager(context).let { it.orientation = HORIZONTAL; it }
         //aggiungere richieste di partecipazione
 
 
@@ -123,7 +121,6 @@ class SendInvitationsBottomSheet(
             FriendsAdapter(reservationViewModel.pendingFriends.value ?: listOf(), false) {
                 if (!invited)
                     reservationViewModel.updatePendingFriends(it)
-
             }
         val res: ReservationDTO? = if(invited)  reservationDTO else null
         recyclerViewAccepted.adapter =
@@ -132,12 +129,6 @@ class SendInvitationsBottomSheet(
                     reservationViewModel.updateAcceptedFriends(it)
             }
 
-        /*recyclerViewJoinRequests.adapter =
-                FriendsAdapter(reservationViewModel.joinRequests.value!!, true){
-                    if(!invited)
-                        reservationViewModel.update
-                }*/
-        //aggiungere richieste di partecipazione
 
 
         userViewModel.getUser().observe(this) {
@@ -203,7 +194,6 @@ class SendInvitationsBottomSheet(
             if (invited) {
                 view.findViewById<LinearLayout>(R.id.invite_friends_ll).visibility = View.GONE
                 view.findViewById<LinearLayout>(R.id.pending_friends_ll).visibility = View.GONE
-                view.findViewById<LinearLayout>(R.id.join_requests_ll).visibility = View.GONE
 
                 acceptedButton.visibility = View.GONE
                 pendingButton.visibility = View.GONE

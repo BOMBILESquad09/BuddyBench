@@ -360,10 +360,19 @@ class ReservationRepository {
         val ucDoc = db.collection("unavailable_courts").document(oldDate.toString())
         db.runTransaction {t ->
             t.delete(reservationDoc)
-            t.update(ucDoc, "courts", FieldValue.arrayRemove(db.document("courts/$docCourtName")))
+
+            try {
+                t.update(
+                    ucDoc,
+                    "courts",
+                    FieldValue.arrayRemove(db.document("courts/$docCourtName"))
+                )
+            } catch (_: java.lang.Exception) { }
+
         }.addOnSuccessListener {
             onSuccess()
         }.addOnFailureListener {
+            println(it)
             onFailure()
         }
     }
@@ -444,7 +453,8 @@ class ReservationRepository {
             reservationDTO.visibility = Visibilities.fromStringToVisibility(document.data!!["visibilty"].toString())!!
             reservationDTO.requests = requestingUsers
             reservationDTO.accepted = acceptedUsers
-            reservationDTO.accepted = acceptedUsers.plusElement(reservationDTO.userOrganizer).reversed()
+            if(reservationDTO.userOrganizer.email != Firebase.auth.currentUser!!.email!!)
+                reservationDTO.accepted = acceptedUsers.plusElement(reservationDTO.userOrganizer).reversed()
             reservationDTO.pendings = pendingUsers
             val court = (document.data!!["court"] as DocumentReference).get().await()
             reservationDTO.court = court.toObject(CourtDTO::class.java)!!
@@ -505,17 +515,16 @@ class ReservationRepository {
         onFailure: () -> Unit,
         onSuccess: (ReservationDTO) -> Unit
     ): ListenerRegistration {
-        val listener = db.collection("reservations").document(reservationID).addSnapshotListener { value, error ->
-            if (value != null && value.exists() && error == null) {
-                runBlocking {
-                    val reservationDTO = mappingReservationFromDocument(value)
-                    onSuccess(reservationDTO)
+        return withContext(Dispatchers.IO) {
+            db.collection("reservations").document(reservationID).addSnapshotListener { value, error ->
+                if(value != null && value.exists() && error == null) {
+                    val reservation = runBlocking { mappingReservationFromDocument(value) }
+                    onSuccess(reservation)
+                } else {
+                    onFailure()
                 }
-            } else if (error != null) {
-                onFailure()
             }
         }
-        return listener
     }
 
     // fallo con le transazioni
@@ -541,7 +550,7 @@ class ReservationRepository {
     }
 
     // fallo con le transazioni
-    suspend fun sendRequestToJoin(reservationDTO: ReservationDTO, onFailure: () -> Unit) {
+    suspend fun sendRequestToJoin(reservationDTO: ReservationDTO, onFailure: () -> Unit, onSuccess: () -> Unit) {
         withContext(Dispatchers.IO){
             val resDoc = db.collection("reservations").document(reservationDTO.id)
             val res = resDoc.get().await()
@@ -556,11 +565,13 @@ class ReservationRepository {
                 it.update(
                     resDoc,
                     mapOf(
-                        "requests" to FieldValue.arrayUnion("/users/$email")
+                        "requests" to FieldValue.arrayUnion(db.document("/users/$email"))
                     )
                 )
             }.addOnFailureListener {
                 onFailure()
+            }.addOnSuccessListener {
+                onSuccess()
             }
         }
 
@@ -568,7 +579,7 @@ class ReservationRepository {
 
     }
 
-    fun acceptJointRequest(
+    fun acceptJoinRequest(
         reservationDTO: ReservationDTO,
         email: String,
         onFailure: () -> Unit,
@@ -592,7 +603,7 @@ class ReservationRepository {
         }
     }
 
-    fun rejectJointRequest(
+    fun rejectJoinRequest(
         reservationDTO: ReservationDTO,
         email: String,
         onFailure: () -> Unit,

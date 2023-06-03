@@ -283,7 +283,7 @@ class HomeActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = getString(R.string.friend_requests_channel_name)
             val descriptionText = getString(R.string.friend_channel_description)
-            val importance = NotificationManager.IMPORTANCE_HIGH
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel("friendRequests", name, importance).apply {
                 description = descriptionText
             }
@@ -298,7 +298,7 @@ class HomeActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = getString(R.string.invitation_channel_description)
             val descriptionText = getString(R.string.invitation_channel_description)
-            val importance = NotificationManager.IMPORTANCE_HIGH
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel("invitationRequests", name, importance).apply {
                 description = descriptionText
             }
@@ -313,7 +313,7 @@ class HomeActivity : AppCompatActivity() {
 
             val name = getString(R.string.join_requests_channel_name)
             val descriptionText = getString(R.string.join_channel_description)
-            val importance = NotificationManager.IMPORTANCE_HIGH
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel("joinRequests", name, importance).apply {
                 description = descriptionText
             }

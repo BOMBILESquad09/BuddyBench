@@ -58,6 +58,7 @@ class FriendRequestRecyclerViewAdapter(
         if(jointRequestViewModel != null) {
             jointRequestViewModel.confirmRequest(email)
         } else {
+            println("ddddddddddddd")
             viewModel!!.confirmRequest(email, onSuccess)
         }
         //Toast.makeText(context, "Friend request accepted", Toast.LENGTH_LONG).show()
@@ -102,13 +103,13 @@ class FriendRequestRecyclerViewAdapter(
                 callback(profile)
             }
             btnConfirm.setOnClickListener {
+                println(".........................")
                 accepted = true
                 binding.root.postOnAnimation {
                     if(values.size != 1) return@postOnAnimation
                     onLast()
                 }
-                confirmRequest(profile.email, btnReject.context) {
-                }
+                confirmRequest(profile.email, btnReject.context) {}
             }
 
             btnReject.setOnClickListener {
