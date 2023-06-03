@@ -46,7 +46,6 @@ class JoinRequestsBottomSheet(val reservation: ReservationDTO) : BottomSheetDial
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getUpdatedReservation(reservation)
-
         val callback: (profile: Profile) -> Unit = {
             Utils.goToProfileFriend(requireActivity() as HomeActivity, it)
         }
@@ -68,25 +67,35 @@ class JoinRequestsBottomSheet(val reservation: ReservationDTO) : BottomSheetDial
             noJoinRequest.visibility = View.GONE
         }
 
+
+
         viewModel.currentReservation.observe(this) {
             if (it == null) return@observe
-            val oldList = viewModel.oldRequestJointList
+            val oldList = (recyclerViewFriend.adapter as FriendRequestRecyclerViewAdapter).values
 
-            println("OLDLIST")
-            oldList.forEach { println(it.email) }
-            println("NEWLIST")
-            it.requests.forEach { println(it.email) }
-            recyclerViewFriend.itemAnimator = null
             val friendDiff = FriendListDiffUtils(oldList, it.requests)
             val diffs = DiffUtil.calculateDiff(friendDiff)
-
-
             (recyclerViewFriend.adapter as FriendRequestRecyclerViewAdapter).values = it.requests
             diffs.dispatchUpdatesTo(recyclerViewFriend.adapter!!)
+            if (it.requests.isEmpty()) {
+                val fadeOut = AnimationUtils.loadAnimation(context, android.R.anim.fade_out)
+                val fadeIn = AnimationUtils.loadAnimation(context, android.R.anim.fade_in)
+                recyclerViewFriend.postOnAnimation {
+                    recyclerViewFriend.visibility = View.GONE
+                    noJoinRequest.postOnAnimation {
+                        noJoinRequest.visibility = View.VISIBLE
+                    }
+                    noJoinRequest.startAnimation(fadeIn)
 
+                }
+                fadeIn.duration = 400
+                fadeOut.duration = fadeIn.duration
+                recyclerViewFriend.startAnimation(fadeOut)
+            } else {
+                recyclerViewFriend.visibility = View.VISIBLE
+                noJoinRequest.visibility = View.GONE
+            }
         }
-
-
     }
 }
 

@@ -444,7 +444,8 @@ class ReservationRepository {
             reservationDTO.visibility = Visibilities.fromStringToVisibility(document.data!!["visibilty"].toString())!!
             reservationDTO.requests = requestingUsers
             reservationDTO.accepted = acceptedUsers
-            reservationDTO.accepted = acceptedUsers.plusElement(reservationDTO.userOrganizer).reversed()
+            if(reservationDTO.userOrganizer.email != Firebase.auth.currentUser!!.email!!)
+                reservationDTO.accepted = acceptedUsers.plusElement(reservationDTO.userOrganizer).reversed()
             reservationDTO.pendings = pendingUsers
             val court = (document.data!!["court"] as DocumentReference).get().await()
             reservationDTO.court = court.toObject(CourtDTO::class.java)!!
@@ -567,7 +568,7 @@ class ReservationRepository {
 
     }
 
-    fun acceptJointRequest(
+    fun acceptJoinRequest(
         reservationDTO: ReservationDTO,
         email: String,
         onFailure: () -> Unit,
@@ -591,7 +592,7 @@ class ReservationRepository {
         }
     }
 
-    fun rejectJointRequest(
+    fun rejectJoinRequest(
         reservationDTO: ReservationDTO,
         email: String,
         onFailure: () -> Unit,

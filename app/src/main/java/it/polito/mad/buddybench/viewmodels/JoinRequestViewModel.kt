@@ -18,7 +18,7 @@ import javax.inject.Inject
 class JoinRequestViewModel @Inject constructor() : ViewModel() {
 
     val currentReservation: MutableLiveData<ReservationDTO> = MutableLiveData(null)
-    var oldRequestJointList: List<Profile> = listOf()
+    var oldRequestJoinList: List<Profile> = listOf()
 
     var listenerRegistration: ListenerRegistration? = null
     val mainScope = MainScope()
@@ -42,12 +42,12 @@ class JoinRequestViewModel @Inject constructor() : ViewModel() {
     }
 
     fun confirmRequest(email: String) {
-        reservationRepository.acceptJointRequest(
+        reservationRepository.acceptJoinRequest(
             currentReservation.value!!,
             email,
             {},
             {
-                oldRequestJointList = currentReservation.value!!.requests
+                oldRequestJoinList = currentReservation.value!!.requests
 //                getUpdatedReservation(currentReservation.value!!)
             }
         )
@@ -55,12 +55,12 @@ class JoinRequestViewModel @Inject constructor() : ViewModel() {
     }
 
     fun rejectRequest(email: String) {
-        reservationRepository.rejectJointRequest(
+        reservationRepository.rejectJoinRequest(
             currentReservation.value!!,
             email,
             {},
             {
-                oldRequestJointList = currentReservation.value!!.requests
+                oldRequestJoinList = currentReservation.value!!.requests
 //                getUpdatedReservation(currentReservation.value!!)
             }
         )

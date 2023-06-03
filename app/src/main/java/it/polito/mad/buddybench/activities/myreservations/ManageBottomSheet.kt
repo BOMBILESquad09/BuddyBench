@@ -5,22 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.LinearLayoutCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import it.polito.mad.buddybench.R
-import it.polito.mad.buddybench.activities.HomeActivity
 import it.polito.mad.buddybench.enums.Visibilities
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
-import it.polito.mad.buddybench.utils.Utils
 
 class ManageBottomSheet(
     val onEditSelected: () -> Unit,
     val onInviteFriendsSelected: () -> Unit,
     val onChangeVisibility: () -> Unit,
-    val onJointRequests: (ReservationDTO) -> Unit,
+    val onJoinRequests: (ReservationDTO) -> Unit,
     val reservation: ReservationDTO
 ): BottomSheetDialogFragment() {
     override fun onCreateView(
@@ -57,14 +53,14 @@ class ManageBottomSheet(
             this.dismiss()
         }
 
-        val jointRequestBtn = view.findViewById<LinearLayout>(R.id.joint_requests)
+        val joinRequestBtn = view.findViewById<LinearLayout>(R.id.joint_requests)
         if(reservation.visibility == Visibilities.PRIVATE) {
-            jointRequestBtn.visibility = View.GONE
-            jointRequestBtn.setOnClickListener(null)
+            joinRequestBtn.visibility = View.GONE
+            joinRequestBtn.setOnClickListener(null)
         } else {
-            jointRequestBtn.visibility = View.VISIBLE
-            jointRequestBtn?.setOnClickListener {
-                onJointRequests(reservation)
+            joinRequestBtn.visibility = View.VISIBLE
+            joinRequestBtn?.setOnClickListener {
+                onJoinRequests(reservation)
                 this.dismiss()
             }
         }
