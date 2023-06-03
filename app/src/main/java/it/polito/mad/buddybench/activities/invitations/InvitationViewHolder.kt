@@ -3,10 +3,13 @@ package it.polito.mad.buddybench.activities.invitations
 import android.animation.ValueAnimator
 import android.content.res.ColorStateList
 import android.opengl.Visibility
+import android.view.Gravity
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -17,6 +20,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.card.MaterialCardView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.internal.managers.FragmentComponentManager
@@ -161,8 +165,16 @@ class InvitationViewHolder(
             inviteText.maxLines = 3
 
             declineButton.visibility = View.GONE
+            val frame = view.findViewById<FrameLayout>(R.id.frame_layout)
+            frame.visibility = View.GONE
+            val cardDecline = view.findViewById<FrameLayout>(R.id.card_decline)
+            cardDecline.visibility = View.GONE
 
             acceptButton.text = "Join"
+
+            val layout = view.findViewById<LinearLayout>(R.id.linearLayout)
+            layout.gravity = Gravity.CENTER
+
 
             acceptButton.setOnClickListener {
 
@@ -183,13 +195,6 @@ class InvitationViewHolder(
                 }
 
 
-                /*acceptButton.text = "Cancel request"
-                acceptButton.setTextColor(view.context.getColor(R.color.error))
-
-
-                val bottomSheet = CancelRequestJoinDialog()
-                bottomSheet.show((FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager, "")*/
-
             }
         }
         setJoinRequestCard()
@@ -199,6 +204,7 @@ class InvitationViewHolder(
         if (invitation.requests.map { it.email }
                 .contains(Firebase.auth.currentUser!!.email!!)) {
             acceptButton.text = "Request sent"
+
         } else {
             acceptButton.text = "Join"
         }

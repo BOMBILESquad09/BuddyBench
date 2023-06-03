@@ -66,6 +66,7 @@
 
 
         <net.cachapa.expandablelayout.ExpandableLayout
+
             android:id="@+id/card_inner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -197,6 +198,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/linearLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -238,6 +240,7 @@
                         </androidx.cardview.widget.CardView>
 
                         <FrameLayout
+                            android:id="@+id/frame_layout"
                             android:layout_width="0dp"
                             android:layout_weight="0.5"
                             android:layout_height="wrap_content"
@@ -270,10 +273,7 @@
                                 android:textSize="15sp" />
 
                         </androidx.cardview.widget.CardView>
-
-
                     </LinearLayout>
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
 
