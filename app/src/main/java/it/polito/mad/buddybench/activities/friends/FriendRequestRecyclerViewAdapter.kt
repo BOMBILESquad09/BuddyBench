@@ -107,8 +107,7 @@ class FriendRequestRecyclerViewAdapter(
                     if(values.size != 1) return@postOnAnimation
                     onLast()
                 }
-                confirmRequest(profile.email, btnReject.context) {
-                }
+                confirmRequest(profile.email, btnReject.context) {}
             }
 
             btnReject.setOnClickListener {
