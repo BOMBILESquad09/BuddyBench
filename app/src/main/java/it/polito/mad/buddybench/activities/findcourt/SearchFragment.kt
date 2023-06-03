@@ -66,8 +66,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         swipeRefresh = view.findViewById(R.id.swiperefresh)
         swipeRefresh.setOnRefreshListener {
-            parent.viewModel.getCourtsBySport(){
-            }
+            parent.viewModel.getCourtsOrPublicGames()
             swipeRefresh.isRefreshing = false
         }
 
@@ -85,9 +84,14 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         findTabLayout = view.findViewById(R.id.tab_layout_find);
         findViewPager = view.findViewById(R.id.find_view_pager);
 
+
+        findTabLayout.selectTab(findTabLayout.getTabAt(findCourtViewModel.findStates.value!!.value))
+
         findTabLayout.addOnTabSelectedListener(FindTabListener{
             findCourtViewModel.setFindState(it)
         })
+
+
 
         findCourtViewModel.findStates.observe(viewLifecycleOwner){
             findCourtViewModel.getCourtsOrPublicGames()

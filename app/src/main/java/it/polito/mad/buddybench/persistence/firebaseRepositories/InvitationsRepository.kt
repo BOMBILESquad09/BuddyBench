@@ -21,13 +21,12 @@ class InvitationsRepository {
     private val reservationRepository = ReservationRepository()
     var subscribed: Boolean = false
 
-    fun subscribeInvitations(onFailure: () -> Unit, onSuccess: (Int) -> Unit) {
+    fun subscribeInvitations(onFailure: () -> Unit, onSuccess: () -> Unit) {
         if (subscribed) return
         val currentEmail = Firebase.auth.currentUser!!.email!!
         db.collection("users").document(currentEmail).addSnapshotListener { value, error ->
             if (error == null && value != null && value.exists()) {
-
-                onSuccess((value!!.data!!["play_request_pendings"] as List<DocumentReference>).size)
+                onSuccess()
             } else {
                 onFailure()
             }
@@ -44,16 +43,14 @@ class InvitationsRepository {
                     reservationRepository.getReservation(it.id, onFailure)
                 }.filterNotNull()
 
-
-
-
                 return@withContext invitations.filter {
                     LocalDateTime.of(
                         it.date,
                         it.startTime
                     ) > LocalDateTime.now()
                 }
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                println(e)
                 onFailure()
             }
             listOf()

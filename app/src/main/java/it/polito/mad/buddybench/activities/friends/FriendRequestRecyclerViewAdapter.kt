@@ -21,6 +21,7 @@ import it.polito.mad.buddybench.activities.friends.placeholder.PlaceholderConten
 import it.polito.mad.buddybench.classes.Profile
 import it.polito.mad.buddybench.databinding.FragmentFriendRequestItemBinding
 import it.polito.mad.buddybench.viewmodels.FriendsViewModel
+import it.polito.mad.buddybench.viewmodels.JoinRequestViewModel
 import kotlinx.coroutines.runBlocking
 
 /**
@@ -29,7 +30,8 @@ import kotlinx.coroutines.runBlocking
  */
 class FriendRequestRecyclerViewAdapter(
     var values: List<Profile>,
-    private val viewModel: FriendsViewModel,
+    private val viewModel: FriendsViewModel?,
+    private val jointRequestViewModel: JoinRequestViewModel?,
     val callback: (profile: Profile) -> Unit,
     val onLast: () -> Unit
 ) : RecyclerView.Adapter<FriendRequestRecyclerViewAdapter.RequestViewHolder>() {
@@ -47,21 +49,26 @@ class FriendRequestRecyclerViewAdapter(
     override fun onBindViewHolder(holder: RequestViewHolder, position: Int) {
         val item = values[position]
         holder.bind(item)
-
-
-
     }
 
 
     override fun getItemCount(): Int = values.size
 
     private fun confirmRequest(email: String, context: Context, onSuccess: () -> Unit) {
-        viewModel.confirmRequest(email, onSuccess)
+        if(jointRequestViewModel != null) {
+            jointRequestViewModel.confirmRequest(email)
+        } else {
+            viewModel!!.confirmRequest(email, onSuccess)
+        }
         //Toast.makeText(context, "Friend request accepted", Toast.LENGTH_LONG).show()
     }
 
     private fun rejectRequest(email: String, context: Context, onSuccess: () -> Unit) {
-        viewModel.rejectRequest(email, onSuccess)
+        if(jointRequestViewModel != null) {
+            jointRequestViewModel.rejectRequest(email)
+        } else {
+            viewModel!!.rejectRequest(email, onSuccess)
+        }
         //Toast.makeText(context, "Friend request declined", Toast.LENGTH_LONG).show()
     }
 
@@ -107,9 +114,7 @@ class FriendRequestRecyclerViewAdapter(
             btnReject.setOnClickListener {
                 accepted = false
 
-                rejectRequest(profile.email, btnReject.context) {
-
-                }
+                rejectRequest(profile.email, btnReject.context) {}
 
             }
 

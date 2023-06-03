@@ -25,28 +25,28 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
     val invitations: LiveData<List<ReservationDTO>> = _invitations
 
     private val invitationSize: MutableLiveData<Int> = MutableLiveData(0)
-    private val mainScope = viewModelScope
     var onFailure = {}
+    private var init: Boolean = false
 
 
     lateinit var popNotification: (ReservationDTO) -> Unit
     fun subscribeInvitations( onSuccess: (Int) -> Unit): LiveData<List<ReservationDTO>>{
         invitationsRepository.subscribeInvitations( onFailure = onFailure, onSuccess = {
             _loading.postValue(!invitationsRepository.subscribed)
-            invitationsRepository.subscribed = true
             getAll(onSuccess)
-            invitationSize.postValue(it)
         })
+        invitationsRepository.subscribed = true
+
 
         return invitations
     }
 
     fun getAll(onSuccess : (Int) -> Unit = {}){
-        mainScope.launch {
+        viewModelScope.launch {
 
             var freshInvitations = invitationsRepository.getInvitations(onFailure)
             freshInvitations = freshInvitations.filter { LocalDateTime.now() < LocalDateTime.of(it.date, it.startTime) }
-            if(_invitations.value!!.size < freshInvitations.size){
+            if(init && _invitations.value!!.size < freshInvitations.size){
 
                 val freshInvitationsId = freshInvitations.map {it.id}
                 val oldInvitationsId = _invitations.value!!.map { it.id }
@@ -57,6 +57,9 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
                     popNotification(freshInvitations.find { fi -> it == fi.id }!!)
                 }
             }
+            init = true
+            invitationSize.postValue(freshInvitations.size)
+
             onSuccess(freshInvitations.size)
             _invitations.postValue(freshInvitations)
             if(_loading.value == true)
@@ -65,7 +68,7 @@ class InvitationsViewModel @Inject constructor() : ViewModel() {
     }
 
     fun acceptInvitation(reservationDTO: ReservationDTO, onSuccess: () -> Unit){
-        mainScope.launch {
+        viewModelScope.launch {
             invitationsRepository.acceptInvitation(reservationDTO, onFailure, onSuccess)
         }
     }
