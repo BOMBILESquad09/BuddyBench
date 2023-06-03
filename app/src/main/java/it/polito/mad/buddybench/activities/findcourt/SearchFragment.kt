@@ -77,6 +77,7 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
         val textNearButton = view.findViewById<TextView>(R.id.textView12)
         val textUser = view.findViewById<TextView>(R.id.textView11)
         val searchEditText = view.findViewById<EditText>(R.id.searchEditText)
+        val searchTextContainer = view.findViewById<CardView>(R.id.search_text_container)
         val filterButton = view.findViewById<CardView>(R.id.filterButton)
         val filterIcon = view.findViewById<ImageView>(R.id.filterIcon)
 
@@ -99,19 +100,20 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
                 courtsRecyclerView.visibility = View.GONE
                 publicGamesRecyclerView.visibility = View.VISIBLE
                 filterButton.postOnAnimation {
+                    searchTextContainer.startAnimation(AnimationUtils.loadAnimation(this.activity, R.anim.expand_search_bar))
+                    findCourtViewModel.applyFilterOnCourts(clear = true)
                     filterButton.visibility = View.GONE
-                    searchEditText.startAnimation(AnimationUtils.loadAnimation(this.activity, R.anim.fade_in))
                 }
                 filterButton.startAnimation(AnimationUtils.loadAnimation(this.activity,R.anim.fade_out))
             } else {
                 courtsRecyclerView.visibility = View.VISIBLE
                 publicGamesRecyclerView.visibility = View.GONE
-                filterButton.visibility = View.VISIBLE
-                filterButton.postOnAnimation {
-                    // searchEditText.startAnimation(AnimationUtils.loadAnimation(this.activity, R.anim.expand))
+                searchTextContainer.postOnAnimation {
+                    filterButton.startAnimation(AnimationUtils.loadAnimation(this.activity,R.anim.fade_in))
+                    filterButton.visibility = View.VISIBLE
                 }
+                searchTextContainer.startAnimation(AnimationUtils.loadAnimation(this.activity, R.anim.collapse_search_bar))
 
-                filterButton.startAnimation(AnimationUtils.loadAnimation(this.activity,R.anim.fade_in))
 
             }
         }
