@@ -1,6 +1,7 @@
 package it.polito.mad.buddybench.activities.invitations
 
 import android.animation.ValueAnimator
+import android.content.res.ColorStateList
 import android.opengl.Visibility
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -19,6 +20,7 @@ import com.bumptech.glide.Glide
 import dagger.hilt.android.internal.managers.FragmentComponentManager
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
+import it.polito.mad.buddybench.activities.profile.RemoveFriendDialog
 import it.polito.mad.buddybench.enums.Sports
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
 import it.polito.mad.buddybench.utils.Utils
@@ -114,8 +116,18 @@ class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Uni
             inviteText.maxLines = 3
 
             declineButton.visibility = View.GONE
+
             acceptButton.text = "Join"
             acceptButton.setPadding(120,10,120,10)
+
+            acceptButton.setOnClickListener{
+                //if request not sent
+                acceptButton.text = "Cancel request"
+                acceptButton.setTextColor(view.context.getColor(R.color.error))
+
+
+                val bottomSheet = CancelRequestJoinDialog()
+            }
         }
 
     }
