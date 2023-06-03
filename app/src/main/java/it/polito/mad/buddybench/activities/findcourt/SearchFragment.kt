@@ -95,13 +95,15 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
 
 
         findCourtViewModel.findStates.observe(viewLifecycleOwner){
-            findCourtViewModel.getCourtsOrPublicGames()
             if (it == FindStates.GAMES) {
+                findCourtViewModel.clearFilters()
+                filterButton.setBackgroundResource(R.drawable.circle_light_bg)
+                filterIcon.setImageResource(R.drawable.filter)
+
                 courtsRecyclerView.visibility = View.GONE
                 publicGamesRecyclerView.visibility = View.VISIBLE
                 filterButton.postOnAnimation {
                     searchTextContainer.startAnimation(AnimationUtils.loadAnimation(this.activity, R.anim.expand_search_bar))
-                    findCourtViewModel.applyFilterOnCourts(clear = true)
                     filterButton.visibility = View.GONE
                 }
                 filterButton.startAnimation(AnimationUtils.loadAnimation(this.activity,R.anim.fade_out))
@@ -113,9 +115,9 @@ class SearchFragment(val parent: FindCourtFragment): Fragment(R.layout.activity_
                     filterButton.visibility = View.VISIBLE
                 }
                 searchTextContainer.startAnimation(AnimationUtils.loadAnimation(this.activity, R.anim.collapse_search_bar))
-
-
             }
+            findCourtViewModel.getCourtsOrPublicGames()
+
         }
 
         parent.context.userViewModel.user.observe(viewLifecycleOwner) {
