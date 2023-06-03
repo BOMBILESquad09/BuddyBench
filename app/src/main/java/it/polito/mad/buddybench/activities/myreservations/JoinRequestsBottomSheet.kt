@@ -29,7 +29,6 @@ import it.polito.mad.buddybench.viewmodels.JoinRequestViewModel
 class JoinRequestsBottomSheet(val reservation: ReservationDTO) : BottomSheetDialogFragment() {
 
     val viewModel by activityViewModels<JoinRequestViewModel>()
-    private var columnCount = 1
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,6 +39,7 @@ class JoinRequestsBottomSheet(val reservation: ReservationDTO) : BottomSheetDial
         val view = inflater.inflate(R.layout.join_requests, container, false)
         val behaviour = BottomSheetBehavior.from(view.findViewById(R.id.standard_bottom_sheet))
         behaviour.state = BottomSheetBehavior.STATE_EXPANDED
+        behaviour.isDraggable = false
         return view
     }
 
@@ -97,6 +97,7 @@ class JoinRequestsBottomSheet(val reservation: ReservationDTO) : BottomSheetDial
             }
         }
     }
+
 }
 
 
