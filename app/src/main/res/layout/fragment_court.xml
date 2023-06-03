@@ -443,7 +443,7 @@
                     <LinearLayout
                         android:id="@+id/progress_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="270dp"
                         android:paddingVertical="20sp"
                         android:gravity="center"
                         android:orientation="vertical"

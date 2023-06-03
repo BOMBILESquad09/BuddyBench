@@ -20,9 +20,11 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.kizitonwose.calendar.core.Week
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.WeekDayPosition
 import com.kizitonwose.calendar.view.WeekCalendarView
+import com.kizitonwose.calendar.view.WeekScrollListener
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.classes.Profile
@@ -154,6 +156,19 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
         calendarView.setup(weeklyDays.first().first, weeklyDays.last().first, DayOfWeek.MONDAY)
         calendarView.scrollToDate(selectedDate)
 
+        calendarView.weekScrollListener = object: WeekScrollListener{
+            override fun invoke(p1: Week){
+                if(!::courtToReserve.isInitialized) return
+                val selectedDate = if(p1.days.first().date  < LocalDate.now())
+                    LocalDate.now()
+                else
+                    p1.days.first().date
+
+                (calendarView.dayBinder as WeeklyCalendarDayBinder).selectedDate = selectedDate
+                calendarCallback(courtViewModel.selectedDay.value ?: LocalDate.now(),selectedDate)
+            }
+        }
+
         val callback: (Pair<LocalTime, Boolean>) -> Unit = { selected ->
             courtViewModel.timeSlots.value?.find {
                 it.first == selected.first
@@ -217,7 +232,6 @@ class CourtFragment : Fragment(R.layout.fragment_court) {
 
                     }
                     recyclerView.adapter?.notifyDataSetChanged()
-
                 }
         }
 

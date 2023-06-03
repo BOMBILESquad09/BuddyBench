@@ -23,9 +23,11 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.kizitonwose.calendar.core.Week
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.WeekDayPosition
 import com.kizitonwose.calendar.view.WeekCalendarView
+import com.kizitonwose.calendar.view.WeekScrollListener
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.court.CourtActivity
@@ -94,11 +96,48 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
             findCourtViewModel.setFindState(it)
         })
 
+        val callbackCourt: (String, Sports) -> Unit = { name, sport ->
+
+            val intent = Intent(context, CourtActivity::class.java)
+            intent.putExtra("courtName", name)
+            intent.putExtra("sport", sport.name.uppercase())
+            intent.putExtra(
+                "date",
+                parent.viewModel.getSelectedDate().format(DateTimeFormatter.ISO_LOCAL_DATE)
+            )
+
+            parent.context.launcherReservation.launch(intent)
+        }
+
+        val reviewsCallback: (String, Sports) -> Unit = { name, sport ->
+            run {
+                val intent = Intent(context, ReviewsActivity::class.java)
+                intent.putExtra("court_name", name)
+                intent.putExtra("court_sport", sport.toString())
+                parent.context.launcherReviews.launch(intent)
+            }
+        }
+
+        courtsRecyclerView.adapter =
+            CourtSearchAdapter(findCourtViewModel.currentCourts, callbackCourt, reviewsCallback)
+        courtsRecyclerView.layoutManager = LinearLayoutManager(view.context)
+
+        publicGamesRecyclerView.adapter =
+            InvitationAdapter(findCourtViewModel.currentPublicGames.value!!,
+                {
+
+                }, {}, isInvitation = false,
+                findCourtViewModel
+            )
+        publicGamesRecyclerView.layoutManager = LinearLayoutManager(view.context)
+
+
 
 
         findCourtViewModel.findStates.observe(viewLifecycleOwner) {
             findCourtViewModel.getCourtsOrPublicGames()
             if (it == FindStates.GAMES) {
+                courtsRecyclerView.visibility = View.GONE
                 findCourtViewModel.clearFilters()
                 filterButton.setBackgroundResource(R.drawable.circle_light_bg)
                 filterIcon.setImageResource(R.drawable.filter)
@@ -120,6 +159,7 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
                     )
                 )
             } else {
+                publicGamesRecyclerView.visibility = View.GONE
 
                 searchTextContainer.postOnAnimation {
                     filterButton.startAnimation(
@@ -150,41 +190,9 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
         noCourts = view.findViewById(R.id.no_courts_available)
 
 
-        val callbackCourt: (String, Sports) -> Unit = { name, sport ->
-
-            val intent = Intent(context, CourtActivity::class.java)
-            intent.putExtra("courtName", name)
-            intent.putExtra("sport", sport.name.uppercase())
-            intent.putExtra(
-                "date",
-                parent.viewModel.getSelectedDate().format(DateTimeFormatter.ISO_LOCAL_DATE)
-            )
-
-            parent.context.launcherReservation.launch(intent)
-        }
-
-        val reviewsCallback: (String, Sports) -> Unit = { name, sport ->
-            run {
-                val intent = Intent(context, ReviewsActivity::class.java)
-                intent.putExtra("court_name", name)
-                intent.putExtra("court_sport", sport.toString())
-                parent.context.launcherReviews.launch(intent)
-            }
-        }
 
 
-        courtsRecyclerView.adapter =
-            CourtSearchAdapter(findCourtViewModel.currentCourts, callbackCourt, reviewsCallback)
-        courtsRecyclerView.layoutManager = LinearLayoutManager(view.context)
 
-        publicGamesRecyclerView.adapter =
-            InvitationAdapter(findCourtViewModel.currentPublicGames.value!!,
-                {
-
-                }, {}, isInvitation = false,
-                findCourtViewModel
-            )
-        publicGamesRecyclerView.layoutManager = LinearLayoutManager(view.context)
 
         val calendarView = view.findViewById<WeekCalendarView>(R.id.calendar)
 
@@ -203,6 +211,18 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
         val ranges = Utils.getDateRanges()
         calendarView.setup(ranges.first, ranges.second, DayOfWeek.MONDAY)
         calendarView.scrollToDate(parent.viewModel.getSelectedDate())
+
+        calendarView.weekScrollListener = object: WeekScrollListener{
+            override fun invoke(p1: Week){
+                val selectedDate = if(p1.days.first().date  < LocalDate.now())
+                    LocalDate.now()
+                else
+                    p1.days.first().date
+
+                (calendarView.dayBinder as WeeklyCalendarDayBinder).selectedDate = selectedDate
+                calendarCallback(findCourtViewModel.getSelectedDate(),selectedDate)
+            }
+        }
 
         filterButton.setOnClickListener {
             showBottomSheetDialog()
@@ -229,9 +249,7 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
 
         findCourtViewModel.loading.observe(viewLifecycleOwner) {
             if (it) {
-                courtsRecyclerView.visibility = View.GONE
-                publicGamesRecyclerView.visibility = View.GONE
-                noCourts.visibility = View.GONE
+
                 progressLayout.visibility = View.VISIBLE
             } else {
                 progressLayout.visibility = View.GONE
@@ -266,13 +284,10 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
             (publicGamesRecyclerView.adapter as InvitationAdapter).invitations = it
             diffResult.dispatchUpdatesTo(publicGamesRecyclerView.adapter!!)
             if (it.isEmpty()) {
-                println("diocaneeeeee")
-                publicGamesRecyclerView.adapter!!.notifyDataSetChanged()
                 publicGamesRecyclerView.visibility = View.GONE
                 noCourts.visibility = View.VISIBLE
                 noCourts.text = emptyString()
             } else {
-                println("porcamadonnnaaaaaaaaaaaaaaaaaaaaaaa")
                 publicGamesRecyclerView.visibility = View.VISIBLE
                 noCourts.visibility = View.GONE
             }

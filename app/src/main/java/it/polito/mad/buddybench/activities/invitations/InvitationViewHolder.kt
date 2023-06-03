@@ -47,6 +47,7 @@ class InvitationViewHolder(
     private val inviteText: TextView = view.findViewById(R.id.invite_text)
     private val courtName: TextView = view.findViewById(R.id.card_invitation_court)
     private val address: TextView = view.findViewById(R.id.card_invitation_address)
+    private val dayLayout: View = view.findViewById(R.id.day_layout)
     private val date: TextView = view.findViewById(R.id.card_invitation_date)
     private val slot: TextView = view.findViewById(R.id.card_invitation_hours)
     private val acceptButton: TextView = view.findViewById(R.id.accept_btn)
@@ -148,7 +149,8 @@ class InvitationViewHolder(
         }
 
         if (!isInvitation) {
-            cardInner.expand()
+            cardInner.expand(false)
+            dayLayout.visibility = View.GONE
             expandButton.visibility = View.GONE
             inviteText.text = "${invitation.userOrganizer.nickname} is organizing a ${
                 invitation.court.sport.lowercase().capitalize(Locale.ENGLISH)

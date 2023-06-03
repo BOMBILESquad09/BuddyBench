@@ -90,7 +90,7 @@
     <string name="rating">Rating</string>
     <string name="price">Price</string>
     <string name="total_price">Total Price: %1$s</string>
-    <string name="equipment_phrase">Equipment: %1$d €/h</string>
+    <string name="equipment_phrase">Renting Equipment: %1$d €/h</string>
     <string name="facility_list">Facilities: </string>
     <string name="additional_information">Additional Informations</string>
     <string name="informations_body">\nTo access the court %1$s, the following rules must be respected:\n\n- Maintain appropriate behavior\n- Respect the practical rules of the %2$s\n- Respect others, especially regarding noise pollution\n\n\n</string>
