@@ -128,27 +128,28 @@ class InvitationViewHolder(
         cardInner.duration = 400
         expandButton.setOnClickListener {
 
-            cardInvitation.setOnClickListener {
-                if (!cardInner.isExpanded) {
-                    cardInner.expand()
-                    cardInner.startAnimation(
-                        AnimationUtils.loadAnimation(
-                            view.context,
-                            android.R.anim.fade_in
-                        )
+
+            if (!cardInner.isExpanded) {
+                cardInner.expand()
+                cardInner.startAnimation(
+                    AnimationUtils.loadAnimation(
+                        view.context,
+                        android.R.anim.fade_in
                     )
-                    expandButton.setImageResource(R.drawable.expand_up)
-                } else {
-                    cardInner.startAnimation(
-                        AnimationUtils.loadAnimation(
-                            view.context,
-                            android.R.anim.fade_out
-                        )
+                )
+                expandButton.setImageResource(R.drawable.expand_up)
+            } else {
+                cardInner.startAnimation(
+                    AnimationUtils.loadAnimation(
+                        view.context,
+                        android.R.anim.fade_out
                     )
-                    cardInner.collapse()
-                    expandButton.setImageResource(R.drawable.expand_down)
-                }
+                )
+                cardInner.collapse()
+                expandButton.setImageResource(R.drawable.expand_down)
             }
+        }
+
 
         if (!isInvitation) {
             cardInner.expand(false)
@@ -159,42 +160,40 @@ class InvitationViewHolder(
             } game!"
             inviteText.maxLines = 3
 
-                declineButton.visibility = View.GONE
+            declineButton.visibility = View.GONE
 
-                acceptButton.text = "Join"
-                acceptButton.setPadding(100, 10, 100, 10)
+            acceptButton.text = "Join"
+            acceptButton.setPadding(100, 10, 100, 10)
 
-                acceptButton.setOnClickListener {
+            acceptButton.setOnClickListener {
 
-                    //if request not sent
-                    if (!invitation.requests.map { it.email }
-                            .contains(Firebase.auth.currentUser!!.email!!)) {
-                        findCourtViewModel!!.sendJoinRequest(invitation) {
+                //if request not sent
+                if (!invitation.requests.map { it.email }
+                        .contains(Firebase.auth.currentUser!!.email!!)) {
+                    findCourtViewModel!!.sendJoinRequest(invitation) {
 
-                        }
-                    } else {
-                        val bottomSheet = CancelRequestJoinDialog(
-                            invitation
-                        ) { }
-                        bottomSheet.show(
-                            (FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager,
-                            ""
-                        )
                     }
-
-
-                    /*acceptButton.text = "Cancel request"
-                    acceptButton.setTextColor(view.context.getColor(R.color.error))
-
-
-                    val bottomSheet = CancelRequestJoinDialog()
-                    bottomSheet.show((FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager, "")*/
-
+                } else {
+                    val bottomSheet = CancelRequestJoinDialog(
+                        invitation
+                    ) { }
+                    bottomSheet.show(
+                        (FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager,
+                        ""
+                    )
                 }
-            }
-            setJoinRequestCard()
-        }
 
+
+                /*acceptButton.text = "Cancel request"
+                acceptButton.setTextColor(view.context.getColor(R.color.error))
+
+
+                val bottomSheet = CancelRequestJoinDialog()
+                bottomSheet.show((FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager, "")*/
+
+            }
+        }
+        setJoinRequestCard()
     }
 
     private fun setJoinRequestCard() {
@@ -207,4 +206,7 @@ class InvitationViewHolder(
             acceptButton.setPadding(100, 10, 100, 10)
         }
     }
+
 }
+
+
