@@ -45,14 +45,14 @@ android:orientation="vertical">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_confirm"
-            android:layout_width="140dp"
+            android:layout_width="144dp"
             android:layout_height="wrap_content"
             style="@style/Buttons"
             app:backgroundTint="@color/error"
             android:text="Yes, remove them"
             android:fontFamily="@font/montserrat_bold_700"
             android:textColor="@color/md_theme_light_background"
-            android:textSize="11sp"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_cancel"
             app:layout_constraintHorizontal_bias="0.5"
@@ -63,13 +63,13 @@ android:orientation="vertical">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_cancel"
-            android:layout_width="140dp"
+            android:layout_width="144dp"
             android:layout_height="wrap_content"
             android:text="Cancel"
             android:backgroundTint="@color/disabled"
             style="@style/Buttons"
             android:textColor="@color/md_theme_light_background"
-            android:textSize="11sp"
+            android:textSize="12sp"
             android:fontFamily="@font/montserrat_bold_700"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

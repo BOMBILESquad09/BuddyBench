@@ -163,7 +163,7 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
                                     else -> Visibilities.PRIVATE
                                 }
 
-                                if(newVisibility != Visibilities.PRIVATE && reservation.requests.isNotEmpty() ){
+                                if(newVisibility == Visibilities.PRIVATE && reservation.requests.isNotEmpty() ){
                                     Utils.openGeneralProblemDialog("Error", "Please, before changing visibility accept or refuse the pending join requests.", view.context)
                                     dialog.dismiss()
                                     return@setOnClickListener
