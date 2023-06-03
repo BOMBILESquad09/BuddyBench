@@ -127,6 +127,7 @@ class InvitationViewHolder(val view: View, val onAccept: (ReservationDTO) -> Uni
 
 
                 val bottomSheet = CancelRequestJoinDialog()
+                bottomSheet.show((FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager, "")
             }
         }
 

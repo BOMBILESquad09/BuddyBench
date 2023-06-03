@@ -90,7 +90,7 @@
                     android:id="@+id/textView8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pending Requests"
+                    android:text="Pending Invitations"
                     android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="@+id/remove_pending_button"
                     app:layout_constraintEnd_toStartOf="@+id/remove_pending_button"
