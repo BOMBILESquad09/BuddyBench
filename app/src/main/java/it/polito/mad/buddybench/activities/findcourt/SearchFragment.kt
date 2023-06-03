@@ -97,13 +97,13 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
 
 
         findCourtViewModel.findStates.observe(viewLifecycleOwner) {
+            findCourtViewModel.getCourtsOrPublicGames()
             if (it == FindStates.GAMES) {
                 findCourtViewModel.clearFilters()
                 filterButton.setBackgroundResource(R.drawable.circle_light_bg)
                 filterIcon.setImageResource(R.drawable.filter)
 
-                courtsRecyclerView.visibility = View.GONE
-                publicGamesRecyclerView.visibility = View.VISIBLE
+
                 filterButton.postOnAnimation {
                     searchTextContainer.startAnimation(
                         AnimationUtils.loadAnimation(
@@ -120,8 +120,7 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
                     )
                 )
             } else {
-                courtsRecyclerView.visibility = View.VISIBLE
-                publicGamesRecyclerView.visibility = View.GONE
+
                 searchTextContainer.postOnAnimation {
                     filterButton.startAnimation(
                         AnimationUtils.loadAnimation(
@@ -138,7 +137,6 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
                     )
                 )
             }
-            findCourtViewModel.getCourtsOrPublicGames()
 
         }
 
@@ -247,6 +245,7 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
             diffResult.dispatchUpdatesTo(courtsRecyclerView.adapter!!)
             courtsRecyclerView.scrollToPosition(0)
             if (it.isEmpty()) {
+                courtsRecyclerView.adapter!!.notifyDataSetChanged()
                 courtsRecyclerView.visibility = View.GONE
                 noCourts.visibility = View.VISIBLE
                 noCourts.text = emptyString()
@@ -261,16 +260,19 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
                 (publicGamesRecyclerView.adapter as InvitationAdapter).invitations,
                 it
             )
-            (publicGamesRecyclerView.adapter as InvitationAdapter).invitations = it
+            println((publicGamesRecyclerView.adapter as InvitationAdapter).invitations.map { it.id })
+            println(it.map { it.id })
             val diffResult = DiffUtil.calculateDiff(diff)
-            //diffResult.dispatchUpdatesTo(publicGamesRecyclerView.adapter!!)
-            publicGamesRecyclerView.adapter!!.notifyDataSetChanged()
-            publicGamesRecyclerView.scrollToPosition(0)
+            (publicGamesRecyclerView.adapter as InvitationAdapter).invitations = it
+            diffResult.dispatchUpdatesTo(publicGamesRecyclerView.adapter!!)
             if (it.isEmpty()) {
+                println("diocaneeeeee")
+                publicGamesRecyclerView.adapter!!.notifyDataSetChanged()
                 publicGamesRecyclerView.visibility = View.GONE
                 noCourts.visibility = View.VISIBLE
                 noCourts.text = emptyString()
             } else {
+                println("porcamadonnnaaaaaaaaaaaaaaaaaaaaaaa")
                 publicGamesRecyclerView.visibility = View.VISIBLE
                 noCourts.visibility = View.GONE
             }
@@ -303,23 +305,24 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
                 parent.context.getString(R.string.user_hello, userViewModel.user.value!!.name)
             parent.context.findViewById<ImageView>(R.id.close_selection).visibility = View.VISIBLE
 
-            searchEditText.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    parent.viewModel.name = s.toString().trim().replace("\\s+".toRegex(), " ")
-                    parent.viewModel.applyFilterOnCourtsOrPublicGames()
-                }
 
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            })
         }
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                parent.viewModel.name = s.toString().trim().replace("\\s+".toRegex(), " ")
+                parent.viewModel.applyFilterOnCourtsOrPublicGames()
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
         filterButton.postOnAnimation {
             // filterButton.visibility = View.GONE
             //
@@ -349,10 +352,6 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
         Utils.closeProgressDialog()
     }
 
-    override fun onStart() {
-        super.onStart()
-        parent.viewModel.getCourtsOrPublicGames()
-    }
 
     private fun emptyString(): String {
         val ph = when (findCourtViewModel.findStates.value!!) {

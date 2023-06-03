@@ -132,12 +132,14 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
 
 
                     if ((rvFriendRequests.adapter as FriendRequestRecyclerViewAdapter).values.isEmpty()) {
+
                         val fadeOut = AnimationUtils.loadAnimation(context, android.R.anim.fade_out)
                         val fadeIn = AnimationUtils.loadAnimation(context, android.R.anim.fade_in)
                         rvFriendRequests.postOnAnimation {
                             rvFriendRequests.visibility = View.GONE
                             emptyLL.postOnAnimation {
                                 emptyLL.visibility = View.VISIBLE
+                                adapter!!.notifyDataSetChanged()
                             }
                             emptyLL.startAnimation(fadeIn)
 

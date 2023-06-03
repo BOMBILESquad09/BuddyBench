@@ -148,6 +148,8 @@ class InvitationViewHolder(
         }
 
         if (!isInvitation) {
+            cardInner.expand()
+            expandButton.visibility = View.GONE
             inviteText.text = "${invitation.userOrganizer.nickname} is organizing a ${
                 invitation.court.sport.lowercase().capitalize(Locale.ENGLISH)
             } game!"
