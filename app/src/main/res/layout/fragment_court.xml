@@ -339,7 +339,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:tint="@color/md_theme_light_text"
-                        android:src="@drawable/baseline_shopping_bag_24"
+                        android:src="@drawable/equipment"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"

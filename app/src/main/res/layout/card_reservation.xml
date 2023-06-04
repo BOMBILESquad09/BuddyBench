@@ -125,7 +125,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
                 android:layout_marginTop="12dp"
-                android:layout_marginBottom="6dp"
+                android:layout_marginBottom="8dp"
                 android:fontFamily="@font/montserrat_medium_500"
                 android:text="16:00 - 17:00"
                 android:textColor="@color/md_theme_light_background"
