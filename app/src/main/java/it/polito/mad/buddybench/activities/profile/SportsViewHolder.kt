@@ -106,7 +106,7 @@ class SportsViewHolder(val v: View,
 
         val cardLayout = view.findViewById<LinearLayout>(R.id.card_layout)
         val sportIcon = view.findViewById<ImageView>(R.id.sport_card_icon)
-        val addButton = view.findViewById<TextView>(R.id.add_achievements)
+        val addButton = view.findViewById<ImageView>(R.id.add_achievements)
         val newAchievement = view.findViewById<EditText>(R.id.new_achievement)
         newAchievement.backgroundTintMode = PorterDuff.Mode.CLEAR
         val newAchievementBox = view.findViewById<TextInputLayout>(R.id.new_achievement_box)
