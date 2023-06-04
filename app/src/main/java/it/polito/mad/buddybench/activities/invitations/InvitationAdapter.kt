@@ -19,6 +19,7 @@ class InvitationAdapter(var invitations: List<ReservationDTO>,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InvitationViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.card_invitation, parent, false)
+        println("creatinggg view holder")
         return InvitationViewHolder(view, onAccept, onDecline, isInvitation, findCourtViewModel )
     }
 

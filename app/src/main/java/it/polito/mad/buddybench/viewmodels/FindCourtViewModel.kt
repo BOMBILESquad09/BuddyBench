@@ -228,7 +228,6 @@ class FindCourtViewModel @Inject constructor() : ViewModel() {
                 onFailure
             ) {
                 getPublicGamesBySport(false) {
-                    println("------------------------------fdddddddddddd-----------------------")
                     onSuccess()
 
                 }

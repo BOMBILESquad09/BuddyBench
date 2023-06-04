@@ -151,41 +151,48 @@
                 card_view:layout_constraintVertical_bias="0.105"
                 card_view:layout_constraintVertical_chainStyle="spread_inside" />
 
-            <androidx.cardview.widget.CardView
+            <FrameLayout
                 android:id="@+id/manage_btn_card"
+                android:paddingVertical="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                card_view:cardCornerRadius="300dp"
-                android:backgroundTint="@color/white"
-                android:padding="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:layout_marginEnd="8dp"
-                android:contentDescription="@string/confirm"
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintTop_toBottomOf="@+id/imageView">
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    card_view:cardCornerRadius="300dp"
+                    android:backgroundTint="@color/white"
+                    android:paddingHorizontal="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="@string/confirm"
+                    >
 
-            <TextView
-                android:id="@+id/manage_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:fontFamily="@font/montserrat_bold_700"
-                android:paddingHorizontal="20dp"
-                android:paddingVertical="8dp"
-                android:text="@string/manage"
-                android:textSize="12sp"
-                android:clickable="true"
-                android:focusable="true"
-                card_view:layout_constraintBottom_toBottomOf="parent"
-                card_view:layout_constraintEnd_toEndOf="parent"
-                card_view:layout_constraintTop_toBottomOf="@+id/imageView">
+                    <TextView
+                        android:id="@+id/manage_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:fontFamily="@font/montserrat_bold_700"
+                        android:paddingHorizontal="20dp"
+                        android:paddingVertical="8dp"
+                        android:text="@string/manage"
+                        android:textSize="12sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        card_view:layout_constraintBottom_toBottomOf="parent"
+                        card_view:layout_constraintEnd_toEndOf="parent"
+                        card_view:layout_constraintTop_toBottomOf="@+id/imageView">
 
-            </TextView>
+                    </TextView>
 
-            </androidx.cardview.widget.CardView>
+                </androidx.cardview.widget.CardView>
+
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/notification_number"

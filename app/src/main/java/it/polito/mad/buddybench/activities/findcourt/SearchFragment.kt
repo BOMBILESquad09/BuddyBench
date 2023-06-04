@@ -23,9 +23,11 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.kizitonwose.calendar.core.Week
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.WeekDayPosition
 import com.kizitonwose.calendar.view.WeekCalendarView
+import com.kizitonwose.calendar.view.WeekScrollListener
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.court.CourtActivity
@@ -94,64 +96,6 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
             findCourtViewModel.setFindState(it)
         })
 
-
-
-        findCourtViewModel.findStates.observe(viewLifecycleOwner) {
-            if (it == FindStates.GAMES) {
-                findCourtViewModel.clearFilters()
-                filterButton.setBackgroundResource(R.drawable.circle_light_bg)
-                filterIcon.setImageResource(R.drawable.filter)
-
-                courtsRecyclerView.visibility = View.GONE
-                publicGamesRecyclerView.visibility = View.VISIBLE
-                filterButton.postOnAnimation {
-                    searchTextContainer.startAnimation(
-                        AnimationUtils.loadAnimation(
-                            this.activity,
-                            R.anim.expand_search_bar
-                        )
-                    )
-                    filterButton.visibility = View.GONE
-                }
-                filterButton.startAnimation(
-                    AnimationUtils.loadAnimation(
-                        this.activity,
-                        R.anim.fade_out
-                    )
-                )
-            } else {
-                courtsRecyclerView.visibility = View.VISIBLE
-                publicGamesRecyclerView.visibility = View.GONE
-                searchTextContainer.postOnAnimation {
-                    filterButton.startAnimation(
-                        AnimationUtils.loadAnimation(
-                            this.activity,
-                            R.anim.fade_in
-                        )
-                    )
-                    filterButton.visibility = View.VISIBLE
-                }
-                searchTextContainer.startAnimation(
-                    AnimationUtils.loadAnimation(
-                        this.activity,
-                        R.anim.collapse_search_bar
-                    )
-                )
-            }
-            findCourtViewModel.getCourtsOrPublicGames()
-
-        }
-
-        parent.context.userViewModel.user.observe(viewLifecycleOwner) {
-            textUser.text = parent.context.getString(R.string.user_hello, it.name)
-        }
-
-        progressLayout = view.findViewById(R.id.progress_layout)
-        progressBar = progressLayout.findViewById(R.id.progress_circular)
-
-        noCourts = view.findViewById(R.id.no_courts_available)
-
-
         val callbackCourt: (String, Sports) -> Unit = { name, sport ->
 
             val intent = Intent(context, CourtActivity::class.java)
@@ -174,7 +118,6 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
             }
         }
 
-
         courtsRecyclerView.adapter =
             CourtSearchAdapter(findCourtViewModel.currentCourts, callbackCourt, reviewsCallback)
         courtsRecyclerView.layoutManager = LinearLayoutManager(view.context)
@@ -187,6 +130,76 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
                 findCourtViewModel
             )
         publicGamesRecyclerView.layoutManager = LinearLayoutManager(view.context)
+
+
+
+
+        findCourtViewModel.findStates.observe(viewLifecycleOwner) {
+            findCourtViewModel.getCourtsOrPublicGames()
+
+            textNearButton.text = getString(
+                R.string.court_search_phrase,
+                findCourtViewModel.selectedSport.value!!.toString().lowercase().replaceFirstChar { c -> c.uppercase() },
+                it.name.lowercase()
+            )
+
+            if (it == FindStates.GAMES) {
+                courtsRecyclerView.visibility = View.GONE
+                findCourtViewModel.clearFilters()
+                filterButton.setBackgroundResource(R.drawable.circle_light_bg)
+                filterIcon.setImageResource(R.drawable.filter)
+
+
+                filterButton.postOnAnimation {
+                    searchTextContainer.startAnimation(
+                        AnimationUtils.loadAnimation(
+                            this.activity,
+                            R.anim.expand_search_bar
+                        )
+                    )
+                    filterButton.visibility = View.GONE
+                }
+                filterButton.startAnimation(
+                    AnimationUtils.loadAnimation(
+                        this.activity,
+                        R.anim.fade_out
+                    )
+                )
+            } else {
+                publicGamesRecyclerView.visibility = View.GONE
+
+                searchTextContainer.postOnAnimation {
+                    filterButton.startAnimation(
+                        AnimationUtils.loadAnimation(
+                            this.activity,
+                            R.anim.fade_in
+                        )
+                    )
+                    filterButton.visibility = View.VISIBLE
+                }
+                searchTextContainer.startAnimation(
+                    AnimationUtils.loadAnimation(
+                        this.activity,
+                        R.anim.collapse_search_bar
+                    )
+                )
+            }
+
+        }
+
+        parent.context.userViewModel.user.observe(viewLifecycleOwner) {
+            textUser.text = parent.context.getString(R.string.user_hello, it.name)
+        }
+
+        progressLayout = view.findViewById(R.id.progress_layout)
+        progressBar = progressLayout.findViewById(R.id.progress_circular)
+
+        noCourts = view.findViewById(R.id.no_courts_available)
+
+
+
+
+
 
         val calendarView = view.findViewById<WeekCalendarView>(R.id.calendar)
 
@@ -205,6 +218,18 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
         val ranges = Utils.getDateRanges()
         calendarView.setup(ranges.first, ranges.second, DayOfWeek.MONDAY)
         calendarView.scrollToDate(parent.viewModel.getSelectedDate())
+
+        calendarView.weekScrollListener = object: WeekScrollListener{
+            override fun invoke(p1: Week){
+                val selectedDate = if(p1.days.first().date  < LocalDate.now())
+                    LocalDate.now()
+                else
+                    p1.days.first().date
+
+                (calendarView.dayBinder as WeeklyCalendarDayBinder).selectedDate = selectedDate
+                calendarCallback(findCourtViewModel.getSelectedDate(),selectedDate)
+            }
+        }
 
         filterButton.setOnClickListener {
             showBottomSheetDialog()
@@ -231,9 +256,7 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
 
         findCourtViewModel.loading.observe(viewLifecycleOwner) {
             if (it) {
-                courtsRecyclerView.visibility = View.GONE
-                publicGamesRecyclerView.visibility = View.GONE
-                noCourts.visibility = View.GONE
+
                 progressLayout.visibility = View.VISIBLE
             } else {
                 progressLayout.visibility = View.GONE
@@ -247,6 +270,7 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
             diffResult.dispatchUpdatesTo(courtsRecyclerView.adapter!!)
             courtsRecyclerView.scrollToPosition(0)
             if (it.isEmpty()) {
+                courtsRecyclerView.adapter!!.notifyDataSetChanged()
                 courtsRecyclerView.visibility = View.GONE
                 noCourts.visibility = View.VISIBLE
                 noCourts.text = emptyString()
@@ -261,11 +285,11 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
                 (publicGamesRecyclerView.adapter as InvitationAdapter).invitations,
                 it
             )
-            (publicGamesRecyclerView.adapter as InvitationAdapter).invitations = it
+            println((publicGamesRecyclerView.adapter as InvitationAdapter).invitations.map { it.id })
+            println(it.map { it.id })
             val diffResult = DiffUtil.calculateDiff(diff)
-            //diffResult.dispatchUpdatesTo(publicGamesRecyclerView.adapter!!)
-            publicGamesRecyclerView.adapter!!.notifyDataSetChanged()
-            publicGamesRecyclerView.scrollToPosition(0)
+            (publicGamesRecyclerView.adapter as InvitationAdapter).invitations = it
+            diffResult.dispatchUpdatesTo(publicGamesRecyclerView.adapter!!)
             if (it.isEmpty()) {
                 publicGamesRecyclerView.visibility = View.GONE
                 noCourts.visibility = View.VISIBLE
@@ -297,29 +321,32 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
 
             textNearButton.text = getString(
                 R.string.court_search_phrase,
-                it.toString().lowercase().replaceFirstChar { c -> c.uppercase() })
+                it.toString().lowercase().replaceFirstChar { c -> c.uppercase() },
+                findCourtViewModel.findStates.value!!.name.lowercase()
+            )
 
             textUser.text =
                 parent.context.getString(R.string.user_hello, userViewModel.user.value!!.name)
             parent.context.findViewById<ImageView>(R.id.close_selection).visibility = View.VISIBLE
 
-            searchEditText.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    parent.viewModel.name = s.toString().trim().replace("\\s+".toRegex(), " ")
-                    parent.viewModel.applyFilterOnCourtsOrPublicGames()
-                }
 
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            })
         }
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                parent.viewModel.name = s.toString().trim().replace("\\s+".toRegex(), " ")
+                parent.viewModel.applyFilterOnCourtsOrPublicGames()
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
         filterButton.postOnAnimation {
             // filterButton.visibility = View.GONE
             //
@@ -349,10 +376,6 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
         Utils.closeProgressDialog()
     }
 
-    override fun onStart() {
-        super.onStart()
-        parent.viewModel.getCourtsOrPublicGames()
-    }
 
     private fun emptyString(): String {
         val ph = when (findCourtViewModel.findStates.value!!) {

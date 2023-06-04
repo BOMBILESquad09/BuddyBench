@@ -1,16 +1,20 @@
 package it.polito.mad.buddybench.activities.myreservations
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.enums.Visibilities
 import it.polito.mad.buddybench.persistence.dto.ReservationDTO
+
 
 class ManageBottomSheet(
     val onEditSelected: () -> Unit,
@@ -31,7 +35,8 @@ class ManageBottomSheet(
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    @androidx.annotation.OptIn(com.google.android.material.badge.ExperimentalBadgeUtils::class)
+    override fun  onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val inviteFriendsBtn = view.findViewById<LinearLayout>(R.id.invite_button)
@@ -54,11 +59,26 @@ class ManageBottomSheet(
         }
 
         val joinRequestBtn = view.findViewById<LinearLayout>(R.id.joint_requests)
+
         if(reservation.visibility == Visibilities.PRIVATE) {
             joinRequestBtn.visibility = View.GONE
             joinRequestBtn.setOnClickListener(null)
         } else {
             joinRequestBtn.visibility = View.VISIBLE
+            if(reservation.requests.isNotEmpty()){
+                joinRequestBtn.post {
+                    val badgeDrawable = BadgeDrawable.create(view.context)
+                    badgeDrawable.number = reservation.requests.size
+                    badgeDrawable.verticalOffset = 25;
+                    badgeDrawable.horizontalOffset = 30;
+                    badgeDrawable.backgroundColor = Color.RED
+                    badgeDrawable.isVisible = true
+                    BadgeUtils.attachBadgeDrawable(badgeDrawable, view.findViewById(R.id.join_b), view.findViewById(R.id.badge) );
+                }
+            }
+
+            val badgeDrawable = BadgeDrawable.create(view.context)
+
             joinRequestBtn?.setOnClickListener {
                 onJoinRequests(reservation)
                 this.dismiss()

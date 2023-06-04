@@ -14,6 +14,7 @@ import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
 import com.apachat.loadingbutton.core.customViews.CircularProgressButton
 import com.apachat.loadingbutton.core.presentation.State
 import com.bumptech.glide.util.Util
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.enums.Sports
@@ -29,7 +30,7 @@ class DialogSheetDeleteReservation(
     private val oldDate: LocalDate,
     private val email: String,
     private val callback: () -> Unit
-) : SuperBottomSheetFragment() {
+) : BottomSheetDialogFragment() {
 
     private val reservationViewModel by activityViewModels<ReservationViewModel>()
 

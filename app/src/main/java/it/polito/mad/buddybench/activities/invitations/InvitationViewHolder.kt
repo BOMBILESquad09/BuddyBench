@@ -3,10 +3,14 @@ package it.polito.mad.buddybench.activities.invitations
 import android.animation.ValueAnimator
 import android.content.res.ColorStateList
 import android.opengl.Visibility
+import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -17,6 +21,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.card.MaterialCardView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.internal.managers.FragmentComponentManager
@@ -47,6 +52,7 @@ class InvitationViewHolder(
     private val inviteText: TextView = view.findViewById(R.id.invite_text)
     private val courtName: TextView = view.findViewById(R.id.card_invitation_court)
     private val address: TextView = view.findViewById(R.id.card_invitation_address)
+    private val dayLayout: View = view.findViewById(R.id.day_layout)
     private val date: TextView = view.findViewById(R.id.card_invitation_date)
     private val slot: TextView = view.findViewById(R.id.card_invitation_hours)
     private val acceptButton: TextView = view.findViewById(R.id.accept_btn)
@@ -126,6 +132,8 @@ class InvitationViewHolder(
 
         cardInner.duration = 400
         expandButton.setOnClickListener {
+
+
             if (!cardInner.isExpanded) {
                 cardInner.expand()
                 cardInner.startAnimation(
@@ -148,49 +156,58 @@ class InvitationViewHolder(
         }
 
         if (!isInvitation) {
+            cardInner.expand(false)
+            dayLayout.visibility = View.GONE
+            expandButton.visibility = View.GONE
             inviteText.text = "${invitation.userOrganizer.nickname} is organizing a ${
                 invitation.court.sport.lowercase().capitalize(Locale.ENGLISH)
             } game!"
             inviteText.maxLines = 3
 
             declineButton.visibility = View.GONE
+            val frame = view.findViewById<FrameLayout>(R.id.frame_layout)
+            frame.visibility = View.GONE
+            val cardDecline = view.findViewById<FrameLayout>(R.id.card_decline)
+            cardDecline.visibility = View.GONE
 
-            acceptButton.text = "Join"
-            acceptButton.setPadding(100, 10, 100, 10)
+            acceptButton.text = " Request to join "
+
+            val layout = view.findViewById<LinearLayout>(R.id.linearLayout)
+            layout.gravity = Gravity.CENTER
+
 
             acceptButton.setOnClickListener {
 
                 //if request not sent
-                    if (!invitation.requests.map { it.email }.contains(Firebase.auth.currentUser!!.email!!)) {
-                        findCourtViewModel!!.sendJoinRequest(invitation){
+                if (!invitation.requests.map { it.email }
+                        .contains(Firebase.auth.currentUser!!.email!!)) {
+                    findCourtViewModel!!.sendJoinRequest(invitation) {
 
-                        }
-                    } else {
-                        val bottomSheet = CancelRequestJoinDialog(invitation
-                        ) {  }
-                        bottomSheet.show((FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager, "")
                     }
-
-
-                    /*acceptButton.text = "Cancel request"
-                    acceptButton.setTextColor(view.context.getColor(R.color.error))
-
-
-                    val bottomSheet = CancelRequestJoinDialog()
-                    bottomSheet.show((FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager, "")*/
-
+                } else {
+                    val bottomSheet = CancelRequestJoinDialog(
+                        invitation
+                    ) { }
+                    bottomSheet.show(
+                        (FragmentComponentManager.findActivity(view.context) as AppCompatActivity).supportFragmentManager,
+                        ""
+                    )
+                }
             }
+            setJoinRequestCard()
         }
-        setJoinRequestCard()
+
     }
 
     private fun setJoinRequestCard() {
-        if (invitation.requests.map { it.email }.contains(Firebase.auth.currentUser!!.email!!)) {
+        if (invitation.requests.map { it.email }
+                .contains(Firebase.auth.currentUser!!.email!!)) {
             acceptButton.text = "Request sent"
-            acceptButton.setPadding(40, 10, 40, 10)
         } else {
-            acceptButton.text = "Join"
-            acceptButton.setPadding(100, 10, 100, 10)
+            acceptButton.text = " Request to join "
         }
     }
+
 }
+
+

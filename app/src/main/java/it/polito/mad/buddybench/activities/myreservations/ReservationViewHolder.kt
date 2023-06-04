@@ -9,9 +9,12 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.badge.BadgeUtils
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.internal.managers.FragmentComponentManager
@@ -28,7 +31,11 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 
-class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, private val launcher: ActivityResultLauncher<Intent>) :
+class ReservationViewHolder(
+    val viewModel: ReservationViewModel,
+    v: View,
+    private val launcher: ActivityResultLauncher<Intent>
+) :
     RecyclerView.ViewHolder(v) {
 
     private val courtName: TextView = v.findViewById(R.id.card_invitation_court)
@@ -43,7 +50,7 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
     private var positionIcon: ImageView = v.findViewById(R.id.position)
     lateinit var reservation: ReservationDTO
     val view: View = v
-
+    @androidx.annotation.OptIn(com.google.android.material.badge.ExperimentalBadgeUtils::class)
     fun bind(reservationDTO: ReservationDTO) {
         reservation = reservationDTO
         // ** Card color
@@ -68,6 +75,9 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
         )
 
 
+
+
+
         telephoneIcon.setOnClickListener {
             val number = Uri.parse("tel:" + reservation.court.phoneNumber);
             val dial = Intent(Intent.ACTION_DIAL, number)
@@ -83,13 +93,15 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
 
         val wrappedDrawable = DrawableCompat.wrap(iconDrawable!!)
         iconSport.setImageDrawable(wrappedDrawable)
-        slot.text = "${reservation.startTime.format(formatter)} - ${reservation.endTime.format(formatter)}"
+        slot.text =
+            "${reservation.startTime.format(formatter)} - ${reservation.endTime.format(formatter)}"
 
         manageBtn.setTextColor(
             Sports.getSportColor(
                 Sports.valueOf(reservation.court.sport),
                 view.context
-            ))
+            )
+        )
         manageBtn.text = "Manage"
         if (reservation.userOrganizer.email != Firebase.auth.currentUser!!.email!!) {
 
@@ -98,22 +110,38 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
                 SendInvitationsBottomSheet(reservation, true).show(
                     (FragmentComponentManager.findActivity(
                         view.context
-                    ) as AppCompatActivity).supportFragmentManager, "InvitationBottomSheet")
+                    ) as AppCompatActivity).supportFragmentManager, "InvitationBottomSheet"
+                )
 
             }
-        } else if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.endTime)){
+        } else if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.endTime)) {
             manageBtn.text = "Review"
-            manageBtn.setOnClickListener{
+            manageBtn.setOnClickListener {
                 launchReview(reservation)
             }
-        } else if(LocalDate.now() == reservation.date && LocalTime.now() < reservation.endTime &&  LocalTime.now() > reservation.startTime ){
+        } else if (LocalDate.now() == reservation.date && LocalTime.now() < reservation.endTime && LocalTime.now() > reservation.startTime) {
             manageBtn.text = "Started"
-        }
-        else {
+        } else {
+            if (!(LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime)) && reservation.requests.isNotEmpty()) {
+                manageBtn.post {
+                    val badgeDrawable = BadgeDrawable.create(view.context)
+                    badgeDrawable.number = reservation.requests.size
+                    badgeDrawable.verticalOffset = 17;
+                    badgeDrawable.backgroundColor = android.graphics.Color.RED
+                    badgeDrawable.horizontalOffset = 30;
+                    badgeDrawable.isVisible = true
+                    BadgeUtils.attachBadgeDrawable(
+                        badgeDrawable,
+                        manageBtn,
+                        view.findViewById(R.id.manage_btn_card)
+                    );
+                }
+            }
             manageBtn.setOnClickListener {
                 if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime)) {
                     launchReview(reservation)
                 } else {
+
                     val mbs = ManageBottomSheet(
                         {
                             launchEditReservation(reservation)
@@ -122,15 +150,18 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
                             SendInvitationsBottomSheet(reservation).show(
                                 (FragmentComponentManager.findActivity(
                                     view.context
-                                ) as AppCompatActivity).supportFragmentManager, "InvitationBottomSheet"
+                                ) as AppCompatActivity).supportFragmentManager,
+                                "InvitationBottomSheet"
                             )
                         },
                         {
-                            val dialogCard = LayoutInflater.from(view.context).inflate(R.layout.dialog_visibility, null)
-                            val confirm  = dialogCard.findViewById<View>(R.id.confirm)
+                            val dialogCard = LayoutInflater.from(view.context)
+                                .inflate(R.layout.dialog_visibility, null)
+                            val confirm = dialogCard.findViewById<View>(R.id.confirm)
                             confirm.isFocusable = false
                             confirm.isClickable = false
-                            val radioGroup = dialogCard.findViewById<RadioGroup>(R.id.visibility_group)
+                            val radioGroup =
+                                dialogCard.findViewById<RadioGroup>(R.id.visibility_group)
 
                             val builder: AlertDialog.Builder = AlertDialog.Builder(view.context)
                             builder.setView(dialogCard)
@@ -141,7 +172,7 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
                                 dialog.dismiss()
                             }
 
-                            val checkedButton: RadioButton =  when(reservation.visibility){
+                            val checkedButton: RadioButton = when (reservation.visibility) {
                                 Visibilities.PRIVATE -> radioGroup.findViewById(R.id.private_visibility)
                                 Visibilities.ON_REQUEST -> radioGroup.findViewById(R.id.on_request_visibility)
                                 Visibilities.PUBLIC -> radioGroup.findViewById(R.id.public_visibility)
@@ -155,22 +186,26 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
 
                             }
 
-                            confirm.setOnClickListener{
+                            confirm.setOnClickListener {
 
-                                val newVisibility = when(radioGroup.checkedRadioButtonId){
+                                val newVisibility = when (radioGroup.checkedRadioButtonId) {
                                     R.id.private_visibility -> Visibilities.PRIVATE
                                     R.id.on_request_visibility -> Visibilities.ON_REQUEST
                                     else -> Visibilities.PRIVATE
                                 }
 
-                                if(newVisibility != Visibilities.PRIVATE && reservation.requests.isNotEmpty() ){
-                                    Utils.openGeneralProblemDialog("Error", "Please, before changing visibility accept or refuse the pending join requests.", view.context)
+                                if (newVisibility == Visibilities.PRIVATE && reservation.requests.isNotEmpty()) {
+                                    Utils.openGeneralProblemDialog(
+                                        "Error",
+                                        "Please, before changing visibility accept or refuse the pending join requests.",
+                                        view.context
+                                    )
                                     dialog.dismiss()
                                     return@setOnClickListener
                                 }
 
                                 viewModel.setVisibility(reservation, newVisibility, {
-                                                                                    dialog.dismiss()
+                                    dialog.dismiss()
                                 }, {
                                     reservation.visibility = it
                                     setVisibilityIcon()
@@ -184,7 +219,8 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
                             JoinRequestsBottomSheet(it).show(
                                 (FragmentComponentManager.findActivity(
                                     view.context
-                                ) as AppCompatActivity).supportFragmentManager, "JointRequestBottomSheet"
+                                ) as AppCompatActivity).supportFragmentManager,
+                                "JointRequestBottomSheet"
                             )
                         },
                         reservation
@@ -198,20 +234,21 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
         }
 
 
+
+
         iconReservationVisibility.setOnClickListener {
             visibilityInfoDialog()
         }
         setVisibilityIcon()
     }
 
-    fun setVisibilityIcon(){
+    fun setVisibilityIcon() {
         if (reservation.visibility.toString() == "PRIVATE")
             iconReservationVisibility.setImageDrawable(view.context.getDrawable(R.drawable.private_visibility))
         else
             iconReservationVisibility.setImageDrawable(view.context.getDrawable(R.drawable.global_visibility))
 
     }
-
 
 
     private fun launchReview(reservation: ReservationDTO) {
@@ -236,37 +273,39 @@ class ReservationViewHolder(val viewModel: ReservationViewModel, v: View, privat
 
     }
 
-    private fun visibilityInfoDialog(){
+    private fun visibilityInfoDialog() {
         val builder = AlertDialog.Builder(view.context)
-        val dialogLayout = LayoutInflater.from(view.context).inflate(R.layout.dialog_visibility_info, null)
+        val dialogLayout =
+            LayoutInflater.from(view.context).inflate(R.layout.dialog_visibility_info, null)
         builder.setView(dialogLayout)
         val dialog: AlertDialog = builder.create()
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
 
-        val dialogTypeText : TextView = dialogLayout.findViewById(R.id.dialog_visibility_type)
-        dialogTypeText.text = reservation.visibility.name.replace("_"," ")
+        val dialogTypeText: TextView = dialogLayout.findViewById(R.id.dialog_visibility_type)
+        dialogTypeText.text = reservation.visibility.name.replace("_", " ")
 
-        val dialogIcon : ImageView = dialogLayout.findViewById(R.id.dialog_icon)
+        val dialogIcon: ImageView = dialogLayout.findViewById(R.id.dialog_icon)
         val dialogText: TextView = dialogLayout.findViewById(R.id.dialog_text)
 
 
-        when(reservation.visibility){
+        when (reservation.visibility) {
             Visibilities.PRIVATE -> {
                 dialogIcon.setImageDrawable(view.context.getDrawable(R.drawable.private_visibility))
                 dialogText.text = "Players can only participate by invitation from the organizer"
             }
+
             Visibilities.ON_REQUEST -> {
                 dialogIcon.setImageDrawable(view.context.getDrawable(R.drawable.global_visibility))
-                dialogText.text = "Any user can send a request to the organizer to participate the game"
+                dialogText.text =
+                    "Any user can send a request to the organizer to participate the game"
 
             }
+
             else -> {}
         }
 
         dialog.show()
     }
-
-
 
 
 }
