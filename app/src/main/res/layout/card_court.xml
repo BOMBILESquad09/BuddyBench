@@ -33,11 +33,10 @@
             android:drawableTint="@color/gold"
             android:elevation="30dp"
             android:fontFamily="@font/montserrat_semibold_600"
-            android:paddingTop="7dp"
-            android:paddingBottom="7dp"
+            android:paddingVertical="6dp"
             android:text="@string/court_rating"
             android:textColor="#FFFFFF"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             card_view:cornerRadius="200dp"
             card_view:drawableEndCompat="@drawable/star_24" />

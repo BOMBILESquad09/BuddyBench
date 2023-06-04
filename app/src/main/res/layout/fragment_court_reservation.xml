@@ -109,7 +109,7 @@
                         android:paddingStart="9dp"
                         android:gravity="center"
                         android:text="Equipment"
-                        android:drawableLeft="@drawable/baseline_shopping_bag_24"
+                        android:drawableLeft="@drawable/equipment"
                         android:drawablePadding="15dp"
                         android:textSize="15sp"
                         android:textStyle="bold"
