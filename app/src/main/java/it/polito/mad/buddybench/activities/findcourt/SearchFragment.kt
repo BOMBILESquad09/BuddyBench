@@ -73,8 +73,8 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
             parent.viewModel.getCourtsOrPublicGames()
             swipeRefresh.isRefreshing = false
         }
-
-
+        findCourtViewModel.name = ""
+        findCourtViewModel.clearFilters()
         courtsRecyclerView = view.findViewById(R.id.searchRecyclerView)
         publicGamesRecyclerView = view.findViewById(R.id.gamesRecyclerView)
         val b = view.findViewById<ImageView>(R.id.change_sport_button)
@@ -84,7 +84,6 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
         val searchTextContainer = view.findViewById<CardView>(R.id.search_text_container)
         val filterButton = view.findViewById<CardView>(R.id.filterButton)
         val filterIcon = view.findViewById<ImageView>(R.id.filterIcon)
-
         // ** Tabs
         findTabLayout = view.findViewById(R.id.tab_layout_find);
         findViewPager = view.findViewById(R.id.find_view_pager);
@@ -192,7 +191,6 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
         }
 
         parent.context.userViewModel.user.observe(viewLifecycleOwner) {
-            println(it.email)
             textUser.text = parent.context.getString(R.string.user_hello, it.name)
         }
 

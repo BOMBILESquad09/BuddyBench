@@ -194,7 +194,8 @@ class CourtRepository {
                             } else {
                                 filterByMaxReservation(courts, onSuccess)
                             }
-                        } catch (_: Exception) {
+                        } catch (e: Exception) {
+                            println (e)
                             onFailure()
                         }
                     }.addOnFailureListener {

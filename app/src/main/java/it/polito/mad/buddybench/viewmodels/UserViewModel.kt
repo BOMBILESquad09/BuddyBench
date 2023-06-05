@@ -70,7 +70,7 @@ class UserViewModel @Inject constructor() : ViewModel() {
         return user
     }
 
-    private fun fromSharedPreferences() {
+    fun fromSharedPreferences() {
 
         _user.value = (Profile.fromJSON(
             JSONObject(

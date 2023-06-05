@@ -41,7 +41,6 @@ class AuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-        FirebaseFirestore.getInstance().clearPersistence()
         setContentView(R.layout.activity_auth)
 
         signInButton = findViewById<MaterialButton>(R.id.sign_in_button)

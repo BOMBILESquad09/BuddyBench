@@ -228,7 +228,7 @@ class SendInvitationsBottomSheet(
                         }
 
                         dialogCard.findViewById<View>(R.id.cancel).setOnClickListener {
-                            this.dismiss()
+                            dialog.dismiss()
                         }
 
                         dialog.show()

@@ -86,6 +86,7 @@ class HomeActivity : AppCompatActivity() {
         invitationsViewModel.popNotification = { it -> createInvitationNotification(it) }
         friendsViewModel.popNotification = { it -> createFriendRequestNotification(it) }
         reservationViewModel.popNotification = {r,p -> createJoinRequestNotification(r,p)}
+        userViewModel.fromSharedPreferences()
         userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this) {
             findViewById<View>(R.id.progress_bar).visibility = View.GONE
 
