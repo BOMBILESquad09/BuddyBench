@@ -52,6 +52,18 @@ class ReservationRepository {
 
             }
 
+        db.collection("reservations")
+            .whereArrayContains("accepted", db.document("users/$currentEmail"))
+            .addSnapshotListener { value, error ->
+                if (error == null && value != null) {
+                    onSuccess()
+                } else {
+                    onFailure()
+                }
+
+            }
+
+
 
     }
 

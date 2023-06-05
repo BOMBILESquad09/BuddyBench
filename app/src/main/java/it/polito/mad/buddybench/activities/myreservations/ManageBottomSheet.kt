@@ -1,5 +1,6 @@
 package it.polito.mad.buddybench.activities.myreservations
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -46,6 +47,7 @@ class ManageBottomSheet(
         }
         val editReservationBtn = view.findViewById<LinearLayout>(R.id.edit_reservation)
         editReservationBtn?.setOnClickListener {
+            requireActivity().findViewById<View>(R.id.progress_bar).visibility = View.VISIBLE
             //Utils.openProgressDialog(view.context)
             onEditSelected()
             this.dismiss()

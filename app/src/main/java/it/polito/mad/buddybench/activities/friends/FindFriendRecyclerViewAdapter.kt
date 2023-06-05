@@ -3,6 +3,7 @@ package it.polito.mad.buddybench.activities.friends
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
@@ -83,6 +84,8 @@ class FindFriendRecyclerViewAdapter(
 
             }
             ivImage.setOnClickListener {
+                (FragmentComponentManager.findActivity(binding.root.context) as HomeActivity).findViewById<View>(R.id.progress_bar).visibility = View.VISIBLE
+
                 Utils.goToProfileFriend(
                     FragmentComponentManager.findActivity(binding.root.context) as HomeActivity,
                     profile

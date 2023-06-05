@@ -97,6 +97,7 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
         })
 
         val callbackCourt: (String, Sports) -> Unit = { name, sport ->
+            requireActivity().findViewById<View>(R.id.progress_bar).visibility = View.VISIBLE
 
             val intent = Intent(context, CourtActivity::class.java)
             intent.putExtra("courtName", name)
@@ -111,6 +112,9 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
 
         val reviewsCallback: (String, Sports) -> Unit = { name, sport ->
             run {
+                requireActivity().findViewById<View>(R.id.progress_bar).visibility = View.VISIBLE
+
+
                 val intent = Intent(context, ReviewsActivity::class.java)
                 intent.putExtra("court_name", name)
                 intent.putExtra("court_sport", sport.toString())

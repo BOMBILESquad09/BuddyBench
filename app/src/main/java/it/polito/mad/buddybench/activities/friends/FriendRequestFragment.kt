@@ -78,6 +78,8 @@ class FriendRequestFragment : Fragment(R.layout.fragment_friend_request_list) {
         }
 
         val callback: (profile: Profile) -> Unit = {
+            requireActivity().findViewById<View>(R.id.progress_bar).visibility = View.VISIBLE
+
             Utils.goToProfileFriend(activity as HomeActivity, it)
         }
 

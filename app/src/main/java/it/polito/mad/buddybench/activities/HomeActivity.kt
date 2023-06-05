@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -249,6 +250,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         onNewIntent(intent)
+        findViewById<View>(R.id.progress_bar).visibility = View.GONE
 
         Utils.closeProgressDialog()
     }

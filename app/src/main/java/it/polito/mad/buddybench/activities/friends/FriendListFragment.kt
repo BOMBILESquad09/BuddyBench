@@ -59,6 +59,8 @@ class FriendListFragment(val context: HomeActivity) : Fragment(R.layout.fragment
         }
 
         val callback: (profile: Profile) -> Unit = {
+            requireActivity().findViewById<View>(R.id.progress_bar).visibility = View.VISIBLE
+
             Utils.goToProfileFriend(context, it)
         }
 
