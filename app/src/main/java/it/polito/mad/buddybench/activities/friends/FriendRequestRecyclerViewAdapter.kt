@@ -58,7 +58,6 @@ class FriendRequestRecyclerViewAdapter(
         if(jointRequestViewModel != null) {
             jointRequestViewModel.confirmRequest(email)
         } else {
-            println("ddddddddddddd")
             viewModel!!.confirmRequest(email, onSuccess)
         }
         //Toast.makeText(context, "Friend request accepted", Toast.LENGTH_LONG).show()
@@ -97,6 +96,7 @@ class FriendRequestRecyclerViewAdapter(
                 }) {
                 Glide.with(binding.root.context)
                     .load(it)
+                    .placeholder(R.drawable.loading)
                     .into(ivImage)
             }
             ivImage.setOnClickListener {

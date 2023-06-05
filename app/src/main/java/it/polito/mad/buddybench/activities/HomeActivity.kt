@@ -87,6 +87,8 @@ class HomeActivity : AppCompatActivity() {
         friendsViewModel.popNotification = { it -> createFriendRequestNotification(it) }
         reservationViewModel.popNotification = {r,p -> createJoinRequestNotification(r,p)}
         userViewModel.getUser(Firebase.auth.currentUser!!.email!!).observe(this) {
+            findViewById<View>(R.id.progress_bar).visibility = View.GONE
+
             if (it != null && it.email != "") {
                 friendsViewModel.subscribeFriendsList()
                 invitationsViewModel.subscribeInvitations { s ->
@@ -126,7 +128,6 @@ class HomeActivity : AppCompatActivity() {
                 }
 
                 reservationViewModel.subscribeReservations { s ->
-                    println("...............................")
                     if (s > 0) {
                         bottomBar.counter[Tabs.RESERVATIONS.getId()] = s
                         if (bottomBar.currentTab != Tabs.RESERVATIONS)
@@ -143,7 +144,6 @@ class HomeActivity : AppCompatActivity() {
 
                     }
                 }
-                println("-------------------------------------------------")
                 return@observe
             }
 
@@ -201,19 +201,19 @@ class HomeActivity : AppCompatActivity() {
                     ) {
                         imageViewModel.postUserImage(newProfile.email, newProfile.imageUri!!, {
                             Utils.closeProgressDialog()
-
                             Utils.openGeneralProblemDialog(
                                 "Error",
                                 "An error occurred while updating the image, try later",
                                 this@HomeActivity
                             )
                         }) {
-                            Utils.closeProgressDialog()
                             userViewModel.getUser()
+                            Utils.closeProgressDialog()
                         }
                     } else{
                         Utils.closeProgressDialog()
                     }
+
 
                 }
             }

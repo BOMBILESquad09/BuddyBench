@@ -263,20 +263,9 @@ class ShowProfileFragment(
 
         val iv = requireView().findViewById<ImageView>(R.id.profile_image)
         imageViewModel.getUserImage(profile.email, { iv.setImageResource(R.drawable.person) }) {
-            val options: RequestOptions = RequestOptions()
             Glide.with(this)
                 .load(it)
-                .signature(ObjectKey(it))
-                .apply(
-                    options.centerCrop()
-                        .placeholder(R.drawable.loading)
-                        .error(R.drawable.person)
-                        .skipMemoryCache(true)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .priority(Priority.HIGH)
-                        .dontAnimate()
-                        .dontTransform()
-                )
+                .placeholder(R.drawable.loading)
                 .error(R.drawable.person)
                 .into(iv)
         }

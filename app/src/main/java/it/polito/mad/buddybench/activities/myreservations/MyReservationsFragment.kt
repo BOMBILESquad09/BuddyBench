@@ -30,6 +30,7 @@ import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.core.nextMonth
 import com.kizitonwose.calendar.core.previousMonth
+import com.kizitonwose.calendar.core.yearMonth
 import com.kizitonwose.calendar.view.CalendarView
 import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.MonthHeaderFooterBinder
@@ -67,6 +68,8 @@ class MyReservationsFragment(val context: HomeActivity) : Fragment(R.layout.my_r
     private lateinit var nextButton: ImageView
     private lateinit var swipeRefresh: SwipeRefreshLayout
 
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         swipeRefresh = view.findViewById(R.id.swiperefresh)
@@ -80,11 +83,10 @@ class MyReservationsFragment(val context: HomeActivity) : Fragment(R.layout.my_r
         calendarView = view.findViewById(R.id.calendar)
         currentMonth = YearMonth.now()
 
-        startMonth = currentMonth.minusMonths(0)  // Adjust as needed
-        endMonth = currentMonth.plusMonths(1)  // Adjust as needed
+        startMonth = currentMonth.minusMonths(1)  // Adjust as needed
+        endMonth = currentMonth.plusMonths(1) // Adjust as needed
         val daysOfWeek = daysOfWeek(DayOfWeek.MONDAY)
         calendarView.setup(startMonth, endMonth, daysOfWeek.first()) // Available from the library
-        calendarView.scrollToMonth(currentMonth)
         recyclerViewReservations = view.findViewById(R.id.reservations)
         recyclerViewReservations.layoutManager = LinearLayoutManager(context)
         recyclerViewReservations.adapter =
@@ -121,10 +123,9 @@ class MyReservationsFragment(val context: HomeActivity) : Fragment(R.layout.my_r
         }
 
         val monthName = view.findViewById<TextView>(R.id.monthName)
-
-
-        previousButton = view.findViewById<ImageView>(R.id.previousButton)
-        nextButton = view.findViewById<ImageView>(R.id.nextButton)
+        monthName.text = LocalDate.now().yearMonth.displayText()
+        previousButton = view.findViewById(R.id.previousButton)
+        nextButton = view.findViewById(R.id.nextButton)
         calendarView.monthScrollListener = { month ->
             monthName.text = month.yearMonth.displayText()
             refreshNextCalendarButton(month.yearMonth)
@@ -135,7 +136,7 @@ class MyReservationsFragment(val context: HomeActivity) : Fragment(R.layout.my_r
         refreshNextCalendarButton(currentMonth)
         refreshPreviousCalendarButton(currentMonth)
 
-
+        calendarView.scrollToMonth(LocalDate.now().yearMonth)
 
         previousButton.setOnClickListener {
             calendarView.findFirstVisibleMonth()?.let {
@@ -271,6 +272,8 @@ class MyReservationsFragment(val context: HomeActivity) : Fragment(R.layout.my_r
     }
 
     private fun refreshNextCalendarButton(date: YearMonth) {
+        println("-----------------")
+        println(date)
         if (date == endMonth) {
             nextButton.setColorFilter(
                 ContextCompat.getColor(

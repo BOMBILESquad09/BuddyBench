@@ -80,6 +80,7 @@ class FindFriendRecyclerViewAdapter(
 
                 Glide.with(binding.root.context)
                     .load(it)
+                    .placeholder(R.drawable.loading)
                     .into(ivImage)
 
             }

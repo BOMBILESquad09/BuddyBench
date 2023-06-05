@@ -192,6 +192,7 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
         }
 
         parent.context.userViewModel.user.observe(viewLifecycleOwner) {
+            println(it.email)
             textUser.text = parent.context.getString(R.string.user_hello, it.name)
         }
 

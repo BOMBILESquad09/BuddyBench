@@ -31,7 +31,7 @@ class ReservationViewModel @Inject constructor() : ViewModel() {
     var oldDate: LocalDate? = _selectedDate.value
 
     private val _currentReservation: MutableLiveData<ReservationDTO?> = MutableLiveData(null)
-    val currentReservation: LiveData<ReservationDTO?> get() = _currentReservation
+    private val currentReservation: LiveData<ReservationDTO?> get() = _currentReservation
     val loading: MutableLiveData<Boolean> = MutableLiveData(null)
 
     var refresh: Boolean = false

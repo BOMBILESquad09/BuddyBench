@@ -58,10 +58,9 @@ class UserViewModel @Inject constructor() : ViewModel() {
     var onFailure = {}
 
     fun getUser(email: String = Firebase.auth.currentUser!!.email!!): LiveData<Profile> {
+
         viewModelScope.launch {
             userRepositoryFirebase.getUser(email, {
-                if (email == Firebase.auth.currentUser!!.email!!)
-                    fromSharedPreferences()
                 onFailure()
             }
             ) {

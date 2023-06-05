@@ -247,7 +247,7 @@
     <string name="nickname_example">\@Jeffardio</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="edit_reservation">Edit reservation</string>
-    <string name="invite_friends">Invite friends</string>
+    <string name="invite_friends">Manage friends</string>
     <string name="change_visibility">Change visibility</string>
     <string name="there_seems_to_be_a_problem_check_your_connection">There seems to be a problem,
         check your connection.</string>

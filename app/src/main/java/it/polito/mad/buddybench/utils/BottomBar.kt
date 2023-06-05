@@ -16,7 +16,7 @@ import nl.joery.animatedbottombar.AnimatedBottomBar
 
 class BottomBar(val context: HomeActivity) {
 
-    var currentTab = Tabs.RESERVATIONS
+    var currentTab = Tabs.FIND
     lateinit var bottomBar: AnimatedBottomBar
     val counter: HashMap<Int, Int> = HashMap()
     fun setup() {
@@ -45,7 +45,9 @@ class BottomBar(val context: HomeActivity) {
         context.supportFragmentManager.executePendingTransactions()
         replaceFragment(Tabs.PROFILE, Tabs.FRIENDS)
         context.supportFragmentManager.executePendingTransactions()
-        replaceFragment(Tabs.FRIENDS, currentTab)
+        replaceFragment(Tabs.FRIENDS, Tabs.RESERVATIONS)
+        context.supportFragmentManager.executePendingTransactions()
+        replaceFragment(Tabs.RESERVATIONS, currentTab)
         context.supportFragmentManager.executePendingTransactions()
 
     }
