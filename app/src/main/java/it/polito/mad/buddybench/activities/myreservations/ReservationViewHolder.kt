@@ -1,6 +1,7 @@
 package it.polito.mad.buddybench.activities.myreservations
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -33,7 +35,7 @@ import java.time.format.DateTimeFormatter
 
 class ReservationViewHolder(
     val viewModel: ReservationViewModel,
-    v: View,
+    val v: View,
     private val launcher: ActivityResultLauncher<Intent>
 ) :
     RecyclerView.ViewHolder(v) {
@@ -48,6 +50,7 @@ class ReservationViewHolder(
     private var manageBtn: TextView = v.findViewById(R.id.manage_btn)
     private var telephoneIcon: ImageView = v.findViewById(R.id.telephone)
     private var positionIcon: ImageView = v.findViewById(R.id.position)
+    private var badge: TextView = v.findViewById(R.id.notification_number)
     lateinit var reservation: ReservationDTO
     val view: View = v
     @androidx.annotation.OptIn(com.google.android.material.badge.ExperimentalBadgeUtils::class)
@@ -61,6 +64,11 @@ class ReservationViewHolder(
                 view.context
             )
         )
+
+        badge.visibility = View.GONE
+
+        manageBtn.visibility = View.GONE
+        manageBtn.visibility = View.VISIBLE
 
         courtName.text = reservation.court.name
         courtAddress.text = "${reservation.court.location}, ${reservation.court.address}"
@@ -123,19 +131,8 @@ class ReservationViewHolder(
             manageBtn.text = "Started"
         } else {
             if (!(LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime)) && reservation.requests.isNotEmpty()) {
-                manageBtn.post {
-                    val badgeDrawable = BadgeDrawable.create(view.context)
-                    badgeDrawable.number = reservation.requests.size
-                    badgeDrawable.verticalOffset = 17;
-                    badgeDrawable.backgroundColor = android.graphics.Color.RED
-                    badgeDrawable.horizontalOffset = 30;
-                    badgeDrawable.isVisible = true
-                    BadgeUtils.attachBadgeDrawable(
-                        badgeDrawable,
-                        manageBtn,
-                        view.findViewById(R.id.manage_btn_card)
-                    );
-                }
+                badge.visibility = View.VISIBLE
+                badge.text = reservation.requests.size.toString()
             }
             manageBtn.setOnClickListener {
                 if (LocalDate.now() > reservation.date || (LocalDate.now() == reservation.date && LocalTime.now() > reservation.startTime)) {

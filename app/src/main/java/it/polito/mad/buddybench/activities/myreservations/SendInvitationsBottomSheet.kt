@@ -194,19 +194,19 @@ class SendInvitationsBottomSheet(
             if (invited) {
                 view.findViewById<LinearLayout>(R.id.invite_friends_ll).visibility = View.GONE
                 view.findViewById<LinearLayout>(R.id.pending_friends_ll).visibility = View.GONE
-
                 acceptedButton.visibility = View.GONE
                 pendingButton.visibility = View.GONE
                 val removeButton = view.findViewById<MaterialButton>(R.id.remove_invite)
                 val textSection = view.findViewById<TextView>(R.id.textView10)
                 textSection.text = "Participants"
-                if(LocalDateTime.of(reservationDTO.date, reservationDTO.startTime) < LocalDateTime.now()){
+                if(LocalDateTime.of(reservationDTO.date, reservationDTO.startTime) > LocalDateTime.now()){
                     removeButton.visibility = View.VISIBLE
                     removeButton.setOnClickListener {
 
                         val dialogCard =
                             LayoutInflater.from(context).inflate(R.layout.confirm_cancel, null)
                         val builder: AlertDialog.Builder = AlertDialog.Builder(this.requireContext())
+                        dialogCard.findViewById<TextView>(R.id.confirm).text = "Confirm"
                         builder.setView(dialogCard)
                         val dialog: AlertDialog = builder.create()
                         val titleView = dialogCard.findViewById<TextView>(R.id.title)
