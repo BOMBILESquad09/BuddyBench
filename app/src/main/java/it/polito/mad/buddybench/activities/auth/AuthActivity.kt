@@ -1,30 +1,26 @@
 package it.polito.mad.buddybench.activities.auth
 
-import android.app.Activity
+import android.accounts.AccountManager
 import android.content.ContentValues
 import android.content.Intent
 import android.content.IntentSender
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
 import it.polito.mad.buddybench.R
 import it.polito.mad.buddybench.activities.HomeActivity
+
 
 class AuthActivity : AppCompatActivity() {
     private lateinit var oneTapClient: SignInClient
@@ -53,9 +49,7 @@ class AuthActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
 
-        if (auth.currentUser == null && !intent.getBooleanExtra("fromLogout", false))
-            signIn()
-        else if (auth.currentUser != null) {
+        if (auth.currentUser != null) {
             // User already logged-in, close this activity
             signInButton.visibility = View.GONE
             progressBar.visibility = View.VISIBLE
@@ -65,6 +59,14 @@ class AuthActivity : AppCompatActivity() {
             signInButton.visibility = View.VISIBLE
             progressBar.visibility = View.GONE
         }
+
+
+    }
+
+    private fun deviceHasGoogleAccount(): Boolean {
+        val accMan = AccountManager.get(this)
+        val accArray = accMan.getAccountsByType("com.google")
+        return if (accArray.size >= 1) true else false
     }
 
     private fun signIn() {
@@ -96,7 +98,7 @@ class AuthActivity : AppCompatActivity() {
                     // Your server's client ID, not your Android client ID.
                     .setServerClientId(getString(R.string.google_oauth_client_id))
                     // Only show accounts previously used to sign in.
-                    .setFilterByAuthorizedAccounts(true)
+                    .setFilterByAuthorizedAccounts(false)
                     .build()
             )
             // Automatically sign in when exactly one credential is retrieved.
@@ -158,6 +160,7 @@ class AuthActivity : AppCompatActivity() {
                     signInButton.visibility = View.GONE
                     progressBar.visibility = View.VISIBLE
                     val credential = oneTapClient.getSignInCredentialFromIntent(data)
+                    println(credential)
                     val idToken = credential.googleIdToken
                     val username = credential.id
                     when {

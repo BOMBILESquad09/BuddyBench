@@ -47,6 +47,10 @@ class FriendProfileActivity : AppCompatActivity() {
             if(it == null)
                 return@observe
             Utils.closeProgressDialog()
+            println("-sdadfsfsfsdfsdf")
+            println(it.email)
+            println(it.isRequesting)
+            println("-sdadfsfsfsdfsdf")
 
             showProfileFragment.profile = it
             showProfileFragment.setGUI()

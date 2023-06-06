@@ -88,8 +88,15 @@ class UserRepository {
                                     serializedProfile.pendings.add(serializeUser(it.data as Map<String, Object>))
                             }
                     } else {
-                        serializedProfile.isRequesting =
-                            serializedProfile.pendings.any { it.email == serializedProfile.email }
+                        val myUser = db.collection("users").document(Firebase.auth.currentUser!!.email!!).get().await()
+                        println(myUser.data!!["friend_requests_pending"] as List<DocumentReference>)
+                        serializedProfile.isRequesting = (myUser.data!!["friend_requests_pending"] as List<DocumentReference>).any {
+                            it.id == profile.id
+                        }
+                        println("-----------------")
+                        println(serializedProfile.isRequesting)
+                        println("-----------------")
+
                     }
 
 
@@ -142,6 +149,9 @@ class UserRepository {
 
                         return@withContext
                     }
+                    println("--------------------fine-----------------------------------------------------------------")
+                    println(serializedProfile.isRequesting)
+                    println("--------------------fine-----------------------------------------------------------------")
 
                     onSuccess(serializedProfile)
                 } else {

@@ -71,6 +71,10 @@ class ShowProfileFragment(
 
         } else {
             profile = friendProfile!!
+            println("----------------------------------------------------")
+            println(friendProfile!!.isRequesting)
+            println("----------------------------------------------------")
+
             setGUI()
             loadImage()
         }
@@ -142,6 +146,10 @@ class ShowProfileFragment(
             friendButton.visibility = View.VISIBLE
             userViewModel.user.observe(this) {
                 if (it == null) return@observe
+                println("------------------------------")
+
+                println(it.isRequesting)
+                println("------------------------------")
                 if (!it.isPending && !it.isFriend && !it.isRequesting) {
                     friendButton.text = "Add Friend"
                     friendButton.backgroundTintList =

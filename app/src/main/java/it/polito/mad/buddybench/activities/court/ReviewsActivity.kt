@@ -126,6 +126,7 @@ class ReviewsActivity : AppCompatActivity() {
         // ** User review
         reviewViewModel.userReview.observe(this) {
             if (it != null) {
+                binding.header.text = "Your review"
                 binding.btnEditReview.text = "Update Review"
                 binding.tvYourReview.setText(it.description)
                 binding.rbYourReview.invalidate()

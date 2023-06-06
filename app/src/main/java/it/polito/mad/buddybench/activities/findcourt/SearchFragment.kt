@@ -138,6 +138,10 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
 
 
         findCourtViewModel.findStates.observe(viewLifecycleOwner) {
+            println("-------------------")
+            println(it)
+            println("-------------------")
+
             findCourtViewModel.getCourtsOrPublicGames()
 
             textNearButton.text = getString(
@@ -148,6 +152,8 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
 
             if (it == FindStates.GAMES) {
                 courtsRecyclerView.visibility = View.GONE
+                publicGamesRecyclerView.visibility = View.GONE
+
                 findCourtViewModel.clearFilters()
                 filterButton.setBackgroundResource(R.drawable.circle_light_bg)
                 filterIcon.setImageResource(R.drawable.filter)
@@ -170,6 +176,7 @@ class SearchFragment(val parent: FindCourtFragment) : Fragment(R.layout.activity
                 )
             } else {
                 publicGamesRecyclerView.visibility = View.GONE
+                courtsRecyclerView.visibility = View.GONE
 
                 searchTextContainer.postOnAnimation {
                     filterButton.startAnimation(
